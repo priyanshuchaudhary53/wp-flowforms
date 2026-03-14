@@ -40,8 +40,8 @@ export const useFormStore = create((set, get) => ({
   error: null,
   addBlockDialogOpen: false,
   designDrawerOpen: false,
-  draftDesign: null,
-  designDirty: false,
+  draftDesign: null, // holds in-progress design changes while drawer is open
+  designDirty: false, // true when draftDesign differs from committed design
 
   // "saved" | "unsaved" | "saving"
   saveStatus: "saved",
@@ -74,7 +74,11 @@ export const useFormStore = create((set, get) => ({
         designDirty: false,
       });
     } else {
-      set({ designDrawerOpen: false, draftDesign: null, designDirty: false });
+      // Close the drawer immediately but delay clearing draftDesign until after
+      // the Sheet's exit animation (~200ms) so the canvas doesn't flash back to
+      // the committed design while the panel is still animating out.
+      set({ designDrawerOpen: false, designDirty: false });
+      setTimeout(() => set({ draftDesign: null }), 300);
     }
   },
 
@@ -106,7 +110,10 @@ export const useFormStore = create((set, get) => ({
 
   // Throw away draftDesign and close the drawer; canvas reverts to committed design.
   discardDesign: () => {
-    set({ draftDesign: null, designDirty: false, designDrawerOpen: false });
+    // Close and clear dirty flag immediately; delay nulling draftDesign so the
+    // canvas doesn't flash during the Sheet's exit animation.
+    set({ designDrawerOpen: false, designDirty: false });
+    setTimeout(() => set({ draftDesign: null }), 300);
   },
 
   // ── Update a single field for the selected block ─────────────────────────
