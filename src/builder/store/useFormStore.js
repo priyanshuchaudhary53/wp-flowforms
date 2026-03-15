@@ -266,6 +266,70 @@ export const useFormStore = create((set, get) => ({
     saveTimer = setTimeout(() => get()._persistForm(), 800);
   },
 
+  // ── Delete a question by id ──────────────────────────────────────────────────
+  deleteQuestion: (questionId) => {
+    set((state) => {
+      const form = state.form;
+      if (!form) return {};
+
+      const questions = (form.content?.questions ?? []).filter(
+        (q) => q.id !== questionId,
+      );
+
+      // If the deleted question was selected, fall back to welcome screen
+      const selectedBlock = state.selectedBlock;
+      const nextSelected =
+        selectedBlock?.type === "question" && selectedBlock?.id === questionId
+          ? { id: "welcome", type: "welcome" }
+          : selectedBlock;
+
+      return {
+        form: { ...form, content: { ...form.content, questions } },
+        selectedBlock: nextSelected,
+        saveStatus: "unsaved",
+      };
+    });
+
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => get()._persistForm(), 800);
+  },
+
+  // ── Duplicate a question by id ────────────────────────────────────────────
+  // Inserts a deep copy with a fresh id immediately after the source question,
+  // then auto-selects the duplicate.
+  duplicateQuestion: (questionId) => {
+    set((state) => {
+      const form = state.form;
+      if (!form) return {};
+
+      const questions = form.content?.questions ?? [];
+      const index = questions.findIndex((q) => q.id === questionId);
+      if (index === -1) return {};
+
+      const source = questions[index];
+      const duplicate = {
+        ...structuredClone(source),
+        id: crypto.randomUUID(),
+      };
+
+      const next = [...questions];
+      next.splice(index + 1, 0, duplicate);
+
+      return {
+        form: { ...form, content: { ...form.content, questions: next } },
+        selectedBlock: {
+          id: duplicate.id,
+          type: "question",
+          questionType: duplicate.type,
+        },
+        saveStatus: "unsaved",
+      };
+    });
+
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => get()._persistForm(), 800);
+  },
+
   // ── Persist form content to REST API ─────────────────────────────────────
   _persistForm: async () => {
     const { formId, form } = get();

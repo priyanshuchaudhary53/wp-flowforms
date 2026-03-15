@@ -11,12 +11,16 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
+import {
+  restrictToVerticalAxis,
+  restrictToParentElement,
+} from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { GripVertical } from "lucide-react";
 import { useFormStore } from "../../store/useFormStore";
 import FIELDS from "./fields";
+import BlockItemMenu from "./BlockItemMenu";
 
 function BlockItem({ question, index }) {
   const field = FIELDS.find((f) => f.type === question.type);
@@ -68,7 +72,7 @@ function BlockItem({ question, index }) {
 
       {/* Select button */}
       <button
-        className="h-full p-2 pl-0 flex items-center gap-2 flex-1 min-w-0 cursor-pointer text-left"
+        className="h-full py-2 flex items-center gap-2 flex-1 min-w-0 cursor-pointer text-left"
         onClick={() =>
           setSelectedBlock({
             id: question.id,
@@ -84,6 +88,8 @@ function BlockItem({ question, index }) {
         )}
         <p className="truncate">{`${index + 1}. ${question.content.title}`}</p>
       </button>
+
+      <BlockItemMenu question={question} />
     </div>
   );
 }
