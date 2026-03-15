@@ -19,6 +19,8 @@ import {
   SheetTitle,
 } from "../components/ui/sheet";
 import { useFormStore } from "../store/useFormStore";
+import ThemeGallery from "../components/design/ThemeGallery";
+import { LayoutGridIcon } from "lucide-react";
 
 // ── Shake animation style (injected once) ────────────────────────────────────
 const SHAKE_STYLE = `
@@ -46,6 +48,9 @@ export default function DesignDrawer() {
 
   // Which confirm dialog is open: null | "save" | "discard"
   const [confirmDialog, setConfirmDialog] = useState(null);
+
+  // Theme gallery visibility
+  const [themeGalleryOpen, setThemeGalleryOpen] = useState(false);
 
   // Footer ref for shake animation
   const footerRef = useRef(null);
@@ -109,6 +114,20 @@ export default function DesignDrawer() {
     setConfirmDialog(null);
   };
 
+  // ── Apply theme ──────────────────────────────────────────────────────
+  // Writes all theme color keys into draftDesign, marking it dirty so
+  // the canvas previews immediately and the save/discard buttons activate.
+  const applyTheme = (theme) => {
+    const COLOR_KEYS = [
+      "bg_color", "title_color", "description_color", "answer_color",
+      "button_color", "button_hover_color", "button_text_color",
+      "hint_color", "star_color",
+    ];
+    COLOR_KEYS.forEach((key) => {
+      if (theme[key]) updateDesign(key, theme[key]);
+    });
+  };
+
   return (
     <>
       {/* ── Design Sheet ─────────────────────────────────────────────────── */}
@@ -117,12 +136,23 @@ export default function DesignDrawer() {
           <SheetHeader>
             <SheetTitle>Design</SheetTitle>
             <SheetDescription>
-              Customise the look of your form. Save when you&apos;re happy with the
-              preview.
+              Customise colours, typography, and layout — or pick a theme to get started instantly
             </SheetDescription>
           </SheetHeader>
 
           <div className="grid flex-1 divide-y auto-rows-min px-4 overflow-y-auto no-scrollbar">
+            {/* ── Theme gallery trigger ───────────────────────────────────── */}
+            <div className="pb-5">
+              <button
+                type="button"
+                onClick={() => setThemeGalleryOpen(true)}
+                className="w-full cursor-pointer flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50"
+              >
+                <LayoutGridIcon width={16} height={16} className="stroke-2 shrink-0" />
+                Open theme gallery
+              </button>
+            </div>
+
             {DESIGN_SETTINGS.map((section) => (
               <div key={section.section} className="py-6 first:pt-0 last:pb-0">
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
@@ -212,6 +242,12 @@ export default function DesignDrawer() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* ── Theme gallery modal ──────────────────────────────────────── */}
+      <ThemeGallery
+        open={themeGalleryOpen}
+        onOpenChange={setThemeGalleryOpen}
+        onApply={applyTheme}
+      />
     </>
   );
 }
