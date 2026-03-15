@@ -26,7 +26,7 @@ export default function Editor({ className }) {
 
   return (
     <>
-      <div className={`grid grid-cols-12 2xl:flex ${className}`}>
+      <div className={`grid grid-cols-12 2xl:flex overflow-hidden ${className}`}>
         <LeftPanel className="max-2xl:col-span-2 2xl:w-full 2xl:max-w-64" />
         <CenterPanel className="max-2xl:col-span-7 2xl:grow" />
         <RightPanel className="max-2xl:col-span-3 2xl:w-full 2xl:max-w-96" />

@@ -13,10 +13,10 @@ export default function LeftPanel({ className }) {
   const questions = form?.content?.questions;
 
   return (
-    <div className={`p-3 pr-1.5 ${className}`}>
-      <div className="space-y-10 rounded-2xl px-3 pt-6 h-full bg-gray-100">
+    <div className={`p-3 pr-1.5 min-h-0 ${className}`}>
+      <div className="flex flex-col rounded-2xl px-3 pt-6 pb-4 h-full bg-gray-100 overflow-y-auto">
         {welcomeScreen && (
-          <div>
+          <div className="shrink-0">
             <p className="text-xs/5 text-gray-600">Welcome page</p>
             <div className="mt-2">
               <ScreenButton
@@ -27,13 +27,15 @@ export default function LeftPanel({ className }) {
           </div>
         )}
 
-        <BlockList
-          questions={questions}
-          onAddClick={() => setAddBlockDialogOpen(true)}
-        />
+        <div className="mt-10 min-h-0 flex flex-col">
+          <BlockList
+            questions={questions}
+            onAddClick={() => setAddBlockDialogOpen(true)}
+          />
+        </div>
 
         {thankYouScreen && (
-          <div>
+          <div className="mt-10 shrink-0">
             <p className="text-xs/5 text-gray-600">Thank you page</p>
             <div className="mt-2">
               <ScreenButton

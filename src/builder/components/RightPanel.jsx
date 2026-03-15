@@ -242,7 +242,7 @@ export default function RightPanel({ className }) {
   };
 
   return (
-    <div className={`p-3 pl-1.5 ${className}`}>
+    <div className={`p-3 pl-1.5 min-h-0  ${className}`}>
       <div className="h-full rounded-2xl bg-gray-100 flex flex-col overflow-hidden">
 
         {/* Header */}

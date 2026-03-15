@@ -113,8 +113,8 @@ export default function BlockList({ questions, onAddClick }) {
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center">
+    <div className="flex flex-col min-h-0 h-full">
+      <div className="flex justify-between items-center shrink-0">
         <p className="text-xs/5 text-gray-600">Blocks</p>
         <button
           onClick={onAddClick}
@@ -124,7 +124,7 @@ export default function BlockList({ questions, onAddClick }) {
           <PlusCircleIcon width={20} height={20} />
         </button>
       </div>
-      <div className="mt-2 space-y-1.5">
+      <div className="mt-2 flex-1 overflow-y-auto min-h-0 space-y-1.5 pr-0.5">
         {questions?.length > 0 ? (
           <DndContext
             sensors={sensors}

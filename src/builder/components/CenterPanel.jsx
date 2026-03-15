@@ -11,7 +11,7 @@ export default function CenterPanel({ className }) {
   );
 
   return (
-    <div className={`px-1.5 py-3 flex flex-col gap-3 ${className}`}>
+    <div className={`px-1.5 py-3 flex flex-col gap-3 min-h-0 ${className}`}>
       <div className="p-2 shrink-0 rounded-2xl md:px-4 h-14 bg-gray-100 flex items-center">
         <div className="flex items-center">
           <div>
