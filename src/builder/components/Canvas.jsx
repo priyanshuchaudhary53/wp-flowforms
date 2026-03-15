@@ -1,21 +1,9 @@
 import { StarIcon } from "@heroicons/react/24/outline";
+import { useEffect } from "react";
 import { useFormStore } from "../store/useFormStore";
 import DESIGN_SETTINGS from "./design/designSettings";
-import { useEffect } from "react";
-
-// Inject Google Font <link> into document head (deduplicated)
-function loadGoogleFont(fontName) {
-  if (!fontName) return;
-  const id = `gf-${fontName.replace(/\s+/g, "-")}`;
-  if (document.getElementById(id)) return;
-  const link = document.createElement("link");
-  link.id = id;
-  link.rel = "stylesheet";
-  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-    fontName,
-  )}:wght@400;500;600;700&display=swap`;
-  document.head.appendChild(link);
-}
+import { getFontScale } from "./design/fontScale";
+import { loadGoogleFont } from "../lib/googleFonts";
 
 // ── Screen previews ──────────────────────────────────────────────────────────
 
@@ -48,16 +36,25 @@ function WelcomePreview({ screen, design }) {
           "gap-y-3 max-w-md",
         ].join(" ")}
       >
-        <h1 className="text-3xl font-bold text-(--title-color)">
+        <h1
+          className="font-bold text-(--title-color)"
+          style={{ fontSize: "var(--fs-title)" }}
+        >
           {c.title || "Welcome!"}
         </h1>
         {c.description && (
-          <p className="text-sm leading-relaxed text-(--desc-color)">
+          <p
+            className="leading-relaxed text-(--desc-color)"
+            style={{ fontSize: "var(--fs-body)" }}
+          >
             {c.description}
           </p>
         )}
       </div>
-      <button className="px-6 py-2.5 text-white text-sm font-medium transition-colors btn-primary">
+      <button
+        className="px-6 py-2.5 text-white font-medium rounded-lg transition-colors btn-primary"
+        style={{ fontSize: "var(--fs-body)" }}
+      >
         {c.buttonLabel || "Start"}
       </button>
     </div>
@@ -108,11 +105,17 @@ function ThankYouPreview({ screen, design }) {
           "gap-y-3 max-w-md",
         ].join(" ")}
       >
-        <h1 className="text-3xl font-bold text-(--title-color)">
+        <h1
+          className="font-bold text-(--title-color)"
+          style={{ fontSize: "var(--fs-title)" }}
+        >
           {c.title || "Thank you!"}
         </h1>
         {c.description && (
-          <p className="text-sm leading-relaxed text-(--desc-color)">
+          <p
+            className="leading-relaxed text-(--desc-color)"
+            style={{ fontSize: "var(--fs-body)" }}
+          >
             {c.description}
           </p>
         )}
@@ -144,21 +147,37 @@ function QuestionPreview({ question, design }) {
           "gap-y-2",
         ].join(" ")}
       >
-        <h2 className="text-xl font-semibold text-(--title-color)">
+        <h2
+          className="font-semibold text-(--title-color)"
+          style={{ fontSize: "var(--fs-subtitle)" }}
+        >
           {c.title || "Untitled question"}
         </h2>
         {c.description && (
-          <p className="text-sm text-(--desc-color)">{c.description}</p>
+          <p
+            className="text-(--desc-color)"
+            style={{ fontSize: "var(--fs-body)" }}
+          >
+            {c.description}
+          </p>
         )}
       </div>
 
       <QuestionInputMockup question={question} design={design} />
 
       <div className="flex items-center gap-3 mt-2">
-        <button className="px-5 py-2 text-sm font-medium text-white transition-colors btn-primary">
+        <button
+          className="px-5 py-2 font-medium text-white rounded-lg transition-colors btn-primary"
+          style={{ fontSize: "var(--fs-body)" }}
+        >
           {c.buttonLabel || "OK"}
         </button>
-        <span className="text-xs text-(--hint-color)">press Enter ↵</span>
+        <span
+          className="text-(--hint-color)"
+          style={{ fontSize: "var(--fs-hint)" }}
+        >
+          press Enter ↵
+        </span>
       </div>
     </div>
   );
@@ -175,7 +194,8 @@ function QuestionInputMockup({ question, design }) {
       <input
         readOnly
         placeholder={s.placeholder || "Your answer here..."}
-        className="w-full border-b bg-transparent py-2 text-sm outline-none border-(--answer-color) placeholder:text-(--answer-color)/50"
+        className="w-full border-b bg-transparent py-2 outline-none border-(--answer-color) placeholder:text-(--answer-color)/50"
+        style={{ fontSize: "var(--fs-body)" }}
       />
     );
   }
@@ -185,7 +205,8 @@ function QuestionInputMockup({ question, design }) {
         readOnly
         rows={s.rows || 4}
         placeholder={s.placeholder || "Your answer here..."}
-        className="w-full border-b bg-transparent py-2 text-sm outline-none resize-none border-(--answer-color) placeholder:text-(--answer-color)/50"
+        className="w-full border-b bg-transparent py-2 outline-none resize-none border-(--answer-color) placeholder:text-(--answer-color)/50"
+        style={{ fontSize: "var(--fs-body)" }}
       />
     );
   }
@@ -195,7 +216,8 @@ function QuestionInputMockup({ question, design }) {
         readOnly
         type="email"
         placeholder={s.placeholder || "name@example.com"}
-        className="w-full border-b bg-transparent py-2 text-sm outline-none border-(--answer-color) placeholder:text-(--answer-color)/50"
+        className="w-full border-b bg-transparent py-2 outline-none border-(--answer-color) placeholder:text-(--answer-color)/50"
+        style={{ fontSize: "var(--fs-body)" }}
       />
     );
   }
@@ -203,16 +225,27 @@ function QuestionInputMockup({ question, design }) {
     return (
       <div className="flex w-full items-center gap-1 border-b py-2 border-(--answer-color)">
         {c.prefix && (
-          <span className="text-sm text-(--answer-color)">{c.prefix}</span>
+          <span
+            className="text-(--answer-color)"
+            style={{ fontSize: "var(--fs-body)" }}
+          >
+            {c.prefix}
+          </span>
         )}
         <input
           readOnly
           type="number"
           placeholder={s.placeholder || "0"}
-          className="flex-1 bg-transparent text-sm outline-none placeholder:text-(--answer-color)/50"
+          className="flex-1 bg-transparent outline-none placeholder:text-(--answer-color)/50"
+          style={{ fontSize: "var(--fs-body)" }}
         />
         {c.suffix && (
-          <span className="text-sm text-(--answer-color)">{c.suffix}</span>
+          <span
+            className="text-(--answer-color)"
+            style={{ fontSize: "var(--fs-body)" }}
+          >
+            {c.suffix}
+          </span>
         )}
       </div>
     );
@@ -230,7 +263,8 @@ function QuestionInputMockup({ question, design }) {
         {["Option A", "Option B", "Option C"].map((opt) => (
           <label
             key={opt}
-            className="choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-sm text-(--answer-color) border-(--answer-color)"
+            className="choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-(--answer-color) border-(--answer-color)"
+            style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
             {opt}
@@ -252,7 +286,8 @@ function QuestionInputMockup({ question, design }) {
         {["Option A", "Option B", "Option C"].map((opt) => (
           <label
             key={opt}
-            className="choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-sm text-(--answer-color) border-(--answer-color)"
+            className="choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-(--answer-color) border-(--answer-color)"
+            style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
             {opt}
@@ -279,10 +314,16 @@ function QuestionInputMockup({ question, design }) {
   if (type === "yes_no") {
     return (
       <div className="flex gap-3">
-        <button className="choice-item flex items-center gap-2 px-5 py-2.5 border text-sm transition-[background-color] text-(--answer-color) border-(--answer-color) hover:bg-(--answer-color)/10">
+        <button
+          className="choice-item flex items-center gap-2 px-5 py-2.5 border transition-[background-color] text-(--answer-color) border-(--answer-color) hover:bg-(--answer-color)/10"
+          style={{ fontSize: "var(--fs-body)" }}
+        >
           {c.yesLabel || "Yes"}
         </button>
-        <button className="choice-item flex items-center gap-2 px-5 py-2.5 border text-sm transition-[background-color] text-(--answer-color) border-(--answer-color) hover:bg-(--answer-color)/10">
+        <button
+          className="choice-item flex items-center gap-2 px-5 py-2.5 border transition-[background-color] text-(--answer-color) border-(--answer-color) hover:bg-(--answer-color)/10"
+          style={{ fontSize: "var(--fs-body)" }}
+        >
           {c.noLabel || "No"}
         </button>
       </div>
@@ -356,7 +397,8 @@ export default function Canvas() {
   // While the design drawer is open, preview uses draftDesign so changes are
   // visible in the canvas before they are committed/saved.
   const committedDesign = form?.content?.design ?? {};
-  const design = designDrawerOpen && draftDesign ? draftDesign : committedDesign;
+  const design =
+    designDrawerOpen && draftDesign ? draftDesign : committedDesign;
 
   // Load the selected Google Font whenever it changes
   useEffect(() => {
@@ -447,6 +489,12 @@ export default function Canvas() {
               : design.border_radius === "full"
               ? "9999px"
               : "8px",
+          // Font scale — spreads --fs-title, --fs-subtitle, --fs-body, --fs-hint
+          ...Object.fromEntries(
+            Object.entries(getFontScale(design.font_size)).map(
+              ([role, size]) => [`--fs-${role}`, size],
+            ),
+          ),
         }}
       >
         {isQuestion && (

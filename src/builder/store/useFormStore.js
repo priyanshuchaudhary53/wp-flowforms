@@ -86,10 +86,16 @@ export const useFormStore = create((set, get) => ({
 
   // Write one key into draftDesign (does NOT persist or touch committed design).
   setDraftDesign: (key, value) => {
-    set((state) => ({
-      draftDesign: { ...(state.draftDesign ?? {}), [key]: value },
-      designDirty: true,
-    }));
+    set((state) => {
+      const newDraft = { ...(state.draftDesign ?? {}), [key]: value };
+      // Re-derive dirty by comparing every draft key against committed design.
+      // This way clicking an already-active option never marks the drawer dirty.
+      const committed = state.form?.content?.design ?? {};
+      const dirty = Object.keys(newDraft).some(
+        (k) => newDraft[k] !== (committed[k] ?? ""),
+      );
+      return { draftDesign: newDraft, designDirty: dirty };
+    });
   },
 
   // Copy draftDesign over committed design and persist to API.
