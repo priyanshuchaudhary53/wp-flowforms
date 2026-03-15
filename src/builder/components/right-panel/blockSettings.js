@@ -266,7 +266,20 @@ const BLOCK_SETTINGS = {
     sections: [
       {
         title: "Content",
-        fields: [...COMMON_CONTENT_FIELDS],
+        fields: [
+          ...COMMON_CONTENT_FIELDS,
+          {
+            namespace: "content",
+            key: "options",
+            label: "Options",
+            type: "options",
+            default: [
+              { id: "opt-1", label: "Option A" },
+              { id: "opt-2", label: "Option B" },
+              { id: "opt-3", label: "Option C" },
+            ],
+          },
+        ],
       },
       {
         title: "Settings",
@@ -316,7 +329,20 @@ const BLOCK_SETTINGS = {
     sections: [
       {
         title: "Content",
-        fields: [...COMMON_CONTENT_FIELDS],
+        fields: [
+          ...COMMON_CONTENT_FIELDS,
+          {
+            namespace: "content",
+            key: "options",
+            label: "Options",
+            type: "options",
+            default: [
+              { id: "opt-1", label: "Option A" },
+              { id: "opt-2", label: "Option B" },
+              { id: "opt-3", label: "Option C" },
+            ],
+          },
+        ],
       },
       {
         title: "Settings",

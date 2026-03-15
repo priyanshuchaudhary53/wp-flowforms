@@ -1,7 +1,6 @@
 import { useFormStore } from "../store/useFormStore";
 import BLOCK_SETTINGS from "./right-panel/blockSettings";
-import Field from "./ui/field";
-import { Input } from "./ui/input";
+import OptionsEditor from "./right-panel/OptionsEditor";
 
 // ── Save-status indicator ────────────────────────────────────────────────────
 
@@ -145,6 +144,7 @@ function SettingsField({ field, blockContent, blockSettings, onChange }) {
     case "textarea": return <TextareaField {...props} />;
     case "number":   return <NumberField   {...props} />;
     case "select":   return <SelectField   {...props} />;
+    case "options":  return <OptionsEditor {...props} />;
     default:         return <TextField     {...props} />;
   }
 }

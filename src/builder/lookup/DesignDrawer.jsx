@@ -64,7 +64,6 @@ export default function DesignDrawer() {
   // ── Shake the footer buttons ──────────────────────────────────────────────
   const shakeFooter = () => {
     const el = footerRef.current;
-    console.log('test');
     if (!el) return;
     el.classList.remove("ff-shake");
     // Force reflow so re-adding the class triggers the animation again

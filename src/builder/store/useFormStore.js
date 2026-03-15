@@ -13,10 +13,13 @@ function buildDefaultQuestion(fieldType) {
   if (schema) {
     for (const section of schema.sections) {
       for (const field of section.fields) {
+        // For options fields, preserve the default array (not "")
+        const defaultValue =
+          field.type === "options" ? field.default ?? [] : field.default ?? "";
         if (field.namespace === "content") {
-          content[field.key] = field.default ?? "";
+          content[field.key] = defaultValue;
         } else {
-          settings[field.key] = field.default ?? "";
+          settings[field.key] = defaultValue;
         }
       }
     }

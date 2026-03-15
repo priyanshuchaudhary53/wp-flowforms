@@ -24,8 +24,6 @@ export default function Editor({ className }) {
     return <div className={className}>⚠️ {error}</div>;
   }
 
-  console.log(form);
-
   return (
     <>
       <div className={`grid grid-cols-12 2xl:flex ${className}`}>
