@@ -177,7 +177,12 @@ export default function DesignDrawer() {
                         key={field.key}
                         field={field}
                         value={draftDesign?.[field.key]}
-                        onChange={(val) => updateDesign(field.key, val)}
+                        onChange={(val) => {
+                          updateDesign(field.key, val);
+                          if (field.type === "media_image" && val === null) {
+                            updateDesign("bg_brightness", 0);
+                          }
+                        }}
                         onMediaOpen={() => { mediaOpenRef.current = true; }}
                         onMediaClose={() => { mediaOpenRef.current = false; }}
                       />
