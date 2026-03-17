@@ -23,6 +23,11 @@ html, body {
     word-wrap: normal!important
 }
 
+.media-modal-backdrop,
+.media-modal {
+  pointer-events: auto !important;
+}
+
 #wpff-builder {
   position: fixed;
   top: 0;

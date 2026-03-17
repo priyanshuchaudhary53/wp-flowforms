@@ -52,6 +52,9 @@ export default function DesignDrawer() {
   // Theme gallery visibility
   const [themeGalleryOpen, setThemeGalleryOpen] = useState(false);
 
+  // Track whether a wp.media frame is open so we can block Sheet's outside-click close
+  const mediaOpenRef = useRef(false);
+
   // Footer ref for shake animation
   const footerRef = useRef(null);
 
@@ -132,7 +135,12 @@ export default function DesignDrawer() {
     <>
       {/* ── Design Sheet ─────────────────────────────────────────────────── */}
       <Sheet open={designDrawerOpen} onOpenChange={handleOpenChange}>
-        <SheetContent side="left" showCloseButton={false}>
+        <SheetContent
+          side="left"
+          showCloseButton={false}
+          onPointerDownOutside={(e) => { if (mediaOpenRef.current) e.preventDefault(); }}
+          onInteractOutside={(e) => { if (mediaOpenRef.current) e.preventDefault(); }}
+        >
           <SheetHeader>
             <SheetTitle>Design</SheetTitle>
             <SheetDescription>
@@ -159,14 +167,21 @@ export default function DesignDrawer() {
                   {section.section}
                 </p>
                 <div className="space-y-4">
-                  {section.fields.map((field) => (
-                    <DesignField
-                      key={field.key}
-                      field={field}
-                      value={draftDesign?.[field.key]}
-                      onChange={(val) => updateDesign(field.key, val)}
-                    />
-                  ))}
+                  {section.fields
+                    // Hide the brightness slider when no global bg image is set
+                    .filter((field) =>
+                      field.type !== "brightness_slider" || draftDesign?.bg_image?.url
+                    )
+                    .map((field) => (
+                      <DesignField
+                        key={field.key}
+                        field={field}
+                        value={draftDesign?.[field.key]}
+                        onChange={(val) => updateDesign(field.key, val)}
+                        onMediaOpen={() => { mediaOpenRef.current = true; }}
+                        onMediaClose={() => { mediaOpenRef.current = false; }}
+                      />
+                    ))}
                 </div>
               </div>
             ))}

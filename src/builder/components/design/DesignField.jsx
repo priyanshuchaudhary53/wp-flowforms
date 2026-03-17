@@ -339,9 +339,131 @@ function GoogleFontField({ field, value, onChange }) {
   );
 }
 
+
+// ── Media Image (WP media picker) ────────────────────────────────────────
+
+function MediaImageField({ field, value, onChange, onMediaOpen, onMediaClose }) {
+  // value shape: { id: number, url: string } | null
+  const image = value && value.url ? value : null;
+
+  const openMediaFrame = () => {
+    const frame = window.wp.media({
+      title: "Select Background Image",
+      button: { text: "Use this image" },
+      multiple: false,
+      library: { type: "image" },
+    });
+
+    frame.on("open", () => {
+      onMediaOpen?.();
+    });
+
+    frame.on("close escape", () => {
+      onMediaClose?.();
+    });
+
+    frame.on("select", () => {
+      const attachment = frame.state().get("selection").first().toJSON();
+      onChange({ id: attachment.id, url: attachment.url });
+      onMediaClose?.();
+    });
+
+    frame.open();
+  };
+
+  return (
+    <div>
+      {image ? (
+        <div className="relative rounded-lg overflow-hidden border border-gray-200 group/img">
+          <img
+            src={image.url}
+            alt="Background"
+            className="w-full h-24 object-cover block"
+          />
+          <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/30 transition-colors" />
+          <button
+            type="button"
+            onClick={() => onChange(null)}
+            title="Remove image"
+            className="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white hover:text-red-500 shadow"
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2 2l10 10M12 2 2 12" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={openMediaFrame}
+            title="Replace image"
+            className="absolute bottom-1.5 right-1.5 px-2 py-0.5 text-xs font-medium rounded bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white shadow"
+          >
+            Replace
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={openMediaFrame}
+          className="w-full h-20 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-gray-200 text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.5}>
+            <rect x="2" y="2" width="16" height="16" rx="2" />
+            <circle cx="7" cy="7" r="1.5" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2 13l4-4 3 3 3-4 4 5" />
+          </svg>
+          <span className="text-xs font-medium">Select image</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ── Brightness slider ─────────────────────────────────────────────────────
+// -100 = darkest (black overlay), 0 = neutral, +100 = brightest (white overlay)
+
+function BrightnessSliderField({ field, value, onChange }) {
+  const brightness = value ?? field.default ?? 0;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <label className="text-sm/6 text-gray-700">{field.label}</label>
+        <span className="text-xs tabular-nums text-gray-400">
+          {brightness > 0 ? `+${brightness}` : brightness}
+        </span>
+      </div>
+      <div
+        className="relative h-1.5 rounded-full"
+        style={{
+          background: "linear-gradient(to right, #000 0%, transparent 50%, #fff 100%)",
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12)",
+        }}
+      >
+        <input
+          type="range"
+          min={-100}
+          max={100}
+          step={10}
+          value={brightness}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="absolute inset-0 w-full opacity-0 cursor-pointer h-full"
+        />
+        <div
+          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white border border-gray-300 shadow pointer-events-none"
+          style={{ left: `calc(${(brightness + 100) / 200 * 100}% - 6px)` }}
+        />
+      </div>
+      <div className="flex justify-between mt-1" style={{ fontSize: "9px", color: "#d1d5db" }}>
+        <span>Darker</span>
+        <span>Brighter</span>
+      </div>
+    </div>
+  );
+}
+
 // ── Main export ───────────────────────────────────────────────────────────
 
-export default function DesignField({ field, value, onChange }) {
+export default function DesignField({ field, value, onChange, onMediaOpen, onMediaClose }) {
   const props = { field, value, onChange };
   switch (field.type) {
     case "color":
@@ -352,6 +474,10 @@ export default function DesignField({ field, value, onChange }) {
       return <ToggleField {...props} />;
     case "google_font":
       return <GoogleFontField {...props} />;
+    case "media_image":
+      return <MediaImageField {...props} onMediaOpen={onMediaOpen} onMediaClose={onMediaClose} />;
+    case "brightness_slider":
+      return <BrightnessSliderField {...props} />;
     default:
       return <TextField {...props} />;
   }

@@ -119,6 +119,24 @@ const DESIGN_SETTINGS = [
       },
     ],
   },
+
+  {
+    section: "Background",
+    fields: [
+      {
+        key: "bg_image",
+        label: "Background image",
+        type: "media_image",
+        default: null,
+      },
+      {
+        key: "bg_brightness",
+        label: "Brightness",
+        type: "brightness_slider",
+        default: 0,
+      },
+    ],
+  },
 ];
 
 export default DESIGN_SETTINGS;

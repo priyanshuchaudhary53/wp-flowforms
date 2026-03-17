@@ -6,37 +6,8 @@ import { getFontScale } from "./design/fontScale";
 import { loadGoogleFont } from "../lib/googleFonts";
 
 // ── Background wrapper ──────────────────────────────────────────────────────
-// Handles both "wallpaper" (full-bleed cover) and "split" (image panel + content panel).
 
-function BgWrapper({ bgImage, bgLayout, bgPosition, bgBrightness, children }) {
-  if (!bgImage) {
-    return <div className="flex-1 min-h-0 w-full p-2 md:px-4 overflow-y-auto">{children}</div>;
-  }
-
-  if (bgLayout === "split") {
-    const imageLeft = bgPosition !== "right";
-    return (
-      <div className="flex rounded-2xl h-full w-full overflow-hidden">
-        {imageLeft && (
-          <div
-            className="w-1/2 shrink-0 h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${bgImage})` }}
-          />
-        )}
-        <div className="flex-1 h-full overflow-y-auto p-2 md:px-4">
-          {children}
-        </div>
-        {!imageLeft && (
-          <div
-            className="w-1/2 shrink-0 h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${bgImage})` }}
-          />
-        )}
-      </div>
-    );
-  }
-
-  // Wallpaper — compute overlay from bgBrightness (-100 → black, +100 → white, 0 → none)
+function BgWrapper({ bgImage, bgLayout, bgPosition, bgBrightness, globalBg, globalBrightness, children }) {
   const brightness = bgBrightness ?? 0;
   const overlayStyle = brightness === 0
     ? null
@@ -45,15 +16,115 @@ function BgWrapper({ bgImage, bgLayout, bgPosition, bgBrightness, children }) {
         opacity: Math.abs(brightness) / 100,
       };
 
-  return (
-    <div className="h-full w-full p-2 md:px-4 overflow-y-auto">
-      <div className="absolute inset-0 rounded-2xl bg-cover bg-center" style={{ backgroundImage: `url(${bgImage})` }} />
-      {overlayStyle && <div className="absolute inset-0" style={overlayStyle} />}
-      <div className="relative h-full w-full">
+  // Overlay for the global background in split mode
+  const globalBrightnessVal = globalBrightness ?? 0;
+  const globalOverlayStyle = globalBrightnessVal === 0
+    ? null
+    : {
+        backgroundColor: globalBrightnessVal < 0 ? "rgb(0,0,0)" : "rgb(255,255,255)",
+        opacity: Math.abs(globalBrightnessVal) / 100,
+      };
+
+  if (bgLayout === "split") {
+    const imageLeft = bgPosition !== "right";
+    return (
+      <div className="flex rounded-2xl h-full w-full overflow-hidden relative">
+        {/* Global wallpaper behind everything in split mode */}
+        {globalBg && (
+          <>
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${globalBg})` }}
+            />
+            {globalOverlayStyle && (
+              <div className="absolute inset-0" style={globalOverlayStyle} />
+            )}
+          </>
+        )}
+        {imageLeft && bgImage && (
+          <div
+            className="relative w-1/2 shrink-0 h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${bgImage})` }}
+          />
+        )}
+        <div className="relative flex-1 h-full overflow-y-auto p-2 md:px-4">
+          {children}
+        </div>
+        {!imageLeft && bgImage && (
+          <div
+            className="relative w-1/2 shrink-0 h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${bgImage})` }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // Wallpaper mode — no image at all
+  if (!bgImage) {
+    return (
+      <div className="flex-1 min-h-0 w-full p-2 md:px-4 overflow-y-auto">
         {children}
       </div>
+    );
+  }
+
+  // Wallpaper mode — with image
+  return (
+    <div className="h-full w-full p-2 md:px-4 overflow-y-auto">
+      <div
+        className="absolute inset-0 rounded-2xl bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      />
+      {overlayStyle && <div className="absolute inset-0" style={overlayStyle} />}
+      <div className="relative h-full w-full">{children}</div>
     </div>
   );
+}
+
+// ── Shared background resolution ─────────────────────────────────────────────
+// Rules:
+//   - Local wallpaper → use local image only, global ignored
+//   - Local split     → use local image in split panel + global as wallpaper behind
+//   - No local image  → fall back to global as wallpaper
+
+function resolveBackground(settings, design) {
+  const localImage    = settings?.backgroundImage?.url ?? null;
+  const globalImage   = design?.bg_image?.url ?? null;
+  const localBgLayout = settings?.bgLayout ?? "wallpaper";
+  const bgPosition    = settings?.bgPosition ?? "left";
+
+  // Global wallpaper is active when there's no local image,
+  // OR when the local layout is split (global sits behind the split).
+  const globalActive =
+    !!globalImage && (!localImage || localBgLayout === "split");
+
+  const bgImage =
+    localBgLayout === "split"
+      ? (localImage || null) // split panel only shows local image
+      : localImage || (globalActive ? globalImage : null);
+
+  // bgBrightness applies to the local image (or global when no local image)
+  const bgBrightness = globalActive && !localImage
+    ? (design?.bg_brightness ?? 0)
+    : (settings?.bgBrightness ?? 0);
+
+  // globalBrightness always tracks the global brightness setting,
+  // used when globalBg is rendered separately behind a split layout.
+  const globalBrightness = design?.bg_brightness ?? 0;
+
+  // Pass globalBg to BgWrapper only when split + global is active
+  const globalBg =
+    localBgLayout === "split" && globalActive ? globalImage : null;
+
+  return {
+    bgImage,
+    bgLayout: localBgLayout,
+    bgPosition,
+    bgBrightness,
+    globalBrightness,
+    globalBg,
+  };
 }
 
 // ── Screen previews ──────────────────────────────────────────────────────────
@@ -62,21 +133,21 @@ function WelcomePreview({ screen, design }) {
   const c = screen?.content ?? {};
   const s = screen?.settings ?? {};
 
-  let alignment = "center";
+  const alignment =
+    s.layout && s.layout !== "default" ? s.layout : (design.alignment ?? "center");
 
-  if (s.layout !== "default") {
-    alignment = s.layout;
-  } else {
-    alignment = design.alignment;
-  }
-
-  const bgImage      = s.backgroundImage?.url;
-  const bgLayout     = s.bgLayout     ?? "wallpaper";
-  const bgPosition   = s.bgPosition   ?? "left";
-  const bgBrightness = s.bgBrightness ?? 0;
+  const { bgImage, bgLayout, bgPosition, bgBrightness, globalBg, globalBrightness } =
+    resolveBackground(s, design);
 
   return (
-    <BgWrapper bgImage={bgImage} bgLayout={bgLayout} bgPosition={bgPosition} bgBrightness={bgBrightness}>
+    <BgWrapper
+      bgImage={bgImage}
+      bgLayout={bgLayout}
+      bgPosition={bgPosition}
+      bgBrightness={bgBrightness}
+      globalBg={globalBg}
+      globalBrightness={globalBrightness}
+    >
       <div
         className={[
           "relative flex flex-col",
@@ -123,21 +194,21 @@ function ThankYouPreview({ screen, design }) {
   const c = screen?.content ?? {};
   const s = screen?.settings ?? {};
 
-  let alignment = "center";
+  const alignment =
+    s.layout && s.layout !== "default" ? s.layout : (design.alignment ?? "center");
 
-  if (s.layout !== "default") {
-    alignment = s.layout;
-  } else {
-    alignment = design.alignment;
-  }
-
-  const bgImage      = s.backgroundImage?.url;
-  const bgLayout     = s.bgLayout     ?? "wallpaper";
-  const bgPosition   = s.bgPosition   ?? "left";
-  const bgBrightness = s.bgBrightness ?? 0;
+  const { bgImage, bgLayout, bgPosition, bgBrightness, globalBg, globalBrightness } =
+    resolveBackground(s, design);
 
   return (
-    <BgWrapper bgImage={bgImage} bgLayout={bgLayout} bgPosition={bgPosition} bgBrightness={bgBrightness}>
+    <BgWrapper
+      bgImage={bgImage}
+      bgLayout={bgLayout}
+      bgPosition={bgPosition}
+      bgBrightness={bgBrightness}
+      globalBg={globalBg}
+      globalBrightness={globalBrightness}
+    >
       <div
         className={[
           "relative flex flex-col",
@@ -145,45 +216,45 @@ function ThankYouPreview({ screen, design }) {
           "min-h-full max-w-xl mx-auto px-8 gap-5 justify-center py-8",
         ].join(" ")}
       >
-      <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-        <svg
-          className="w-8 h-8 text-green-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 13l4 4L19 7"
-          />
-        </svg>
-      </div>
-      <div
-        className={[
-          "flex flex-col",
-          alignment === "center"
-            ? "items-center text-center"
-            : "items-start text-start",
-          "gap-y-3 max-w-md",
-        ].join(" ")}
-      >
-        <h1
-          className="font-bold text-(--title-color)"
-          style={{ fontSize: "var(--fs-title)" }}
-        >
-          {c.title || "Thank you!"}
-        </h1>
-        {c.description && (
-          <p
-            className="leading-relaxed text-(--desc-color)"
-            style={{ fontSize: "var(--fs-body)" }}
+        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+          <svg
+            className="w-8 h-8 text-green-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            {c.description}
-          </p>
-        )}
-      </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+        <div
+          className={[
+            "flex flex-col",
+            alignment === "center"
+              ? "items-center text-center"
+              : "items-start text-start",
+            "gap-y-3 max-w-md",
+          ].join(" ")}
+        >
+          <h1
+            className="font-bold text-(--title-color)"
+            style={{ fontSize: "var(--fs-title)" }}
+          >
+            {c.title || "Thank you!"}
+          </h1>
+          {c.description && (
+            <p
+              className="leading-relaxed text-(--desc-color)"
+              style={{ fontSize: "var(--fs-body)" }}
+            >
+              {c.description}
+            </p>
+          )}
+        </div>
       </div>
     </BgWrapper>
   );
@@ -193,15 +264,22 @@ function ThankYouPreview({ screen, design }) {
 
 function QuestionPreview({ question, design }) {
   const c = question?.content ?? {};
+  const s = question?.settings ?? {};
+
   const alignment = design.alignment ?? "center";
 
-  const bgImage      = question?.settings?.backgroundImage?.url;
-  const bgLayout     = question?.settings?.bgLayout     ?? "wallpaper";
-  const bgPosition   = question?.settings?.bgPosition   ?? "left";
-  const bgBrightness = question?.settings?.bgBrightness ?? 0;
+  const { bgImage, bgLayout, bgPosition, bgBrightness, globalBg, globalBrightness } =
+    resolveBackground(s, design);
 
   return (
-    <BgWrapper bgImage={bgImage} bgLayout={bgLayout} bgPosition={bgPosition} bgBrightness={bgBrightness}>
+    <BgWrapper
+      bgImage={bgImage}
+      bgLayout={bgLayout}
+      bgPosition={bgPosition}
+      bgBrightness={bgBrightness}
+      globalBg={globalBg}
+      globalBrightness={globalBrightness}
+    >
       <div
         className={[
           "relative flex flex-col",
@@ -209,47 +287,47 @@ function QuestionPreview({ question, design }) {
           "min-h-full max-w-xl mx-auto px-8 gap-5 justify-center py-8",
         ].join(" ")}
       >
-      <div
-        className={[
-          "flex flex-col",
-          alignment === "center"
-            ? "items-center text-center"
-            : "items-start text-start",
-          "gap-y-2",
-        ].join(" ")}
-      >
-        <h2
-          className="font-semibold text-(--title-color)"
-          style={{ fontSize: "var(--fs-subtitle)" }}
+        <div
+          className={[
+            "flex flex-col",
+            alignment === "center"
+              ? "items-center text-center"
+              : "items-start text-start",
+            "gap-y-2",
+          ].join(" ")}
         >
-          {c.title || "Untitled question"}
-        </h2>
-        {c.description && (
-          <p
-            className="text-(--desc-color)"
+          <h2
+            className="font-semibold text-(--title-color)"
+            style={{ fontSize: "var(--fs-subtitle)" }}
+          >
+            {c.title || "Untitled question"}
+          </h2>
+          {c.description && (
+            <p
+              className="text-(--desc-color)"
+              style={{ fontSize: "var(--fs-body)" }}
+            >
+              {c.description}
+            </p>
+          )}
+        </div>
+
+        <QuestionInputMockup question={question} design={design} />
+
+        <div className="flex items-center gap-3 mt-2">
+          <button
+            className="px-5 py-2 font-medium text-white rounded-lg transition-colors btn-primary"
             style={{ fontSize: "var(--fs-body)" }}
           >
-            {c.description}
-          </p>
-        )}
-      </div>
-
-      <QuestionInputMockup question={question} design={design} />
-
-      <div className="flex items-center gap-3 mt-2">
-        <button
-          className="px-5 py-2 font-medium text-white rounded-lg transition-colors btn-primary"
-          style={{ fontSize: "var(--fs-body)" }}
-        >
-          {c.buttonLabel || "OK"}
-        </button>
-        <span
-          className="text-(--hint-color)"
-          style={{ fontSize: "var(--fs-hint)" }}
-        >
-          press Enter ↵
-        </span>
-      </div>
+            {c.buttonLabel || "OK"}
+          </button>
+          <span
+            className="text-(--hint-color)"
+            style={{ fontSize: "var(--fs-hint)" }}
+          >
+            press Enter ↵
+          </span>
+        </div>
       </div>
     </BgWrapper>
   );
@@ -323,9 +401,10 @@ function QuestionInputMockup({ question, design }) {
     );
   }
   if (type === "multiple_choice") {
-    const options = Array.isArray(c.options) && c.options.length > 0
-      ? c.options
-      : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
+    const options =
+      Array.isArray(c.options) && c.options.length > 0
+        ? c.options
+        : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
     return (
       <div
         className={[
@@ -342,16 +421,19 @@ function QuestionInputMockup({ question, design }) {
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
-            {opt.label || <span className="opacity-40 italic">Untitled option</span>}
+            {opt.label || (
+              <span className="opacity-40 italic">Untitled option</span>
+            )}
           </label>
         ))}
       </div>
     );
   }
   if (type === "checkboxes") {
-    const options = Array.isArray(c.options) && c.options.length > 0
-      ? c.options
-      : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
+    const options =
+      Array.isArray(c.options) && c.options.length > 0
+        ? c.options
+        : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
     return (
       <div
         className={[
@@ -368,7 +450,9 @@ function QuestionInputMockup({ question, design }) {
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
-            {opt.label || <span className="opacity-40 italic">Untitled option</span>}
+            {opt.label || (
+              <span className="opacity-40 italic">Untitled option</span>
+            )}
           </label>
         ))}
       </div>
@@ -382,7 +466,7 @@ function QuestionInputMockup({ question, design }) {
         <div className="flex gap-2 flex-wrap">
           {Array.from({ length: steps }).map((_, i) => (
             <button key={i} style={{ color: `var(--star-color)` }}>
-              <StarIcon width={40} widths={40} />
+              <StarIcon width={40} height={40} />
             </button>
           ))}
         </div>
@@ -463,15 +547,16 @@ function InsertButton({ position, onClick }) {
 // ── Main Canvas ──────────────────────────────────────────────────────────────
 
 export default function Canvas() {
-  const form = useFormStore((state) => state.form);
-  const selectedBlock = useFormStore((state) => state.selectedBlock);
+  const form            = useFormStore((state) => state.form);
+  const selectedBlock   = useFormStore((state) => state.selectedBlock);
   const setPendingInsert = useFormStore((state) => state.setPendingInsert);
-  const draftDesign = useFormStore((state) => state.draftDesign);
+  const draftDesign     = useFormStore((state) => state.draftDesign);
   const designDrawerOpen = useFormStore((state) => state.designDrawerOpen);
 
-  const welcomeScreen = form?.content?.welcomeScreen;
+  const welcomeScreen  = form?.content?.welcomeScreen;
   const thankYouScreen = form?.content?.thankYouScreen;
-  const questions = form?.content?.questions ?? [];
+  const questions      = form?.content?.questions ?? [];
+
   // While the design drawer is open, preview uses draftDesign so changes are
   // visible in the canvas before they are committed/saved.
   const committedDesign = form?.content?.design ?? {};
@@ -484,10 +569,9 @@ export default function Canvas() {
   }, [design.google_font]);
 
   let defaultColors = {};
-
-  DESIGN_SETTINGS.map((settings) => {
+  DESIGN_SETTINGS.forEach((settings) => {
     if (settings.section === "Colours") {
-      settings.fields.map((field) => {
+      settings.fields.forEach((field) => {
         defaultColors[field.key] = field.default;
       });
     }
@@ -503,7 +587,7 @@ export default function Canvas() {
       content = <ThankYouPreview screen={thankYouScreen} design={design} />;
     } else if (selectedBlock.type === "question") {
       const question = questions.find((q) => q.id === selectedBlock.id);
-      selectedIndex = questions.findIndex((q) => q.id === selectedBlock.id);
+      selectedIndex  = questions.findIndex((q) => q.id === selectedBlock.id);
       content = <QuestionPreview question={question} design={design} />;
     }
   }
@@ -567,7 +651,6 @@ export default function Canvas() {
               : design.border_radius === "full"
               ? "9999px"
               : "8px",
-          // Font scale — spreads --fs-title, --fs-subtitle, --fs-body, --fs-hint
           ...Object.fromEntries(
             Object.entries(getFontScale(design.font_size)).map(
               ([role, size]) => [`--fs-${role}`, size],
