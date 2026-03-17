@@ -12,7 +12,8 @@
  *   "textarea" – multi-line text input
  *   "toggle"   – boolean switch
  *   "select"   – dropdown with `options: [{ label, value }]`
- *   "number"   – numeric input with optional `min` / `max`
+ *   "number"      – numeric input with optional `min` / `max`
+ *   "media_image" – WordPress media picker; value is { id, url } | null
  */
 
 // ── Shared content fields used by most question types ──────────────────────
@@ -60,6 +61,13 @@ const COMMON_SETTING_FIELDS = [
     type: "text",
     default: "",
     hint: "Shown inside the input when empty.",
+  },
+  {
+    namespace: "settings",
+    key: "backgroundImage",
+    label: "Background image",
+    type: "media_image",
+    default: null,
   },
 ];
 
@@ -118,9 +126,9 @@ const BLOCK_SETTINGS = {
           {
             namespace: "settings",
             key: "backgroundImage",
-            label: "Background image URL",
-            type: "text",
-            default: "",
+            label: "Background image",
+            type: "media_image",
+            default: null,
           },
         ],
       },
@@ -190,6 +198,13 @@ const BLOCK_SETTINGS = {
             default: 0,
             min: 0,
             max: 30,
+          },
+          {
+            namespace: "settings",
+            key: "backgroundImage",
+            label: "Background image",
+            type: "media_image",
+            default: null,
           },
         ],
       },
@@ -274,9 +289,9 @@ const BLOCK_SETTINGS = {
             label: "Options",
             type: "options",
             default: [
-              { id: "opt-1", label: "Option A" },
-              { id: "opt-2", label: "Option B" },
-              { id: "opt-3", label: "Option C" },
+              { label: "Option A" },
+              { label: "Option B" },
+              { label: "Option C" },
             ],
           },
         ],
@@ -317,6 +332,13 @@ const BLOCK_SETTINGS = {
               { label: "2-column grid", value: "grid_2"    },
             ],
           },
+          {
+            namespace: "settings",
+            key: "backgroundImage",
+            label: "Background image",
+            type: "media_image",
+            default: null,
+          },
         ],
       },
     ],
@@ -337,9 +359,9 @@ const BLOCK_SETTINGS = {
             label: "Options",
             type: "options",
             default: [
-              { id: "opt-1", label: "Option A" },
-              { id: "opt-2", label: "Option B" },
-              { id: "opt-3", label: "Option C" },
+              { label: "Option A" },
+              { label: "Option B" },
+              { label: "Option C" },
             ],
           },
         ],
@@ -397,6 +419,13 @@ const BLOCK_SETTINGS = {
               { label: "2-column grid", value: "grid_2"    },
             ],
           },
+          {
+            namespace: "settings",
+            key: "backgroundImage",
+            label: "Background image",
+            type: "media_image",
+            default: null,
+          },
         ],
       },
     ],
@@ -431,6 +460,13 @@ const BLOCK_SETTINGS = {
             default: 5,
             min: 3,
             max: 10,
+          },
+          {
+            namespace: "settings",
+            key: "backgroundImage",
+            label: "Background image",
+            type: "media_image",
+            default: null,
           },
         ],
       },
@@ -471,6 +507,13 @@ const BLOCK_SETTINGS = {
             label: "Required",
             type: "toggle",
             default: false,
+          },
+          {
+            namespace: "settings",
+            key: "backgroundImage",
+            label: "Background image",
+            type: "media_image",
+            default: null,
           },
         ],
       },

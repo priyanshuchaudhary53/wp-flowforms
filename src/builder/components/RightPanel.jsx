@@ -132,7 +132,178 @@ function SelectField({ field, value, onChange }) {
   );
 }
 
-function SettingsField({ field, blockContent, blockSettings, onChange }) {
+function MediaImageField({ field, value, onChange, blockSettings, onSiblingChange }) {
+  // value shape: { id: number, url: string } | null
+  const image = value && value.url ? value : null;
+
+  // bgLayout: "wallpaper" (default) | "split"
+  const bgLayout    = blockSettings?.bgLayout    ?? "wallpaper";
+  // bgPosition: "left" (default) | "right"  — only relevant when split
+  const bgPosition  = blockSettings?.bgPosition  ?? "left";
+  // bgBrightness: -100 (darkest) → 0 (neutral) → +100 (brightest)
+  const bgBrightness = blockSettings?.bgBrightness ?? 0;
+
+  // Dynamic label based on current layout
+  const imageLabel = !image
+    ? "Background image"
+    : bgLayout === "split"
+      ? "Split image"
+      : "Cover image";
+
+  const openMediaFrame = () => {
+    const frame = window.wp.media({
+      title: "Select Background Image",
+      button: { text: "Use this image" },
+      multiple: false,
+      library: { type: "image" },
+    });
+    frame.on("select", () => {
+      const attachment = frame.state().get("selection").first().toJSON();
+      onChange({ id: attachment.id, url: attachment.url });
+    });
+    frame.open();
+  };
+
+  const removeImage = () => {
+    onChange(null);
+    // Clear layout/position when image is removed
+    onSiblingChange("bgLayout",    "wallpaper");
+    onSiblingChange("bgPosition",  "left");
+    onSiblingChange("bgBrightness", 0);
+  };
+
+  return (
+    <fieldset className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+      {/* ── Group label ── */}
+      <legend className="mx-3 px-1 text-xs font-semibold text-gray-400 uppercase tracking-wider select-none">
+        Background
+      </legend>
+
+      <div className="px-3 pb-4 pt-2 space-y-3">
+        {/* ── Image picker ── */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-2">
+            Image
+          </label>
+
+          {image ? (
+            <div className="relative rounded-md overflow-hidden border border-gray-200 group/img">
+              <img
+                src={image.url}
+                alt="Background"
+                className="w-full h-24 object-cover block"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/30 transition-colors" />
+              <button
+                type="button"
+                onClick={removeImage}
+                title="Remove image"
+                className="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white hover:text-red-500 shadow"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2 2l10 10M12 2 2 12" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={openMediaFrame}
+                title="Replace image"
+                className="absolute bottom-1.5 right-1.5 px-2 py-0.5 text-xs font-medium rounded bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white shadow"
+              >
+                Replace
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={openMediaFrame}
+              className="w-full h-20 flex flex-col items-center justify-center gap-1.5 rounded-md border-2 border-dashed border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <rect x="2" y="2" width="16" height="16" rx="2" />
+                <circle cx="7" cy="7" r="1.5" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2 13l4-4 3 3 3-4 4 5" />
+              </svg>
+              <span className="text-xs font-medium">Select image</span>
+            </button>
+          )}
+
+          {field.hint && (
+            <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>
+          )}
+        </div>
+
+        {/* ── Layout + Position — only when image exists, separated by a hairline ── */}
+        {image && (
+          <div className="space-y-3 pt-3 border-t border-gray-100">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Layout</label>
+              <select
+                value={bgLayout}
+                onChange={(e) => onSiblingChange("bgLayout", e.target.value)}
+                className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
+              >
+                <option value="wallpaper">Wallpaper</option>
+                <option value="split">Split</option>
+              </select>
+            </div>
+
+            {bgLayout === "split" && (
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Position</label>
+                <select
+                  value={bgPosition}
+                  onChange={(e) => onSiblingChange("bgPosition", e.target.value)}
+                  className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
+                >
+                  <option value="left">Left</option>
+                  <option value="right">Right</option>
+                </select>
+              </div>
+            )}
+
+            {bgLayout === "wallpaper" && (
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-medium text-gray-600">Brightness</label>
+                  <span className="text-xs tabular-nums text-gray-400">
+                    {bgBrightness > 0 ? `+${bgBrightness}` : bgBrightness}
+                  </span>
+                </div>
+                {/* Track gradient: black left → transparent centre → white right */}
+                <div className="relative h-1.5 rounded-full mb-1" style={{
+                  background: "linear-gradient(to right, #000 0%, transparent 50%, #fff 100%)",
+                  boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.1)",
+                }}>
+                  <input
+                    type="range"
+                    min={-100}
+                    max={100}
+                    step={10}
+                    value={bgBrightness}
+                    onChange={(e) => onSiblingChange("bgBrightness", Number(e.target.value))}
+                    className="absolute inset-0 w-full opacity-0 cursor-pointer h-full"
+                  />
+                  {/* Thumb dot */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white border border-gray-300 shadow pointer-events-none"
+                    style={{ left: `calc(${(bgBrightness + 100) / 200 * 100}% - 6px)` }}
+                  />
+                </div>
+                <div className="flex justify-between text-gray-400 mt-0.5" style={{ fontSize: "9px" }}>
+                  <span>Darker</span>
+                  <span>Brighter</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </fieldset>
+  );
+}
+
+function SettingsField({ field, blockContent, blockSettings, onChange, onSiblingChange }) {
   // Read value from the correct namespace sub-object
   const value = field.namespace === "content"
     ? blockContent?.[field.key]
@@ -140,12 +311,19 @@ function SettingsField({ field, blockContent, blockSettings, onChange }) {
 
   const props = { field, value, onChange };
   switch (field.type) {
-    case "toggle":   return <ToggleField   {...props} />;
-    case "textarea": return <TextareaField {...props} />;
-    case "number":   return <NumberField   {...props} />;
-    case "select":   return <SelectField   {...props} />;
-    case "options":  return <OptionsEditor {...props} />;
-    default:         return <TextField     {...props} />;
+    case "toggle":      return <ToggleField       {...props} />;
+    case "textarea":    return <TextareaField     {...props} />;
+    case "number":      return <NumberField       {...props} />;
+    case "select":      return <SelectField       {...props} />;
+    case "options":     return <OptionsEditor     {...props} />;
+    case "media_image": return (
+      <MediaImageField
+        {...props}
+        blockSettings={blockSettings}
+        onSiblingChange={onSiblingChange}
+      />
+    );
+    default:            return <TextField         {...props} />;
   }
 }
 
@@ -173,6 +351,7 @@ function BlockSettingsPanel({ blockType, blockContent, blockSettings, onFieldCha
                 blockContent={blockContent}
                 blockSettings={blockSettings}
                 onChange={(val) => onFieldChange(field.namespace, field.key, val)}
+                onSiblingChange={(key, val) => onFieldChange("settings", key, val)}
               />
             ))}
           </div>
@@ -242,7 +421,7 @@ export default function RightPanel({ className }) {
   };
 
   return (
-    <div className={`p-3 pl-1.5 min-h-0  ${className}`}>
+    <div className={`p-3 pl-1.5 min-h-0 ${className}`}>
       <div className="h-full rounded-2xl bg-gray-100 flex flex-col overflow-hidden">
 
         {/* Header */}

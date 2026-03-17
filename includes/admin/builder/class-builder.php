@@ -164,6 +164,8 @@ class FlowForms_Builder
 
   public function enqueues()
   {
+    wp_enqueue_media();
+
     $asset = include WP_FLOWFORMS_PATH . 'build/index.asset.php';
 
     wp_enqueue_script(

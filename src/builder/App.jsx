@@ -14,7 +14,7 @@ export default function App() {
       {isSetup ? (
         <Setup className="grow" />
       ) : (
-        <Editor className="grow" />
+        <Editor className="flex-1" />
       )}
     </div>
   );
