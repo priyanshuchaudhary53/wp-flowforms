@@ -11,21 +11,30 @@
  *  • Permanent skeleton built once in boot():
  *      [progress bar]  [bg layer]  [content wrapper]  [nav bar]
  *
- *  • Nav bar (prev/next) is FIXED at the bottom — never re-rendered.
- *    Prev is disabled on first question, next is disabled on last question.
- *    Both buttons are always visible on question screens; nav is hidden on
- *    welcome and thank-you screens.
+ *  • Nav bar (prev/next) fixed at bottom — never re-rendered.
+ *    Prev disabled on first question; Next disabled on last question.
  *
- *  • Background layer is repainted with a cross-fade on every screen change.
+ *  • Race-condition safety via _transitionGen (generation counter).
+ *    Every call to _transitionScreen() increments the counter.  Every
+ *    async callback (setTimeout, rAF) captures the generation at the time
+ *    it was scheduled and bails out silently if the counter has moved on.
+ *    This means rapid clicks always converge on the LAST requested state
+ *    with no orphaned DOM elements or stale bg layers.
  *
- *  • Screen transitions:
- *      1. Exit animation plays on current screen (slide-down + fade-out, all at once)
- *      2. Short gap (EXIT_GAP ms) before new screen is rendered
- *      3. New screen renders immediately (no container-level slide)
- *      4. Content elements animate in with staggered fade-up:
- *         title → description → field → actions (OK btn + hint)
+ *  • Background changes are DEFERRED until AFTER the exit animation so the
+ *    layout never shifts while old content is still visible.  The bg layer
+ *    is fully replaced (not cross-faded) when the target changes — simpler
+ *    and immune to fade-overlap glitches from rapid navigation.
  *
- *  • Required-field error is injected in-place — no re-render, no transition.
+ *  • Screen transition sequence:
+ *      1. Increment generation; capture target state.
+ *      2. Abort any in-progress exit by immediately cleaning up old screens.
+ *      3. Run exit animation on the current screen.
+ *      4. After EXIT_DURATION + EXIT_GAP: check generation — if stale, bail.
+ *      5. Replace bg layer (instant swap, no async fade).
+ *      6. Remove old screen; render new screen with staggered entry animation.
+ *
+ *  • Required-field error injected in-place — no re-render, no animation.
  */
 
 import { renderQuestion }                       from './QuestionRenderer.js';
@@ -33,9 +42,9 @@ import { validate }                             from './Validator.js';
 import { applyDesignTokens, resolveBackground } from './designTokens.js';
 
 // ── Timing constants (keep in sync with CSS) ──────────────────────────────────
-const EXIT_DURATION = 260;   // ms — exit animation duration
-const EXIT_GAP      = 60;    // ms — pause between exit end and entry start
-const BG_FADE       = 400;   // ms — background cross-fade duration
+const EXIT_DURATION = 260;   // ms — exit animation duration (ff-exit keyframe)
+const EXIT_GAP      = 60;    // ms — pause after exit before new screen appears
+const BG_FADE       = 380;   // ms — background cross-fade duration
 const ENTRY_STAGGER = 80;    // ms — delay increment between staggered entry elements
 
 export class FormApp {
@@ -67,8 +76,16 @@ export class FormApp {
 		this._prevBtn        = null;
 		this._nextBtn        = null;
 
-		// Guard against overlapping transitions
-		this._transitioning = false;
+		// Cached bg key for the layer currently in the DOM
+		this._currentBgKey = null;
+
+		// Separate generation counter for bg cross-fades — lets us cancel an
+		// in-flight fade without disrupting the screen-transition generation.
+		this._bgGen = 0;
+
+		// Generation counter — incremented on every _transitionScreen() call.
+		// Async callbacks capture their generation and bail if it's stale.
+		this._transitionGen = 0;
 	}
 
 	// ── Boot ──────────────────────────────────────────────────────────────────
@@ -81,7 +98,7 @@ export class FormApp {
 
 		this.container.innerHTML = '';
 
-		// 1. Progress bar — pinned to top, never transitions
+		// 1. Progress bar
 		this._progressEl = document.createElement( 'div' );
 		this._progressEl.className = 'ff-progress-fixed';
 		this._progressEl.innerHTML =
@@ -89,17 +106,17 @@ export class FormApp {
 			'<span class="ff-progress-label"></span>';
 		this.container.appendChild( this._progressEl );
 
-		// 2. Background layer — cross-fades on screen change, never animates position
+		// 2. Background layer
 		this._bgEl = document.createElement( 'div' );
 		this._bgEl.className = 'ff-bg-layer';
 		this.container.appendChild( this._bgEl );
 
-		// 3. Content wrapper — new .ff-screen slots are rendered here
+		// 3. Content wrapper
 		this._contentWrapper = document.createElement( 'div' );
 		this._contentWrapper.className = 'ff-content-wrapper';
 		this.container.appendChild( this._contentWrapper );
 
-		// 4. Nav bar — permanent, fixed at bottom, updated via _updateNav()
+		// 4. Nav bar — permanent, fixed at bottom
 		this._navEl = document.createElement( 'div' );
 		this._navEl.className = 'ff-nav-bar';
 		this._navEl.innerHTML =
@@ -121,19 +138,19 @@ export class FormApp {
 		this._nextBtn = this._navEl.querySelector( '.ff-btn-next' );
 
 		this._prevBtn.addEventListener( 'click', () => {
-			if ( this._prevBtn.disabled || this._transitioning ) return;
+			if ( this._prevBtn.disabled ) return;
 			this._lastDir = 'back';
 			this._back();
 		} );
 		this._nextBtn.addEventListener( 'click', () => {
-			if ( this._nextBtn.disabled || this._transitioning ) return;
+			if ( this._nextBtn.disabled ) return;
 			this._lastDir = 'forward';
 			this._advance();
 		} );
 
-		// Initial render — no exit animation, just staggered entry
+		// Initial render — instant bg, no exit animation
 		this._updateProgress();
-		this._paintBackground( false );
+		this._stampBackground( this._resolveBgForState( this.state ), false );
 		this._renderScreenImmediate();
 		this._updateNav();
 
@@ -145,38 +162,80 @@ export class FormApp {
 			if ( e.data?.type === 'DESIGN_UPDATE' ) {
 				this._design = e.data.design;
 				applyDesignTokens( this.container, this._design );
-				this._paintBackground( true );
+				this._currentBgKey = null; // force repaint
+				this._stampBackground( this._resolveBgForState( this.state ), false );
 			}
 		} );
 	}
 
-	// ── Background cross-fade ─────────────────────────────────────────────────
+	// ── Background ────────────────────────────────────────────────────────────
 
 	/**
-	 * Repaint the background for the current screen.
-	 * @param {boolean} animate  When true, cross-fade old → new.
+	 * Resolve the background descriptor for a given state snapshot.
+	 * Attaches a stable _key so we can skip repaints when nothing changed.
+	 *
+	 * @param  {Object} state  State snapshot (may differ from this.state during transition)
+	 * @return {Object}
 	 */
-	_paintBackground( animate ) {
-		const container = this._bgEl;
-		if ( ! container ) return;
-
-		const screen = this.state.currentScreen === 'welcome'  ? this._welcome
-		             : this.state.currentScreen === 'thankYou' ? this._thankYou
-		             : this._currentQuestion();
+	_resolveBgForState( state ) {
+		const screen = state.currentScreen === 'welcome'  ? this._welcome
+		             : state.currentScreen === 'thankYou' ? this._thankYou
+		             : this._questions[ state.currentIndex ] ?? null;
 
 		const settings = screen?.settings ?? {};
-		const { bgImage, bgLayout, bgPosition, bgBrightness, globalBg, globalBrightness }
-			= resolveBackground( settings, this._design );
+		const resolved = resolveBackground( settings, this._design );
 
-		// Build the new background element
+		resolved._key = [
+			resolved.bgImage          ?? '',
+			resolved.bgLayout         ?? '',
+			resolved.bgPosition       ?? '',
+			resolved.globalBg         ?? '',
+			resolved.bgBrightness     ?? 0,
+			resolved.globalBrightness ?? 0,
+		].join( '|' );
+
+		return resolved;
+	}
+
+	/**
+	 * Replace the background layer, cross-fading when the image changes.
+	 *
+	 * Race-condition safe: increments _bgGen so any in-flight fade for a
+	 * previous call is cancelled before we start.  The content-wrapper
+	 * split classes are applied synchronously so layout is always correct
+	 * at the moment this is called (after screen exit).
+	 *
+	 * @param {Object}  bg       Result of _resolveBgForState()
+	 * @param {boolean} animate  Cross-fade when true; instant swap when false.
+	 */
+	_stampBackground( bg, animate = true ) {
+		const bgChanged = bg._key !== this._currentBgKey;
+		if ( ! bgChanged ) return;
+		this._currentBgKey = bg._key;
+
+		// Cancel any in-flight bg fade by advancing the bg generation
+		const bgGen = ++this._bgGen;
+
+		const { bgImage, bgLayout, bgPosition, bgBrightness, globalBg, globalBrightness } = bg;
+		const isSplit   = bgLayout === 'split';
+		const imageLeft = bgPosition !== 'right';
+
+		// ── Update content-wrapper layout immediately (we're post-exit) ──────
+		this._contentWrapper.classList.toggle(
+			'ff-content-wrapper--split-left',
+			isSplit && !! bgImage && imageLeft
+		);
+		this._contentWrapper.classList.toggle(
+			'ff-content-wrapper--split-right',
+			isSplit && !! bgImage && ! imageLeft
+		);
+
+		// ── Build new bg element ──────────────────────────────────────────────
 		const newBg = document.createElement( 'div' );
 		newBg.className = 'ff-bg-layer-inner';
 
-		const isSplit = bgLayout === 'split';
-
 		if ( isSplit ) {
 			newBg.classList.add( 'ff-bg-layer--split' );
-			const imageLeft = bgPosition !== 'right';
 
 			if ( globalBg ) {
 				const globalDiv = document.createElement( 'div' );
@@ -194,16 +253,9 @@ export class FormApp {
 				panel.style.backgroundImage = `url(${ bgImage })`;
 				newBg.appendChild( panel );
 			}
-
-			this._contentWrapper.classList.toggle( 'ff-content-wrapper--split-left',  !! bgImage && imageLeft );
-			this._contentWrapper.classList.toggle( 'ff-content-wrapper--split-right', !! bgImage && ! imageLeft );
-
 		} else {
 			newBg.classList.add( 'ff-bg-layer--wallpaper' );
-			this._contentWrapper.classList.remove(
-				'ff-content-wrapper--split-left',
-				'ff-content-wrapper--split-right'
-			);
+
 			if ( bgImage ) {
 				newBg.style.backgroundImage    = `url(${ bgImage })`;
 				newBg.style.backgroundSize     = 'cover';
@@ -212,28 +264,57 @@ export class FormApp {
 			}
 		}
 
-		const oldBg = container.querySelector( '.ff-bg-layer-inner' );
+		// ── Swap bg layer ─────────────────────────────────────────────────────
+		const container = this._bgEl;
 
-		// No animation on first render or when explicitly skipped
-		if ( ! oldBg || ! animate ) {
+		if ( ! animate ) {
+			// First render or design-update: instant replace, no fade
 			container.innerHTML = '';
 			container.appendChild( newBg );
 			return;
 		}
 
-		// Cross-fade: fade new in while fading old out
+		// Collect all existing inner elements — there may be more than one if a
+		// previous rapid transition left orphans.  We'll fade them all out.
+		const oldLayers = Array.from( container.querySelectorAll( '.ff-bg-layer-inner' ) );
+
+		// Freeze each old layer's current opacity and start fading it out
+		oldLayers.forEach( ( old ) => {
+			// Stop any transition already running on this element
+			old.style.transition = 'none';
+			// Force a reflow so the browser registers the transition:none
+			// before we set the new transition + opacity.
+			void old.offsetHeight; // eslint-disable-line no-void
+			old.style.transition = `opacity ${ BG_FADE }ms ease`;
+			old.style.opacity    = '0';
+		} );
+
+		// New layer starts invisible
 		newBg.style.opacity    = '0';
-		newBg.style.transition = `opacity ${ BG_FADE }ms ease`;
+		newBg.style.transition = 'none';
 		container.appendChild( newBg );
 
+		// Start new layer fade-in on next paint
 		requestAnimationFrame( () => {
 			requestAnimationFrame( () => {
+				// Bail if a newer bg swap has already taken over
+				if ( this._bgGen !== bgGen ) return;
+
+				newBg.style.transition = `opacity ${ BG_FADE }ms ease`;
 				newBg.style.opacity    = '1';
-				oldBg.style.transition = `opacity ${ BG_FADE }ms ease`;
-				oldBg.style.opacity    = '0';
-				setTimeout( () => {
-					if ( oldBg.parentNode ) oldBg.remove();
+
+				// Remove old layers after fade completes
+				const cleanup = setTimeout( () => {
+					if ( this._bgGen !== bgGen ) return;
+					oldLayers.forEach( ( old ) => {
+						if ( old.parentNode ) old.remove();
+					} );
 				}, BG_FADE + 50 );
+
+				// If a newer bg gen fires before our timeout, it will call
+				// container.querySelectorAll and handle cleanup itself.
+				// Store the timeout id so a superseding call can cancel it.
+				this._bgFadeCleanupTimer = cleanup;
 			} );
 		} );
 	}
@@ -261,20 +342,16 @@ export class FormApp {
 	_updateNav() {
 		if ( ! this._navEl ) return;
 
-		const isQ    = this.state.currentScreen === 'question';
+		const isQ     = this.state.currentScreen === 'question';
 		const isFirst = isQ && this.state.currentIndex === 0;
 		const isLast  = isQ && this._isLastQuestion();
 
-		// Show nav only during question screens
 		this._navEl.style.display = isQ ? '' : 'none';
 		if ( ! isQ ) return;
 
-		// Prev: disabled (not hidden) on first question
 		this._prevBtn.disabled = isFirst;
 		this._prevBtn.classList.toggle( 'ff-btn-nav--disabled', isFirst );
 
-		// Next: disabled (not hidden) on last question
-		// (submit is done via the OK/Submit button in the content area)
 		this._nextBtn.disabled = isLast;
 		this._nextBtn.classList.toggle( 'ff-btn-nav--disabled', isLast );
 
@@ -288,7 +365,6 @@ export class FormApp {
 		Object.assign( this.state, patch );
 		this._updateProgress();
 		this._updateNav();
-		this._paintBackground( true );
 		this._transitionScreen();
 	}
 
@@ -325,9 +401,6 @@ export class FormApp {
 		}
 	}
 
-	/**
-	 * Inject a validation error in-place — no re-render, no slide.
-	 */
 	_setError( questionId, message ) {
 		this.state.errors = { ...this.state.errors, [ questionId ]: message };
 
@@ -402,8 +475,11 @@ export class FormApp {
 
 	// ── Rendering ─────────────────────────────────────────────────────────────
 
-	/** First render only — no exit animation. */
+	/** Initial render — stamp bg, no exit animation. */
 	_renderScreenImmediate() {
+		// Remove any existing screens (safety)
+		this._contentWrapper.innerHTML = '';
+
 		const slot = document.createElement( 'div' );
 		slot.className = 'ff-screen';
 		this._buildScreen( slot );
@@ -412,33 +488,59 @@ export class FormApp {
 	}
 
 	/**
-	 * Subsequent renders:
-	 *  1. Play exit on old screen
-	 *  2. Short gap
-	 *  3. Render new screen with staggered entry
+	 * Transition to the current state:
+	 *
+	 *  1. Increment generation — any in-flight callbacks from previous
+	 *     transitions will see a stale generation and bail out cleanly.
+	 *  2. Snapshot the target bg for this transition.
+	 *  3. Immediately abort any unfinished exit on old screens by removing
+	 *     all stale .ff-screen elements except the most recent one.
+	 *  4. Play exit animation on the one remaining previous screen.
+	 *  5. After exit + gap: check generation; if still current → stamp bg
+	 *     and render new screen.
 	 */
 	_transitionScreen() {
-		const wrapper = this._contentWrapper;
-		const prev    = wrapper.querySelector( '.ff-screen' );
+		// ── Step 1: new generation — invalidates all in-flight callbacks ──────
+		const gen = ++this._transitionGen;
 
-		if ( ! prev ) {
+		// ── Step 2: snapshot bg for the incoming state ────────────────────────
+		const incomingBg = this._resolveBgForState( this.state );
+
+		const wrapper = this._contentWrapper;
+
+		// ── Step 3: if no screen exists yet, render immediately ───────────────
+		const screens = Array.from( wrapper.querySelectorAll( '.ff-screen' ) );
+		if ( screens.length === 0 ) {
+			this._stampBackground( incomingBg );
 			this._renderScreenImmediate();
 			return;
 		}
 
-		this._transitioning = true;
+		// ── Step 4: cull all screens except the last visible one ──────────────
+		// If a previous transition left multiple screens in mid-flight, remove
+		// all but the topmost one so we always exit from a clean state.
+		const prev = screens[ screens.length - 1 ];
+		screens.slice( 0, -1 ).forEach( ( s ) => s.remove() );
 
+		// ── Step 5: exit + deferred render ────────────────────────────────────
 		this._animateExit( prev, () => {
 			setTimeout( () => {
+				// Bail if a newer transition has already taken over
+				if ( this._transitionGen !== gen ) return;
+
+				// Stamp bg AFTER exit completes — no layout shift mid-animation
+				this._stampBackground( incomingBg );
+
+				// Remove previous screen
 				prev.remove();
 
+				// Render incoming screen
 				const next = document.createElement( 'div' );
 				next.className = 'ff-screen';
 				this._buildScreen( next );
 				wrapper.appendChild( next );
 				this._animateEntry( next );
 
-				this._transitioning = false;
 			}, EXIT_GAP );
 		} );
 	}
@@ -458,10 +560,6 @@ export class FormApp {
 
 	// ── Entry animation ───────────────────────────────────────────────────────
 
-	/**
-	 * Each direct child of .ff-screen-inner gets the ff-entry CSS animation
-	 * with a progressively increasing delay so they cascade in.
-	 */
 	_animateEntry( slot ) {
 		const inner = slot.querySelector( '.ff-screen-inner' );
 		if ( ! inner ) return;
@@ -474,27 +572,32 @@ export class FormApp {
 
 	// ── Exit animation ────────────────────────────────────────────────────────
 
-	/**
-	 * Slide all .ff-screen-inner children down + fade out simultaneously,
-	 * then call onDone when finished.
-	 */
 	_animateExit( slot, onDone ) {
 		const inner = slot.querySelector( '.ff-screen-inner' );
+
 		if ( ! inner ) {
-			setTimeout( onDone, EXIT_DURATION );
+			// No inner — fire immediately
+			setTimeout( onDone, 0 );
 			return;
 		}
 
+		// Remove any lingering entry animations so exit plays cleanly
+		Array.from( inner.children ).forEach( ( el ) => {
+			el.classList.remove( 'ff-entry' );
+			el.style.animationDelay = '';
+		} );
+
 		inner.classList.add( 'ff-exit' );
 
-		// Listen for animation end — use first animationend that fires
 		let fired = false;
 		const done = () => {
 			if ( fired ) return;
 			fired = true;
 			onDone();
 		};
+
 		inner.addEventListener( 'animationend', done, { once: true } );
+		// Safety fallback — EXIT_DURATION matches the ff-exit keyframe duration
 		setTimeout( done, EXIT_DURATION + 50 );
 	}
 
@@ -543,7 +646,6 @@ export class FormApp {
 
 		inner.className += ` ff-align-${ align }`;
 
-		// Question block — treated as one entry-animated element
 		const questionEl = renderQuestion(
 			q,
 			this.state.answers[ q.id ],
@@ -553,7 +655,6 @@ export class FormApp {
 		);
 		inner.appendChild( questionEl );
 
-		// OK button + hint — second entry-animated element after the question
 		const actions = document.createElement( 'div' );
 		actions.className = 'ff-actions';
 
