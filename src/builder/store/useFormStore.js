@@ -43,6 +43,7 @@ export const useFormStore = create((set, get) => ({
   error: null,
   addBlockDialogOpen: false,
   designDrawerOpen: false,
+  previewOpen: false,
   draftDesign: null, // holds in-progress design changes while drawer is open
   designDirty: false, // true when draftDesign differs from committed design
 
@@ -56,6 +57,7 @@ export const useFormStore = create((set, get) => ({
   // null = append to end (normal add), number = insert before that index.
   pendingInsert: null,
 
+  setPreviewOpen: (open) => set({ previewOpen: open }),
   setSelectedBlock: (block) => set({ selectedBlock: block }),
   clearSelectedBlock: () => set({ selectedBlock: null }),
   setPendingInsert: (index) => set({ pendingInsert: index }),

@@ -33,7 +33,18 @@
   inset:         0;
   min-height:    unset;
   border-radius: 0;
-  z-index:       9999;
+  z-index:       9999999999999;
+}
+
+body:has(#wpadminbar) .flowform-container.ff-fullpage {
+  top: 32px;
+  z-index: 9999;
+}
+
+@media screen and (max-width: 782px) {
+  body:has(#wpadminbar) .flowform-container.ff-fullpage {
+    top: 46px;
+  }
 }
 
 /* ── Background layer ────────────────────────────────────────────────────────── */

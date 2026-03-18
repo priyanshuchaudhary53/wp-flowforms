@@ -257,11 +257,20 @@ class FlowForms_Frontend {
 	/**
 	 * Output the minimal HTML shell for full-page / preview rendering.
 	 *
+	 * When $is_preview is true the WP admin bar is suppressed so it does not
+	 * appear inside the builder's preview iframe.  Validation is skipped
+	 * automatically because previewMode:true is injected into flowformPublicData
+	 * by enqueue_renderer_assets() — no in-page toggle bar is needed.
+	 *
 	 * @param int    $form_id
 	 * @param string $title      Escaped page title.
-	 * @param bool   $is_preview Show the preview bar.
+	 * @param bool   $is_preview True when rendered inside the builder preview iframe.
 	 */
 	private function render_full_page( int $form_id, string $title, bool $is_preview = false ): void {
+		if ( $is_preview ) {
+			// Hide the WP admin bar — it must not appear inside the preview iframe.
+			show_admin_bar( false );
+		}
 		?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -276,11 +285,14 @@ class FlowForms_Frontend {
 ?>
 <style>
 html, body {
-	margin: 0;
-	padding: 0;
+	margin: 0 !important;
+	padding: 0 !important;
 	height: 100%;
 	background: #f7f4ef;
 }
+/* Suppress WP admin bar in preview iframe */
+/* #wpadminbar { display: none !important; } */
+html { margin-top: 0 !important; }
 #flowform-full-page {
 	min-height: 100vh;
 	display: flex;
@@ -291,29 +303,6 @@ html, body {
 </style>
 </head>
 <body>
-<?php if ( $is_preview ) : ?>
-<div id="flowform-preview-bar" style="
-	position: fixed;
-	bottom: 0; left: 0; right: 0;
-	background: #0e0e0e;
-	color: #f7f4ef;
-	font-family: 'DM Mono', monospace, sans-serif;
-	font-size: 12px;
-	padding: 10px 20px;
-	display: flex;
-	align-items: center;
-	gap: 16px;
-	z-index: 99999;
-">
-	<span style="opacity:0.5;">PREVIEW MODE</span>
-	<label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-left:auto;">
-		<input type="checkbox" id="flowform-skip-required" style="width:14px;height:14px;">
-		Skip required validation
-	</label>
-	<a href="javascript:window.close()" style="color:#e85d1a;text-decoration:none;margin-left:12px;">✕ Close</a>
-</div>
-<?php endif; ?>
-
 <div id="flowform-full-page">
 	<?php echo $this->container_html( $form_id, true ); ?>
 </div>

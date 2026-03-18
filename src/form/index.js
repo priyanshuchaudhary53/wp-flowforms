@@ -12,10 +12,15 @@
  *   previewMode: boolean   — true when opened via ?flowform_preview=1
  *   formIds:     number[]  — IDs flagged by shortcode / block / PHP template
  * }
+ *
+ * PostMessage listeners (used by the builder PreviewModal):
+ *   { type: 'DESIGN_UPDATE', design: Object }   → re-apply CSS tokens live
+ *   { type: 'PREVIEW_TOGGLE', skipRequired: boolean } → toggle validation bypass
  */
 
 import './style.css';
 import { FormApp } from './FormApp.js';
+import { applyDesignTokens } from './designTokens.js';
 
 document.addEventListener( 'DOMContentLoaded', init );
 
@@ -35,6 +40,28 @@ async function init() {
 		const formId = Number( container.dataset.flowformId );
 		if ( ! formId ) return;
 		bootForm( container, formId, apiUrl, nonce, previewMode );
+	} );
+
+	// ── PostMessage bridge (builder PreviewModal → iframe renderer) ───────────
+	window.addEventListener( 'message', ( e ) => {
+		// DESIGN_UPDATE: re-apply CSS custom properties live
+		// (also handled per-instance in FormApp, but we catch it here too for
+		//  any containers that haven't booted yet or for direct token refresh)
+		if ( e.data?.type === 'DESIGN_UPDATE' ) {
+			document.querySelectorAll( '[data-flowform-id]' ).forEach( ( container ) => {
+				applyDesignTokens( container, e.data.design );
+			} );
+		}
+
+		// PREVIEW_TOGGLE: forward as the existing custom event so FormApp
+		// instances react without needing direct references.
+		if ( e.data?.type === 'PREVIEW_TOGGLE' ) {
+			document.dispatchEvent(
+				new CustomEvent( 'flowform:previewToggle', {
+					detail: { skipRequired: !! e.data.skipRequired },
+				} )
+			);
+		}
 	} );
 
 	// Preview bar toggle — wired to flowform:previewToggle custom event.
