@@ -24,6 +24,8 @@
   min-height:    520px;
   border-radius: 16px;
   box-sizing:    border-box;
+  display: flex;
+  align-items: center;
 }
 
 .flowform-container.ff-fullpage {
@@ -504,6 +506,7 @@
   gap:             12px;
   min-height:      200px;
   padding:         32px;
+  width: 100%;
 }
 
 .ff-loading-spinner {

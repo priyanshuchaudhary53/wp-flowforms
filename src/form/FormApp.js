@@ -94,7 +94,10 @@ export class FormApp {
 		applyDesignTokens( this.container, this._design );
 
 		const isFullPage = this.container.dataset.ffMode === 'fullpage';
-		if ( isFullPage ) this.container.classList.add( 'ff-fullpage' );
+		if ( isFullPage ) {
+			this.container.classList.add( 'ff-fullpage' );
+			document.body.style.overflow = 'hidden';
+		}
 
 		this.container.innerHTML = '';
 
@@ -150,7 +153,7 @@ export class FormApp {
 
 		// Initial render — instant bg, no exit animation
 		this._updateProgress();
-		this._stampBackground( this._resolveBgForState( this.state ), false );
+		this._stampBackground( this._resolveBgForState( this.state ) );
 		this._renderScreenImmediate();
 		this._updateNav();
 
@@ -267,16 +270,19 @@ export class FormApp {
 		// ── Swap bg layer ─────────────────────────────────────────────────────
 		const container = this._bgEl;
 
+		// Collect all existing inner elements — there may be more than one if a
+		// previous rapid transition left orphans.  We'll fade them all out.
+		// When there are none (initial render) the loop below is a no-op and
+		// the new bg simply fades in from opacity 0 — giving the entry fade.
+		// animate=false is reserved for instant design-update repaints only.
+		const oldLayers = Array.from( container.querySelectorAll( '.ff-bg-layer-inner' ) );
+
 		if ( ! animate ) {
-			// First render or design-update: instant replace, no fade
+			// Instant replace — used only by DESIGN_UPDATE handler
 			container.innerHTML = '';
 			container.appendChild( newBg );
 			return;
 		}
-
-		// Collect all existing inner elements — there may be more than one if a
-		// previous rapid transition left orphans.  We'll fade them all out.
-		const oldLayers = Array.from( container.querySelectorAll( '.ff-bg-layer-inner' ) );
 
 		// Freeze each old layer's current opacity and start fading it out
 		oldLayers.forEach( ( old ) => {
