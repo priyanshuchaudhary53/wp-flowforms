@@ -98,6 +98,7 @@ final class WP_FlowForms
     require_once WP_FLOWFORMS_PATH . 'includes/functions.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-form.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-rest-api.php';
+    require_once WP_FLOWFORMS_PATH . 'includes/frontend/class-frontend.php';
 
     // Admin/Dashboard only includes
     if (is_admin()) {
@@ -109,7 +110,8 @@ final class WP_FlowForms
 
   public function objects()
   {
-    $this->registry['form'] = new FlowForms_Form_Handler();
+    $this->registry['form']     = new FlowForms_Form_Handler();
+    $this->registry['frontend'] = new FlowForms_Frontend();
 
     /**
      * Executes when all the WPForms stuff was loaded.

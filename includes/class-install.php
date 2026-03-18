@@ -34,19 +34,50 @@ class FlowForms_Install
     }
   }
 
-  public function deactivate() {}
+  public function deactivate()
+  {
+    // Remove our rewrite rules and flush so WordPress stops routing
+    // /flowform/{id} requests after the plugin is deactivated.
+    flush_rewrite_rules();
+  }
 
   protected function run()
   {
     // Create custom database tables.
     $this->maybe_create_tables();
 
+    // Register our rewrite rules NOW (before flushing) so they are
+    // included in the ruleset that gets written to the database.
+    // We cannot rely on the init hook here because the activation hook
+    // fires before init, so the rules would not exist yet when we flush.
+    $this->register_rewrite_rules();
+    flush_rewrite_rules();
+
     /**
-     * Fires before WP FlowForms plugin installation is performed.
+     * Fires after WP FlowForms plugin installation is performed.
      *
-     * @since 1.3.0
+     * @since 1.0.0
      */
     do_action('wpff_install', $this);
+  }
+
+  /**
+   * Register the /flowform/{id} rewrite rule directly during activation.
+   *
+   * Duplicates the rule from FlowForms_Frontend::register_rewrites() so it
+   * exists in the global WP_Rewrite object at flush time. On every subsequent
+   * request the rule is re-registered normally via the init hook in
+   * FlowForms_Frontend, so there is no duplication risk.
+   */
+  private function register_rewrite_rules()
+  {
+    add_rewrite_rule(
+      '^flowform/(\d+)/?$',
+      'index.php?flowform_id=$matches[1]',
+      'top'
+    );
+
+    add_rewrite_tag( '%flowform_id%', '(\d+)' );
   }
 
   private function maybe_create_tables()

@@ -166,11 +166,14 @@ class FlowForms_Builder
   {
     wp_enqueue_media();
 
-    $asset = include WP_FLOWFORMS_PATH . 'build/index.asset.php';
+    $asset_file = WP_FLOWFORMS_PATH . 'build/builder/index.asset.php';
+    $asset = file_exists($asset_file)
+      ? include $asset_file
+      : ['dependencies' => [], 'version' => WP_FLOWFORMS_VERSION];
 
     wp_enqueue_script(
       'wp-flowforms-builder',
-      WP_FLOWFORMS_URL . 'build/index.js',
+      WP_FLOWFORMS_URL . 'build/builder/index.js',
       $asset['dependencies'],
       $asset['version'],
       true
@@ -178,7 +181,7 @@ class FlowForms_Builder
 
     wp_enqueue_style(
       'wp-flowforms-builder',
-      WP_FLOWFORMS_URL . 'build/style-index.css',
+      WP_FLOWFORMS_URL . 'build/builder/style-index.css',
       [],
       $asset['version']
     );
@@ -188,6 +191,12 @@ class FlowForms_Builder
       'adminFormsUrl' => admin_url('admin.php?page=wpff_forms'),
       'nonce'         => wp_create_nonce('wp_rest'),
       'formId'        => intval($_GET['form_id'] ?? 0),
+      'previewUrl'    => intval($_GET['form_id'] ?? 0)
+                           ? FlowForms_Frontend::get_preview_url(intval($_GET['form_id']))
+                           : '',
+      'publicUrl'     => intval($_GET['form_id'] ?? 0)
+                           ? FlowForms_Frontend::get_public_url(intval($_GET['form_id']))
+                           : '',
     ]);
   }
 

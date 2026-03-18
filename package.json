@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "wp-scripts start src/builder/index.js --output-path build",
-    "build": "wp-scripts build src/builder/index.js --output-path build",
+    "start": "wp-scripts start --webpack-src-dir=src --output-path=build",
+    "build": "wp-scripts build --webpack-src-dir=src --output-path=build",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
