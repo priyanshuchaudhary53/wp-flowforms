@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { XMarkIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, ArrowTopRightOnSquareIcon, ComputerDesktopIcon, DeviceTabletIcon, DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
 import { useFormStore } from "../store/useFormStore";
 
 /**
@@ -20,9 +20,9 @@ import { useFormStore } from "../store/useFormStore";
  */
 
 const DEVICES = [
-  { id: "desktop", label: "Desktop", width: "100%",   height: "100%" },
-  { id: "tablet",  label: "Tablet",  width: "768px",  height: "1024px" },
-  { id: "mobile",  label: "Mobile",  width: "390px",  height: "844px" },
+  { id: "desktop", label: "Desktop", width: "100%",   height: "100%",   icon: <ComputerDesktopIcon width={20} height={20} /> },
+  { id: "tablet",  label: "Tablet",  width: "768px",  height: "1024px", icon: <DeviceTabletIcon width={20} height={20} /> },
+  { id: "mobile",  label: "Mobile",  width: "390px",  height: "844px",  icon: <DevicePhoneMobileIcon width={20} height={20} /> },
 ];
 
 export default function PreviewModal({ open, onClose }) {
@@ -99,13 +99,14 @@ export default function PreviewModal({ open, onClose }) {
               <button
               key={d.id}
               onClick={() => setDevice(d.id)}
-              className={`px-3 h-7 rounded text-sm/6 font-medium transition-colors ${
+              className={`w-8 h-8 flex justify-center items-center rounded text-sm/6 font-medium transition-colors ${
                 device === d.id
                 ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-600 hover:text-gray-900"
+                : "text-gray-500 hover:text-gray-900"
               }`}
               >
-                {d.label}
+                <span className="sr-only">{d.label}</span>
+                {d.icon}
               </button>
             ))}
           </div>
