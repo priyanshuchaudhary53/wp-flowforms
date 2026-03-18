@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import DesignField from "../components/design/DesignField";
-import DESIGN_SETTINGS from "../components/design/designSettings";
+import DESIGN_SETTINGS from "../components/design/designSettings.jsx";
 import { Button } from "../components/ui/button";
 import {
   Dialog,

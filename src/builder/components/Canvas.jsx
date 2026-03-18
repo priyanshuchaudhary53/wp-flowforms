@@ -1,9 +1,10 @@
 import { StarIcon } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
 import { useFormStore } from "../store/useFormStore";
-import DESIGN_SETTINGS from "./design/designSettings";
+import DESIGN_SETTINGS from "./design/designSettings.jsx";
 import { getFontScale } from "./design/fontScale";
 import { loadGoogleFont } from "../lib/googleFonts";
+import { resolveBackground } from "../lib/resolveBackground";
 
 // ── Background wrapper ──────────────────────────────────────────────────────
 
@@ -80,51 +81,6 @@ function BgWrapper({ bgImage, bgLayout, bgPosition, bgBrightness, globalBg, glob
       <div className="relative h-full w-full">{children}</div>
     </div>
   );
-}
-
-// ── Shared background resolution ─────────────────────────────────────────────
-// Rules:
-//   - Local wallpaper → use local image only, global ignored
-//   - Local split     → use local image in split panel + global as wallpaper behind
-//   - No local image  → fall back to global as wallpaper
-
-function resolveBackground(settings, design) {
-  const localImage    = settings?.backgroundImage?.url ?? null;
-  const globalImage   = design?.bg_image?.url ?? null;
-  const localBgLayout = settings?.bgLayout ?? "wallpaper";
-  const bgPosition    = settings?.bgPosition ?? "left";
-
-  // Global wallpaper is active when there's no local image,
-  // OR when the local layout is split (global sits behind the split).
-  const globalActive =
-    !!globalImage && (!localImage || localBgLayout === "split");
-
-  const bgImage =
-    localBgLayout === "split"
-      ? (localImage || null) // split panel only shows local image
-      : localImage || (globalActive ? globalImage : null);
-
-  // bgBrightness applies to the local image (or global when no local image)
-  const bgBrightness = globalActive && !localImage
-    ? (design?.bg_brightness ?? 0)
-    : (settings?.bgBrightness ?? 0);
-
-  // globalBrightness always tracks the global brightness setting,
-  // used when globalBg is rendered separately behind a split layout.
-  const globalBrightness = design?.bg_brightness ?? 0;
-
-  // Pass globalBg to BgWrapper only when split + global is active
-  const globalBg =
-    localBgLayout === "split" && globalActive ? globalImage : null;
-
-  return {
-    bgImage,
-    bgLayout: localBgLayout,
-    bgPosition,
-    bgBrightness,
-    globalBrightness,
-    globalBg,
-  };
 }
 
 // ── Screen previews ──────────────────────────────────────────────────────────
