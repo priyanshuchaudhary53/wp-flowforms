@@ -41,6 +41,13 @@ class FlowForms_REST_API
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
 
+		// GET single form — public (renderer fetches this, no auth needed)
+    register_rest_route($ns, '/forms/(?P<id>\d+)/public', [
+      'methods'             => 'GET',
+      'callback'            => [$this, 'get_form_public'],
+      'permission_callback' => '__return_true',
+    ]);
+
     // POST submit (public — no authentication required)
     register_rest_route($ns, '/forms/(?P<id>\d+)/submit', [
       'methods'             => 'POST',
@@ -245,6 +252,35 @@ class FlowForms_REST_API
   }
 
 	/**
+   * GET /forms/{id}/public
+   *
+   * Returns only the data the frontend renderer needs.
+   * No auth required — only returns published forms.
+   */
+  public function get_form_public($request)
+  {
+    $form_id = absint($request['id']);
+ 
+    if (! $form_id) {
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+    }
+ 
+    $post = get_post($form_id);
+ 
+    if (! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish') {
+      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+    }
+ 
+    $form = [
+      'id'      => $post->ID,
+      'title'   => $post->post_title,
+      'content' => wpff_decode($post->post_content),
+    ];
+ 
+    return rest_ensure_response($form);
+  }
+
+	/**
 	 * Handle a form submission.
 	 *
 	 * Validates the nonce, runs server-side field validation, saves the
@@ -254,7 +290,7 @@ class FlowForms_REST_API
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function handle_submission( WP_REST_Request $request ) {
-		// ── Nonce check ───────────────────────────────────────────────────
+		// Nonce check
 		$nonce = $request->get_header( 'X-WP-Nonce' );
 		if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 			return new WP_Error(

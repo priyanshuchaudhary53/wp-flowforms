@@ -1,0 +1,551 @@
+/**
+ * WP FlowForms — Public Form Renderer Styles
+ *
+ * Rendering modes:
+ *   .ff-fullpage   position:fixed; inset:0  (full-page / preview route)
+ *   (default)      position:relative, inline shortcode — sized by parent
+ *
+ * Animation system:
+ *   .ff-entry      Staggered fade-up for each screen element on entry
+ *   .ff-exit       Simultaneous slide-down + fade-out for whole screen on exit
+ *
+ * Timing constants (keep in sync with FormApp.js):
+ *   EXIT_DURATION  260ms
+ *   BG_FADE        400ms
+ *   ENTRY_STAGGER  80ms per element
+ */
+
+/* ── Container ───────────────────────────────────────────────────────────────── */
+
+.flowform-container {
+  position:      relative;
+  overflow:      hidden;
+  width:         100%;
+  min-height:    520px;
+  border-radius: 16px;
+  box-sizing:    border-box;
+}
+
+.flowform-container.ff-fullpage {
+  position:      fixed;
+  inset:         0;
+  min-height:    unset;
+  border-radius: 0;
+  z-index:       9999;
+}
+
+/* ── Background layer ────────────────────────────────────────────────────────── */
+
+.ff-bg-layer {
+  position:       absolute;
+  inset:          0;
+  z-index:        0;
+  pointer-events: none;
+  overflow:       hidden;
+}
+
+/* Individual bg snapshot — fades in/out during cross-fade */
+.ff-bg-layer-inner {
+  position:            absolute;
+  inset:               0;
+  background-size:     cover;
+  background-position: center;
+}
+
+/* Split layout */
+.ff-bg-layer--split {
+  display: flex;
+}
+
+/* Full-bleed global wallpaper behind the split panels */
+.ff-bg-global-wallpaper {
+  position:            absolute;
+  inset:               0;
+  background-size:     cover;
+  background-position: center;
+}
+
+/* Local image panel (50 %) */
+.ff-bg-split-panel {
+  width:               50%;
+  flex-shrink:         0;
+  background-size:     cover;
+  background-position: center;
+  position:            relative;
+  z-index:             1;
+}
+
+.ff-bg-split-panel--right {
+  order:       1;
+  margin-left: auto;
+}
+
+/* ── Content wrapper ─────────────────────────────────────────────────────────── */
+
+.ff-content-wrapper {
+  position:       absolute;
+  inset:          0;
+  /* leave room at bottom for nav bar */
+  bottom:         64px;
+  z-index:        10;
+  overflow:       hidden;
+  display:        flex;
+  flex-direction: column;
+}
+
+/* When split panel is on the left, content occupies the right 50 % */
+.ff-content-wrapper--split-left  { left:  50%; }
+/* When split panel is on the right, content occupies the left 50 % */
+.ff-content-wrapper--split-right { right: 50%; }
+
+/* ── Fixed progress bar ──────────────────────────────────────────────────────── */
+
+.ff-progress-fixed {
+  position:        absolute;
+  top:             0;
+  left:            0;
+  right:           0;
+  z-index:         100;
+  padding:         10px 16px 6px;
+  display:         flex;
+  flex-direction:  column;
+  gap:             4px;
+  pointer-events:  none;
+}
+
+.ff-progress-track {
+  width:         100%;
+  height:        3px;
+  background:    rgba(0, 0, 0, 0.08);
+  border-radius: 100px;
+  overflow:      hidden;
+}
+
+.ff-progress-bar {
+  height:        100%;
+  background:    var(--btn-color, #111827);
+  border-radius: 100px;
+  transition:    width 0.35s ease;
+  opacity:       0.7;
+}
+
+.ff-progress-label {
+  font-size:   var(--fs-hint, 0.75rem);
+  color:       var(--hint-color, #9ca3af);
+  text-align:  right;
+  line-height: 1;
+}
+
+/* ── Permanent bottom nav bar ────────────────────────────────────────────────── */
+
+.ff-nav-bar {
+  position:        absolute;
+  bottom:          0;
+  left:            0;
+  right:           0;
+  height:          64px;
+  z-index:         50;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         0 24px;
+  /* subtle separator */
+  border-top:      1px solid rgba(0, 0, 0, 0.06);
+  background:      transparent;
+  box-sizing:      border-box;
+}
+
+/* ── Nav buttons ─────────────────────────────────────────────────────────────── */
+
+.ff-btn-nav {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             6px;
+  padding:         8px 18px;
+  background:      transparent;
+  border:          1.5px solid var(--answer-color, #d1d5db);
+  border-radius:   var(--corner-radius, 8px);
+  font-size:       var(--fs-hint, 0.875rem);
+  font-family:     inherit;
+  font-weight:     500;
+  color:           var(--hint-color, #6b7280);
+  cursor:          pointer;
+  transition:      border-color 0.15s, color 0.15s, background-color 0.15s, opacity 0.15s;
+}
+
+.ff-btn-nav:hover:not(:disabled) {
+  border-color:     var(--btn-color, #111827);
+  color:            var(--btn-color, #111827);
+  background-color: color-mix(in srgb, var(--btn-color, #111827) 6%, transparent);
+}
+
+.ff-btn-nav:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Disabled state — button stays visible but muted, no pointer */
+.ff-btn-nav:disabled,
+.ff-btn-nav.ff-btn-nav--disabled {
+  opacity: 0.35;
+  cursor:  not-allowed;
+  pointer-events: none;
+}
+
+/* ── Screen ─────────────────────────────────────────────────────────────────── */
+
+.ff-screen {
+  position:       relative;
+  width:          100%;
+  height:         100%;
+  display:        flex;
+  flex-direction: column;
+  overflow-y:     auto;
+  overflow-x:     hidden;
+}
+
+.ff-screen-inner {
+  position:        relative;
+  z-index:         1;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  min-height:      100%;
+  max-width:       560px;
+  width:           100%;
+  margin:          0 auto;
+  /* top padding clears progress bar; bottom padding is provided by nav bar via content-wrapper */
+  padding:         64px 32px 32px;
+  gap:             24px;
+  box-sizing:      border-box;
+}
+
+.ff-screen-inner.ff-align-left   { align-items: flex-start; }
+.ff-screen-inner.ff-align-center { align-items: center; text-align: center; }
+
+/* ── Entry animation — staggered fade-up ──────────────────────────────────────
+ *
+ * Applied per element via FormApp._animateEntry().
+ * animationDelay is set inline (0ms, 80ms, 160ms, …).
+ */
+
+@keyframes ff-fade-up {
+  from {
+    opacity:   0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+.ff-entry {
+  animation:           ff-fade-up 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* animation-delay set inline per element */
+}
+
+/* ── Exit animation — simultaneous slide-down + fade-out ──────────────────────
+ *
+ * Applied to .ff-screen-inner via FormApp._animateExit().
+ * Duration matches EXIT_DURATION (260ms) in FormApp.js.
+ */
+
+@keyframes ff-fade-down {
+  from {
+    opacity:   1;
+    transform: translateY(0);
+  }
+  to {
+    opacity:   0;
+    transform: translateY(20px);
+  }
+}
+
+.ff-exit {
+  animation: ff-fade-down 0.26s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+/* ── Typography ─────────────────────────────────────────────────────────────── */
+
+.ff-title {
+  font-size:      var(--fs-title, 2.25rem);
+  font-weight:    700;
+  color:          var(--title-color, #111827);
+  margin:         0;
+  line-height:    1.15;
+  letter-spacing: -0.02em;
+}
+
+.ff-desc {
+  font-size:   var(--fs-body, 1rem);
+  color:       var(--desc-color, #6b7280);
+  margin:      0;
+  line-height: 1.65;
+}
+
+.ff-hint {
+  font-size: var(--fs-hint, 0.875rem);
+  color:     var(--hint-color, #9ca3af);
+}
+
+/* ── Question ───────────────────────────────────────────────────────────────── */
+
+.ff-question {
+  width:          100%;
+  display:        flex;
+  flex-direction: column;
+  gap:            20px;
+}
+
+.ff-question-header {
+  display:        flex;
+  flex-direction: column;
+  gap:            8px;
+}
+
+.ff-question-title {
+  font-size:   var(--fs-subtitle, 1.5rem);
+  font-weight: 600;
+  color:       var(--title-color, #111827);
+  margin:      0;
+  line-height: 1.3;
+}
+
+.ff-question-desc {
+  font-size:   var(--fs-body, 1rem);
+  color:       var(--desc-color, #6b7280);
+  margin:      0;
+  line-height: 1.6;
+}
+
+.ff-question-input { width: 100%; }
+
+.ff-question-error {
+  font-size:   var(--fs-hint, 0.875rem);
+  color:       #ef4444;
+  margin:      0;
+  font-weight: 500;
+}
+
+/* ── Inputs ─────────────────────────────────────────────────────────────────── */
+
+.ff-input {
+  width:          100%;
+  background:     transparent;
+  border:         none;
+  border-bottom:  1.5px solid var(--answer-color, #111827);
+  border-radius:  0;
+  padding:        10px 0;
+  font-size:      var(--fs-body, 1rem);
+  color:          var(--answer-color, #111827);
+  outline:        none;
+  font-family:    inherit;
+  box-sizing:     border-box;
+  transition:     border-color 0.15s;
+}
+
+.ff-input::placeholder { color: var(--answer-color, #111827); opacity: 0.4; }
+.ff-input:focus { border-bottom-color: var(--btn-color, #111827); }
+.ff-textarea-input { resize: vertical; }
+
+.ff-number-wrap {
+  display:        flex;
+  align-items:    center;
+  gap:            8px;
+  border-bottom:  1.5px solid var(--answer-color, #111827);
+  padding-bottom: 10px;
+}
+
+.ff-number-wrap .ff-number-input { border: none; padding: 0; flex: 1; }
+
+.ff-number-prefix,
+.ff-number-suffix { font-size: var(--fs-body, 1rem); color: var(--answer-color, #111827); }
+
+/* ── Choices ─────────────────────────────────────────────────────────────────── */
+
+.ff-choices { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; }
+
+.ff-choices--grid_2 { display: grid; grid-template-columns: 1fr 1fr; }
+
+.ff-choices--left { justify-content: flex-start; }
+
+.ff-choice-item {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  padding:       10px 16px 10px 12px;
+  border:        1.5px solid var(--answer-color, #111827);
+  border-radius: var(--corner-radius, 8px);
+  cursor:        pointer;
+  font-size:     var(--fs-body, 1rem);
+  color:         var(--answer-color, #111827);
+  font-family:   inherit;
+  background:    transparent;
+  transition:    background-color 0.12s, border-color 0.12s;
+  user-select:   none;
+}
+
+.ff-choice-item:hover {
+  background-color: color-mix(in srgb, var(--answer-color, #111827) 8%, transparent);
+}
+
+.ff-choice-item.is-selected {
+  background-color: color-mix(in srgb, var(--answer-color, #111827) 12%, transparent);
+  border-color:     var(--btn-color, #111827);
+}
+
+.ff-choice-radio,
+.ff-choice-checkbox {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  width:           16px;
+  height:          16px;
+  border:          2px solid var(--answer-color, #111827);
+  border-radius:   var(--corner-radius, 8px);
+  flex-shrink:     0;
+  transition:      background-color 0.12s;
+}
+
+.ff-choice-item.is-selected .ff-choice-radio,
+.ff-choice-item.is-selected .ff-choice-checkbox {
+  background-color: var(--btn-color, #111827);
+  border-color:     var(--btn-color, #111827);
+}
+
+.ff-choice-item.is-selected .ff-choice-radio::after,
+.ff-choice-item.is-selected .ff-choice-checkbox::after {
+  content:       '';
+  display:       block;
+  width:         6px;
+  height:        6px;
+  border-radius: 50%;
+  background:    var(--btn-text-color, #ffffff);
+}
+
+.ff-choice-label { line-height: 1.4; }
+
+/* ── Yes / No ────────────────────────────────────────────────────────────────── */
+
+.ff-yes-no { display: flex; gap: 12px; }
+.ff-yes-no-btn { min-width: 80px; justify-content: center; }
+
+/* ── Rating ─────────────────────────────────────────────────────────────────── */
+
+.ff-rating { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.ff-rating-star {
+  background:  transparent;
+  border:      none;
+  padding:     0;
+  cursor:      pointer;
+  color:       var(--star-color, #f59e0b);
+  line-height: 1;
+  transition:  transform 0.1s;
+}
+
+.ff-rating-star:hover { transform: scale(1.15); }
+
+.ff-rating-star.is-active svg,
+.ff-rating-star svg[fill="currentColor"] { fill: var(--star-color, #f59e0b); }
+
+/* ── Primary button ─────────────────────────────────────────────────────────── */
+
+.ff-btn-primary {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         10px 24px;
+  background:      var(--btn-color, #111827);
+  color:           var(--btn-text-color, #ffffff);
+  border:          none;
+  border-radius:   var(--corner-radius, 8px);
+  font-size:       var(--fs-body, 1rem);
+  font-family:     inherit;
+  font-weight:     500;
+  cursor:          pointer;
+  transition:      background-color 0.15s, transform 0.1s;
+  text-decoration: none;
+}
+
+.ff-btn-primary:hover  { background-color: var(--btn-hover-color, #374151); }
+.ff-btn-primary:active { transform: scale(0.98); }
+
+/* ── Actions row ────────────────────────────────────────────────────────────── */
+
+.ff-actions { display: flex; align-items: center; gap: 16px; }
+
+/* ── Thank you ──────────────────────────────────────────────────────────────── */
+
+.ff-thankyou-icon {
+  width:           56px;
+  height:          56px;
+  border-radius:   50%;
+  background:      #d1fae5;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           #059669;
+  flex-shrink:     0;
+}
+
+/* ── Brightness overlay ──────────────────────────────────────────────────────── */
+
+.ff-bg-overlay { position: absolute; inset: 0; pointer-events: none; }
+
+/* ── Loading ────────────────────────────────────────────────────────────────── */
+
+.ff-loading {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             12px;
+  min-height:      200px;
+  padding:         32px;
+}
+
+.ff-loading-spinner {
+  width:         32px;
+  height:        32px;
+  border:        3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #111827;
+  border-radius: 50%;
+  animation:     ff-spin 0.7s linear infinite;
+}
+
+.ff-loading-text { font-size: 0.875rem; color: #9ca3af; }
+
+.ff-error { padding: 32px; text-align: center; color: #ef4444; font-size: 0.875rem; }
+
+/* ── Spinner keyframe ───────────────────────────────────────────────────────── */
+
+@keyframes ff-spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .flowform-container { border-radius: 0; min-height: 480px; }
+
+  .ff-screen-inner { padding: 56px 20px 24px; }
+
+  .ff-title { font-size: clamp(1.5rem, 6vw, var(--fs-title, 2.25rem)); }
+
+  .ff-choices--grid_2 { grid-template-columns: 1fr; }
+
+  .ff-nav-bar { padding: 0 16px; }
+
+  /* Collapse split — image becomes a faint wallpaper, content goes full-width */
+  .ff-bg-layer--split { display: block; }
+
+  .ff-bg-split-panel {
+    position: absolute;
+    inset:    0;
+    width:    100%;
+    opacity:  0.2;
+  }
+
+  .ff-content-wrapper--split-left,
+  .ff-content-wrapper--split-right { left: 0; right: 0; }
+}

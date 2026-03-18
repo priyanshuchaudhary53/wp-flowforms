@@ -315,7 +315,7 @@ html, body {
 <?php endif; ?>
 
 <div id="flowform-full-page">
-	<?php echo $this->container_html( $form_id ); ?>
+	<?php echo $this->container_html( $form_id, true ); ?>
 </div>
 
 <?php wp_footer(); ?>
@@ -348,13 +348,18 @@ html, body {
 	/**
 	 * Return the container div HTML used by every embed method.
 	 *
-	 * @param int $form_id
+	 * @param int  $form_id
+	 * @param bool $fullpage  When true, adds data-ff-mode="fullpage" so the JS
+	 *                        renderer applies position:fixed to cover the viewport.
+	 *                        Shortcode embeds omit this attribute and render inline.
 	 * @return string
 	 */
-	private function container_html( int $form_id ): string {
+	private function container_html( int $form_id, bool $fullpage = false ): string {
+		$mode = $fullpage ? ' data-ff-mode="fullpage"' : '';
 		return sprintf(
-			'<div class="flowform-container" data-flowform-id="%d"></div>',
-			$form_id
+			'<div class="flowform-container" data-flowform-id="%d"%s></div>',
+			$form_id,
+			$mode
 		);
 	}
 
