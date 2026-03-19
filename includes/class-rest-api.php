@@ -62,6 +62,13 @@ class FlowForms_REST_API
       'permission_callback' => '__return_true',
     ]);
 
+    // GET single form — preview (builder iframe, auth required, draft-first)
+    register_rest_route($ns, '/forms/(?P<id>\d+)/preview', [
+      'methods'             => 'GET',
+      'callback'            => [$this, 'get_form_preview'],
+      'permission_callback' => fn() => current_user_can('edit_posts'),
+    ]);
+
     // POST submit (public — no authentication required)
     register_rest_route($ns, '/forms/(?P<id>\d+)/submit', [
       'methods'             => 'POST',
@@ -418,6 +425,42 @@ class FlowForms_REST_API
 
     $slots   = $this->decode_slots($post->post_content);
     $content = $slots['published'];
+
+    if (empty($content)) {
+      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+    }
+
+    return rest_ensure_response([
+      'id'      => $post->ID,
+      'title'   => $post->post_title,
+      'content' => $content,
+    ]);
+  }
+
+  /**
+   * GET /forms/{id}/preview
+   *
+   * Auth-gated endpoint used by the builder's preview iframe.
+   * Returns the draft slot when one exists, otherwise falls back to published.
+   * This ensures the preview always reflects the current builder state,
+   * even before the form has been published for the first time.
+   */
+  public function get_form_preview($request)
+  {
+    $form_id = absint($request['id']);
+
+    if (! $form_id) {
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+    }
+
+    $post = get_post($form_id);
+
+    if (! $post || $post->post_type !== 'wpff_forms') {
+      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+    }
+
+    $slots   = $this->decode_slots($post->post_content);
+    $content = $slots['draft'] ?? $slots['published'];
 
     if (empty($content)) {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);

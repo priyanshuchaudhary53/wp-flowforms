@@ -91,7 +91,10 @@ async function bootForm( container, formId, apiUrl, nonce, previewMode ) {
 	showLoading( container );
 
 	try {
-		const res = await fetch( `${ apiUrl }/forms/${ formId }/public`, {
+		// Preview mode uses the authenticated /preview endpoint (draft-first).
+		// Public mode uses the unauthenticated /public endpoint (published only).
+		const endpoint = previewMode ? 'preview' : 'public';
+		const res = await fetch( `${ apiUrl }/forms/${ formId }/${ endpoint }`, {
 			headers: { 'X-WP-Nonce': nonce },
 		} );
 
