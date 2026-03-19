@@ -233,7 +233,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   align-items:     center;
   justify-content: center;
   min-height:      100%;
-  max-width:       560px;
+  max-width:       36rem;
   width:           100%;
   margin:          0 auto;
   /* top padding clears progress bar; bottom padding is provided by nav bar via content-wrapper */
@@ -486,11 +486,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 /* ── Yes / No ────────────────────────────────────────────────────────────────── */
 
 .ff-yes-no { display: flex; gap: 12px; }
+.ff-align-center .ff-yes-no { justify-content: center; } 
 .ff-yes-no-btn { min-width: 80px; justify-content: center; }
 
 /* ── Rating ─────────────────────────────────────────────────────────────────── */
 
 .ff-rating { display: flex; flex-wrap: wrap; gap: 8px; }
+.ff-align-center .ff-rating { justify-content: center; }
 
 .ff-rating-star {
   background:  transparent;
