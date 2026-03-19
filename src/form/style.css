@@ -236,16 +236,19 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .ff-screen-inner.ff-align-left   { align-items: flex-start; }
 .ff-screen-inner.ff-align-center { align-items: center; text-align: center; }
 
-/* ── Entry animation — staggered fade-up ──────────────────────────────────────
+/* ── Entry animations ─────────────────────────────────────────────────────────
+ *
+ * --up   : used when navigating forward (next question / screen)
+ * --down : used when navigating backward (previous question / screen)
  *
  * Applied per element via FormApp._animateEntry().
  * animationDelay is set inline (0ms, 80ms, 160ms, …).
  */
 
-@keyframes ff-fade-up {
+@keyframes ff-enter-up {
   from {
     opacity:   0;
-    transform: translateY(18px);
+    transform: translateY(22px);
   }
   to {
     opacity:   1;
@@ -253,30 +256,62 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   }
 }
 
-.ff-entry {
-  animation:           ff-fade-up 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
-  /* animation-delay set inline per element */
+@keyframes ff-enter-down {
+  from {
+    opacity:   0;
+    transform: translateY(-22px);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
+  }
 }
 
-/* ── Exit animation — simultaneous slide-down + fade-out ──────────────────────
+.ff-entry--up {
+  animation: ff-enter-up 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ff-entry--down {
+  animation: ff-enter-down 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Exit animations ──────────────────────────────────────────────────────────
+ *
+ * --up   : current screen slides up and fades out (forward navigation)
+ * --down : current screen slides down and fades out (backward navigation)
  *
  * Applied to .ff-screen-inner via FormApp._animateExit().
  * Duration matches EXIT_DURATION (260ms) in FormApp.js.
  */
 
-@keyframes ff-fade-down {
+@keyframes ff-exit-up {
   from {
     opacity:   1;
     transform: translateY(0);
   }
   to {
     opacity:   0;
-    transform: translateY(20px);
+    transform: translateY(-22px);
   }
 }
 
-.ff-exit {
-  animation: ff-fade-down 0.26s cubic-bezier(0.4, 0, 1, 1) both;
+@keyframes ff-exit-down {
+  from {
+    opacity:   1;
+    transform: translateY(0);
+  }
+  to {
+    opacity:   0;
+    transform: translateY(22px);
+  }
+}
+
+.ff-exit--up {
+  animation: ff-exit-up 0.26s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.ff-exit--down {
+  animation: ff-exit-down 0.26s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 /* ── Typography ─────────────────────────────────────────────────────────────── */

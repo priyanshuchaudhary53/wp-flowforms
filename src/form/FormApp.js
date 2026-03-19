@@ -483,14 +483,13 @@ export class FormApp {
 
 	/** Initial render — stamp bg, no exit animation. */
 	_renderScreenImmediate() {
-		// Remove any existing screens (safety)
 		this._contentWrapper.innerHTML = '';
 
 		const slot = document.createElement( 'div' );
 		slot.className = 'ff-screen';
 		this._buildScreen( slot );
 		this._contentWrapper.appendChild( slot );
-		this._animateEntry( slot );
+		this._animateEntry( slot, this._lastDir ?? 'forward' );
 	}
 
 	/**
@@ -523,29 +522,26 @@ export class FormApp {
 		}
 
 		// ── Step 4: cull all screens except the last visible one ──────────────
-		// If a previous transition left multiple screens in mid-flight, remove
-		// all but the topmost one so we always exit from a clean state.
 		const prev = screens[ screens.length - 1 ];
 		screens.slice( 0, -1 ).forEach( ( s ) => s.remove() );
 
+		// Capture direction at the time this transition was scheduled
+		const dir = this._lastDir ?? 'forward';
+
 		// ── Step 5: exit + deferred render ────────────────────────────────────
-		this._animateExit( prev, () => {
+		this._animateExit( prev, dir, () => {
 			setTimeout( () => {
-				// Bail if a newer transition has already taken over
 				if ( this._transitionGen !== gen ) return;
 
-				// Stamp bg AFTER exit completes — no layout shift mid-animation
 				this._stampBackground( incomingBg );
 
-				// Remove previous screen
 				prev.remove();
 
-				// Render incoming screen
 				const next = document.createElement( 'div' );
 				next.className = 'ff-screen';
 				this._buildScreen( next );
 				wrapper.appendChild( next );
-				this._animateEntry( next );
+				this._animateEntry( next, dir );
 
 			}, EXIT_GAP );
 		} );
@@ -566,34 +562,54 @@ export class FormApp {
 
 	// ── Entry animation ───────────────────────────────────────────────────────
 
-	_animateEntry( slot ) {
+	_animateEntry( slot, dir = 'forward' ) {
 		const inner = slot.querySelector( '.ff-screen-inner' );
 		if ( ! inner ) return;
 
-		Array.from( inner.children ).forEach( ( el, i ) => {
-			el.classList.add( 'ff-entry' );
+		const entryClass = dir === 'back' ? 'ff-entry--down' : 'ff-entry--up';
+
+		// For question screens, stagger header, input wrapper, and actions
+		// independently so the title and field don't enter simultaneously.
+		// For welcome / thank-you screens, stagger the direct children of inner.
+		const isQuestion = !! inner.querySelector( '.ff-question' );
+
+		let els;
+		if ( isQuestion ) {
+			// Collect: question header, question input wrap, actions div — in order
+			els = [
+				inner.querySelector( '.ff-question-header' ),
+				inner.querySelector( '.ff-question-input' ),
+				inner.querySelector( '.ff-actions' ),
+			].filter( Boolean );
+		} else {
+			els = Array.from( inner.children );
+		}
+
+		els.forEach( ( el, i ) => {
+			el.classList.add( entryClass );
 			el.style.animationDelay = `${ i * ENTRY_STAGGER }ms`;
 		} );
 	}
 
 	// ── Exit animation ────────────────────────────────────────────────────────
 
-	_animateExit( slot, onDone ) {
+	_animateExit( slot, dir = 'forward', onDone ) {
 		const inner = slot.querySelector( '.ff-screen-inner' );
 
 		if ( ! inner ) {
-			// No inner — fire immediately
 			setTimeout( onDone, 0 );
 			return;
 		}
 
 		// Remove any lingering entry animations so exit plays cleanly
 		Array.from( inner.children ).forEach( ( el ) => {
-			el.classList.remove( 'ff-entry' );
+			el.classList.remove( 'ff-entry--up', 'ff-entry--down' );
 			el.style.animationDelay = '';
 		} );
 
-		inner.classList.add( 'ff-exit' );
+		// Forward nav → current screen exits upward
+		// Backward nav → current screen exits downward
+		inner.classList.add( dir === 'back' ? 'ff-exit--down' : 'ff-exit--up' );
 
 		let fired = false;
 		const done = () => {
@@ -603,7 +619,6 @@ export class FormApp {
 		};
 
 		inner.addEventListener( 'animationend', done, { once: true } );
-		// Safety fallback — EXIT_DURATION matches the ff-exit keyframe duration
 		setTimeout( done, EXIT_DURATION + 50 );
 	}
 
