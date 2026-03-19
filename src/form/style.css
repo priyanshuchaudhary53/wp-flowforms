@@ -573,6 +573,130 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   flex-shrink:     0;
 }
 
+/* ── Redirect countdown ──────────────────────────────────────────────────────── */
+
+.ff-redirect-countdown {
+  font-size:  var(--fs-hint, 0.875rem);
+  color:      var(--hint-color, #9ca3af);
+  margin:     0;
+}
+
+/* ── Social share ────────────────────────────────────────────────────────────── */
+
+.ff-social-share {
+  display:        flex;
+  flex-direction: column;
+  align-items:    inherit; /* inherits from ff-align-center / ff-align-left */
+  gap:            10px;
+  margin-top:     8px;
+}
+
+.ff-social-share-label {
+  font-size:  var(--fs-hint, 0.875rem);
+  color:      var(--hint-color, #9ca3af);
+  margin:     0;
+}
+
+.ff-social-share-btns {
+  display: flex;
+  gap:     10px;
+}
+
+.ff-social-btn {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  width:           40px;
+  height:          40px;
+  border-radius:   var(--corner-radius, 8px);
+  border:          1.5px solid var(--answer-color, #d1d5db);
+  color:           var(--answer-color, #6b7280);
+  text-decoration: none;
+  transition:      border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+
+.ff-social-btn:hover {
+  border-color:     var(--btn-color, #111827);
+  color:            var(--btn-color, #111827);
+  background-color: color-mix(in srgb, var(--btn-color, #111827) 6%, transparent);
+}
+
+/* ── Email confirm ───────────────────────────────────────────────────────────── */
+
+.ff-email-confirm-wrap {
+  display:        flex;
+  flex-direction: column;
+  gap:            16px;
+  width:          100%;
+}
+
+.ff-confirm-label {
+  font-size:   var(--fs-hint, 0.875rem);
+  color:       var(--hint-color, #9ca3af);
+  margin:      0 0 -8px;
+}
+
+/* ── "Other" option ──────────────────────────────────────────────────────────── */
+
+.ff-other-wrap {
+  /* matches sizing behaviour of sibling ff-choice-item pills */
+  display: contents;
+}
+
+/* Idle and confirmed states look like regular choice pills */
+.ff-other-idle,
+.ff-other-confirmed {
+  cursor: pointer;
+}
+
+/* Editing state — pill becomes an inline input row */
+.ff-other-editing {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  cursor:      default;
+  /* keep the is-selected highlight while editing */
+}
+
+.ff-other-inline-input {
+  flex:          1;
+  min-width:     0;
+  background:    transparent;
+  border:        none;
+  outline:       none;
+  font-size:     var(--fs-body, 1rem);
+  color:         var(--answer-color, #111827);
+  font-family:   inherit;
+  padding:       0;
+}
+
+.ff-other-inline-input::placeholder {
+  color:   var(--answer-color, #111827);
+  opacity: 0.4;
+}
+
+.ff-other-tick {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  width:           28px;
+  height:          28px;
+  border-radius:   50%;
+  border:          1.5px solid var(--answer-color, #111827);
+  background:      transparent;
+  color:           var(--answer-color, #111827);
+  cursor:          pointer;
+  padding:         0;
+  transition:      background-color 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.ff-other-tick:hover {
+  background-color: var(--btn-color, #111827);
+  border-color:     var(--btn-color, #111827);
+  color:            var(--btn-text-color, #ffffff);
+}
+
 /* ── Brightness overlay ──────────────────────────────────────────────────────── */
 
 .ff-bg-overlay { position: absolute; inset: 0; pointer-events: none; }

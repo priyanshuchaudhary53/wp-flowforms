@@ -96,18 +96,54 @@ function buildLongText( settings, answer, onChange ) {
 	textarea.placeholder = settings.placeholder || 'Your answer here…';
 	textarea.rows        = settings.rows ?? 4;
 	textarea.value       = answer ?? '';
+	if ( settings.maxLength ) textarea.maxLength = settings.maxLength;
 	textarea.addEventListener( 'input', ( e ) => onChange( e.target.value ) );
 	return textarea;
 }
 
 function buildEmail( settings, answer, onChange ) {
-	const input = el( 'input' );
-	input.type        = 'email';
-	input.className   = 'ff-input ff-email-input';
-	input.placeholder = settings.placeholder || 'name@example.com';
-	input.value       = answer ?? '';
-	input.addEventListener( 'input', ( e ) => onChange( e.target.value ) );
-	return input;
+	// answer is a string when no confirm, or { email, confirm } when confirm is on
+	const isConfirm = !! settings.confirmEmail;
+	const emailVal  = isConfirm ? ( answer?.email  ?? '' ) : ( answer ?? '' );
+	const confirmVal = isConfirm ? ( answer?.confirm ?? '' ) : '';
+
+	if ( ! isConfirm ) {
+		const input = el( 'input' );
+		input.type        = 'email';
+		input.className   = 'ff-input ff-email-input';
+		input.placeholder = settings.placeholder || 'name@example.com';
+		input.value       = emailVal;
+		input.addEventListener( 'input', ( e ) => onChange( e.target.value ) );
+		return input;
+	}
+
+	// Confirm email mode — two inputs in a wrapper
+	const wrap = el( 'div', 'ff-email-confirm-wrap' );
+
+	const input1 = el( 'input' );
+	input1.type        = 'email';
+	input1.className   = 'ff-input ff-email-input';
+	input1.placeholder = settings.placeholder || 'name@example.com';
+	input1.value       = emailVal;
+
+	const label2 = el( 'label', 'ff-confirm-label' );
+	label2.textContent = 'Confirm email';
+
+	const input2 = el( 'input' );
+	input2.type        = 'email';
+	input2.className   = 'ff-input ff-email-input';
+	input2.placeholder = 'Confirm your email';
+	input2.value       = confirmVal;
+
+	const emit = () => onChange( { email: input1.value, confirm: input2.value } );
+	input1.addEventListener( 'input', emit );
+	input2.addEventListener( 'input', emit );
+
+	wrap.appendChild( input1 );
+	wrap.appendChild( label2 );
+	wrap.appendChild( input2 );
+
+	return wrap;
 }
 
 function buildNumber( content, settings, answer, onChange ) {
@@ -124,8 +160,9 @@ function buildNumber( content, settings, answer, onChange ) {
 	input.className   = 'ff-input ff-number-input';
 	input.placeholder = settings.placeholder || '0';
 	input.value       = answer ?? '';
-	if ( settings.min !== undefined ) input.min = settings.min;
-	if ( settings.max !== undefined ) input.max = settings.max;
+	if ( settings.min  !== undefined && settings.min  !== '' ) input.min  = settings.min;
+	if ( settings.max  !== undefined && settings.max  !== '' ) input.max  = settings.max;
+	if ( settings.step !== undefined && settings.step !== '' ) input.step = settings.step;
 	input.addEventListener( 'input', ( e ) => {
 		onChange( e.target.value === '' ? '' : Number( e.target.value ) );
 	} );
@@ -141,20 +178,27 @@ function buildNumber( content, settings, answer, onChange ) {
 }
 
 function buildChoice( content, settings, answer, alignment, onChange, isMulti ) {
-	const options = Array.isArray( content.options ) && content.options.length
-		? content.options
+	let options = Array.isArray( content.options ) && content.options.length
+		? [ ...content.options ]
 		: [];
+
+	// Randomize order if enabled
+	if ( settings.randomize ) {
+		for ( let i = options.length - 1; i > 0; i-- ) {
+			const j = Math.floor( Math.random() * ( i + 1 ) );
+			[ options[ i ], options[ j ] ] = [ options[ j ], options[ i ] ];
+		}
+	}
 
 	const layout = settings.layout ?? 'vertical';
 	const grid   = el( 'div', `ff-choices ff-choices--${ layout }` );
 	if ( alignment !== 'center' ) grid.classList.add( 'ff-choices--left' );
 
-	// Both multiple_choice and checkboxes store their answer as an array.
-	// multiple_choice allows at most one item; checkboxes allows many.
-	// Normalise whatever is stored into a clean array for local tracking.
+	// Both multiple_choice and checkboxes store answer as an array.
 	let selected = Array.isArray( answer ) ? [ ...answer ] : [];
 
-	// Keep a map of value → label element for fast DOM updates
+	const maxSel = isMulti && settings.maxSelections > 0 ? settings.maxSelections : Infinity;
+
 	const labelMap = new Map();
 
 	options.forEach( ( opt ) => {
@@ -174,9 +218,10 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 
 		label.addEventListener( 'click', () => {
 			if ( isMulti ) {
-				// Toggle this value in the selection
 				const idx = selected.indexOf( value );
 				if ( idx === -1 ) {
+					// Respect maxSelections
+					if ( selected.length >= maxSel ) return;
 					selected.push( value );
 					label.classList.add( 'is-selected' );
 				} else {
@@ -185,8 +230,6 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 				}
 				onChange( [ ...selected ] );
 			} else {
-				// Single-select: always store as a one-item array so the
-				// validator and server both receive a consistent array value.
 				if ( selected[ 0 ] !== value ) {
 					labelMap.forEach( ( lbl ) => lbl.classList.remove( 'is-selected' ) );
 					selected = [ value ];
@@ -198,6 +241,150 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 
 		grid.appendChild( label );
 	} );
+
+	// "Other" option — inline-edit pattern
+	if ( settings.allowOther ) {
+		// The stored value for a confirmed "other" answer is '__other__:<text>'.
+		// Find it in the current selection to restore state on re-render.
+		const otherStored = selected.find( ( v ) => typeof v === 'string' && v.startsWith( '__other__:' ) );
+		const otherText   = otherStored ? otherStored.slice( 10 ) : '';
+
+		// Three possible states for this slot:
+		//   'idle'     — shows the "Other" pill (not selected, not editing)
+		//   'editing'  — pill replaced by inline input + tick button
+		//   'confirmed'— shows a regular-looking option pill with the typed text
+		//
+		// On re-render we restore directly to the correct state.
+		let otherState = otherStored ? 'confirmed' : 'idle';
+
+		// Container that holds whichever DOM state is active
+		const otherWrap = el( 'div', 'ff-other-wrap' );
+
+		// ── Helper: remove other from selection ───────────────────────────
+		const clearOtherFromSelected = () => {
+			const idx = selected.findIndex( ( v ) => typeof v === 'string' && v.startsWith( '__other__:' ) );
+			if ( idx !== -1 ) selected.splice( idx, 1 );
+		};
+
+		// ── Helper: deselect all regular options (single-select only) ─────
+		const clearRegularSelection = () => {
+			if ( ! isMulti ) {
+				labelMap.forEach( ( lbl ) => lbl.classList.remove( 'is-selected' ) );
+				selected = [];
+			}
+		};
+
+		// ── Render: idle pill ─────────────────────────────────────────────
+		const renderIdle = () => {
+			otherWrap.innerHTML = '';
+			otherState = 'idle';
+
+			const pill = el( 'div', 'ff-choice-item ff-other-idle' );
+
+			const indicator = el( 'span', isMulti ? 'ff-choice-checkbox' : 'ff-choice-radio' );
+			pill.appendChild( indicator );
+
+			const label = el( 'span', 'ff-choice-label' );
+			label.textContent = 'Other';
+			pill.appendChild( label );
+
+			pill.addEventListener( 'click', () => {
+				if ( ! isMulti ) clearRegularSelection();
+				renderEditing( '' );
+			} );
+
+			otherWrap.appendChild( pill );
+		};
+
+		// ── Render: editing (inline input + tick) ─────────────────────────
+		const renderEditing = ( prefill ) => {
+			otherWrap.innerHTML = '';
+			otherState = 'editing';
+
+			const pill = el( 'div', 'ff-choice-item ff-other-editing is-selected' );
+
+			const input = el( 'input' );
+			input.type        = 'text';
+			input.className   = 'ff-other-inline-input';
+			input.placeholder = 'Type your answer…';
+			input.value       = prefill;
+			pill.appendChild( input );
+
+			const tick = el( 'button', 'ff-other-tick' );
+			tick.type      = 'button';
+			tick.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+			tick.setAttribute( 'aria-label', 'Confirm' );
+			pill.appendChild( tick );
+
+			// Stop label-click bubbling from the input or tick
+			input.addEventListener( 'click', ( e ) => e.stopPropagation() );
+			tick.addEventListener( 'click',  ( e ) => {
+				e.stopPropagation();
+				const text = input.value.trim();
+				if ( ! text ) {
+					// Empty — revert to idle, deselect
+					clearOtherFromSelected();
+					onChange( [ ...selected ] );
+					renderIdle();
+					return;
+				}
+				// Confirm with text
+				const encoded = `__other__:${ text }`;
+				clearOtherFromSelected();
+				if ( isMulti ) {
+					selected.push( encoded );
+				} else {
+					selected = [ encoded ];
+				}
+				onChange( [ ...selected ] );
+				renderConfirmed( text );
+			} );
+
+			// Allow Enter key to confirm
+			input.addEventListener( 'keydown', ( e ) => {
+				if ( e.key === 'Enter' ) {
+					e.preventDefault();
+					tick.click();
+				}
+			} );
+
+			otherWrap.appendChild( pill );
+			// Focus after paint so the pill animation doesn't fight it
+			requestAnimationFrame( () => input.focus() );
+		};
+
+		// ── Render: confirmed (looks like a regular selected option) ──────
+		const renderConfirmed = ( text ) => {
+			otherWrap.innerHTML = '';
+			otherState = 'confirmed';
+
+			const pill = el( 'div', 'ff-choice-item ff-other-confirmed is-selected' );
+
+			const indicator = el( 'span', isMulti ? 'ff-choice-checkbox' : 'ff-choice-radio' );
+			pill.appendChild( indicator );
+
+			const labelEl = el( 'span', 'ff-choice-label' );
+			labelEl.textContent = text;
+			pill.appendChild( labelEl );
+
+			pill.addEventListener( 'click', () => {
+				// Click on confirmed pill → go back to editing with pre-filled text
+				if ( ! isMulti ) clearRegularSelection();
+				renderEditing( text );
+			} );
+
+			otherWrap.appendChild( pill );
+		};
+
+		// Restore the correct state from stored answer
+		if ( otherState === 'confirmed' ) {
+			renderConfirmed( otherText );
+		} else {
+			renderIdle();
+		}
+
+		grid.appendChild( otherWrap );
+	}
 
 	return grid;
 }

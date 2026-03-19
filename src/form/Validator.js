@@ -30,13 +30,25 @@ export function validate( question, answer, previewMode ) {
 	// ── Type-specific rules ───────────────────────────────────────────────────
 	switch ( type ) {
 		case 'email':
-			if ( ! isValidEmail( String( answer ) ) ) {
-				return 'Please enter a valid email address.';
+			if ( settings.confirmEmail ) {
+				// answer is { email, confirm }
+				const emailVal   = answer?.email   ?? '';
+				const confirmVal = answer?.confirm ?? '';
+				if ( ! isValidEmail( emailVal ) ) {
+					return 'Please enter a valid email address.';
+				}
+				if ( emailVal !== confirmVal ) {
+					return 'Email addresses do not match.';
+				}
+			} else {
+				if ( ! isValidEmail( String( answer ) ) ) {
+					return 'Please enter a valid email address.';
+				}
 			}
 			break;
 
 		case 'number': {
-			const num = Number( answer );
+			const num    = Number( answer );
 			if ( isNaN( num ) ) return 'Please enter a valid number.';
 			const hasMin = settings.min !== undefined && settings.min !== '';
 			const hasMax = settings.max !== undefined && settings.max !== '';
@@ -59,11 +71,25 @@ export function validate( question, answer, previewMode ) {
 		}
 
 		case 'multiple_choice':
-		case 'checkboxes':
 			if ( ! Array.isArray( answer ) || answer.length === 0 ) {
 				return 'Please make a selection.';
 			}
 			break;
+
+		case 'checkboxes': {
+			if ( ! Array.isArray( answer ) || answer.length === 0 ) {
+				return 'Please make a selection.';
+			}
+			const minSel = settings.minSelections ?? 0;
+			const maxSel = settings.maxSelections ?? 0;
+			if ( minSel > 0 && answer.length < minSel ) {
+				return `Please select at least ${ minSel } option${ minSel > 1 ? 's' : '' }.`;
+			}
+			if ( maxSel > 0 && answer.length > maxSel ) {
+				return `Please select at most ${ maxSel } option${ maxSel > 1 ? 's' : '' }.`;
+			}
+			break;
+		}
 
 		case 'yes_no':
 			if ( answer !== 'yes' && answer !== 'no' ) {
@@ -87,6 +113,10 @@ export function validate( question, answer, previewMode ) {
 export function isEmpty( value, type = '' ) {
 	if ( value === null || value === undefined ) return true;
 	if ( Array.isArray( value ) )               return value.length === 0;
+	// Email confirm mode stores { email, confirm }
+	if ( type === 'email' && typeof value === 'object' ) {
+		return ! value.email || value.email.trim() === '';
+	}
 	if ( typeof value === 'string' )            return value.trim() === '';
 	return false;
 }
