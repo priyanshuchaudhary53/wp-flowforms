@@ -41,6 +41,13 @@ class FlowForms_REST_API
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
 
+    // PATCH update form design — writes directly to published slot (and draft if exists)
+    register_rest_route($ns, '/forms/(?P<id>\d+)/design', [
+      'methods'             => 'PATCH',
+      'callback'            => [$this, 'update_design'],
+      'permission_callback' => fn() => current_user_can('edit_posts'),
+    ]);
+
     // POST publish form (promote draft → published, clear draft)
     register_rest_route($ns, '/forms/(?P<id>\d+)/publish', [
       'methods'             => 'POST',
@@ -337,6 +344,62 @@ class FlowForms_REST_API
       'success'  => true,
       'form_id'  => $form_id,
       'message'  => 'Form updated successfully.',
+    ], 200);
+  }
+
+  /**
+   * PATCH /forms/{id}/design
+   *
+   * Writes the design object directly into the published slot so design
+   * changes are always live immediately. If a draft slot also exists, the
+   * design is mirrored there too so the builder canvas stays in sync.
+   */
+  public function update_design($request)
+  {
+    $form_id    = absint($request['id']);
+    $design     = $request->get_param('design');
+
+    if (! $form_id) {
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+    }
+
+    if (empty($design) || ! is_array($design)) {
+      return new WP_Error('invalid_design', __('No design data provided.', 'wp-flowforms'), ['status' => 400]);
+    }
+
+    $post = get_post($form_id);
+
+    if (! $post || $post->post_type !== 'wpff_forms') {
+      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+    }
+
+    $slots = $this->decode_slots($post->post_content);
+
+    // Write design into published slot.
+    if (! empty($slots['published'])) {
+      $slots['published']['design'] = $design;
+    } else {
+      // Form has never been published — create a minimal published entry
+      // so design is preserved even before first publish.
+      $slots['published'] = ['design' => $design];
+    }
+
+    // Mirror design into draft slot so the builder canvas reflects it.
+    if (! is_null($slots['draft'])) {
+      $slots['draft']['design'] = $design;
+    }
+
+    $json  = $this->encode_slots($slots['published'], $slots['draft']);
+    $saved = $this->save_post_content($form_id, $json);
+
+    if (! $saved) {
+      return new WP_REST_Response(['message' => 'Failed to save design.'], 500);
+    }
+
+    return new WP_REST_Response([
+      'success' => true,
+      'form_id' => $form_id,
+      'message' => 'Design updated successfully.',
     ], 200);
   }
 

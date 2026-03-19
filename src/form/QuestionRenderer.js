@@ -149,11 +149,10 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 	const grid   = el( 'div', `ff-choices ff-choices--${ layout }` );
 	if ( alignment !== 'center' ) grid.classList.add( 'ff-choices--left' );
 
-	// Track current selection as a mutable local variable so DOM updates
-	// stay in sync without waiting for a re-render.
-	let selected = isMulti
-		? ( Array.isArray( answer ) ? [ ...answer ] : [] )
-		: ( answer != null ? [ answer ] : [] );
+	// Both multiple_choice and checkboxes store their answer as an array.
+	// multiple_choice allows at most one item; checkboxes allows many.
+	// Normalise whatever is stored into a clean array for local tracking.
+	let selected = Array.isArray( answer ) ? [ ...answer ] : [];
 
 	// Keep a map of value → label element for fast DOM updates
 	const labelMap = new Map();
@@ -186,14 +185,14 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 				}
 				onChange( [ ...selected ] );
 			} else {
-				// Deselect all, select only this one
+				// Single-select: always store as a one-item array so the
+				// validator and server both receive a consistent array value.
 				if ( selected[ 0 ] !== value ) {
-					// Clear previous selection
 					labelMap.forEach( ( lbl ) => lbl.classList.remove( 'is-selected' ) );
 					selected = [ value ];
 					label.classList.add( 'is-selected' );
-					onChange( value );
 				}
+				onChange( [ ...selected ] );
 			}
 		} );
 

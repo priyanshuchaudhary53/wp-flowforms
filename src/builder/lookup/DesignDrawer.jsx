@@ -218,10 +218,10 @@ export default function DesignDrawer() {
       >
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <DialogTitle>Publish design changes?</DialogTitle>
+            <DialogTitle>Save design changes?</DialogTitle>
             <DialogDescription>
-              These changes will immediately reflect in your published form.
-              Proceed?
+              These changes will be saved directly to the published version of
+              your form and will be visible to users immediately.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

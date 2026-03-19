@@ -38,10 +38,12 @@ export function validate( question, answer, previewMode ) {
 		case 'number': {
 			const num = Number( answer );
 			if ( isNaN( num ) ) return 'Please enter a valid number.';
-			if ( settings.min !== undefined && num < Number( settings.min ) ) {
+			const hasMin = settings.min !== undefined && settings.min !== '';
+			const hasMax = settings.max !== undefined && settings.max !== '';
+			if ( hasMin && num < Number( settings.min ) ) {
 				return `Value must be at least ${ settings.min }.`;
 			}
-			if ( settings.max !== undefined && num > Number( settings.max ) ) {
+			if ( hasMax && num > Number( settings.max ) ) {
 				return `Value must be at most ${ settings.max }.`;
 			}
 			break;

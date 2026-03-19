@@ -157,7 +157,7 @@ export default function Header() {
               Are you sure you want to revert to previous published state?
             </DialogTitle>
             <DialogDescription>
-              All your current changes (including design changes) will be
+              All your current changes (excluding design changes) will be
               discarded. This action is irreversible.
             </DialogDescription>
           </DialogHeader>

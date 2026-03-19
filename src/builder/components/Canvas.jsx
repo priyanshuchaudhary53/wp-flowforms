@@ -361,14 +361,28 @@ function QuestionInputMockup({ question, design }) {
       Array.isArray(c.options) && c.options.length > 0
         ? c.options
         : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
+
+    const layoutClass =
+      s.layout === "horizontal" ? "flex flex-wrap" :
+      s.layout === "grid_2"     ? "grid grid-cols-2" :
+                                  "flex flex-col";   // default: vertical
+
+    // Alignment on the main axis differs by layout:
+    // vertical   → items-* controls cross-axis (left/center each pill)
+    // horizontal → justify-* controls main-axis wrapping alignment
+    // grid_2     → full-width columns, alignment not applicable
+    const alignClass =
+      s.layout === "grid_2"     ? "" :
+      s.layout === "horizontal" ? (alignment === "center" ? "justify-center" : "justify-start") :
+                                  (alignment === "center" ? "items-center"   : "items-start");
+
     return (
       <div
         className={[
-          s.layout === "vertical" ? "flex flex-wrap" : "grid",
+          layoutClass,
+          alignClass,
           "w-full gap-2",
-          s.layout === "grid_2" && "grid-cols-2",
-          alignment === "center" ? "justify-center" : "justify-start",
-        ].join(" ")}
+        ].filter(Boolean).join(" ")}
       >
         {options.map((opt, i) => (
           <label
@@ -390,14 +404,24 @@ function QuestionInputMockup({ question, design }) {
       Array.isArray(c.options) && c.options.length > 0
         ? c.options
         : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
+
+    const layoutClass =
+      s.layout === "horizontal" ? "flex flex-wrap" :
+      s.layout === "grid_2"     ? "grid grid-cols-2" :
+                                  "flex flex-col";
+
+    const alignClass =
+      s.layout === "grid_2"     ? "" :
+      s.layout === "horizontal" ? (alignment === "center" ? "justify-center" : "justify-start") :
+                                  (alignment === "center" ? "items-center"   : "items-start");
+
     return (
       <div
         className={[
-          s.layout === "vertical" ? "flex flex-wrap" : "grid",
+          layoutClass,
+          alignClass,
           "w-full gap-2",
-          s.layout === "grid_2" && "grid-cols-2",
-          alignment === "center" ? "justify-center" : "justify-start",
-        ].join(" ")}
+        ].filter(Boolean).join(" ")}
       >
         {options.map((opt, i) => (
           <label

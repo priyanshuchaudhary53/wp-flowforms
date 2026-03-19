@@ -88,11 +88,23 @@ export const useFormStore = create((set, get) => ({
 
   setDraftDesign: (key, value) => {
     set((state) => {
-      const newDraft = { ...(state.draftDesign ?? {}), [key]: value };
-      const committed = state.form?.content?.design ?? {};
-      const dirty = Object.keys(newDraft).some(
-        (k) => newDraft[k] !== (committed[k] ?? ""),
-      );
+      const newDraft   = { ...(state.draftDesign ?? {}), [key]: value };
+      const committed  = state.form?.content?.design ?? {};
+
+      // A key is dirty only when its value differs from what is committed.
+      // Keys that exist in newDraft but not in committed are dirty only if
+      // their value is non-empty — setting a field to "" when it was never
+      // set is not a change worth blocking close for.
+      const dirty = Object.keys(newDraft).some((k) => {
+        const committedVal = committed[k];
+        const draftVal     = newDraft[k];
+        // Both absent/empty → not dirty
+        if (committedVal === undefined && (draftVal === "" || draftVal === null || draftVal === undefined)) {
+          return false;
+        }
+        return draftVal !== committedVal;
+      });
+
       return { draftDesign: newDraft, designDirty: dirty };
     });
   },
@@ -106,10 +118,9 @@ export const useFormStore = create((set, get) => ({
         content: { ...state.form.content, design: { ...draftDesign } },
       },
       designDirty: false,
-      saveStatus: "unsaved",
     }));
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => get()._persistForm(), 800);
+    saveTimer = setTimeout(() => get()._persistDesign(), 800);
   },
 
   discardDesign: () => {
@@ -333,6 +344,38 @@ export const useFormStore = create((set, get) => ({
     } catch (err) {
       console.error("Auto-save failed:", err);
       set({ saveStatus: "unsaved" });
+    }
+  },
+
+  // ── Persist design directly to published slot ─────────────────────────────
+  // Design changes bypass the draft system — they go live immediately on
+  // the published version. The PHP endpoint also mirrors into the draft slot
+  // if one exists, so the builder canvas stays in sync.
+  _persistDesign: async () => {
+    const { formId, form } = get();
+    if (!formId || !form) return;
+
+    const design = form.content?.design ?? {};
+
+    try {
+      const res = await fetch(
+        `${formflowData.apiUrl}/forms/${formId}/design`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "X-WP-Nonce": formflowData.nonce,
+          },
+          body: JSON.stringify({ design }),
+        },
+      );
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || `API Error: ${res.status}`);
+      }
+    } catch (err) {
+      console.error("Design save failed:", err);
     }
   },
 

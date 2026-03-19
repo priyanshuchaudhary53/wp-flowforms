@@ -421,11 +421,35 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Choices ─────────────────────────────────────────────────────────────────── */
 
-.ff-choices { display: flex; flex-wrap: wrap; gap: 10px; width: 100%; }
+.ff-choices {
+  display:   flex;
+  gap:       10px;
+  width:     100%;
+}
 
-.ff-choices--grid_2 { display: grid; grid-template-columns: 1fr 1fr; }
+/* ── Vertical list (default) ─────────────────────────────────────────────── */
+.ff-choices--vertical {
+  flex-direction: column;
+  align-items:    center;
+}
+.ff-choices--vertical.ff-choices--left {
+  align-items:    flex-start;
+}
 
-.ff-choices--left { justify-content: flex-start; }
+/* ── Horizontal wrap ─────────────────────────────────────────────────────── */
+.ff-choices--horizontal {
+  flex-wrap:       wrap;
+  justify-content: center;
+}
+.ff-choices--horizontal.ff-choices--left {
+  justify-content: flex-start;
+}
+
+/* ── 2-column grid ───────────────────────────────────────────────────────── */
+.ff-choices--grid_2 {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+}
 
 .ff-choice-item {
   display:       flex;
