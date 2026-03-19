@@ -17,6 +17,12 @@
  * @param {Function}    onChange  Callback: onChange(questionId, newValue)
  * @returns {HTMLElement}
  */
+
+// ── Shuffle cache ─────────────────────────────────────────────────────────────
+// Randomized option orders are computed once per question per page load and
+// stored here, keyed by question ID. This prevents re-shuffling every time
+// the user navigates back and forth between questions.
+const _shuffleCache = new Map();
 export function renderQuestion( question, answer, error, design, onChange ) {
 	const type      = question.type      ?? '';
 	const content   = question.content   ?? {};
@@ -44,7 +50,7 @@ export function renderQuestion( question, answer, error, design, onChange ) {
 	const inputWrap = el( 'div', 'ff-question-input' );
 	const input     = buildInput( type, content, settings, answer, alignment, ( val ) => {
 		onChange( question.id, val );
-	} );
+	}, question.id );
 
 	inputWrap.appendChild( input );
 	wrap.appendChild( inputWrap );
@@ -61,14 +67,14 @@ export function renderQuestion( question, answer, error, design, onChange ) {
 
 // ── Input builders ────────────────────────────────────────────────────────────
 
-function buildInput( type, content, settings, answer, alignment, onChange ) {
+function buildInput( type, content, settings, answer, alignment, onChange, questionId ) {
 	switch ( type ) {
 		case 'short_text':      return buildShortText( settings, answer, onChange );
 		case 'long_text':       return buildLongText( settings, answer, onChange );
 		case 'email':           return buildEmail( settings, answer, onChange );
 		case 'number':          return buildNumber( content, settings, answer, onChange );
-		case 'multiple_choice': return buildChoice( content, settings, answer, alignment, onChange, false );
-		case 'checkboxes':      return buildChoice( content, settings, answer, alignment, onChange, true );
+		case 'multiple_choice': return buildChoice( content, settings, answer, alignment, onChange, false, questionId );
+		case 'checkboxes':      return buildChoice( content, settings, answer, alignment, onChange, true, questionId );
 		case 'rating':          return buildRating( settings, answer, onChange );
 		case 'yes_no':          return buildYesNo( content, answer, onChange );
 		default: {
@@ -177,16 +183,27 @@ function buildNumber( content, settings, answer, onChange ) {
 	return wrap;
 }
 
-function buildChoice( content, settings, answer, alignment, onChange, isMulti ) {
+function buildChoice( content, settings, answer, alignment, onChange, isMulti, questionId ) {
 	let options = Array.isArray( content.options ) && content.options.length
 		? [ ...content.options ]
 		: [];
 
-	// Randomize order if enabled
+	// Randomize order if enabled — use cache so order stays stable per session
 	if ( settings.randomize ) {
-		for ( let i = options.length - 1; i > 0; i-- ) {
-			const j = Math.floor( Math.random() * ( i + 1 ) );
-			[ options[ i ], options[ j ] ] = [ options[ j ], options[ i ] ];
+		if ( ! _shuffleCache.has( questionId ) ) {
+			for ( let i = options.length - 1; i > 0; i-- ) {
+				const j = Math.floor( Math.random() * ( i + 1 ) );
+				[ options[ i ], options[ j ] ] = [ options[ j ], options[ i ] ];
+			}
+			_shuffleCache.set( questionId, options.map( ( o ) => o.value ?? o.label ) );
+		} else {
+			// Restore cached order
+			const order = _shuffleCache.get( questionId );
+			options.sort( ( a, b ) => {
+				const ai = order.indexOf( a.value ?? a.label );
+				const bi = order.indexOf( b.value ?? b.label );
+				return ( ai === -1 ? 999 : ai ) - ( bi === -1 ? 999 : bi );
+			} );
 		}
 	}
 
@@ -200,6 +217,9 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 	const maxSel = isMulti && settings.maxSelections > 0 ? settings.maxSelections : Infinity;
 
 	const labelMap = new Map();
+
+	// Callback set by the "Other" block so regular option clicks can reset it
+	let resetOtherPill = null;
 
 	options.forEach( ( opt ) => {
 		const value    = opt.value ?? opt.label;
@@ -220,7 +240,6 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 			if ( isMulti ) {
 				const idx = selected.indexOf( value );
 				if ( idx === -1 ) {
-					// Respect maxSelections
 					if ( selected.length >= maxSel ) return;
 					selected.push( value );
 					label.classList.add( 'is-selected' );
@@ -232,6 +251,8 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 			} else {
 				if ( selected[ 0 ] !== value ) {
 					labelMap.forEach( ( lbl ) => lbl.classList.remove( 'is-selected' ) );
+					// Reset "Other" pill to idle so it doesn't stay visually selected
+					if ( resetOtherPill ) resetOtherPill();
 					selected = [ value ];
 					label.classList.add( 'is-selected' );
 				}
@@ -270,7 +291,8 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 		const clearRegularSelection = () => {
 			if ( ! isMulti ) {
 				labelMap.forEach( ( lbl ) => lbl.classList.remove( 'is-selected' ) );
-				selected = [];
+				// Remove any regular option from selected (keep __other__ handling separate)
+				selected = selected.filter( ( v ) => typeof v === 'string' && v.startsWith( '__other__:' ) );
 			}
 		};
 
@@ -278,6 +300,11 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 		const renderIdle = () => {
 			otherWrap.innerHTML = '';
 			otherState = 'idle';
+			// Expose reset so regular option clicks can call it
+			resetOtherPill = () => {
+				clearOtherFromSelected();
+				renderIdle();
+			};
 
 			const pill = el( 'div', 'ff-choice-item ff-other-idle' );
 
@@ -300,6 +327,10 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 		const renderEditing = ( prefill ) => {
 			otherWrap.innerHTML = '';
 			otherState = 'editing';
+			resetOtherPill = () => {
+				clearOtherFromSelected();
+				renderIdle();
+			};
 
 			const pill = el( 'div', 'ff-choice-item ff-other-editing is-selected' );
 
@@ -357,6 +388,10 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti ) 
 		const renderConfirmed = ( text ) => {
 			otherWrap.innerHTML = '';
 			otherState = 'confirmed';
+			resetOtherPill = () => {
+				clearOtherFromSelected();
+				renderIdle();
+			};
 
 			const pill = el( 'div', 'ff-choice-item ff-other-confirmed is-selected' );
 

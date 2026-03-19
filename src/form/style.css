@@ -573,6 +573,30 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   flex-shrink:     0;
 }
 
+.ff-submission-error-icon {
+  width:           56px;
+  height:          56px;
+  border-radius:   50%;
+  background:      #fee2e2;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           #dc2626;
+  flex-shrink:     0;
+}
+
+/* ── Submitting spinner ──────────────────────────────────────────────────────── */
+
+.ff-submitting-spinner {
+  width:        40px;
+  height:       40px;
+  border:       3px solid rgba(0, 0, 0, 0.1);
+  border-top:   3px solid var(--btn-color, #111827);
+  border-radius: 50%;
+  animation:    ff-spin 0.7s linear infinite;
+  flex-shrink:  0;
+}
+
 /* ── Redirect countdown ──────────────────────────────────────────────────────── */
 
 .ff-redirect-countdown {

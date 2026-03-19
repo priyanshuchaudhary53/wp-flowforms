@@ -61,6 +61,7 @@ export class FormApp {
 			errors:        {},
 			previewMode:   this.previewMode,
 			submitted:     false,
+			submitErrorMsg: '',
 		};
 
 		this._questions = formData.content?.questions    ?? [];
@@ -453,8 +454,10 @@ export class FormApp {
 		const { apiUrl, nonce } = window.flowformPublicData ?? {};
 		const formId = Number( this.container.dataset.flowformId );
 
+		// Transition to a submitting spinner screen while the request is in flight.
+		// We do NOT go to thankYou yet — that only happens on confirmed success.
 		this._lastDir = 'forward';
-		this._setState( { currentScreen: 'thankYou', submitted: true } );
+		this._setState( { currentScreen: 'submitting', submitted: false } );
 
 		// Normalise answers before sending — email confirm stores { email, confirm },
 		// the server only wants the plain email string.
@@ -468,29 +471,49 @@ export class FormApp {
 		}
 
 		try {
-			const res = await fetch( `${ apiUrl }/forms/${ formId }/submit`, {
+			const res  = await fetch( `${ apiUrl }/forms/${ formId }/submit`, {
 				method:  'POST',
 				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
 				body:    JSON.stringify( { answers } ),
 			} );
 
+			const body = await res.json().catch( () => ({}) );
+
 			if ( ! res.ok ) {
-				const body = await res.json().catch( () => ({}) );
 				if ( res.status === 422 && body.errors ) {
+					// Server found validation errors — navigate to the first affected question.
 					const firstErrId = Object.keys( body.errors )[ 0 ];
-					const idx = this._questions.findIndex( ( q ) => q.id === firstErrId );
+					const idx        = this._questions.findIndex( ( q ) => q.id === firstErrId );
+					this._lastDir = 'back';
 					this._setState( {
-						currentScreen: 'question',
-						currentIndex:  idx >= 0 ? idx : 0,
-						errors:        body.errors,
-						submitted:     false,
+						currentScreen:  'question',
+						currentIndex:   idx >= 0 ? idx : 0,
+						errors:         body.errors,
+						submitted:      false,
+					} );
+				} else {
+					// Non-validation server error — show a dedicated error screen.
+					this._lastDir = 'forward';
+					this._setState( {
+						currentScreen:   'submitError',
+						submitErrorMsg:  body.message || 'Something went wrong. Please try again.',
+						submitted:       false,
 					} );
 				}
 			} else {
-				// Trigger redirect if configured
+				// Success — now transition to the thank-you screen.
+				this._setState( { currentScreen: 'thankYou', submitted: true } );
 				this._handlePostSubmitRedirect();
 			}
-		} catch ( _err ) { /* stay on thank-you */ }
+		} catch ( _err ) {
+			// Network failure — show error screen.
+			this._lastDir = 'forward';
+			this._setState( {
+				currentScreen:  'submitError',
+				submitErrorMsg: 'Could not reach the server. Please check your connection and try again.',
+				submitted:      false,
+			} );
+		}
 	}
 
 	_handlePostSubmitRedirect() {
@@ -579,9 +602,11 @@ export class FormApp {
 		slot.appendChild( inner );
 
 		switch ( this.state.currentScreen ) {
-			case 'welcome':   this._renderWelcome( inner );   break;
-			case 'question':  this._renderQuestion( inner );  break;
-			case 'thankYou':  this._renderThankYou( inner );  break;
+			case 'welcome':     this._renderWelcome( inner );     break;
+			case 'question':    this._renderQuestion( inner );    break;
+			case 'thankYou':    this._renderThankYou( inner );    break;
+			case 'submitting':  this._renderSubmitting( inner );  break;
+			case 'submitError': this._renderSubmitError( inner ); break;
 		}
 	}
 
@@ -834,6 +859,62 @@ export class FormApp {
 			shareWrap.appendChild( btnsWrap );
 			inner.appendChild( shareWrap );
 		}
+	}
+
+	// ── Submitting spinner screen ─────────────────────────────────────────────
+
+	_renderSubmitting( inner ) {
+		const align = this._design.alignment ?? 'center';
+		inner.className += ` ff-align-${ align }`;
+
+		const spinner = document.createElement( 'div' );
+		spinner.className = 'ff-submitting-spinner';
+		inner.appendChild( spinner );
+
+		const p = document.createElement( 'p' );
+		p.className   = 'ff-desc';
+		p.textContent = 'Submitting…';
+		inner.appendChild( p );
+	}
+
+	// ── Submit error screen ───────────────────────────────────────────────────
+
+	_renderSubmitError( inner ) {
+		const align = this._design.alignment ?? 'center';
+		inner.className += ` ff-align-${ align }`;
+
+		const icon = document.createElement( 'div' );
+		icon.className = 'ff-submission-error-icon';
+		icon.innerHTML =
+			'<svg aria-hidden="true" width="40" height="40" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">' +
+  			'<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />' +
+			'</svg>';
+		inner.appendChild( icon );
+
+		const h1 = document.createElement( 'h1' );
+		h1.className   = 'ff-title';
+		h1.textContent = 'Submission failed';
+		inner.appendChild( h1 );
+
+		const p = document.createElement( 'p' );
+		p.className   = 'ff-desc';
+		p.textContent = this.state.submitErrorMsg || 'Something went wrong. Please try again.';
+		inner.appendChild( p );
+
+		const retryBtn = document.createElement( 'button' );
+		retryBtn.type        = 'button';
+		retryBtn.className   = 'ff-btn-primary';
+		retryBtn.textContent = 'Try again';
+		retryBtn.addEventListener( 'click', () => {
+			this._lastDir = 'back';
+			this._setState( {
+				currentScreen:  'question',
+				currentIndex:   this._questions.length - 1,
+				submitErrorMsg: '',
+				submitted:      false,
+			} );
+		} );
+		inner.appendChild( retryBtn );
 	}
 
 	// ── Keyboard ──────────────────────────────────────────────────────────────

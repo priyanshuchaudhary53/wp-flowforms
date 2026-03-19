@@ -584,6 +584,7 @@ class FlowForms_REST_API
       $q_id     = $question['id']       ?? '';
       $type     = $question['type']     ?? '';
       $settings = $question['settings'] ?? [];
+      $content  = $question['content']  ?? [];
       $answer   = $answers[$q_id]       ?? null;
 
       if (! empty($settings['required']) && $this->is_empty_answer($answer, $type)) {
@@ -591,7 +592,7 @@ class FlowForms_REST_API
         continue;
       }
 
-      $type_error = $this->validate_answer_type($type, $answer, $settings);
+      $type_error = $this->validate_answer_type($type, $answer, $settings, $content);
       if ($type_error) {
         $errors[$q_id] = $type_error;
       }
@@ -620,11 +621,12 @@ class FlowForms_REST_API
     return trim((string) $answer) === '';
   }
 
-  private function validate_answer_type(string $type, $answer, array $settings): ?string
+  private function validate_answer_type(string $type, $answer, array $settings, array $content = []): ?string
   {
     if ($this->is_empty_answer($answer, $type)) return null;
 
     switch ($type) {
+
       case 'email':
         if (! is_email((string) $answer)) {
           return __('Please enter a valid email address.', 'wp-flowforms');
@@ -636,11 +638,24 @@ class FlowForms_REST_API
           return __('Please enter a valid number.', 'wp-flowforms');
         }
         $num = (float) $answer;
-        if (isset($settings['min']) && $num < (float) $settings['min']) {
+        // Only apply min/max when explicitly set (non-empty string or numeric)
+        if (isset($settings['min']) && $settings['min'] !== '' && $num < (float) $settings['min']) {
           return sprintf(__('Value must be at least %s.', 'wp-flowforms'), $settings['min']);
         }
-        if (isset($settings['max']) && $num > (float) $settings['max']) {
+        if (isset($settings['max']) && $settings['max'] !== '' && $num > (float) $settings['max']) {
           return sprintf(__('Value must be at most %s.', 'wp-flowforms'), $settings['max']);
+        }
+        break;
+
+      case 'short_text':
+      case 'long_text':
+        $max_length = isset($settings['maxLength']) ? absint($settings['maxLength']) : 0;
+        if ($max_length > 0 && mb_strlen((string) $answer, 'UTF-8') > $max_length) {
+          return sprintf(
+            /* translators: %d: maximum character limit */
+            __('Please keep your answer under %d characters.', 'wp-flowforms'),
+            $max_length
+          );
         }
         break;
 
@@ -653,8 +668,60 @@ class FlowForms_REST_API
         break;
 
       case 'multiple_choice':
+        if (! is_array($answer) || count($answer) === 0) {
+          return __('Please make a selection.', 'wp-flowforms');
+        }
+        if (count($answer) > 1) {
+          return __('Please select only one option.', 'wp-flowforms');
+        }
+        // Validate each value is either a known option or an "Other" entry
+        $valid_values = array_map(
+          fn($o) => $o['value'] ?? $o['label'] ?? '',
+          $content['options'] ?? []
+        );
+        foreach ($answer as $val) {
+          if ($this->is_valid_choice_value($val, $valid_values, $settings)) continue;
+          return __('Invalid selection.', 'wp-flowforms');
+        }
+        break;
+
       case 'checkboxes':
         if (! is_array($answer)) {
+          return __('Invalid selection.', 'wp-flowforms');
+        }
+        $min_sel = absint($settings['minSelections'] ?? 0);
+        $max_sel = absint($settings['maxSelections'] ?? 0);
+        if ($min_sel > 0 && count($answer) < $min_sel) {
+          return sprintf(
+            /* translators: %d: minimum number of selections required */
+            _n(
+              'Please select at least %d option.',
+              'Please select at least %d options.',
+              $min_sel,
+              'wp-flowforms'
+            ),
+            $min_sel
+          );
+        }
+        if ($max_sel > 0 && count($answer) > $max_sel) {
+          return sprintf(
+            /* translators: %d: maximum number of selections allowed */
+            _n(
+              'Please select at most %d option.',
+              'Please select at most %d options.',
+              $max_sel,
+              'wp-flowforms'
+            ),
+            $max_sel
+          );
+        }
+        // Validate each value is a known option or an "Other" entry
+        $valid_values = array_map(
+          fn($o) => $o['value'] ?? $o['label'] ?? '',
+          $content['options'] ?? []
+        );
+        foreach ($answer as $val) {
+          if ($this->is_valid_choice_value($val, $valid_values, $settings)) continue;
           return __('Invalid selection.', 'wp-flowforms');
         }
         break;
@@ -669,14 +736,39 @@ class FlowForms_REST_API
     return null;
   }
 
+  /**
+   * Check whether a single choice value is acceptable.
+   *
+   * A value is valid if it matches one of the defined option values/labels,
+   * or if it is an "Other" entry in the format "__other__:<text>" and the
+   * question has allowOther enabled.
+   *
+   * @param  mixed  $val
+   * @param  array  $valid_values  Flat list of allowed option values.
+   * @param  array  $settings      Question settings array.
+   * @return bool
+   */
+  private function is_valid_choice_value($val, array $valid_values, array $settings): bool
+  {
+    if (in_array($val, $valid_values, true)) return true;
+
+    if (! empty($settings['allowOther']) && is_string($val) && str_starts_with($val, '__other__:')) {
+      $text = substr($val, 10);
+      return trim($text) !== '';
+    }
+
+    return false;
+  }
+
   private function sanitize_answers(array $answers, array $questions): array
   {
     $clean = [];
 
     foreach ($questions as $question) {
-      $q_id   = $question['id']   ?? '';
-      $type   = $question['type'] ?? '';
-      $answer = $answers[$q_id]   ?? null;
+      $q_id     = $question['id']       ?? '';
+      $type     = $question['type']     ?? '';
+      $settings = $question['settings'] ?? [];
+      $answer   = $answers[$q_id]       ?? null;
 
       if (is_null($answer)) {
         $clean[$q_id] = null;
@@ -693,9 +785,31 @@ class FlowForms_REST_API
           $clean[$q_id] = is_numeric($answer) ? $answer + 0 : 0;
           break;
 
+        case 'short_text':
+          $val = sanitize_text_field((string) $answer);
+          $max = absint($settings['maxLength'] ?? 0);
+          $clean[$q_id] = ($max > 0) ? mb_substr($val, 0, $max, 'UTF-8') : $val;
+          break;
+
+        case 'long_text':
+          $val = sanitize_textarea_field((string) $answer);
+          $max = absint($settings['maxLength'] ?? 0);
+          $clean[$q_id] = ($max > 0) ? mb_substr($val, 0, $max, 'UTF-8') : $val;
+          break;
+
         case 'multiple_choice':
         case 'checkboxes':
-          $clean[$q_id] = is_array($answer) ? array_map('sanitize_text_field', $answer) : [];
+          if (! is_array($answer)) {
+            $clean[$q_id] = [];
+            break;
+          }
+          $clean[$q_id] = array_map(function ($val) {
+            // Strip __other__: prefix — store only the plain text the user typed
+            if (is_string($val) && str_starts_with($val, '__other__:')) {
+              return sanitize_text_field(substr($val, 10));
+            }
+            return sanitize_text_field((string) $val);
+          }, $answer);
           break;
 
         case 'yes_no':
