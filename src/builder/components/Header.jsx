@@ -19,6 +19,7 @@ export default function Header() {
   const previewOpen    = useFormStore((s) => s.previewOpen);
   const setPreviewOpen = useFormStore((s) => s.setPreviewOpen);
   const hasDraft       = useFormStore((s) => s.hasDraft);
+  const hasPublished   = useFormStore((s) => s.hasPublished);
   const publishForm    = useFormStore((s) => s.publishForm);
   const revertForm     = useFormStore((s) => s.revertForm);
 
@@ -78,8 +79,8 @@ export default function Header() {
                 <span>Preview</span>
               </button>
 
-              {/* Revert — only visible when a draft exists */}
-              {hasDraft && (
+              {/* Revert — only visible when a draft exists AND a published version to go back to */}
+              {hasDraft && hasPublished && (
                 <button
                   onClick={() => setRevertDialogOpen(true)}
                   className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 hover:text-gray-900"

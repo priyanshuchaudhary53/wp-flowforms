@@ -47,6 +47,8 @@ export const useFormStore = create((set, get) => ({
 
   // Whether the server currently has an unpublished draft for this form.
   hasDraft: false,
+  // Whether a published version exists (false for brand-new forms).
+  hasPublished: false,
 
   // "saved" | "unsaved" | "saving"
   saveStatus: "saved",
@@ -357,7 +359,7 @@ export const useFormStore = create((set, get) => ({
       }
 
       // Draft is gone — button flips to "Published" state.
-      set({ hasDraft: false });
+      set({ hasDraft: false, hasPublished: true });
     } catch (err) {
       console.error("Publish failed:", err);
       throw err;
@@ -438,7 +440,7 @@ export const useFormStore = create((set, get) => ({
       if (!res.ok) throw new Error(`API Error: ${res.status}`);
       const data = await res.json();
       // `has_draft` from the API tells us whether a draft slot exists.
-      set({ form: data, hasDraft: data.has_draft ?? false, saveStatus: "saved" });
+      set({ form: data, hasDraft: data.has_draft ?? false, hasPublished: data.has_published ?? false, saveStatus: "saved" });
     } catch (err) {
       console.error("Failed to load form:", err);
       set({ error: "Failed to load form." });

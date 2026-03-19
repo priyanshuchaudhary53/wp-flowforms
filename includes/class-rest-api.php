@@ -40,21 +40,21 @@ class FlowForms_REST_API
       'callback' => [$this, 'update_form'],
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
- 
+
     // POST publish form (promote draft → published, clear draft)
     register_rest_route($ns, '/forms/(?P<id>\d+)/publish', [
       'methods'             => 'POST',
       'callback'            => [$this, 'publish_form'],
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
- 
+
     // POST revert form (discard draft, restore published into builder)
     register_rest_route($ns, '/forms/(?P<id>\d+)/revert', [
       'methods'             => 'POST',
       'callback'            => [$this, 'revert_form'],
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
- 
+
     // GET single form — public (renderer fetches this, no auth needed)
     register_rest_route($ns, '/forms/(?P<id>\d+)/public', [
       'methods'             => 'GET',
@@ -75,7 +75,9 @@ class FlowForms_REST_API
       ],
     ]);
   }
- 
+
+  // ── Content structure helpers ────────────────────────────────────────────
+
   /**
    * Decode the raw post_content into the dual-slot structure.
    *
@@ -91,13 +93,13 @@ class FlowForms_REST_API
     if (empty($raw)) {
       return ['published' => null, 'draft' => null];
     }
- 
+
     $decoded = wpff_decode($raw);
- 
+
     if (! is_array($decoded)) {
       return ['published' => null, 'draft' => null];
     }
- 
+
     // New dual-slot format: must have a "published" key at top level.
     if (array_key_exists('published', $decoded)) {
       return [
@@ -105,7 +107,7 @@ class FlowForms_REST_API
         'draft'     => $decoded['draft']     ?? null,
       ];
     }
- 
+
     // Legacy format: the entire decoded array IS the form content.
     // Treat it as published with no draft.
     return [
@@ -113,7 +115,7 @@ class FlowForms_REST_API
       'draft'     => null,
     ];
   }
- 
+
   /**
    * Encode both slots back into a single JSON string for post_content.
    *
@@ -128,7 +130,7 @@ class FlowForms_REST_API
       JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
     );
   }
- 
+
   /**
    * Encode a single form-data array to JSON, preserving emoji.
    *
@@ -139,7 +141,7 @@ class FlowForms_REST_API
   {
     return wp_json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
   }
- 
+
   /**
    * Write post_content directly via $wpdb to bypass wp_insert_post /
    * wp_update_post's internal wp_slash() call.
@@ -151,7 +153,7 @@ class FlowForms_REST_API
   private function save_post_content(int $post_id, string $json): bool
   {
     global $wpdb;
- 
+
     $result = $wpdb->update(
       $wpdb->posts,
       ['post_content' => $json],
@@ -159,88 +161,92 @@ class FlowForms_REST_API
       ['%s'],
       ['%d']
     );
- 
+
     if ($result !== false) {
       clean_post_cache($post_id);
     }
- 
+
     return $result !== false;
   }
- 
+
+  // ── Route handlers ────────────────────────────────────────────────────────
+
   public function get_form($request)
   {
     $form_id = absint($request['id']);
- 
+
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
     }
- 
+
     $post = get_post($form_id);
- 
+
     if (! $post || $post->post_type !== 'wpff_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
- 
+
     $slots     = $this->decode_slots($post->post_content);
     $has_draft = ! is_null($slots['draft']);
- 
+
     // Builder always loads the draft when one exists, otherwise published.
     $content = $has_draft ? $slots['draft'] : $slots['published'];
- 
+
     $form = [
       'id'           => $post->ID,
       'title'        => $post->post_title,
       'status'       => $post->post_status,
       'content'      => $content,
       'has_draft'    => $has_draft,
+      'has_published' => ! is_null($slots['published']),
       'date_created' => $post->post_date,
       'date_updated' => $post->post_modified,
       'public_url'   => FlowForms_Frontend::get_public_url($post->ID),
       'preview_url'  => FlowForms_Frontend::get_preview_url($post->ID),
     ];
- 
+
     return rest_ensure_response($form);
   }
- 
+
   public function create_form($request)
   {
     $form_name = sanitize_text_field($request->get_param('form_name'));
     $form_data = $request->get_param('form_data');
- 
+
     if (empty($form_name)) {
       $form_name = __('Untitled form', 'wp-flowforms');
     }
- 
+
     if (is_string($form_data)) {
       $decoded = json_decode($form_data, true);
       if (json_last_error() === JSON_ERROR_NONE) {
         $form_data = $decoded;
       }
     }
- 
+
     if (empty($form_data)) {
       $form_data = require WP_FLOWFORMS_PATH . 'includes/defaults/form-data.php';
     }
- 
+
     $post_id = wp_insert_post([
       'post_title'   => $form_name,
       'post_content' => '',
       'post_status'  => 'publish',
       'post_type'    => 'wpff_forms',
     ]);
- 
+
     if (is_wp_error($post_id)) {
       return new WP_REST_Response(['message' => 'Failed to create form.'], 500);
     }
- 
-    // New forms: store as published slot only, no draft.
-    $json  = $this->encode_slots($form_data, null);
+
+    // New forms: store content in the draft slot only so the user must
+    // explicitly hit Publish before the form goes live.
+    $json  = $this->encode_slots(null, $form_data);
     $saved = $this->save_post_content($post_id, $json);
- 
+
     if (! $saved) {
       return new WP_REST_Response(['message' => 'Failed to save form content.'], 500);
     }
- 
+
     return new WP_REST_Response([
       'success'   => true,
       'post_id'   => $post_id,
@@ -248,38 +254,38 @@ class FlowForms_REST_API
       'message'   => 'Form created successfully.',
     ], 201);
   }
- 
+
   public function update_form($request)
   {
     $form_id   = absint($request['id']);
     $form_name = $request->get_param('form_name');
     $form_data = $request->get_param('form_data');
- 
+
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
     }
- 
+
     $post = get_post($form_id);
- 
+
     if (! $post || $post->post_type !== 'wpff_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
- 
+
     $has_update = false;
- 
+
     if (! is_null($form_name)) {
       $result = wp_update_post([
         'ID'         => $form_id,
         'post_title' => sanitize_text_field($form_name),
       ], true);
- 
+
       if (is_wp_error($result)) {
         return new WP_REST_Response(['message' => 'Failed to update form name.'], 500);
       }
- 
+
       $has_update = true;
     }
- 
+
     if (! is_null($form_data)) {
       if (is_string($form_data)) {
         $decoded = json_decode($form_data, true);
@@ -287,32 +293,32 @@ class FlowForms_REST_API
           $form_data = $decoded;
         }
       }
- 
+
       if (! empty($form_data)) {
         // Always write to the DRAFT slot; never touch published during auto-save.
         $slots = $this->decode_slots($post->post_content);
         $json  = $this->encode_slots($slots['published'], $form_data);
         $saved = $this->save_post_content($form_id, $json);
- 
+
         if (! $saved) {
           return new WP_REST_Response(['message' => 'Failed to save form content.'], 500);
         }
- 
+
         $has_update = true;
       }
     }
- 
+
     if (! $has_update) {
       return new WP_Error('no_update_data', __('No data provided to update.', 'wp-flowforms'), ['status' => 400]);
     }
- 
+
     return new WP_REST_Response([
       'success'  => true,
       'form_id'  => $form_id,
       'message'  => 'Form updated successfully.',
     ], 200);
   }
- 
+
   /**
    * POST /forms/{id}/publish
    *
@@ -322,38 +328,38 @@ class FlowForms_REST_API
   public function publish_form($request)
   {
     $form_id = absint($request['id']);
- 
+
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
     }
- 
+
     $post = get_post($form_id);
- 
+
     if (! $post || $post->post_type !== 'wpff_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
- 
+
     $slots = $this->decode_slots($post->post_content);
- 
+
     if (is_null($slots['draft'])) {
       return new WP_Error('no_draft', __('No draft to publish.', 'wp-flowforms'), ['status' => 400]);
     }
- 
+
     // Promote draft → published, clear draft.
     $json  = $this->encode_slots($slots['draft'], null);
     $saved = $this->save_post_content($form_id, $json);
- 
+
     if (! $saved) {
       return new WP_REST_Response(['message' => 'Failed to publish form.'], 500);
     }
- 
+
     return new WP_REST_Response([
       'success' => true,
       'form_id' => $form_id,
       'message' => 'Form published successfully.',
     ], 200);
   }
- 
+
   /**
    * POST /forms/{id}/revert
    *
@@ -362,27 +368,27 @@ class FlowForms_REST_API
   public function revert_form($request)
   {
     $form_id = absint($request['id']);
- 
+
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
     }
- 
+
     $post = get_post($form_id);
- 
+
     if (! $post || $post->post_type !== 'wpff_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
- 
+
     $slots = $this->decode_slots($post->post_content);
- 
+
     // Clear the draft slot, keep published untouched.
     $json  = $this->encode_slots($slots['published'], null);
     $saved = $this->save_post_content($form_id, $json);
- 
+
     if (! $saved) {
       return new WP_REST_Response(['message' => 'Failed to revert form.'], 500);
     }
- 
+
     return new WP_REST_Response([
       'success'   => true,
       'form_id'   => $form_id,
@@ -390,7 +396,7 @@ class FlowForms_REST_API
       'message'   => 'Form reverted to published state.',
     ], 200);
   }
- 
+
   /**
    * GET /forms/{id}/public
    *
@@ -399,31 +405,31 @@ class FlowForms_REST_API
   public function get_form_public($request)
   {
     $form_id = absint($request['id']);
- 
+
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
     }
- 
+
     $post = get_post($form_id);
- 
+
     if (! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish') {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
- 
+
     $slots   = $this->decode_slots($post->post_content);
     $content = $slots['published'];
- 
+
     if (empty($content)) {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
- 
+
     return rest_ensure_response([
       'id'      => $post->ID,
       'title'   => $post->post_title,
       'content' => $content,
     ]);
   }
- 
+
   /**
    * Handle a form submission.
    */
@@ -433,78 +439,80 @@ class FlowForms_REST_API
     if (! wp_verify_nonce($nonce, 'wp_rest')) {
       return new WP_Error('invalid_nonce', __('Security check failed.', 'wp-flowforms'), ['status' => 403]);
     }
- 
+
     $form_id = absint($request['id']);
     $post    = get_post($form_id);
- 
+
     if (! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish') {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
- 
+
     // Submissions always validate against the PUBLISHED slot.
     $slots        = $this->decode_slots($post->post_content);
     $form_content = $slots['published'];
- 
+
     if (empty($form_content)) {
       return new WP_Error('invalid_form', __('Form content could not be read.', 'wp-flowforms'), ['status' => 500]);
     }
- 
+
     $raw_answers = $request->get_param('answers');
     $answers     = is_array($raw_answers) ? $raw_answers : [];
     $questions   = $form_content['questions'] ?? [];
     $errors      = [];
- 
+
     foreach ($questions as $question) {
       $q_id     = $question['id']       ?? '';
       $type     = $question['type']     ?? '';
       $settings = $question['settings'] ?? [];
       $answer   = $answers[$q_id]       ?? null;
- 
+
       if (! empty($settings['required']) && $this->is_empty_answer($answer, $type)) {
         $errors[$q_id] = __('This field is required.', 'wp-flowforms');
         continue;
       }
- 
+
       $type_error = $this->validate_answer_type($type, $answer, $settings);
       if ($type_error) {
         $errors[$q_id] = $type_error;
       }
     }
- 
+
     if (! empty($errors)) {
       return new WP_REST_Response(['errors' => $errors], 422);
     }
- 
+
     $sanitized = $this->sanitize_answers($answers, $questions);
     $entry_id  = $this->save_entry($form_id, $sanitized, $request);
- 
+
     if (! $entry_id) {
       return new WP_REST_Response(['message' => __('Failed to save submission.', 'wp-flowforms')], 500);
     }
- 
+
     do_action('wpff_form_submitted', $entry_id, $form_id, $sanitized, $form_content);
- 
+
     return new WP_REST_Response(['success' => true, 'entry_id' => $entry_id], 200);
   }
- 
+
+  // ── Private validation / sanitization helpers ─────────────────────────────
+
   private function is_empty_answer($answer, string $type): bool
   {
     if (is_null($answer))      return true;
     if (is_array($answer))     return count($answer) === 0;
     return trim((string) $answer) === '';
   }
- 
+
   private function validate_answer_type(string $type, $answer, array $settings): ?string
   {
     if ($this->is_empty_answer($answer, $type)) return null;
- 
+
     switch ($type) {
       case 'email':
         if (! is_email((string) $answer)) {
           return __('Please enter a valid email address.', 'wp-flowforms');
         }
         break;
- 
+
       case 'number':
         if (! is_numeric($answer)) {
           return __('Please enter a valid number.', 'wp-flowforms');
@@ -517,7 +525,7 @@ class FlowForms_REST_API
           return sprintf(__('Value must be at most %s.', 'wp-flowforms'), $settings['max']);
         }
         break;
- 
+
       case 'rating':
         $steps = absint($settings['steps'] ?? 5);
         $val   = (int) $answer;
@@ -525,70 +533,70 @@ class FlowForms_REST_API
           return __('Please select a valid rating.', 'wp-flowforms');
         }
         break;
- 
+
       case 'multiple_choice':
       case 'checkboxes':
         if (! is_array($answer)) {
           return __('Invalid selection.', 'wp-flowforms');
         }
         break;
- 
+
       case 'yes_no':
         if (! in_array($answer, ['yes', 'no'], true)) {
           return __('Please select yes or no.', 'wp-flowforms');
         }
         break;
     }
- 
+
     return null;
   }
- 
+
   private function sanitize_answers(array $answers, array $questions): array
   {
     $clean = [];
- 
+
     foreach ($questions as $question) {
       $q_id   = $question['id']   ?? '';
       $type   = $question['type'] ?? '';
       $answer = $answers[$q_id]   ?? null;
- 
+
       if (is_null($answer)) {
         $clean[$q_id] = null;
         continue;
       }
- 
+
       switch ($type) {
         case 'email':
           $clean[$q_id] = sanitize_email((string) $answer);
           break;
- 
+
         case 'number':
         case 'rating':
           $clean[$q_id] = is_numeric($answer) ? $answer + 0 : 0;
           break;
- 
+
         case 'multiple_choice':
         case 'checkboxes':
           $clean[$q_id] = is_array($answer) ? array_map('sanitize_text_field', $answer) : [];
           break;
- 
+
         case 'yes_no':
           $clean[$q_id] = in_array($answer, ['yes', 'no'], true) ? $answer : null;
           break;
- 
+
         default:
           $clean[$q_id] = sanitize_textarea_field((string) $answer);
           break;
       }
     }
- 
+
     return $clean;
   }
- 
+
   private function save_entry(int $form_id, array $sanitized_answers, WP_REST_Request $request)
   {
     global $wpdb;
- 
+
     $table  = $wpdb->prefix . 'flowforms_entries';
     $result = $wpdb->insert(
       $table,
@@ -601,10 +609,10 @@ class FlowForms_REST_API
       ],
       ['%d', '%s', '%s', '%s', '%s']
     );
- 
+
     return $result !== false ? (int) $wpdb->insert_id : false;
   }
- 
+
   private function get_ip_address(WP_REST_Request $request): string
   {
     $headers = [
@@ -613,7 +621,7 @@ class FlowForms_REST_API
       'HTTP_X_REAL_IP',
       'REMOTE_ADDR',
     ];
- 
+
     foreach ($headers as $header) {
       if (! empty($_SERVER[$header])) {
         $ip = trim(explode(',', $_SERVER[$header])[0]);
@@ -622,7 +630,7 @@ class FlowForms_REST_API
         }
       }
     }
- 
+
     return '';
   }
 }
