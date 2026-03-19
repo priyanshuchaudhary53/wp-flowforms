@@ -26,7 +26,7 @@
       "default": "16px"
     }
   },
-  "editorScript": "file:../../build/block/index.js",
-  "editorStyle":  "file:../../build/block/index.css",
-  "render":       "render.php"
+  "editorScript": "file:./index.js",
+  "editorStyle":  "file:./index.css",
+  "render":       "../../includes/admin/block/render.php"
 }

@@ -123,16 +123,16 @@ export class FormApp {
 		this._navEl = document.createElement( 'div' );
 		this._navEl.className = 'ff-nav-bar';
 		this._navEl.innerHTML =
-			'<button type="button" class="ff-btn-nav ff-btn-prev" aria-label="Previous">' +
-				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">' +
-					'<path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>' +
+			'<button type="button" class="ff-btn-nav ff-btn-prev">' +
+				'<svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">' +
+  				'<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />' +
 				'</svg>' +
-				'<span>Previous</span>' +
+				'<span class="sr-only">Previous</span>' +
 			'</button>' +
-			'<button type="button" class="ff-btn-nav ff-btn-next" aria-label="Next">' +
-				'<span class="ff-nav-next-label">Next</span>' +
-				'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16" aria-hidden="true">' +
-					'<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>' +
+			'<button type="button" class="ff-btn-nav ff-btn-next">' +
+				'<span class="ff-nav-next-label sr-only">Next</span>' +
+				'<svg aria-hidden="true" width="16" height="16"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">' +
+  				'<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />' +
 				'</svg>' +
 			'</button>';
 		this.container.appendChild( this._navEl );

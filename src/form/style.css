@@ -15,6 +15,18 @@
  *   ENTRY_STAGGER  80ms per element
  */
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* ── Container ───────────────────────────────────────────────────────────────── */
 
 .flowform-container {
@@ -158,10 +170,10 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   z-index:         50;
   display:         flex;
   align-items:     center;
-  justify-content: space-between;
+  justify-content: end;
+  gap: 4px;
   padding:         0 24px;
   /* subtle separator */
-  border-top:      1px solid rgba(0, 0, 0, 0.06);
   background:      transparent;
   box-sizing:      border-box;
 }
@@ -171,23 +183,22 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .ff-btn-nav {
   display:         inline-flex;
   align-items:     center;
-  gap:             6px;
-  padding:         8px 18px;
-  background:      transparent;
-  border:          1.5px solid var(--answer-color, #d1d5db);
+  justify-content: center;
+  width:           32px;
+  height:          32px;
+  background:      var(--btn-color, #111827);
+  color:           var(--btn-text-color, #ffffff);
+  border:          none;
   border-radius:   var(--corner-radius, 8px);
   font-size:       var(--fs-hint, 0.875rem);
   font-family:     inherit;
   font-weight:     500;
-  color:           var(--hint-color, #6b7280);
   cursor:          pointer;
   transition:      border-color 0.15s, color 0.15s, background-color 0.15s, opacity 0.15s;
 }
 
 .ff-btn-nav:hover:not(:disabled) {
-  border-color:     var(--btn-color, #111827);
-  color:            var(--btn-color, #111827);
-  background-color: color-mix(in srgb, var(--btn-color, #111827) 6%, transparent);
+  background-color: var(--btn-hover-color, #374151);
 }
 
 .ff-btn-nav:active:not(:disabled) {
@@ -199,7 +210,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .ff-btn-nav.ff-btn-nav--disabled {
   opacity: 0.35;
   cursor:  not-allowed;
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 /* ── Screen ─────────────────────────────────────────────────────────────────── */

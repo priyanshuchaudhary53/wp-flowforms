@@ -25,7 +25,7 @@ class FlowForms_Block {
 			return;
 		}
 
-		register_block_type( WP_FLOWFORMS_PATH . 'src/block/block.json' );
+		register_block_type( WP_FLOWFORMS_PATH . 'build/block/block.json' );
 	}
 }
 
