@@ -451,6 +451,13 @@ export class FormApp {
 	// ── Submission ────────────────────────────────────────────────────────────
 
 	async _submit() {
+		// In preview mode never hit the server — just show the thank-you screen.
+		if ( this.state.previewMode ) {
+			this._lastDir = 'forward';
+			this._setState( { currentScreen: 'thankYou', submitted: true } );
+			return;
+		}
+
 		const { apiUrl, nonce } = window.flowformPublicData ?? {};
 		const formId = Number( this.container.dataset.flowformId );
 
@@ -517,6 +524,9 @@ export class FormApp {
 	}
 
 	_handlePostSubmitRedirect() {
+		// Never redirect in preview mode.
+		if ( this.state.previewMode ) return;
+
 		const s   = this._thankYou?.settings ?? {};
 		const url = s.redirectUrl?.trim();
 		if ( ! url ) return;
