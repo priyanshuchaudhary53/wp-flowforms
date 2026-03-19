@@ -1,10 +1,11 @@
 /**
  * Webpack config for WP FlowForms.
  *
- * Extends the default @wordpress/scripts config to build two separate bundles:
+ * Extends the default @wordpress/scripts config to build three separate bundles:
  *
- *   build/builder/index.js   ← React admin form builder  (existing)
- *   build/form/index.js      ← Vanilla JS public renderer (new, Phase 1)
+ *   build/builder/index.js   ← React admin form builder
+ *   build/form/index.js      ← Vanilla JS public renderer
+ *   build/block/index.js     ← Gutenberg block editor script
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#provide-your-own-webpack-config
  */
@@ -26,6 +27,11 @@ module.exports = {
 		// The PHP frontend class (class-frontend.php) enqueues this only on
 		// pages that contain a [flowform] shortcode or block.
 		'form/index': path.resolve( __dirname, 'src/form/index.js' ),
+
+		// ── Gutenberg block editor script ──────────────────────────────────
+		// Compiled to build/block/index.js.
+		// Registered by class-block.php via register_block_type().
+		'block/index': path.resolve( __dirname, 'src/block/index.js' ),
 	},
 
 	output: {

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wp-flowforms/form",
+  "title": "FlowForm",
+  "category": "widgets",
+  "icon": "feedback",
+  "description": "Embed a WP FlowForm on your page.",
+  "keywords": ["form", "flowform", "survey", "contact"],
+  "textdomain": "wp-flowforms",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "formId": {
+      "type": "number",
+      "default": 0
+    },
+    "height": {
+      "type": "string",
+      "default": "520px"
+    },
+    "borderRadius": {
+      "type": "string",
+      "default": "16px"
+    }
+  },
+  "editorScript": "file:../../build/block/index.js",
+  "editorStyle":  "file:../../build/block/index.css",
+  "render":       "render.php"
+}

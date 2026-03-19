@@ -13,14 +13,14 @@ class FlowForms_REST_API
   {
     $ns = 'formflow/v1';
 
-    // GET all forms (for list page)
-    // register_rest_route($ns, '/forms', [
-    //   'methods'  => 'GET',
-    //   'callback' => [$this, 'get_forms'],
-    //   'permission_callback' => fn() => current_user_can('edit_posts'),
-    // ]);
+    // GET all forms
+    register_rest_route($ns, '/forms', [
+      'methods'             => 'GET',
+      'callback'            => [$this, 'get_forms'],
+      'permission_callback' => fn() => current_user_can('edit_posts'),
+    ]);
 
-		// GET single form (builder loads this)
+    // GET single form (builder loads this)
     register_rest_route($ns, '/forms/(?P<id>\d+)', [
       'methods'  => 'GET',
       'callback' => [$this, 'get_form'],
@@ -82,8 +82,6 @@ class FlowForms_REST_API
       ],
     ]);
   }
-
-  // ── Content structure helpers ────────────────────────────────────────────
 
   /**
    * Decode the raw post_content into the dual-slot structure.
@@ -176,7 +174,23 @@ class FlowForms_REST_API
     return $result !== false;
   }
 
-  // ── Route handlers ────────────────────────────────────────────────────────
+  public function get_forms($request)
+  {
+    $posts = get_posts([
+      'post_type'      => 'wpff_forms',
+      'post_status'    => 'publish',
+      'posts_per_page' => -1,
+      'orderby'        => 'title',
+      'order'          => 'ASC',
+    ]);
+
+    $forms = array_map(fn($p) => [
+      'id'    => $p->ID,
+      'title' => $p->post_title,
+    ], $posts);
+
+    return rest_ensure_response([]);
+  }
 
   public function get_form($request)
   {
@@ -535,8 +549,6 @@ class FlowForms_REST_API
 
     return new WP_REST_Response(['success' => true, 'entry_id' => $entry_id], 200);
   }
-
-  // ── Private validation / sanitization helpers ─────────────────────────────
 
   private function is_empty_answer($answer, string $type): bool
   {

@@ -1,0 +1,158 @@
+import { registerBlockType } from '@wordpress/blocks';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+  PanelBody,
+  SelectControl,
+  TextControl,
+  Placeholder,
+  Spinner,
+} from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
+import { store as coreStore } from '@wordpress/core-data';
+import { __ } from '@wordpress/i18n';
+import metadata from './block.json';
+
+registerBlockType( metadata.name, {
+  edit: Edit,
+  save: () => null, // dynamic block — rendered by PHP
+} );
+
+function Edit( { attributes, setAttributes } ) {
+  const { formId, height, borderRadius } = attributes;
+
+  const blockProps = useBlockProps( {
+    style: { width: '100%' },
+  } );
+
+  // Fetch all wpff_forms posts for the dropdown.
+  const { forms, isLoading } = useSelect( ( select ) => {
+    const query = { per_page: -1, status: 'publish', orderby: 'title', order: 'asc' };
+    const posts = select( coreStore ).getEntityRecords( 'postType', 'wpff_forms', query );
+    return {
+      forms:     posts ?? [],
+      isLoading: ! select( coreStore ).hasFinishedResolution(
+        'getEntityRecords',
+        [ 'postType', 'wpff_forms', query ]
+      ),
+    };
+  }, [] );
+
+  const formOptions = [
+    { label: __( '— Select a form —', 'wp-flowforms' ), value: 0 },
+    ...forms.map( ( f ) => ( { label: f.title?.rendered ?? `Form ${ f.id }`, value: f.id } ) ),
+  ];
+
+  const selectedForm = forms.find( ( f ) => f.id === formId ) ?? null;
+
+  return (
+    <>
+      { /* ── Inspector sidebar ───────────────────────────────────────── */ }
+      <InspectorControls>
+        <PanelBody title={ __( 'Form', 'wp-flowforms' ) } initialOpen={ true }>
+          { isLoading ? (
+            <Spinner />
+          ) : (
+            <SelectControl
+              label={ __( 'Select form', 'wp-flowforms' ) }
+              value={ formId }
+              options={ formOptions }
+              onChange={ ( val ) => setAttributes( { formId: Number( val ) } ) }
+            />
+          ) }
+        </PanelBody>
+
+        <PanelBody title={ __( 'Dimensions', 'wp-flowforms' ) } initialOpen={ true }>
+          <TextControl
+            label={ __( 'Height', 'wp-flowforms' ) }
+            help={ __( 'Any valid CSS value — px, vh, em, etc.', 'wp-flowforms' ) }
+            value={ height }
+            onChange={ ( val ) => setAttributes( { height: val } ) }
+            placeholder="520px"
+          />
+          <TextControl
+            label={ __( 'Border radius', 'wp-flowforms' ) }
+            help={ __( 'Any valid CSS value — px, %, em, etc.', 'wp-flowforms' ) }
+            value={ borderRadius }
+            onChange={ ( val ) => setAttributes( { borderRadius: val } ) }
+            placeholder="16px"
+          />
+        </PanelBody>
+      </InspectorControls>
+
+      { /* ── Canvas placeholder ───────────────────────────────────────── */ }
+      <div { ...blockProps }>
+        { ! formId ? (
+          <Placeholder
+            icon="feedback"
+            label={ __( 'FlowForm', 'wp-flowforms' ) }
+            instructions={ __( 'Select a form from the sidebar to embed it here.', 'wp-flowforms' ) }
+          />
+        ) : (
+          <FormPlaceholder
+            form={ selectedForm }
+            height={ height }
+            borderRadius={ borderRadius }
+          />
+        ) }
+      </div>
+    </>
+  );
+}
+
+function FormPlaceholder( { form, height, borderRadius } ) {
+  const title = form?.title?.rendered ?? __( 'Loading…', 'wp-flowforms' );
+
+  return (
+    <div
+      style={ {
+        width:           '100%',
+        minHeight:       height,
+        borderRadius:    borderRadius,
+        background:      '#f7f4ef',
+        display:         'flex',
+        flexDirection:   'column',
+        alignItems:      'center',
+        justifyContent:  'center',
+        gap:             '10px',
+        border:          '2px dashed #d1cdc5',
+        boxSizing:       'border-box',
+        padding:         '32px 24px',
+        fontFamily:      'inherit',
+      } }
+    >
+      { /* FlowForms label */ }
+      <span
+        style={ {
+          fontSize:      '0.7rem',
+          fontWeight:    700,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          color:         '#a09890',
+        } }
+      >
+        WP FlowForms
+      </span>
+
+      { /* Form title */ }
+      <span
+        style={ {
+          fontSize:   '1.05rem',
+          fontWeight: 600,
+          color:      '#1f1a15',
+        } }
+      >
+        { title }
+      </span>
+
+      { /* Hint */ }
+      <span
+        style={ {
+          fontSize: '0.8rem',
+          color:    '#a09890',
+        } }
+      >
+        { __( 'Rendered on the frontend', 'wp-flowforms' ) }
+      </span>
+    </div>
+  );
+}

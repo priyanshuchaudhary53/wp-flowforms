@@ -148,7 +148,7 @@ export default function PreviewModal({ open, onClose }) {
       {/* ── iframe area ─────────────────────────────────────────────────── */}
       <div className="flex-1 flex items-center justify-center overflow-hidden p-4 pt-1">
         <div
-          className={`relative transition-all duration-300 ring-1 ring-offset-1 ring-black/20 rounded-2xl overflow-hidden ${
+          className={`relative transition-all duration-300 ring-1 ring-black/20 rounded-2xl overflow-hidden ${
             isConstrained
               ? ""
               : "w-full h-full"

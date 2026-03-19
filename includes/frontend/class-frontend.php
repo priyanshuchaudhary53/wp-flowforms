@@ -56,25 +56,29 @@ class FlowForms_Frontend {
 	 * @return string HTML output.
 	 */
 	public function render_shortcode( array $atts ): string {
-		$atts = shortcode_atts( [ 'id' => 0 ], $atts, 'flowform' );
+		$atts = shortcode_atts( [
+			'id'            => 0,
+			'height'        => '520px',
+			'border_radius' => '16px',
+		], $atts, 'flowform' );
 
-		$form_id = absint( $atts['id'] );
+		$form_id       = absint( $atts['id'] );
+		$height        = sanitize_text_field( $atts['height'] );
+		$border_radius = sanitize_text_field( $atts['border_radius'] );
 
 		if ( ! $form_id ) {
 			return '<!-- FlowForms: missing id attribute -->';
 		}
 
-		// Verify the post exists and is the right type.
 		$post = get_post( $form_id );
 
 		if ( ! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish' ) {
 			return '<!-- FlowForms: form not found -->';
 		}
 
-		// Flag this form ID so assets get enqueued.
 		$this->flag_form_id( $form_id );
 
-		return $this->container_html( $form_id );
+		return $this->container_html( $form_id, false, $height, $border_radius );
 	}
 
 	/**
@@ -337,18 +341,37 @@ html { margin-top: 0 !important; }
 	/**
 	 * Return the container div HTML used by every embed method.
 	 *
-	 * @param int  $form_id
-	 * @param bool $fullpage  When true, adds data-ff-mode="fullpage" so the JS
-	 *                        renderer applies position:fixed to cover the viewport.
-	 *                        Shortcode embeds omit this attribute and render inline.
+	 * @param int    $form_id
+	 * @param bool   $fullpage       When true, adds data-ff-mode="fullpage".
+	 *                               Fullpage ignores height/border-radius (CSS handles it).
+	 * @param string $height         CSS min-height value (e.g. "520px", "80vh").
+	 * @param string $border_radius  CSS border-radius value (e.g. "16px").
 	 * @return string
 	 */
-	private function container_html( int $form_id, bool $fullpage = false ): string {
-		$mode = $fullpage ? ' data-ff-mode="fullpage"' : '';
+	private function container_html(
+		int    $form_id,
+		bool   $fullpage      = false,
+		string $height        = '520px',
+		string $border_radius = '16px'
+	): string {
+		if ( $fullpage ) {
+			// Full-page and preview modes: CSS controls sizing.
+			return sprintf(
+				'<div class="flowform-container" data-flowform-id="%d" data-ff-mode="fullpage"></div>',
+				$form_id
+			);
+		}
+
+		$style = sprintf(
+			'min-height:%s;border-radius:%s;',
+			esc_attr( $height ),
+			esc_attr( $border_radius )
+		);
+
 		return sprintf(
-			'<div class="flowform-container" data-flowform-id="%d"%s></div>',
+			'<div class="flowform-container" data-flowform-id="%d" style="%s"></div>',
 			$form_id,
-			$mode
+			$style
 		);
 	}
 

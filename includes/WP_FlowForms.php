@@ -99,6 +99,7 @@ final class WP_FlowForms
     require_once WP_FLOWFORMS_PATH . 'includes/class-form.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-rest-api.php';
     require_once WP_FLOWFORMS_PATH . 'includes/frontend/class-frontend.php';
+    require_once WP_FLOWFORMS_PATH . 'includes/admin/block/class-block.php';
 
     // Admin/Dashboard only includes
     if (is_admin()) {
