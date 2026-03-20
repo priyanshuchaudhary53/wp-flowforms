@@ -108,8 +108,6 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .ff-content-wrapper {
   position:       absolute;
   inset:          0;
-  /* leave room at bottom for nav bar */
-  bottom:         64px;
   z-index:        10;
   overflow:       hidden;
   display:        flex;
@@ -164,7 +162,6 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .ff-nav-bar {
   position:        absolute;
   bottom:          0;
-  left:            0;
   right:           0;
   height:          64px;
   z-index:         50;
@@ -230,7 +227,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   position:       relative;
   width:          100%;
   height:         100%;
-  display:        flex;
+  /* display:        flex; */
   flex-direction: column;
   overflow-y:     auto;
   overflow-x:     hidden;
@@ -248,7 +245,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   width:           100%;
   margin:          0 auto;
   /* top padding clears progress bar; bottom padding is provided by nav bar via content-wrapper */
-  padding:         64px 32px 32px;
+  padding:         64px 32px;
   gap:             24px;
   box-sizing:      border-box;
 }
@@ -487,6 +484,12 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   border-color:     var(--btn-color, #111827);
 }
 
+.ff-choice-item:focus,
+.ff-choice-item:focus-visible {
+  outline: none;
+  border: 1.5px solid var(--answer-color, #111827);
+}
+
 .ff-choice-radio,
 .ff-choice-checkbox {
   display:         flex;
@@ -543,6 +546,8 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 .ff-rating-star.is-active svg,
 .ff-rating-star svg[fill="currentColor"] { fill: var(--star-color, #f59e0b); }
+.ff-rating-star:focus,
+.ff-rating-star:focus-visible { outline: none; border: none; }
 
 /* ── Primary button ─────────────────────────────────────────────────────────── */
 
@@ -757,15 +762,15 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 
 .ff-loading-spinner {
-  width:         32px;
-  height:        32px;
-  border:        3px solid rgba(0, 0, 0, 0.1);
-  border-top-color: #111827;
-  border-radius: 50%;
-  animation:     ff-spin 0.7s linear infinite;
+  width:            32px;
+  height:           32px;
+  border:           3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--btn-color, #111827);
+  border-radius:    50%;
+  animation:        ff-spin 0.7s linear infinite;
 }
 
-.ff-loading-text { font-size: 0.875rem; color: #9ca3af; }
+.ff-loading-text { font-size: 0.875rem; color: var(--hint-color, #9ca3af); }
 
 .ff-error { padding: 32px; text-align: center; color: #ef4444; font-size: 0.875rem; }
 

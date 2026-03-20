@@ -272,9 +272,13 @@ class FlowForms_Frontend {
 	 */
 	private function render_full_page( int $form_id, string $title, bool $is_preview = false ): void {
 		if ( $is_preview ) {
-			// Hide the WP admin bar — it must not appear inside the preview iframe.
 			show_admin_bar( false );
 		}
+
+		$design = $this->get_form_design( $form_id );
+		$bg     = esc_attr( $design['bg_color']     ?? '#ffffff' );
+		$btn    = esc_attr( $design['button_color'] ?? '#111827' );
+		$hint   = esc_attr( $design['hint_color']   ?? '#9ca3af' );
 		?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -292,10 +296,9 @@ html, body {
 	margin: 0 !important;
 	padding: 0 !important;
 	height: 100%;
-	background: #f7f4ef;
+	overflow: hidden;
+	background: <?php echo $bg; ?>;
 }
-/* Suppress WP admin bar in preview iframe */
-/* #wpadminbar { display: none !important; } */
 html { margin-top: 0 !important; }
 #flowform-full-page {
 	min-height: 100vh;
@@ -303,6 +306,11 @@ html { margin-top: 0 !important; }
 	align-items: center;
 	justify-content: center;
 	padding: 32px 16px;
+	position: relative;
+	z-index: 99999;
+	background-color: <?php echo $bg; ?>;
+	--btn-color: <?php echo $btn; ?>;
+	--hint-color: <?php echo $hint; ?>;
 }
 </style>
 </head>
@@ -339,6 +347,57 @@ html { margin-top: 0 !important; }
 	}
 
 	/**
+	 * Read the design object from a form's published slot, merged with defaults.
+	 *
+	 * @param  int   $form_id
+	 * @return array
+	 */
+	private function get_form_design( int $form_id ): array {
+		$defaults = [
+			'bg_color'     => '#ffffff',
+			'button_color' => '#111827',
+			'hint_color'   => '#9ca3af',
+		];
+
+		$post = get_post( $form_id );
+		if ( ! $post ) return $defaults;
+
+		$decoded = wpff_decode( $post->post_content );
+		if ( ! is_array( $decoded ) ) return $defaults;
+
+		// Support both legacy (flat) and dual-slot formats.
+		$content = isset( $decoded['published'] ) ? ( $decoded['published'] ?? [] ) : $decoded;
+		$design  = is_array( $content['design'] ?? null ) ? $content['design'] : [];
+
+		return array_merge( $defaults, array_filter( $design, fn( $v ) => ! empty( $v ) ) );
+	}
+
+	/**
+	 * Build a <style> block that pre-applies the form's key design tokens to
+	 * a given CSS selector before the JS renderer runs.
+	 *
+	 * This eliminates the flash of unstyled background / spinner colours that
+	 * occurs between page load and the JS injecting its own token <style>.
+	 *
+	 * @param  string $selector  CSS selector to scope the rules to.
+	 * @param  array  $design    Design array from get_form_design().
+	 * @return string
+	 */
+	private function design_vars_css( string $selector, array $design ): string {
+		$bg    = esc_attr( $design['bg_color']     ?? '#ffffff' );
+		$btn   = esc_attr( $design['button_color'] ?? '#111827' );
+		$hint  = esc_attr( $design['hint_color']   ?? '#9ca3af' );
+
+		return sprintf(
+			'<style>%s{background-color:%s;--btn-color:%s;--hint-color:%s;}</style>',
+			$selector,
+			$bg,
+			$btn,
+			$hint
+		);
+	}
+
+	/**
 	 * Return the container div HTML used by every embed method.
 	 *
 	 * @param int    $form_id
@@ -348,30 +407,33 @@ html { margin-top: 0 !important; }
 	 * @param string $border_radius  CSS border-radius value (e.g. "16px").
 	 * @return string
 	 */
-	private function container_html(
+	public function container_html(
 		int    $form_id,
 		bool   $fullpage      = false,
 		string $height        = '520px',
 		string $border_radius = '16px'
 	): string {
+		$design     = $this->get_form_design( $form_id );
+		$selector   = sprintf( '[data-flowform-id="%d"]', $form_id );
+		$style_tag  = $this->design_vars_css( $selector, $design );
+
 		if ( $fullpage ) {
-			// Full-page and preview modes: CSS controls sizing.
-			return sprintf(
+			return $style_tag . sprintf(
 				'<div class="flowform-container" data-flowform-id="%d" data-ff-mode="fullpage"></div>',
 				$form_id
 			);
 		}
 
-		$style = sprintf(
+		$inline_style = sprintf(
 			'min-height:%s;border-radius:%s;',
 			esc_attr( $height ),
 			esc_attr( $border_radius )
 		);
 
-		return sprintf(
+		return $style_tag . sprintf(
 			'<div class="flowform-container" data-flowform-id="%d" style="%s"></div>',
 			$form_id,
-			$style
+			$inline_style
 		);
 	}
 
