@@ -468,8 +468,8 @@ html { margin-top: 0 !important; }
 		<div class="wpff-trashed-notice" style="
 			display:flex;align-items:flex-start;gap:10px;
 			background:#fff8e1;border-left:4px solid #f0b429;
-			padding:14px 16px;border-radius:4px;
-			font-family:inherit;font-size:13px;line-height:1.5;
+			padding:14px 16px;font-family:inherit;
+			font-size:13px;line-height:1.5;
 			box-sizing:border-box;max-width:100%;
 		">
 			<span style="font-size:18px;line-height:1;flex-shrink:0;">⚠️</span>

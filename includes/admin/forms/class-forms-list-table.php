@@ -60,10 +60,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
     $this->current_view = ($status === 'trash') ? 'trash' : 'all';
   }
 
-    // -----------------------------------------------------------------------
-    // Columns
-    // -----------------------------------------------------------------------
-
   /**
    * Define table columns.
    *
@@ -96,10 +92,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
       'created' => ['date', false],
     ];
   }
-
-    // -----------------------------------------------------------------------
-    // Cell renderers
-    // -----------------------------------------------------------------------
 
   /**
    * Checkbox column.
@@ -317,10 +309,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
     return apply_filters('wpff_overview_column_value', '', $form, $column_name);
   }
 
-    // -----------------------------------------------------------------------
-    // Bulk actions
-    // -----------------------------------------------------------------------
-
   /**
    * Bulk actions dropdown items.
    *
@@ -342,10 +330,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
       'duplicate' => __('Duplicate', 'wp-flowforms'),
     ];
   }
-
-    // -----------------------------------------------------------------------
-    // Views (All | Trash tabs)
-    // -----------------------------------------------------------------------
 
   /**
    * Build the view tab links.
@@ -383,10 +367,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
 
     return $views;
   }
-
-    // -----------------------------------------------------------------------
-    // Data preparation
-    // -----------------------------------------------------------------------
 
   /**
    * Fetch forms and set pagination.
