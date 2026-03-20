@@ -120,10 +120,6 @@ class FlowForms_Forms_Overview
     );
   }
 
-    // -----------------------------------------------------------------------
-    // Action processing (trash / restore / delete / duplicate)
-    // -----------------------------------------------------------------------
-
   /**
    * Process single-row and bulk actions before output.
    *
@@ -245,10 +241,6 @@ class FlowForms_Forms_Overview
 
     return ! is_wp_error($new_id) && $new_id > 0;
   }
-
-    // -----------------------------------------------------------------------
-    // Output
-    // -----------------------------------------------------------------------
 
   /**
    * Render the full overview page.
