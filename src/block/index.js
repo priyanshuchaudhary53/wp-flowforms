@@ -6,6 +6,7 @@ import {
   TextControl,
   Placeholder,
   Spinner,
+  Notice,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { store as coreStore } from '@wordpress/core-data';
@@ -37,12 +38,19 @@ function Edit( { attributes, setAttributes } ) {
     };
   }, [] );
 
+  // Separately check the status of the currently selected form (may be trashed).
+  const selectedPost = useSelect( ( select ) => {
+    if ( ! formId ) return null;
+    return select( coreStore ).getEntityRecord( 'postType', 'wpff_forms', formId ) ?? null;
+  }, [ formId ] );
+
+  const isTrashed    = !! ( selectedPost && selectedPost.status === 'trash' );
+  const selectedForm = isTrashed ? null : ( forms.find( ( f ) => f.id === formId ) ?? null );
+
   const formOptions = [
     { label: __( '— Select a form —', 'wp-flowforms' ), value: 0 },
     ...forms.map( ( f ) => ( { label: f.title?.rendered ?? `Form ${ f.id }`, value: f.id } ) ),
   ];
-
-  const selectedForm = forms.find( ( f ) => f.id === formId ) ?? null;
 
   return (
     <>
@@ -86,6 +94,11 @@ function Edit( { attributes, setAttributes } ) {
             icon="feedback"
             label={ __( 'FlowForm', 'wp-flowforms' ) }
             instructions={ __( 'Select a form from the sidebar to embed it here.', 'wp-flowforms' ) }
+          />
+        ) : isTrashed ? (
+          <TrashedFormWarning
+            formId={ formId }
+            formTitle={ selectedPost?.title?.rendered }
           />
         ) : (
           <FormPlaceholder
@@ -154,5 +167,22 @@ function FormPlaceholder( { form, height, borderRadius } ) {
         { __( 'Rendered on the frontend', 'wp-flowforms' ) }
       </span>
     </div>
+  );
+}
+
+function TrashedFormWarning( { formId, formTitle } ) {
+  const label = formTitle || `Form #${ formId }`;
+  const restoreUrl = `${ window.wpff?.adminUrl ?? '' }admin.php?page=wpff_forms&status=trash`;
+
+  return (
+    <Notice status="warning" isDismissible={ false }>
+      <strong>{ label }</strong>
+      { ' ' }
+      { __( 'is in the Trash and will not be visible to visitors.', 'wp-flowforms' ) }
+      { ' ' }
+      <a href={ restoreUrl } target="_blank" rel="noopener noreferrer">
+        { __( 'Go to Trash to restore it →', 'wp-flowforms' ) }
+      </a>
+    </Notice>
   );
 }

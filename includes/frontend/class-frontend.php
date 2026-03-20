@@ -72,8 +72,12 @@ class FlowForms_Frontend {
 
 		$post = get_post( $form_id );
 
-		if ( ! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish' ) {
+		if ( ! $post || $post->post_type !== 'wpff_forms' ) {
 			return '<!-- FlowForms: form not found -->';
+		}
+
+		if ( $post->post_status !== 'publish' ) {
+			return $this->trashed_form_notice( $form_id );
 		}
 
 		$this->flag_form_id( $form_id );
@@ -192,11 +196,8 @@ class FlowForms_Frontend {
 		$post = get_post( $form_id );
 
 		if ( ! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish' ) {
-			wp_die(
-				esc_html__( 'Form not found.', 'wp-flowforms' ),
-				esc_html__( 'Form Not Found', 'wp-flowforms' ),
-				[ 'response' => 404 ]
-			);
+			$this->render_form_unavailable_page();
+			exit;
 		}
 
 		// Enqueue assets manually for this bare page.
@@ -435,6 +436,110 @@ html { margin-top: 0 !important; }
 			$form_id,
 			$inline_style
 		);
+	}
+
+	/**
+	 * Return the trashed-form notice HTML.
+	 *
+	 * Admins see an inline notice with a restore link.
+	 * Regular visitors see nothing (empty string).
+	 *
+	 * @param int $form_id
+	 * @return string
+	 */
+	public function trashed_form_notice( int $form_id ): string {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return '';
+		}
+
+		$restore_url = wp_nonce_url(
+			add_query_arg(
+				[ 'page' => 'wpff_forms', 'action' => 'restore', 'form_id' => $form_id, 'status' => 'trash' ],
+				admin_url( 'admin.php' )
+			),
+			'wpff_restore_form_nonce'
+		);
+
+		$post  = get_post( $form_id );
+		$label = $post ? esc_html( $post->post_title ) : sprintf( __( 'Form #%d', 'wp-flowforms' ), $form_id );
+
+		ob_start();
+		?>
+		<div class="wpff-trashed-notice" style="
+			display:flex;align-items:flex-start;gap:10px;
+			background:#fff8e1;border-left:4px solid #f0b429;
+			padding:14px 16px;border-radius:4px;
+			font-family:inherit;font-size:13px;line-height:1.5;
+			box-sizing:border-box;max-width:100%;
+		">
+			<span style="font-size:18px;line-height:1;flex-shrink:0;">⚠️</span>
+			<span>
+				<strong><?php echo $label; ?></strong>
+				<?php esc_html_e( 'is in the Trash and is not visible to visitors.', 'wp-flowforms' ); ?>
+				&nbsp;<a href="<?php echo esc_url( $restore_url ); ?>"
+					style="color:#92400e;text-decoration:underline;font-weight:600;white-space:nowrap;">
+					<?php esc_html_e( 'Restore form', 'wp-flowforms' ); ?>
+				</a>
+			</span>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render a minimal standalone HTML page for unavailable (trashed/deleted) forms.
+	 * Used by handle_full_page_embed() when the form cannot be served.
+	 * Sets a 404 response code and outputs a polite message — no WP chrome.
+	 */
+	private function render_form_unavailable_page(): void {
+		status_header( 404 );
+		header( 'Content-Type: text/html; charset=utf-8' );
+		?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title><?php esc_html_e( 'Form Not Available', 'wp-flowforms' ); ?></title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+	height: 100%; background: #fafafa;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	color: #1f2937;
+}
+.wpff-unavailable {
+	min-height: 100vh; display: flex; flex-direction: column;
+	align-items: center; justify-content: center;
+	padding: 40px 24px; text-align: center; gap: 16px;
+}
+.wpff-unavailable__icon {
+	width: 64px; height: 64px; border-radius: 50%;
+	background: #f3f4f6; display: flex; align-items: center;
+	justify-content: center; font-size: 28px;
+}
+.wpff-unavailable__title {
+	font-size: 22px; font-weight: 600; color: #111827;
+}
+.wpff-unavailable__desc {
+	font-size: 15px; color: #6b7280; max-width: 360px; line-height: 1.6;
+}
+</style>
+</head>
+<body>
+<div class="wpff-unavailable">
+	<div class="wpff-unavailable__icon">📋</div>
+	<h1 class="wpff-unavailable__title">
+		<?php esc_html_e( 'This form is no longer available.', 'wp-flowforms' ); ?>
+	</h1>
+	<p class="wpff-unavailable__desc">
+		<?php esc_html_e( 'The form you are looking for has been removed or is currently unavailable.', 'wp-flowforms' ); ?>
+	</p>
+</div>
+</body>
+</html>
+		<?php
 	}
 
 	/**

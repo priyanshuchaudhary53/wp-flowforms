@@ -26,6 +26,14 @@ if ( ! $post || $post->post_type !== 'wpff_forms' ) {
 	return;
 }
 
+if ( $post->post_status !== 'publish' ) {
+	$frontend = wp_flowforms()->obj( 'frontend' );
+	if ( $frontend ) {
+		echo $frontend->trashed_form_notice( $form_id );
+	}
+	return;
+}
+
 $frontend = wp_flowforms()->obj( 'frontend' );
 
 if ( ! $frontend ) {
