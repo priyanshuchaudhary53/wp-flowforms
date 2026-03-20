@@ -178,7 +178,7 @@ class FlowForms_Form_Handler
     $post_type = array_intersect((array) $post_type, self::POST_TYPES);
 
     // If no valid (allowed) post types are provided, use the default one.
-    $args['post_type'] = ! empty($post_type) ? $post_type : 'wpforms';
+    $args['post_type'] = ! empty($post_type) ? $post_type : 'wpff_forms';
 
     $forms = get_posts($args);
 

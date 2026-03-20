@@ -106,13 +106,14 @@ final class WP_FlowForms
       require_once WP_FLOWFORMS_PATH . 'includes/admin/class-menu.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/class-settings.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/builder/class-builder.php';
+      require_once WP_FLOWFORMS_PATH . 'includes/admin/forms/class-forms-overview.php';
     }
   }
 
   public function objects()
   {
-    $this->registry['form']     = new FlowForms_Form_Handler();
-    $this->registry['frontend'] = new FlowForms_Frontend();
+    $this->registry['form']           = new FlowForms_Form_Handler();
+    $this->registry['frontend']       = new FlowForms_Frontend();
 
     /**
      * Executes when all the WPForms stuff was loaded.

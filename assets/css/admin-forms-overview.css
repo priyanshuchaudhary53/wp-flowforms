@@ -1,0 +1,126 @@
+/* =========================================================================
+   WP FlowForms — All Forms overview page styles
+   ========================================================================= */
+
+.wpff-admin-wrap {
+  margin-top: 20px;
+}
+
+.wpff-admin-wrap h1.wp-heading-inline {
+  font-size: 23px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.wpff-add-new-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.wpff-overview-content {
+  margin-top: 12px;
+}
+
+.wpff-admin-wrap .row-actions > span {
+  float: none;
+}
+
+.wpff-date-label {
+  color: #646970;
+  font-size: 12px;
+}
+
+#wpff-forms-table .column-shortcode code {
+  display: inline-block;
+  font-size: 12px;
+  background: #f6f7f7;
+  border: 1px solid #dcdcde;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #3c434a;
+  user-select: all;
+  cursor: text;
+  white-space: nowrap;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#wpff-forms-table .column-cb {
+  width: 2.2em;
+}
+#wpff-forms-table .column-name {
+  width: 34%;
+}
+#wpff-forms-table .column-shortcode {
+  width: 26%;
+}
+#wpff-forms-table .column-author {
+  width: 14%;
+}
+#wpff-forms-table .column-created {
+  width: 12%;
+}
+
+#wpff-forms-table tbody tr:hover td {
+  background-color: #f6f7f7;
+}
+
+/* -----------------------------------------------------------------------
+   Empty state
+   ----------------------------------------------------------------------- */
+.wpff-empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.wpff-empty-state__icon {
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.wpff-empty-state__icon .dashicons {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #c3c4c7;
+}
+
+.wpff-empty-state__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1d2327;
+  margin: 0 0 12px;
+}
+
+.wpff-empty-state__desc {
+  font-size: 15px;
+  color: #646970;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+.wpff-empty-state .button-hero {
+  font-size: 15px !important;
+  padding: 8px 22px !important;
+  height: auto !important;
+}
+
+/* -----------------------------------------------------------------------
+   Empty Trash button
+   ----------------------------------------------------------------------- */
+.wpff-empty-trash {
+  margin-left: 8px;
+  border-color: #b32d2e !important;
+  color: #b32d2e !important;
+  background: transparent !important;
+}
+
+.wpff-empty-trash:hover {
+  background: #b32d2e !important;
+  color: #fff !important;
+}
