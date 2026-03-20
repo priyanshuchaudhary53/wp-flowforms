@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
 
 export default function Header() {
   const formId         = useFormStore((s) => s.formId);
@@ -97,18 +98,27 @@ export default function Header() {
               {/* Publish / Published */}
               {hasDraft ? (
                 // Active state — draft exists and differs from published
-                <button
-                  onClick={handlePublish}
-                  disabled={publishing}
-                  className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium bg-gray-900 text-white cursor-pointer transition-colors hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <RocketLaunchIcon
-                    width={15}
-                    height={15}
-                    className="stroke-2 shrink-0"
-                  />
-                  <span>{publishing ? "Publishing…" : "Publish"}</span>
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={handlePublish}
+                      disabled={publishing}
+                      className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium bg-gray-900 text-white cursor-pointer transition-colors hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <RocketLaunchIcon
+                        width={15}
+                        height={15}
+                        className="stroke-2 shrink-0"
+                      />
+                      <span>{publishing ? "Publishing…" : "Publish"}</span>
+                    </button>
+                  </TooltipTrigger>
+                  {!publishing && (
+                    <TooltipContent className="pointer-events-none">
+                      <p>Make your changes live</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
               ) : (
                 // Inactive state — no draft, form is up to date
                 <button
