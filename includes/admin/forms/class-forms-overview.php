@@ -48,12 +48,50 @@ class FlowForms_Forms_Overview
       return;
     }
 
+    // Register the "Number of forms per page" screen option.
+    add_action('load-toplevel_page_wpff_forms', [$this, 'register_screen_options']);
+
     // Process bulk / single-row actions before any output.
     $this->process_actions();
 
-    add_action('current_screen',      [$this, 'init_list_table']);
+    add_action('current_screen',        [$this, 'init_list_table']);
     add_action('admin_enqueue_scripts', [$this, 'enqueues']);
-    add_action('wpff_admin_page',       [$this, 'output']);
+    add_action('wpff_admin_page',        [$this, 'output']);
+  }
+
+  /**
+   * Register screen options for the overview page.
+   *
+   * @since 1.0.0
+   */
+  public function register_screen_options()
+  {
+    add_screen_option('per_page', [
+      'label'   => __('Number of forms per page', 'wp-flowforms'),
+      'default' => self::PER_PAGE_DEFAULT,
+      'option'  => 'wpff_forms_per_page',
+    ]);
+
+    // Allow WP to save our custom screen option key.
+    add_filter('set_screen_option_wpff_forms_per_page', [$this, 'save_screen_option'], 10, 3);
+  }
+
+  /**
+   * Whitelist and sanitize the per-page screen option value when saved.
+   *
+   * Without this filter WP silently discards the value.
+   *
+   * @since 1.0.0
+   *
+   * @param mixed  $status Existing value (false to reject).
+   * @param string $option Option name.
+   * @param mixed  $value  Submitted value.
+   *
+   * @return int
+   */
+  public function save_screen_option($status, $option, $value): int
+  {
+    return (int) $value;
   }
 
   /**
