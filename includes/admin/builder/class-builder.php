@@ -69,8 +69,10 @@ class FlowForms_Builder
     }
 
     if ($form_id) {
-      // The default view for with an existing form is the fields panel.
-      $this->view = isset($_GET['view']) ? sanitize_key($_GET['view']) : 'fields';
+      // The default view for with an existing form is the builder panel.
+      $allowed_views  = ['builder', 'settings', 'share'];
+      $requested_view = isset($_GET['view']) ? sanitize_key($_GET['view']) : 'builder';
+      $this->view     = in_array($requested_view, $allowed_views, true) ? $requested_view : 'builder';
     } else {
       // The default view for the new form is the setup panel.
       $this->view = isset($_GET['view']) ? sanitize_key($_GET['view']) : 'setup';
@@ -80,7 +82,7 @@ class FlowForms_Builder
       wp_die(esc_html__('Sorry, you are not allowed to create new forms.', 'wp-flowforms'), 403);
     }
 
-    if ($this->view === 'fields' && ! current_user_can('manage_options')) {
+    if ($this->view === 'builder' && ! current_user_can('manage_options')) {
       wp_die(esc_html__('Sorry, you are not allowed to edit this form.', 'wp-flowforms'), 403);
     }
 
@@ -189,8 +191,10 @@ class FlowForms_Builder
     wp_localize_script('wp-flowforms-builder', 'formflowData', [
       'apiUrl'        => rest_url('formflow/v1'),
       'adminFormsUrl' => admin_url('admin.php?page=wpff_forms'),
+      'builderUrl'    => admin_url('admin.php?page=wpff_form_builder'),
       'nonce'         => wp_create_nonce('wp_rest'),
       'formId'        => intval($_GET['form_id'] ?? 0),
+      'view'          => $this->view,
       'previewUrl'    => intval($_GET['form_id'] ?? 0)
                            ? FlowForms_Frontend::get_preview_url(intval($_GET['form_id']))
                            : '',

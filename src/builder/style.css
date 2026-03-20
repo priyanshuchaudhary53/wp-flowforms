@@ -35,6 +35,7 @@ html, body {
   right: 0;
   bottom: 0;
   background-color: #fff;
+  overflow: auto;
 }
 
 .wp-flowforms_page_wpff_form_builder #wpadminbar {

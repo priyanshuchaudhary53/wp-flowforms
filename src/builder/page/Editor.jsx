@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useFormStore } from "../store/useFormStore";
 import LeftPanel from "../components/LeftPanel";
 import CenterPanel from "../components/CenterPanel";
@@ -7,21 +6,10 @@ import AddBlockDialog from "../lookup/AddBlockDialog";
 import DesignDrawer from "../lookup/DesignDrawer";
 
 export default function Editor({ className }) {
-  const form = useFormStore((state) => state.form);
   const loading = useFormStore((state) => state.loading);
-  const error = useFormStore((state) => state.error);
-  const fetchForm = useFormStore((state) => state.fetchForm);
-
-  useEffect(() => {
-    fetchForm();
-  }, [fetchForm]);
 
   if (loading) {
-    return <div className={className}>Loading form...</div>;
-  }
-
-  if (error) {
-    return <div className={className}>⚠️ {error}</div>;
+    return <div className={`flex-1 ${className}`}>{/* TODO: skeleton loader */}</div>;
   }
 
   return (

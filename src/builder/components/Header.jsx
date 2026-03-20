@@ -28,7 +28,18 @@ export default function Header() {
   const [publishing, setPublishing]             = useState(false);
   const [reverting, setReverting]               = useState(false);
 
-  const isSetup = Number(formId) === 0;
+  const isSetup      = Number(formId) === 0;
+  const currentView  = formflowData.view ?? "builder";
+
+  // Build a URL for a given view, preserving form_id
+  const viewUrl = (v) =>
+    `${formflowData.builderUrl}&form_id=${formId}&view=${v}`;
+
+  const TABS = [
+    { id: "builder",  label: "Builder"  },
+    { id: "settings", label: "Settings" },
+    { id: "share",    label: "Share"    },
+  ];
 
   const closeHandler = () => {
     window.location.href = formflowData.adminFormsUrl;
@@ -61,14 +72,36 @@ export default function Header() {
   return (
     <>
       <nav className="p-2 md:px-4 flex justify-between items-center h-14 bg-white border-b border-slate-200">
-        <div className="flex items-center">
-          <div className="text-gray-900 text-2xl font-semibold tracking-tight">
+        {/* ── Left: logo + form name ─────────────────────────────────── */}
+        <div className="flex items-center min-w-0 flex-1">
+          <div className="text-gray-900 text-2xl font-semibold tracking-tight shrink-0">
             WP FlowForms
           </div>
           {!isSetup && <FormName />}
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* ── Centre: view tabs ──────────────────────────────────────── */}
+        {!isSetup && (
+          <div className="flex items-center gap-0.5">
+            {TABS.map((tab) => (
+              <a
+                key={tab.id}
+                href={viewUrl(tab.id)}
+                className={[
+                  "px-3.5 h-8 inline-flex items-center rounded-md text-sm font-medium transition-colors",
+                  currentView === tab.id
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+                ].join(" ")}
+              >
+                {tab.label}
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* ── Right: action buttons ──────────────────────────────────── */}
+        <div className="flex items-center gap-2 flex-1 justify-end">
           {!isSetup && (
             <>
               {/* Preview */}
