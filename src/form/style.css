@@ -171,7 +171,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   display:         flex;
   align-items:     center;
   justify-content: end;
-  gap: 4px;
+  gap:             4px;
   padding:         0 24px;
   /* subtle separator */
   background:      transparent;
@@ -211,6 +211,17 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   opacity: 0.35;
   cursor:  not-allowed;
   /* pointer-events: none; */
+}
+
+.ff-btn-nav:focus {
+  outline: none;
+  border: none
+}
+
+.ff-btn-nav:focus-visible {
+  outline: var(--btn-color, #111827) solid 2px;
+  outline-offset: 2px;
+  z-index: 500;
 }
 
 /* ── Screen ─────────────────────────────────────────────────────────────────── */
@@ -554,6 +565,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 .ff-btn-primary:hover  { background-color: var(--btn-hover-color, #374151); }
 .ff-btn-primary:active { transform: scale(0.98); }
+
+.ff-btn-primary:focus { border: none; outline: none; }
+.ff-btn-primary:focus-visible {
+  outline: var(--btn-color, #111827) solid 2px;
+  outline-offset: 2px;
+  z-index: 500;
+}
 
 /* ── Actions row ────────────────────────────────────────────────────────────── */
 
