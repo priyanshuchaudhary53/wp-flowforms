@@ -234,7 +234,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
   public function column_shortcode($form): string
   {
     return sprintf(
-      '<code>[wpflowforms id="%d"]</code>',
+      '<code>[flowform id="%d"]</code>',
       absint($form->ID)
     );
   }
