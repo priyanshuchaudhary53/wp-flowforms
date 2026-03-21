@@ -434,6 +434,26 @@ class FlowForms_Forms_List_Table extends WP_List_Table
   }
 
   /**
+   * Count forms of any status (publish + trash + draft etc).
+   * Used by the overview to decide whether to show the empty state.
+   *
+   * @since 1.0.0
+   *
+   * @return int
+   */
+  public function get_total_forms_count(): int
+  {
+    $counts = wp_count_posts('wpff_forms');
+
+    $total = 0;
+    foreach ((array) $counts as $count) {
+      $total += (int) $count;
+    }
+
+    return $total;
+  }
+
+  /**
    * Run lightweight count queries for each view tab.
    *
    * @since 1.0.0

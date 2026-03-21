@@ -256,8 +256,9 @@ class FlowForms_Forms_Overview
     $this->list_table->prepare_items();
 
     $is_empty = empty($this->list_table->items)
-      && empty($_GET['s'])         // phpcs:ignore
-      && empty($_GET['status']);   // phpcs:ignore
+      && empty($_GET['s'])
+      && empty($_GET['status'])
+      && $this->list_table->get_total_forms_count() === 0;
 
 ?>
     <div class="wrap wpff-admin-wrap">

@@ -24,7 +24,7 @@ class FlowForms_Admin_Menu
       'manage_options',
       'wpff_forms',
       [$this, 'admin_page'],
-      'dashicons-admin-generic', // plugins_url('myplugin/images/icon.png'), // change later
+      'dashicons-feedback', // plugins_url('myplugin/images/icon.png'), // change later
       /**
        * Filters WP FlowForms menu position.
        *
