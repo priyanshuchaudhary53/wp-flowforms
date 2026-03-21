@@ -46,15 +46,15 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       'cb'        => '<input type="checkbox">',
       'id'        => __('ID', 'wp-flowforms'),
       'star'      => '',
+      'status'    => __('Status', 'wp-flowforms'),
       'summary'   => __('Summary', 'wp-flowforms'),
       'submitted' => __('Submitted', 'wp-flowforms'),
-      'status'    => __('Status', 'wp-flowforms'),
       'actions'   => __('Actions', 'wp-flowforms'),
     ];
 
     // Only show Form column when not filtered to a single form.
     if (! $this->form_id) {
-      $cols = wpff_array_insert($cols, ['form' => __('Form', 'wp-flowforms')], 'id');
+      $cols = wpff_array_insert($cols, ['form' => __('Form', 'wp-flowforms')], 'summary');
     }
 
     return $cols;
@@ -169,12 +169,12 @@ class FlowForms_Entries_List_Table extends WP_List_Table
           esc_html__('Delete Permanently', 'wp-flowforms')
         ),
       ];
-    } else {
+    } elseif ($this->status === 'spam') {
       $actions = [
-        'view' => sprintf(
+        'unspam' => sprintf(
           '<a href="%s">%s</a>',
-          esc_url($view_url),
-          esc_html__('View', 'wp-flowforms')
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'unspam', 'entry_id' => $entry->id], $base), 'wpff_entry_unspam')),
+          esc_html__('Not Spam', 'wp-flowforms')
         ),
         'trash' => sprintf(
           '<a href="%s" class="submitdelete">%s</a>',
@@ -182,17 +182,24 @@ class FlowForms_Entries_List_Table extends WP_List_Table
           esc_html__('Trash', 'wp-flowforms')
         ),
       ];
-
-      if ($this->status === 'spam') {
-        $actions = array_merge(
-          ['unspam' => sprintf(
-            '<a href="%s">%s</a>',
-            esc_url(wp_nonce_url(add_query_arg(['action' => 'unspam', 'entry_id' => $entry->id], $base), 'wpff_entry_unspam')),
-            esc_html__('Not Spam', 'wp-flowforms')
-          )],
-          $actions
-        );
-      }
+    } else {
+      $actions = [
+        'view' => sprintf(
+          '<a href="%s">%s</a>',
+          esc_url($view_url),
+          esc_html__('View', 'wp-flowforms')
+        ),
+        'spam' => sprintf(
+          '<a href="%s">%s</a>',
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'spam', 'entry_id' => $entry->id], $base), 'wpff_entry_spam')),
+          esc_html__('Spam', 'wp-flowforms')
+        ),
+        'trash' => sprintf(
+          '<a href="%s" class="submitdelete">%s</a>',
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'trash', 'entry_id' => $entry->id], $base), 'wpff_entry_trash')),
+          esc_html__('Trash', 'wp-flowforms')
+        ),
+      ];
     }
 
     $actions = apply_filters('wpff_entries_row_actions', $actions, $entry);

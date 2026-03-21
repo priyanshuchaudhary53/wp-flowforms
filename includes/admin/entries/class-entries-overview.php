@@ -215,20 +215,25 @@ class FlowForms_Entries_Overview
 
     $redirect_arg = $this->action_to_result_key($action);
 
-    // When acting from the single entry view, stay on that entry after redirect.
-    // Strip entry_id only for list-level actions (trash, delete, etc.) where
-    // the entry would no longer be accessible after the action.
-    $stay_on_single = $this->view === 'single' && in_array($action, ['star', 'unstar', 'mark_read', 'mark_unread'], true);
+    $strip    = ['action', 'action2', '_wpnonce', 'paged', '_wp_http_referer'];
+    $base_url = remove_query_arg($strip);
 
-    $strip = ['action', 'action2', '_wpnonce', 'paged', '_wp_http_referer'];
-    if (! $stay_on_single) {
-      $strip[] = 'entry_id';
-      $strip[] = 'view';
+    if ($this->view === 'single' && in_array($action, ['spam', 'unspam'], true)) {
+      // Reload same entry — button state comes from $entry->status (DB), not URL.
+      $base_url = add_query_arg(
+        ['page' => 'wpff_entries', 'view' => 'single', 'entry_id' => $ids[0] ?? 0],
+        admin_url('admin.php')
+      );
+    } elseif ($this->view === 'single' && in_array($action, ['star', 'unstar', 'mark_read', 'mark_unread'], true)) {
+      // Stay on same entry — base_url already has view + entry_id intact.
+    } else {
+      // List-level actions — drop single-entry params.
+      $base_url = remove_query_arg(['entry_id', 'view', 'status'], $base_url);
     }
 
     wp_safe_redirect(add_query_arg(
       [$redirect_arg => $count],
-      remove_query_arg($strip)
+      $base_url
     ));
     exit;
   }
@@ -392,9 +397,11 @@ class FlowForms_Entries_Overview
     }
 
     // Adjacent navigation within the current filter context.
+    // Use the entry's actual DB status so navigation stays within the correct set.
+    $entry_status = $entry->status;
     $adjacent = $entry_obj->get_adjacent_ids($entry_id, [
-      'form_id' => $this->form_id,
-      'status'  => $this->status === 'starred' ? 'active' : $this->status,
+      'form_id'    => $this->form_id,
+      'status'     => $entry_status,
       'is_starred' => $this->status === 'starred' ? true : null,
     ]);
 
@@ -408,21 +415,31 @@ class FlowForms_Entries_Overview
     }
 
     // URLs.
-    $back_url    = remove_query_arg(['view', 'entry_id']);
-    $trash_url   = wp_nonce_url(
+    $back_url   = remove_query_arg(['view', 'entry_id']);
+    $trash_url  = wp_nonce_url(
       add_query_arg(['action' => 'trash', 'entry_id' => $entry_id], remove_query_arg(['view', 'entry_id'])),
       'wpff_entry_trash'
     );
-    $star_url    = wp_nonce_url(
+    $spam_url   = wp_nonce_url(
+      add_query_arg(['action' => 'spam', 'entry_id' => $entry_id]),
+      'wpff_entry_spam'
+    );
+    $unspam_url = wp_nonce_url(
+      add_query_arg(['action' => 'unspam', 'entry_id' => $entry_id]),
+      'wpff_entry_unspam'
+    );
+    $star_url   = wp_nonce_url(
       add_query_arg(['action' => $entry->is_starred ? 'unstar' : 'star', 'entry_id' => $entry_id]),
       'wpff_entry_' . ($entry->is_starred ? 'unstar' : 'star')
     );
 
+    $single_base = admin_url('admin.php?page=wpff_entries&view=single');
+
     $prev_url = $adjacent['prev']
-      ? add_query_arg(['view' => 'single', 'entry_id' => $adjacent['prev']], admin_url('admin.php?page=wpff_entries'))
+      ? add_query_arg('entry_id', $adjacent['prev'], $single_base)
       : null;
     $next_url = $adjacent['next']
-      ? add_query_arg(['view' => 'single', 'entry_id' => $adjacent['next']], admin_url('admin.php?page=wpff_entries'))
+      ? add_query_arg('entry_id', $adjacent['next'], $single_base)
       : null;
 
   ?>
@@ -450,7 +467,14 @@ class FlowForms_Entries_Overview
             <?php echo $entry->is_starred ? '&#9733;' : '&#9734;'; ?>
             <?php echo $entry->is_starred ? esc_html__('Starred', 'wp-flowforms') : esc_html__('Star', 'wp-flowforms'); ?>
           </a>
-          <?php if ($this->status !== 'trash') : ?>
+          <?php if ($entry->status === 'spam') : ?>
+            <a href="<?php echo esc_url($unspam_url); ?>" class="button">
+              <?php esc_html_e('Not Spam', 'wp-flowforms'); ?>
+            </a>
+          <?php elseif ($entry->status !== 'trash') : ?>
+            <a href="<?php echo esc_url($spam_url); ?>" class="button wpff-spam-btn">
+              <?php esc_html_e('Mark as Spam', 'wp-flowforms'); ?>
+            </a>
             <a href="<?php echo esc_url($trash_url); ?>" class="button wpff-trash-btn">
               <?php esc_html_e('Move to Trash', 'wp-flowforms'); ?>
             </a>

@@ -86,7 +86,7 @@ tr:hover .wpff-form-filter-icon {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .wpff-status::before {
@@ -131,13 +131,19 @@ tr:hover .wpff-form-filter-icon {
    Column widths
    ----------------------------------------------------------------------- */
 #wpff-entries-table .column-cb {
-  width: 2.2em;
+  width: 32px;
 }
 #wpff-entries-table .column-id {
   width: 60px;
 }
+#wpff-entries-table .column-status {
+  width: 70px;
+}
 #wpff-entries-table .column-star {
-  width: 28px;
+  width: 16px;
+  padding-left: 8px;
+  padding-right: 8px;
+  align-content: center;
 }
 #wpff-entries-table .column-form {
   width: 14%;
@@ -148,11 +154,8 @@ tr:hover .wpff-form-filter-icon {
 #wpff-entries-table .column-submitted {
   width: 120px;
 }
-#wpff-entries-table .column-status {
-  width: 70px;
-}
 #wpff-entries-table .column-actions {
-  width: 100px;
+  width: 200px;
 }
 
 /* -----------------------------------------------------------------------
@@ -179,13 +182,26 @@ tr:hover .wpff-form-filter-icon {
 }
 
 .wpff-actions .trash a,
-.wpff-actions .delete a {
+.wpff-actions .delete a,
+.wpff-actions .spam a {
   color: #b32d2e;
 }
 
 .wpff-actions .trash a:hover,
-.wpff-actions .delete a:hover {
+.wpff-actions .delete a:hover,
+.wpff-actions .spam a:hover {
   color: #8a2122;
+}
+
+/* Spam button on single entry page */
+.wpff-spam-btn {
+  color: #b32d2e !important;
+  border-color: #b32d2e !important;
+}
+
+.wpff-spam-btn:hover {
+  background: #b32d2e !important;
+  color: #fff !important;
 }
 
 /* -----------------------------------------------------------------------
@@ -302,4 +318,10 @@ tr:hover .wpff-form-filter-icon {
   display: flex;
   gap: 8px;
   margin-top: 24px;
+}
+
+@media screen and (max-width: 782px) {
+  #wpff-entries-table .column-id {
+    width: auto;
+  }
 }
