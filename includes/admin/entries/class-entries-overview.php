@@ -496,7 +496,7 @@ class FlowForms_Entries_Overview
         <?php if (! empty($questions)) : ?>
           <?php foreach ($questions as $q) :
             $q_id    = $q['id'] ?? '';
-            $label   = $q['content']['label'] ?? $q['content']['question'] ?? $q_id;
+            $label   = $q['content']['title'] ?? $q['content']['label'] ?? $q['content']['question'] ?? $q_id;
             $answer  = $entry->answers[$q_id] ?? null;
 
             if (is_null($answer) || $answer === '' || $answer === []) {
@@ -504,7 +504,9 @@ class FlowForms_Entries_Overview
             }
           ?>
             <div class="wpff-entry-field">
-              <dt class="wpff-entry-field__label"><?php echo esc_html($label); ?></dt>
+              <dt class="wpff-entry-field__label">
+                <?php echo FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label); ?>
+              </dt>
               <dd class="wpff-entry-field__value">
                 <?php echo wp_kses_post($this->format_answer($answer, $q['type'] ?? 'short_text')); ?>
               </dd>
@@ -513,7 +515,9 @@ class FlowForms_Entries_Overview
         <?php else : ?>
           <?php foreach ($entry->answers as $key => $value) : ?>
             <div class="wpff-entry-field">
-              <dt class="wpff-entry-field__label"><?php echo esc_html($key); ?></dt>
+              <dt class="wpff-entry-field__label">
+                <?php echo FlowForms_Field_Icons::label_with_icon('', $key); ?>
+              </dt>
               <dd class="wpff-entry-field__value">
                 <?php echo wp_kses_post($this->format_answer($value, 'short_text')); ?>
               </dd>

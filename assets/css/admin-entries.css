@@ -10,7 +10,6 @@
   min-width: 160px;
 }
 
-/* Active form filter label */
 .wpff-active-filter {
   margin: 4px 0 8px;
   font-size: 13px;
@@ -90,7 +89,6 @@ tr:hover .wpff-form-filter-icon {
   background: #c3c4c7;
 }
 
-/* Unread rows are bold */
 #wpff-entries-table tbody tr.wpff-unread td {
   font-weight: 600;
 }
@@ -245,7 +243,7 @@ tr:hover .wpff-form-filter-icon {
 
 .wpff-entry-field {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 240px 1fr;
   border-bottom: 1px solid #dcdcde;
 }
 
@@ -261,7 +259,29 @@ tr:hover .wpff-form-filter-icon {
   color: #1d2327;
   margin: 0;
   border-right: 1px solid #dcdcde;
+}
+
+.wpff-entry-field__label .wpff-field__wrapper {
   word-break: break-word;
+  display: flex;
+  align-items: start;
+  gap: 8px;
+}
+
+.wpff-field-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.wpff-field-label-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .wpff-entry-field__value {
@@ -270,7 +290,7 @@ tr:hover .wpff-form-filter-icon {
   color: #3c434a;
   margin: 0;
   word-break: break-word;
-  white-space: pre-wrap;
+  /* white-space: pre-wrap; */
 }
 
 .wpff-entry-single__nav {
@@ -282,5 +302,13 @@ tr:hover .wpff-form-filter-icon {
 @media screen and (max-width: 782px) {
   #wpff-entries-table .column-id {
     width: auto;
+  }
+
+  .wpff-entry-field {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .wpff-entry-field__label .wpff-field__wrapper {
+    flex-direction: column;
   }
 }

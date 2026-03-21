@@ -109,6 +109,7 @@ final class WP_FlowForms
       require_once WP_FLOWFORMS_PATH . 'includes/admin/builder/class-builder.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/forms/class-forms-overview.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/entries/class-entries-overview.php';
+      require_once WP_FLOWFORMS_PATH . 'includes/admin/entries/class-field-icons.php';
     }
   }
 
