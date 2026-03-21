@@ -50,8 +50,7 @@ class FlowForms_Entries_Overview
    */
   public function __construct()
   {
-    // Register AJAX handler globally — not gated by page check because
-    // AJAX requests go to admin-ajax.php, not admin.php?page=wpff_entries.
+    // Register AJAX handler
     add_action('wp_ajax_wpff_toggle_star', [$this, 'ajax_toggle_star']);
 
     add_action('admin_init', [$this, 'init']);
@@ -137,10 +136,6 @@ class FlowForms_Entries_Overview
       'unstarLabel' => __('Unstar', 'wp-flowforms'),
     ]);
   }
-
-    // -----------------------------------------------------------------------
-    // Action processing
-    // -----------------------------------------------------------------------
 
   /**
    * Process bulk and single-row actions before any output.
@@ -260,10 +255,6 @@ class FlowForms_Entries_Overview
     return $map[$action] ?? $action;
   }
 
-    // -----------------------------------------------------------------------
-    // AJAX
-    // -----------------------------------------------------------------------
-
   /**
    * AJAX handler: toggle star on a single entry.
    */
@@ -287,10 +278,6 @@ class FlowForms_Entries_Overview
 
     wp_send_json_success(['starred' => $starred]);
   }
-
-    // -----------------------------------------------------------------------
-    // Output
-    // -----------------------------------------------------------------------
 
   /**
    * Main output dispatcher.
@@ -572,10 +559,6 @@ class FlowForms_Entries_Overview
 
     return esc_html((string) $answer);
   }
-
-    // -----------------------------------------------------------------------
-    // UI helpers
-    // -----------------------------------------------------------------------
 
   /**
    * Render the form + date filter bar above the table.

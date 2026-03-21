@@ -1,10 +1,3 @@
-/* =========================================================================
-   WP FlowForms — Entries page styles
-   ========================================================================= */
-
-/* -----------------------------------------------------------------------
-   Filter bar
-   ----------------------------------------------------------------------- */
 .wpff-filter-bar {
   display: flex;
   align-items: center;
@@ -34,9 +27,6 @@
   color: #b32d2e;
 }
 
-/* -----------------------------------------------------------------------
-   Form column filter link
-   ----------------------------------------------------------------------- */
 .wpff-form-filter-link {
   display: inline-flex;
   align-items: center;
@@ -60,9 +50,6 @@ tr:hover .wpff-form-filter-icon {
   color: #2271b1;
 }
 
-/* -----------------------------------------------------------------------
-   Star button
-   ----------------------------------------------------------------------- */
 .wpff-star {
   background: none;
   border: none;
@@ -79,9 +66,6 @@ tr:hover .wpff-form-filter-icon {
   color: #dba617;
 }
 
-/* -----------------------------------------------------------------------
-   Status badge
-   ----------------------------------------------------------------------- */
 .wpff-status {
   display: inline-flex;
   align-items: center;
@@ -111,9 +95,6 @@ tr:hover .wpff-form-filter-icon {
   font-weight: 600;
 }
 
-/* -----------------------------------------------------------------------
-   Unread badge in view tabs
-   ----------------------------------------------------------------------- */
 .wpff-unread-badge {
   display: inline-block;
   background: #2271b1;
@@ -127,9 +108,6 @@ tr:hover .wpff-form-filter-icon {
   margin-left: 3px;
 }
 
-/* -----------------------------------------------------------------------
-   Column widths
-   ----------------------------------------------------------------------- */
 #wpff-entries-table .column-cb {
   width: 32px;
 }
@@ -158,18 +136,10 @@ tr:hover .wpff-form-filter-icon {
   width: 200px;
 }
 
-/* -----------------------------------------------------------------------
-   Actions column — always visible, matches WP row-actions style
-   ----------------------------------------------------------------------- */
 .wpff-actions {
   font-size: 13px;
   white-space: nowrap;
 }
-
-/* .wpff-actions span + span::before {
-  content: " | ";
-  color: #646970;
-} */
 
 .wpff-actions a {
   text-decoration: none;
@@ -178,7 +148,6 @@ tr:hover .wpff-form-filter-icon {
 
 .wpff-actions a:hover {
   color: #135e96;
-  /* text-decoration: underline; */
 }
 
 .wpff-actions .trash a,
@@ -193,7 +162,6 @@ tr:hover .wpff-form-filter-icon {
   color: #8a2122;
 }
 
-/* Spam button on single entry page */
 .wpff-spam-btn {
   color: #b32d2e !important;
   border-color: #b32d2e !important;
@@ -204,9 +172,6 @@ tr:hover .wpff-form-filter-icon {
   color: #fff !important;
 }
 
-/* -----------------------------------------------------------------------
-   Empty / danger buttons
-   ----------------------------------------------------------------------- */
 .wpff-empty-btn {
   margin-left: 8px;
   border-color: #b32d2e !important;
@@ -219,9 +184,6 @@ tr:hover .wpff-form-filter-icon {
   color: #fff !important;
 }
 
-/* -----------------------------------------------------------------------
-   Single entry view
-   ----------------------------------------------------------------------- */
 .wpff-entry-single__header {
   display: flex;
   align-items: center;
@@ -262,7 +224,6 @@ tr:hover .wpff-form-filter-icon {
   border-color: #b32d2e !important;
 }
 
-/* Meta row */
 .wpff-entry-single__meta {
   display: flex;
   gap: 24px;
@@ -275,7 +236,6 @@ tr:hover .wpff-form-filter-icon {
   border-radius: 4px;
 }
 
-/* Fields */
 .wpff-entry-single__fields {
   max-width: 720px;
   border: 1px solid #dcdcde;
@@ -313,7 +273,6 @@ tr:hover .wpff-form-filter-icon {
   white-space: pre-wrap;
 }
 
-/* Prev/Next navigation */
 .wpff-entry-single__nav {
   display: flex;
   gap: 8px;

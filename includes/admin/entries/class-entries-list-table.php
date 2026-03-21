@@ -36,10 +36,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     $this->status  = $status;
   }
 
-  // -----------------------------------------------------------------------
-  // Columns
-  // -----------------------------------------------------------------------
-
   public function get_columns(): array
   {
     $cols = [
@@ -67,10 +63,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       'submitted' => ['created_at', false],
     ];
   }
-
-  // -----------------------------------------------------------------------
-  // Cell renderers
-  // -----------------------------------------------------------------------
 
   public function column_cb($entry): string
   {
@@ -226,14 +218,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return apply_filters('wpff_entries_column_value', '', $entry, $column_name);
   }
 
-  // -----------------------------------------------------------------------
-  // Row actions
-  // -----------------------------------------------------------------------
-
-  // -----------------------------------------------------------------------
-  // Bulk actions
-  // -----------------------------------------------------------------------
-
   public function get_bulk_actions(): array
   {
     if ($this->status === 'trash') {
@@ -258,10 +242,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       'spam'        => __('Mark as Spam', 'wp-flowforms'),
     ];
   }
-
-  // -----------------------------------------------------------------------
-  // Views (tabs)
-  // -----------------------------------------------------------------------
 
   protected function get_views(): array
   {
@@ -323,10 +303,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return $views;
   }
 
-  // -----------------------------------------------------------------------
-  // Extra nav (Empty Trash / Empty Spam buttons)
-  // -----------------------------------------------------------------------
-
   protected function extra_tablenav($which)
   {
     if ($which !== 'top' || empty($this->items)) {
@@ -353,10 +329,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       );
     }
   }
-
-  // -----------------------------------------------------------------------
-  // Prepare items
-  // -----------------------------------------------------------------------
 
   public function prepare_items()
   {
@@ -418,10 +390,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       esc_html_e('No entries found. Try adjusting your filters.', 'wp-flowforms');
     }
   }
-
-    // -----------------------------------------------------------------------
-    // Helpers
-    // -----------------------------------------------------------------------
 
   /**
    * Build a short preview string from an answers array.

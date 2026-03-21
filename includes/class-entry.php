@@ -30,10 +30,6 @@ class FlowForms_Entry_Handler
     return $wpdb->prefix . self::TABLE;
   }
 
-    // -----------------------------------------------------------------------
-    // Fetch
-    // -----------------------------------------------------------------------
-
   /**
    * Fetch a single entry by ID.
    *
@@ -238,10 +234,6 @@ class FlowForms_Entry_Handler
     ];
   }
 
-    // -----------------------------------------------------------------------
-    // Mutations
-    // -----------------------------------------------------------------------
-
   /**
    * Mark one or more entries as read.
    *
@@ -352,10 +344,6 @@ class FlowForms_Entry_Handler
       $wpdb->prepare("DELETE FROM `{$table}` WHERE status = %s", $status)
     );
   }
-
-    // -----------------------------------------------------------------------
-    // Helpers
-    // -----------------------------------------------------------------------
 
   /**
    * Decode the answers JSON and cast typed fields on a raw DB row.
