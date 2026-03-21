@@ -46,3 +46,26 @@ function wpff_decode($data)
 
   return wp_unslash($decoded_data);
 }
+
+/**
+ * Insert one or more key-value pairs into an array after a given key.
+ *
+ * @param array  $array    Source array.
+ * @param array  $insert   Associative array to insert.
+ * @param string $after    Key to insert after.
+ * @return array
+ */
+function wpff_array_insert(array $array, array $insert, string $after): array
+{
+  $pos = array_search($after, array_keys($array), true);
+
+  if ($pos === false) {
+    return array_merge($array, $insert);
+  }
+
+  return array_merge(
+    array_slice($array, 0, $pos + 1, true),
+    $insert,
+    array_slice($array, $pos + 1, null, true)
+  );
+}

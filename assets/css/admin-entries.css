@@ -1,0 +1,305 @@
+/* =========================================================================
+   WP FlowForms — Entries page styles
+   ========================================================================= */
+
+/* -----------------------------------------------------------------------
+   Filter bar
+   ----------------------------------------------------------------------- */
+.wpff-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 8px;
+  flex-wrap: wrap;
+}
+
+.wpff-filter-bar__group select {
+  min-width: 160px;
+}
+
+/* Active form filter label */
+.wpff-active-filter {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: #3c434a;
+}
+
+.wpff-clear-filter {
+  color: #646970;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.wpff-clear-filter:hover {
+  color: #b32d2e;
+}
+
+/* -----------------------------------------------------------------------
+   Form column filter link
+   ----------------------------------------------------------------------- */
+.wpff-form-filter-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+
+.wpff-form-filter-icon {
+  display: inline-flex;
+  opacity: 0;
+  color: #646970;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+tr:hover .wpff-form-filter-icon {
+  opacity: 1;
+}
+
+.wpff-form-filter-link:hover .wpff-form-filter-icon {
+  color: #2271b1;
+}
+
+/* -----------------------------------------------------------------------
+   Star button
+   ----------------------------------------------------------------------- */
+.wpff-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #c3c4c7;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.wpff-star:hover,
+.wpff-star--on {
+  color: #dba617;
+}
+
+/* -----------------------------------------------------------------------
+   Status badge
+   ----------------------------------------------------------------------- */
+.wpff-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+.wpff-status::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wpff-status--unread::before {
+  background: #2271b1;
+}
+
+.wpff-status--read::before {
+  background: #c3c4c7;
+}
+
+/* Unread rows are bold */
+#wpff-entries-table tbody tr.wpff-unread td {
+  font-weight: 600;
+}
+
+/* -----------------------------------------------------------------------
+   Unread badge in view tabs
+   ----------------------------------------------------------------------- */
+.wpff-unread-badge {
+  display: inline-block;
+  background: #2271b1;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 8px;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+
+/* -----------------------------------------------------------------------
+   Column widths
+   ----------------------------------------------------------------------- */
+#wpff-entries-table .column-cb {
+  width: 2.2em;
+}
+#wpff-entries-table .column-id {
+  width: 60px;
+}
+#wpff-entries-table .column-star {
+  width: 28px;
+}
+#wpff-entries-table .column-form {
+  width: 14%;
+}
+#wpff-entries-table .column-summary {
+  width: auto;
+}
+#wpff-entries-table .column-submitted {
+  width: 120px;
+}
+#wpff-entries-table .column-status {
+  width: 70px;
+}
+#wpff-entries-table .column-actions {
+  width: 100px;
+}
+
+/* -----------------------------------------------------------------------
+   Actions column — always visible, matches WP row-actions style
+   ----------------------------------------------------------------------- */
+.wpff-actions {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* .wpff-actions span + span::before {
+  content: " | ";
+  color: #646970;
+} */
+
+.wpff-actions a {
+  text-decoration: none;
+  color: #2271b1;
+}
+
+.wpff-actions a:hover {
+  color: #135e96;
+  /* text-decoration: underline; */
+}
+
+.wpff-actions .trash a,
+.wpff-actions .delete a {
+  color: #b32d2e;
+}
+
+.wpff-actions .trash a:hover,
+.wpff-actions .delete a:hover {
+  color: #8a2122;
+}
+
+/* -----------------------------------------------------------------------
+   Empty / danger buttons
+   ----------------------------------------------------------------------- */
+.wpff-empty-btn {
+  margin-left: 8px;
+  border-color: #b32d2e !important;
+  color: #b32d2e !important;
+  background: transparent !important;
+}
+
+.wpff-empty-btn:hover {
+  background: #b32d2e !important;
+  color: #fff !important;
+}
+
+/* -----------------------------------------------------------------------
+   Single entry view
+   ----------------------------------------------------------------------- */
+.wpff-entry-single__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.wpff-entry-back {
+  font-size: 13px;
+  color: #646970;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.wpff-entry-back:hover {
+  color: #135e96;
+}
+
+.wpff-entry-single__actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.wpff-star-btn {
+  font-size: 16px !important;
+}
+
+.wpff-starred {
+  color: #dba617;
+  border-color: #dba617 !important;
+}
+
+.wpff-trash-btn {
+  color: #b32d2e !important;
+  border-color: #b32d2e !important;
+}
+
+/* Meta row */
+.wpff-entry-single__meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #3c434a;
+  margin: 12px 0 20px;
+  padding: 12px 16px;
+  background: #f6f7f7;
+  border-radius: 4px;
+}
+
+/* Fields */
+.wpff-entry-single__fields {
+  max-width: 720px;
+  border: 1px solid #dcdcde;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.wpff-entry-field {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  border-bottom: 1px solid #dcdcde;
+}
+
+.wpff-entry-field:last-child {
+  border-bottom: none;
+}
+
+.wpff-entry-field__label {
+  padding: 12px 16px;
+  background: #f6f7f7;
+  font-weight: 600;
+  font-size: 13px;
+  color: #1d2327;
+  margin: 0;
+  border-right: 1px solid #dcdcde;
+  word-break: break-word;
+}
+
+.wpff-entry-field__value {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #3c434a;
+  margin: 0;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* Prev/Next navigation */
+.wpff-entry-single__nav {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+}

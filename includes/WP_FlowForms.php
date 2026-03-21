@@ -97,6 +97,7 @@ final class WP_FlowForms
     require_once WP_FLOWFORMS_PATH . 'includes/class-post-types.php';
     require_once WP_FLOWFORMS_PATH . 'includes/functions.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-form.php';
+    require_once WP_FLOWFORMS_PATH . 'includes/class-entry.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-rest-api.php';
     require_once WP_FLOWFORMS_PATH . 'includes/frontend/class-frontend.php';
     require_once WP_FLOWFORMS_PATH . 'includes/admin/block/class-block.php';
@@ -107,13 +108,15 @@ final class WP_FlowForms
       require_once WP_FLOWFORMS_PATH . 'includes/admin/class-settings.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/builder/class-builder.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/forms/class-forms-overview.php';
+      require_once WP_FLOWFORMS_PATH . 'includes/admin/entries/class-entries-overview.php';
     }
   }
 
   public function objects()
   {
-    $this->registry['form']           = new FlowForms_Form_Handler();
-    $this->registry['frontend']       = new FlowForms_Frontend();
+    $this->registry['form']     = new FlowForms_Form_Handler();
+    $this->registry['entry']    = new FlowForms_Entry_Handler();
+    $this->registry['frontend'] = new FlowForms_Frontend();
 
     /**
      * Executes when all the WPForms stuff was loaded.
