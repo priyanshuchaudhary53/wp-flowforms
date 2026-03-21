@@ -208,10 +208,6 @@ tr:hover .wpff-form-filter-icon {
   align-items: center;
 }
 
-.wpff-star-btn {
-  font-size: 16px !important;
-}
-
 .wpff-starred {
   color: #dba617;
   border-color: #dba617 !important;
@@ -282,6 +278,16 @@ tr:hover .wpff-form-filter-icon {
   flex: 1;
   font-size: 14px;
   line-height: 20px;
+}
+
+.wpff-entry-field--empty .wpff-entry-field__label {
+  color: #646970;
+  font-weight: 400;
+}
+
+.wpff-no-answer {
+  color: #a7aaad;
+  font-style: italic;
 }
 
 .wpff-entry-field__value {

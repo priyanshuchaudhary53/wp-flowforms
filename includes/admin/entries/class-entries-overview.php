@@ -498,17 +498,18 @@ class FlowForms_Entries_Overview
             $q_id    = $q['id'] ?? '';
             $label   = $q['content']['title'] ?? $q['content']['label'] ?? $q['content']['question'] ?? $q_id;
             $answer  = $entry->answers[$q_id] ?? null;
-
-            if (is_null($answer) || $answer === '' || $answer === []) {
-              continue;
-            }
+            $empty   = is_null($answer) || $answer === '' || $answer === [];
           ?>
-            <div class="wpff-entry-field">
+            <div class="wpff-entry-field <?php echo $empty ? 'wpff-entry-field--empty' : ''; ?>">
               <dt class="wpff-entry-field__label">
                 <?php echo FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label); ?>
               </dt>
               <dd class="wpff-entry-field__value">
-                <?php echo wp_kses_post($this->format_answer($answer, $q['type'] ?? 'short_text')); ?>
+                <?php if ($empty) : ?>
+                  <span class="wpff-no-answer"><?php esc_html_e('—', 'wp-flowforms'); ?></span>
+                <?php else : ?>
+                  <?php echo wp_kses_post($this->format_answer($answer, $q['type'] ?? 'short_text')); ?>
+                <?php endif; ?>
               </dd>
             </div>
           <?php endforeach; ?>
