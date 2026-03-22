@@ -3,10 +3,11 @@
 if (! defined('ABSPATH')) exit;
 
 return [
-  'slug'        => 'testimonial-form',
-  'name'        => 'Testimonial Form',
-  'description' => 'Get powerful user-generated content with our testimonial form template.',
-  'category'    => 'feedback',
+  'slug'          => 'testimonial-form',
+  'name'          => 'Testimonial Form',
+  'description'   => 'Get powerful user-generated content with our testimonial form template.',
+  'category'      => 'feedback',
+  'thumbnail_url' => WP_FLOWFORMS_URL . 'assets/images/templates/testimonial-form.webp',
   'content'     => [
     'welcomeScreen' => [
       'content'  => [

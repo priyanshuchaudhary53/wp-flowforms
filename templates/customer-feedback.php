@@ -3,10 +3,11 @@
 if (! defined('ABSPATH')) exit;
 
 return [
-  'slug'        => 'customer-feedback',
-  'name'        => 'Customer Feedback',
-  'description' => 'Beautiful, fun, easy to complete. Comes with useful rating questions.',
-  'category'    => 'feedback',
+  'slug'          => 'customer-feedback',
+  'name'          => 'Customer Feedback',
+  'description'   => 'Beautiful, fun, easy to complete. Comes with useful rating questions.',
+  'category'      => 'feedback',
+  'thumbnail_url' => WP_FLOWFORMS_URL . 'assets/images/templates/customer-feedback.webp',
   'content'     => [
     'welcomeScreen' => [
       'content'  => [

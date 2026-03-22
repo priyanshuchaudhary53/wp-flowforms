@@ -10,11 +10,12 @@ if (! defined('ABSPATH')) exit;
  * Each template is a PHP file in includes/templates/ that returns an array:
  *
  *   return [
- *     'slug'        => 'contact-form',
- *     'name'        => 'Contact Form',
- *     'description' => 'A simple contact form.',
- *     'category'    => 'contact',
- *     'content'     => [ ...same shape as form post_content... ],
+ *     'slug'             => 'contact-form',
+ *     'name'             => 'Contact Form',
+ *     'description'      => 'A simple contact form.',
+ *     'category'         => 'contact',
+ *     'thumbnail_url'    => '../contact-form.webp',
+ *     'content'          => [ ...same shape as form post_content... ],
  *   ];
  *
  * To add a new free template: drop a PHP file in includes/templates/.
@@ -74,11 +75,12 @@ class FlowForms_Templates
   {
     return array_map(function (array $template): array {
       return [
-        'slug'        => $template['slug'],
-        'name'        => $template['name'],
-        'description' => $template['description'] ?? '',
-        'category'    => $template['category'] ?? 'general',
-        'is_pro'      => false,
+        'slug'          => $template['slug'],
+        'name'          => $template['name'],
+        'description'   => $template['description'] ?? '',
+        'category'      => $template['category'] ?? 'general',
+        'thumbnail_url' => $template['thumbnail_url'] ?? '',
+        'is_pro'        => false,
       ];
     }, $this->get_all());
   }
@@ -114,12 +116,13 @@ class FlowForms_Templates
       $slug = sanitize_key($template['slug']);
 
       $this->templates[$slug] = [
-        'slug'        => $slug,
-        'name'        => sanitize_text_field($template['name'] ?? ''),
-        'description' => sanitize_text_field($template['description'] ?? ''),
-        'category'    => sanitize_key($template['category'] ?? 'general'),
-        'is_pro'      => false,
-        'content'     => $template['content'] ?? [],
+        'slug'          => $slug,
+        'name'          => sanitize_text_field($template['name'] ?? ''),
+        'description'   => sanitize_text_field($template['description'] ?? ''),
+        'category'      => sanitize_key($template['category'] ?? 'general'),
+        'is_pro'        => false,
+        'thumbnail_url' => sanitize_text_field($template['thumbnail_url'] ?? ''),
+        'content'       => $template['content'] ?? [],
       ];
     }
 
@@ -129,7 +132,7 @@ class FlowForms_Templates
      * Each entry must follow the same shape as local templates.
      * Pro templates should set 'is_pro' => true.
      *
-     * @since 1.1.0
+     * @since 1.0.0
      *
      * @param array $templates Templates array keyed by slug.
      */

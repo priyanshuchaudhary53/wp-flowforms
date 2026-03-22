@@ -3,10 +3,11 @@
 if (! defined('ABSPATH')) exit;
 
 return [
-  'slug'        => 'contact-form',
-  'name'        => 'Contact Form',
-  'description' => 'Connect with your website visitors with a sleek website contact form.',
-  'category'    => 'contact',
+  'slug'          => 'contact-form',
+  'name'          => 'Contact Form',
+  'description'   => 'Connect with your website visitors with a sleek website contact form.',
+  'category'      => 'contact',
+  'thumbnail_url' => WP_FLOWFORMS_URL . 'assets/images/templates/contact-form.webp',
   'content'     => [
     'welcomeScreen' => [
       'content'  => [

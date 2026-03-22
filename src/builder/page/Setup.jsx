@@ -180,6 +180,7 @@ export default function Setup({ className }) {
                 key={template.slug}
                 name={template.name}
                 description={template.description}
+                thumbnailUrl={template.thumbnail_url}
                 category={
                   CATEGORY_LABELS[template.category] ?? template.category
                 }
@@ -215,7 +216,7 @@ function CategoryTab({ label, active, onClick }) {
 function BlankCard({ name, description, loading, disabled, onUse }) {
   return (
     <div className="group relative bg-white rounded-xl border border-gray-200 hover:border-gray-400 hover:shadow-sm transition-all flex flex-col overflow-hidden">
-      <div className="h-36 bg-gray-50 flex items-center justify-center border-b border-gray-100">
+      <div className="w-full aspect-3/2 bg-gray-50 flex items-center justify-center border-b border-gray-100">
         <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
           <PlusIcon className="w-6 h-6 text-gray-500" />
         </div>
@@ -254,23 +255,15 @@ function TemplateCard({
   name,
   description,
   category,
+  thumbnailUrl,
   loading,
   disabled,
   onUse,
 }) {
   return (
     <div className="group relative bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all flex flex-col overflow-hidden">
-      <div className="h-36 bg-gray-50 flex items-center justify-center border-b border-gray-100">
-        <div className="flex flex-col items-center gap-2 px-4 text-center">
-          <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <TemplateIcon />
-          </div>
-          {category && (
-            <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">
-              {category}
-            </span>
-          )}
-        </div>
+      <div className="w-full aspect-3/2 bg-gray-50 flex items-center justify-center border-b border-gray-100">
+        <img src={thumbnailUrl} alt={`${name} template screenshot`} />
       </div>
 
       <div className="flex-1 p-4">
