@@ -11,7 +11,7 @@ return [
   'content'     => [
     'welcomeScreen' => [
       'content'  => [
-        'title'       => 'Share your feedback',
+        'title'       => 'How was shopping with us?',
         'description' => 'We\'d love to hear about your experience.',
         'buttonLabel' => 'Give feedback',
       ],
