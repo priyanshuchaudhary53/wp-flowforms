@@ -1,9 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   PlusIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
   EyeIcon,
+  ComputerDesktopIcon,
+  DevicePhoneMobileIcon,
 } from "@heroicons/react/24/outline";
 import Alert from "../components/ui/alert";
 
@@ -24,6 +26,8 @@ export default function Setup({ className }) {
   const [loading, setLoading] = useState(false);
   const [loadingSlug, setLoadingSlug] = useState(null);
   const [error, setError] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewLoading, setPreviewLoading] = useState(null);
 
   const categories = useMemo(() => {
     const cats = [...new Set(templates.map((t) => t.category).filter(Boolean))];
@@ -94,109 +98,143 @@ export default function Setup({ className }) {
     }
   };
 
+  const openPreview = async (slug) => {
+    setPreviewLoading(slug);
+    try {
+      const res = await fetch(
+        `${formflowData.apiUrl}/templates/${slug}/preview-url`,
+        {
+          headers: { "X-WP-Nonce": formflowData.nonce },
+        },
+      );
+      const data = await res.json();
+      if (!res.ok || !data.preview_url)
+        throw new Error(data.message || "Could not load preview.");
+      setPreviewUrl(data.preview_url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPreviewLoading(null);
+    }
+  };
+
   return (
-    <div
-      className={`overflow-y-auto px-4 py-4 sm:py-20 bg-gray-100 ${className}`}
-    >
-      <div className="bg-white rounded-xl max-w-5xl mx-auto px-4 py-6 sm:p-8">
-        <div className="mb-6 pb-6 border-b border-gray-200 sm:flex sm:items-center sm:gap-2">
-          <label
-            htmlFor="form-name"
-            className="block text-xl tracking-tight font-semibold text-gray-900 mb-2 sm:mb-0 sm:min-w-48 sm:shrink-0"
-          >
-            Name your form
-          </label>
-          <input
-            id="form-name"
-            type="text"
-            value={formName}
-            onChange={(e) => setFormName(e.target.value)}
-            placeholder="Enter your form name here..."
-            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 sm:grow"
-          />
-        </div>
-
-        <div className="mb-6 pb-6 border-b border-gray-200">
-          <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
-            Select a template
-          </h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Start from a template or build from scratch.
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
-          <div className="relative flex-1 max-w-xs">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+    <>
+      <div
+        className={`overflow-y-auto px-4 py-4 sm:py-20 bg-gray-100 ${className}`}
+      >
+        <div className="bg-white rounded-xl max-w-5xl mx-auto px-4 py-6 sm:p-8">
+          <div className="mb-6 pb-6 border-b border-gray-200 sm:flex sm:items-center sm:gap-2">
+            <label
+              htmlFor="form-name"
+              className="block text-xl tracking-tight font-semibold text-gray-900 mb-2 sm:mb-0 sm:min-w-48 sm:shrink-0"
+            >
+              Name your form
+            </label>
             <input
+              id="form-name"
               type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search templates…"
-              className="w-full rounded-lg border border-gray-200 bg-white pl-9 pr-8 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+              value={formName}
+              onChange={(e) => setFormName(e.target.value)}
+              placeholder="Enter your form name here..."
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 sm:grow"
             />
-            {search && (
-              <button
-                onClick={() => setSearch("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <XMarkIcon className="w-4 h-4" />
-              </button>
-            )}
           </div>
 
-          <div className="flex items-center gap-1 flex-wrap">
-            <CategoryTab
-              label="All"
-              active={activeCategory === "all"}
-              onClick={() => setActiveCategory("all")}
-            />
-            {categories.map((cat) => (
+          <div className="mb-6 pb-6 border-b border-gray-200">
+            <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
+              Select a template
+            </h1>
+            <p className="mt-2 text-sm text-gray-500">
+              Start from a template or build from scratch.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+            <div className="relative flex-1 max-w-xs">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search templates…"
+                className="w-full rounded-lg border border-gray-200 bg-white pl-9 pr-8 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <XMarkIcon className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1 flex-wrap">
               <CategoryTab
-                key={cat}
-                label={CATEGORY_LABELS[cat] ?? cat}
-                active={activeCategory === cat}
-                onClick={() => setActiveCategory(cat)}
+                label="All"
+                active={activeCategory === "all"}
+                onClick={() => setActiveCategory("all")}
               />
-            ))}
+              {categories.map((cat) => (
+                <CategoryTab
+                  key={cat}
+                  label={CATEGORY_LABELS[cat] ?? cat}
+                  active={activeCategory === cat}
+                  onClick={() => setActiveCategory(cat)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
 
-        {filtered.length === 0 && search ? (
-          <div className="text-center py-16 text-sm text-gray-500">
-            No templates match <strong>"{search}"</strong>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <BlankCard
-              name="Blank form"
-              description="Start from scratch with an empty form"
-              loading={loadingSlug === "blank"}
-              disabled={loading}
-              onUse={createBlank}
-            />
-            {filtered.map((template) => (
-              <TemplateCard
-                key={template.slug}
-                name={template.name}
-                description={template.description}
-                thumbnailUrl={template.thumbnail_url}
-                category={
-                  CATEGORY_LABELS[template.category] ?? template.category
-                }
-                loading={loadingSlug === template.slug}
+          {filtered.length === 0 && search ? (
+            <div className="text-center py-16 text-sm text-gray-500">
+              No templates match <strong>"{search}"</strong>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <BlankCard
+                name="Blank form"
+                description="Start from scratch with an empty form"
+                loading={loadingSlug === "blank"}
                 disabled={loading}
-                onUse={() => useTemplate(template.slug)}
+                onUse={createBlank}
               />
-            ))}
-          </div>
-        )}
+              {filtered.map((template) => (
+                <TemplateCard
+                  key={template.slug}
+                  name={template.name}
+                  description={template.description}
+                  thumbnailUrl={template.thumbnail_url}
+                  category={
+                    CATEGORY_LABELS[template.category] ?? template.category
+                  }
+                  loading={loadingSlug === template.slug}
+                  previewLoading={previewLoading === template.slug}
+                  disabled={loading || !!previewLoading}
+                  onUse={() => useTemplate(template.slug)}
+                  onPreview={() => openPreview(template.slug)}
+                />
+              ))}
+            </div>
+          )}
 
-        {error && <Alert className="mt-6" type="error" message={error} />}
+          {error && <Alert className="mt-6" type="error" message={error} />}
+        </div>
       </div>
-    </div>
+
+      {/* Preview modal — rendered outside the scrollable container */}
+      {previewUrl && (
+        <TemplatePreviewModal
+          url={previewUrl}
+          onClose={() => setPreviewUrl(null)}
+        />
+      )}
+    </>
   );
 }
+
+// ─── Category tab ─────────────────────────────────────────────────────────────
 
 function CategoryTab({ label, active, onClick }) {
   return (
@@ -212,6 +250,8 @@ function CategoryTab({ label, active, onClick }) {
     </button>
   );
 }
+
+// ─── Blank card ───────────────────────────────────────────────────────────────
 
 function BlankCard({ name, description, loading, disabled, onUse }) {
   return (
@@ -251,19 +291,40 @@ function BlankCard({ name, description, loading, disabled, onUse }) {
   );
 }
 
+// ─── Template card ────────────────────────────────────────────────────────────
+
 function TemplateCard({
   name,
   description,
   category,
   thumbnailUrl,
   loading,
+  previewLoading,
   disabled,
   onUse,
+  onPreview,
 }) {
   return (
     <div className="group relative bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all flex flex-col overflow-hidden">
       <div className="w-full aspect-3/2 bg-gray-50 flex items-center justify-center border-b border-gray-100">
-        <img src={thumbnailUrl} alt={`${name} template screenshot`} />
+        {thumbnailUrl ? (
+          <img
+            src={thumbnailUrl}
+            alt={`${name} template screenshot`}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="flex flex-col items-center gap-2 px-4 text-center">
+            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+              <TemplateIcon />
+            </div>
+            {category && (
+              <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                {category}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex-1 p-4">
@@ -290,14 +351,143 @@ function TemplateCard({
             "Use template"
           )}
         </button>
-        <button className="cursor-pointer w-full rounded-lg bg-white text-gray-900 ring-1 ring-inset ring-gray-300 text-sm font-medium py-2 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-          <EyeIcon width={20} height={20} />
-          <span>Preview</span>
+        <button
+          onClick={onPreview}
+          disabled={disabled}
+          className="cursor-pointer w-full rounded-lg bg-white text-gray-900 ring-1 ring-inset ring-gray-300 text-sm font-medium py-2 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          {previewLoading ? (
+            <span className="w-3.5 h-3.5 border-2 border-gray-400 border-t-gray-800 rounded-full animate-spin" />
+          ) : (
+            <>
+              <EyeIcon width={16} height={16} />
+              <span>Preview</span>
+            </>
+          )}
         </button>
       </div>
     </div>
   );
 }
+
+// ─── Template preview modal ───────────────────────────────────────────────────
+
+const DEVICES = [
+  {
+    id: "desktop",
+    label: "Desktop",
+    icon: <ComputerDesktopIcon width={18} height={18} />,
+    width: "100%",
+    height: "100%",
+  },
+  {
+    id: "mobile",
+    label: "Mobile",
+    icon: <DevicePhoneMobileIcon width={18} height={18} />,
+    width: "390px",
+    height: "844px",
+  },
+];
+
+function TemplatePreviewModal({ url, onClose }) {
+  const [device, setDevice] = useState("desktop");
+  const [loaded, setLoaded] = useState(false);
+  const iframeRef = useRef(null);
+
+  // Close on Escape.
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  const active = DEVICES.find((d) => d.id === device) ?? DEVICES[0];
+  const isConstrained = device !== "desktop";
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex flex-col bg-white"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Template preview"
+    >
+      {/* Toolbar */}
+      <div className="flex-none flex items-center justify-between h-14 px-4 border-b border-gray-200 bg-white">
+        {/* Device switcher */}
+        <div className="flex items-center gap-1 bg-gray-100 rounded-md p-0.5">
+          {DEVICES.map((d) => (
+            <button
+              key={d.id}
+              onClick={() => setDevice(d.id)}
+              title={d.label}
+              className={`w-8 h-8 flex justify-center items-center rounded text-sm transition-colors ${
+                device === d.id
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-500 hover:text-gray-900"
+              }`}
+            >
+              <span className="sr-only">{d.label}</span>
+              {d.icon}
+            </button>
+          ))}
+        </div>
+
+        <span className="text-sm text-gray-500 font-medium tracking-wide uppercase">
+          Template Preview
+        </span>
+
+        <button
+          onClick={onClose}
+          className="w-8 h-8 flex items-center justify-center rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+          aria-label="Close preview"
+        >
+          <XMarkIcon width={20} height={20} />
+        </button>
+      </div>
+
+      {/* iframe area */}
+      <div className="flex-1 flex items-center justify-center overflow-hidden p-4 bg-gray-50">
+        <div
+          className={`relative transition-all duration-300 ring-1 ring-black/10 rounded-2xl overflow-hidden bg-white ${
+            isConstrained ? "" : "w-full h-full"
+          }`}
+          style={
+            isConstrained
+              ? {
+                  width: active.width,
+                  height: active.height,
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                }
+              : {}
+          }
+        >
+          {!loaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-2xl">
+              <div className="flex flex-col items-center gap-3 text-gray-400">
+                <div className="w-7 h-7 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                <span className="text-sm">Loading preview…</span>
+              </div>
+            </div>
+          )}
+          <iframe
+            ref={iframeRef}
+            src={url}
+            title="Template preview"
+            className="w-full h-full border-0"
+            style={{ display: loaded ? "block" : "none" }}
+            onLoad={() => setLoaded(true)}
+            sandbox="allow-scripts allow-same-origin allow-forms"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Template icon fallback ───────────────────────────────────────────────────
 
 function TemplateIcon() {
   return (

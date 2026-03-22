@@ -161,7 +161,7 @@ return [
       'star_color' => '#f59e0b',
       'alignment' => 'left',
       'google_font' => 'Lato',
-      'font_size' => 'regular',
+      'font_size' => 'large',
       'answer_color' => '#2e2c2c',
       'hint_color' => '#ABABAB',
       'bg_image' => ['id' => 287, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/gradient-bg-1.webp'],

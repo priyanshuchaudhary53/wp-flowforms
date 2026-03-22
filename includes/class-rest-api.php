@@ -95,6 +95,13 @@ class FlowForms_REST_API
       'callback'            => [$this, 'create_form_from_template'],
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
+
+    // GET /templates/{slug}/preview-url — returns a signed URL to preview a template.
+    register_rest_route($ns, '/templates/(?P<slug>[a-z0-9_-]+)/preview-url', [
+      'methods'             => 'GET',
+      'callback'            => [$this, 'get_template_preview_url'],
+      'permission_callback' => fn() => current_user_can('edit_posts'),
+    ]);
   }
 
   /**
@@ -680,6 +687,37 @@ class FlowForms_REST_API
       'post_id'   => $post_id,
       'form_name' => $form_name,
     ], 201);
+  }
+
+  /**
+   * GET /templates/{slug}/preview-url
+   *
+   * Stores the template content in a short-lived transient and returns a
+   * signed preview URL that handle_preview() can serve without a real post.
+   */
+  public function get_template_preview_url(WP_REST_Request $request)
+  {
+    $slug     = sanitize_key($request['slug']);
+    $template = wp_flowforms()->obj('templates')->get($slug);
+
+    if (! $template) {
+      return new WP_Error('template_not_found', __('Template not found.', 'wp-flowforms'), ['status' => 404]);
+    }
+
+    // Store template content in a transient keyed by slug + nonce.
+    // TTL matches WP nonce lifetime (10 minutes is plenty for a preview session).
+    $token           = wp_create_nonce('flowform_preview');
+    $transient_key   = 'wpff_tpl_preview_' . md5($slug . $token);
+    set_transient($transient_key, $template['content'], 10 * MINUTE_IN_SECONDS);
+
+    $preview_url = add_query_arg([
+      'flowform_preview'      => '1',
+      'template_slug'         => $slug,
+      'template_preview_key'  => $transient_key,
+      'token'                 => $token,
+    ], home_url('/'));
+
+    return rest_ensure_response(['preview_url' => $preview_url]);
   }
 
   private function validate_answer_type(string $type, $answer, array $settings, array $content = []): ?string

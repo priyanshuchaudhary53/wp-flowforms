@@ -106,7 +106,7 @@ return [
       'star_color' => '#f59e0b',
       'alignment' => 'left',
       'google_font' => 'Merriweather',
-      'font_size' => 'small',
+      'font_size' => 'large',
       'border_radius' => 'full',
       'answer_color' => '#ebeae2',
       'hint_color' => '#A5816D',

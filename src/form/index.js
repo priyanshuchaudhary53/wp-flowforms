@@ -28,10 +28,19 @@ async function init() {
 	const containers = document.querySelectorAll( '[data-flowform-id]' );
 	if ( ! containers.length ) return;
 
-	const { apiUrl, nonce, previewMode = false } = window.flowformPublicData ?? {};
+	const { apiUrl, nonce, previewMode = false, templatePreview = false, templateContent = null } = window.flowformPublicData ?? {};
 
 	if ( ! apiUrl ) {
 		console.error( '[FlowForms] flowformPublicData.apiUrl is missing.' );
+		return;
+	}
+
+	// Template preview: boot directly from inline content — no API fetch needed.
+	if ( templatePreview && templateContent ) {
+		const container = containers[ 0 ];
+		const formData = { id: 0, title: 'Preview', content: templateContent };
+		const app = new FormApp( container, formData, { previewMode: true } );
+		app.boot();
 		return;
 	}
 

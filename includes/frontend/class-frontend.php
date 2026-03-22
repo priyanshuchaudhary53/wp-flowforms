@@ -219,10 +219,9 @@ class FlowForms_Frontend {
 			return;
 		}
 
-		$form_id = absint( $_GET['id'] ?? 0 );
-		$token   = sanitize_text_field( $_GET['token'] ?? '' );
+		$token = sanitize_text_field( $_GET['token'] ?? '' );
 
-		if ( ! $form_id || ! $this->verify_preview_token( $token ) ) {
+		if ( ! $this->verify_preview_token( $token ) ) {
 			wp_die(
 				esc_html__( 'Preview link is invalid or has expired.', 'wp-flowforms' ),
 				esc_html__( 'Invalid Preview', 'wp-flowforms' ),
@@ -235,6 +234,35 @@ class FlowForms_Frontend {
 			wp_die(
 				esc_html__( 'You do not have permission to preview forms.', 'wp-flowforms' ),
 				esc_html__( 'Permission Denied', 'wp-flowforms' ),
+				[ 'response' => 403 ]
+			);
+		}
+
+		// Template preview (no real post)
+		$transient_key = sanitize_key( $_GET['template_preview_key'] ?? '' );
+
+		if ( $transient_key ) {
+			$content = get_transient( $transient_key );
+
+			if ( ! $content || ! is_array( $content ) ) {
+				wp_die(
+					esc_html__( 'Template preview has expired. Please try again.', 'wp-flowforms' ),
+					esc_html__( 'Preview Expired', 'wp-flowforms' ),
+					[ 'response' => 410 ]
+				);
+			}
+
+			$this->render_template_preview_page( $content );
+			exit;
+		}
+
+		// Regular form preview
+		$form_id = absint( $_GET['id'] ?? 0 );
+
+		if ( ! $form_id ) {
+			wp_die(
+				esc_html__( 'Preview link is invalid or has expired.', 'wp-flowforms' ),
+				esc_html__( 'Invalid Preview', 'wp-flowforms' ),
 				[ 'response' => 403 ]
 			);
 		}
@@ -257,6 +285,69 @@ class FlowForms_Frontend {
 
 		$this->render_full_page( $form_id, esc_html( $post->post_title ), true );
 		exit;
+	}
+
+	/**
+	 * Render a full-page template preview without a real form post.
+	 * Creates a synthetic form ID (0) and injects content via JS.
+	 *
+	 * @param array $content Template form content array.
+	 */
+	private function render_template_preview_page( array $content ): void {
+		show_admin_bar( false );
+
+		$design = is_array( $content['design'] ?? null ) ? $content['design'] : [];
+		$bg     = esc_attr( $design['bg_color']     ?? '#ffffff' );
+		$btn    = esc_attr( $design['button_color'] ?? '#111827' );
+		$hint   = esc_attr( $design['hint_color']   ?? '#9ca3af' );
+
+		// Enqueue renderer assets manually.
+		$asset_file = WP_FLOWFORMS_PATH . 'build/form/index.asset.php';
+		$asset      = file_exists( $asset_file )
+			? require $asset_file
+			: [ 'dependencies' => [], 'version' => WP_FLOWFORMS_VERSION ];
+
+		wp_enqueue_script( 'flowform-renderer', WP_FLOWFORMS_URL . 'build/form/index.js', $asset['dependencies'], $asset['version'], true );
+		wp_enqueue_style( 'flowform-renderer', WP_FLOWFORMS_URL . 'build/form/style-index.css', [], $asset['version'] );
+
+		// Pass template content directly — renderer reads templateContent when formId is 0.
+		wp_localize_script( 'flowform-renderer', 'flowformPublicData', [
+			'apiUrl'          => rest_url( 'formflow/v1' ),
+			'nonce'           => wp_create_nonce( 'wp_rest' ),
+			'previewMode'     => true,
+			'formIds'         => [],
+			'templatePreview' => true,
+			'templateContent' => $content,
+		] );
+
+		do_action( 'wp_enqueue_scripts' );
+		?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title><?php esc_html_e( 'Template Preview', 'wp-flowforms' ); ?></title>
+<?php wp_head(); ?>
+<style>
+html, body { margin: 0 !important; padding: 0 !important; height: 100%; overflow: hidden; background: <?php echo $bg; ?>; }
+html { margin-top: 0 !important; }
+#flowform-full-page {
+	min-height: 100vh; display: flex; align-items: center; justify-content: center;
+	padding: 32px 16px; background-color: <?php echo $bg; ?>;
+	--btn-color: <?php echo $btn; ?>; --hint-color: <?php echo $hint; ?>;
+}
+</style>
+</head>
+<body>
+<div id="flowform-full-page">
+	<div class="flowform-container" data-flowform-id="0" data-ff-mode="fullpage" data-ff-template-preview="true"></div>
+</div>
+<?php wp_footer(); ?>
+</body>
+</html>
+		<?php
 	}
 
 	/**
