@@ -88,6 +88,13 @@ class FlowForms_REST_API
         ],
       ],
     ]);
+
+    // POST /forms/from-template
+    register_rest_route($ns, '/forms/from-template', [
+      'methods'             => 'POST',
+      'callback'            => [$this, 'create_form_from_template'],
+      'permission_callback' => fn() => current_user_can('edit_posts'),
+    ]);
   }
 
   /**
@@ -619,6 +626,60 @@ class FlowForms_REST_API
     if (is_null($answer))      return true;
     if (is_array($answer))     return count($answer) === 0;
     return trim((string) $answer) === '';
+  }
+
+  /**
+   * POST /forms/from-template
+   *
+   * Create a new form pre-filled with a free template's content.
+   *
+   * @param WP_REST_Request $request
+   * @return WP_REST_Response|WP_Error
+   */
+  public function create_form_from_template(WP_REST_Request $request)
+  {
+    $slug      = sanitize_key($request->get_param('template_slug') ?? '');
+    $form_name = sanitize_text_field($request->get_param('form_name') ?? '');
+
+    if (empty($slug)) {
+      return new WP_Error('missing_slug', __('Template slug is required.', 'wp-flowforms'), ['status' => 400]);
+    }
+
+    $template = wp_flowforms()->obj('templates')->get($slug);
+
+    if (! $template) {
+      return new WP_Error('template_not_found', __('Template not found.', 'wp-flowforms'), ['status' => 404]);
+    }
+
+    if (empty($form_name)) {
+      $form_name = $template['name'];
+    }
+
+    $post_id = wp_insert_post([
+      'post_title'  => $form_name,
+      'post_content' => '',
+      'post_status' => 'publish',
+      'post_type'   => 'wpff_forms',
+    ]);
+
+    if (is_wp_error($post_id)) {
+      return new WP_REST_Response(['message' => __('Failed to create form.', 'wp-flowforms')], 500);
+    }
+
+    // Store template content in the draft slot — user must publish before it goes live.
+    $content = $template['content'];
+    $json    = $this->encode_slots(null, $content);
+    $saved   = $this->save_post_content($post_id, $json);
+
+    if (! $saved) {
+      return new WP_REST_Response(['message' => __('Failed to save form content.', 'wp-flowforms')], 500);
+    }
+
+    return new WP_REST_Response([
+      'success'   => true,
+      'post_id'   => $post_id,
+      'form_name' => $form_name,
+    ], 201);
   }
 
   private function validate_answer_type(string $type, $answer, array $settings, array $content = []): ?string

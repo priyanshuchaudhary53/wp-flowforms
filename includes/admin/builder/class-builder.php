@@ -196,11 +196,12 @@ class FlowForms_Builder
       'formId'        => intval($_GET['form_id'] ?? 0),
       'view'          => $this->view,
       'previewUrl'    => intval($_GET['form_id'] ?? 0)
-                           ? FlowForms_Frontend::get_preview_url(intval($_GET['form_id']))
-                           : '',
+        ? FlowForms_Frontend::get_preview_url(intval($_GET['form_id']))
+        : '',
       'publicUrl'     => intval($_GET['form_id'] ?? 0)
-                           ? FlowForms_Frontend::get_public_url(intval($_GET['form_id']))
-                           : '',
+        ? FlowForms_Frontend::get_public_url(intval($_GET['form_id']))
+        : '',
+      'templates'     => array_values(wp_flowforms()->obj('templates')->get_metadata()),
     ]);
   }
 

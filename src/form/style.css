@@ -191,15 +191,16 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   font-family:     inherit;
   font-weight:     500;
   cursor:          pointer;
-  transition:      border-color 0.15s, color 0.15s, background-color 0.15s, opacity 0.15s;
+  transition:      border-color 0.15s, color 0.15s, background-color 0.15s, opacity 0.15s, scale 0.15s;
 }
 
 .ff-btn-nav:hover:not(:disabled) {
   background-color: var(--btn-hover-color, #374151);
+  scale: 1.05;
 }
 
 .ff-btn-nav:active:not(:disabled) {
-  transform: scale(0.97);
+  scale: 0.97;
 }
 
 /* Disabled state — button stays visible but muted, no pointer */
@@ -241,11 +242,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   align-items:     center;
   justify-content: center;
   min-height:      100%;
-  max-width:       36rem;
+  max-width:       48rem;
   width:           100%;
   margin:          0 auto;
   /* top padding clears progress bar; bottom padding is provided by nav bar via content-wrapper */
-  padding:         64px 32px;
+  padding:         72px 80px;
   gap:             24px;
   box-sizing:      border-box;
 }
@@ -564,12 +565,12 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   font-family:     inherit;
   font-weight:     500;
   cursor:          pointer;
-  transition:      background-color 0.15s, transform 0.1s;
+  transition:      background-color 0.15s, transform 0.1s, scale 0.15s;
   text-decoration: none;
 }
 
-.ff-btn-primary:hover  { background-color: var(--btn-hover-color, #374151); }
-.ff-btn-primary:active { transform: scale(0.98); }
+.ff-btn-primary:hover  { background-color: var(--btn-hover-color, #374151); scale: 1.03; }
+.ff-btn-primary:active { scale: 0.98; }
 
 .ff-btn-primary:focus { border: none; outline: none; }
 .ff-btn-primary:focus-visible {
@@ -783,9 +784,9 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 @media (max-width: 640px) {
   .flowform-container { border-radius: 0; min-height: 480px; }
 
-  .ff-screen-inner { padding: 56px 20px 24px; }
+  .ff-screen-inner { padding: 56px 32px 24px; }
 
-  .ff-title { font-size: clamp(1.5rem, 6vw, var(--fs-title, 2.25rem)); }
+  .ff-title { font-size: clamp(2rem, 6vw, var(--fs-title, 2.25rem)); }
 
   .ff-choices--grid_2 { grid-template-columns: 1fr; }
 

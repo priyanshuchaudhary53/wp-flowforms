@@ -108,7 +108,7 @@ function WelcomePreview({ screen, design }) {
         className={[
           "relative flex flex-col",
           alignment === "center" ? "items-center" : "items-start",
-          "min-h-full max-w-xl mx-auto px-8 gap-5 justify-center py-8",
+          "min-h-full max-w-3xl mx-auto px-8 gap-5 justify-center py-8",
         ].join(" ")}
       >
         <div
@@ -117,7 +117,7 @@ function WelcomePreview({ screen, design }) {
             alignment === "center"
               ? "items-center text-center"
               : "items-start text-start",
-            "gap-y-3 max-w-md",
+            "gap-y-3",
           ].join(" ")}
         >
           <h1
@@ -169,7 +169,7 @@ function ThankYouPreview({ screen, design }) {
         className={[
           "relative flex flex-col",
           alignment === "center" ? "items-center" : "items-start",
-          "min-h-full max-w-xl mx-auto px-8 gap-5 justify-center py-8",
+          "min-h-full max-w-3xl mx-auto px-8 gap-5 justify-center py-8",
         ].join(" ")}
       >
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
@@ -285,7 +285,7 @@ function QuestionPreview({ question, design }) {
         className={[
           "relative flex flex-col",
           alignment === "center" ? "items-center" : "items-start",
-          "min-h-full max-w-xl mx-auto px-8 gap-5 justify-center py-8",
+          "min-h-full max-w-3xl mx-auto px-8 gap-5 justify-center py-8",
         ].join(" ")}
       >
         <div
