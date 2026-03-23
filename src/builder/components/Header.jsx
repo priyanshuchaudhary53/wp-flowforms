@@ -14,6 +14,7 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
+import Logo from "../icon/Logo";
 
 export default function Header() {
   const formId         = useFormStore((s) => s.formId);
@@ -74,8 +75,9 @@ export default function Header() {
       <nav className="p-2 md:px-4 flex justify-between items-center h-14 bg-white border-b border-slate-200">
         {/* ── Left: logo + form name ─────────────────────────────────── */}
         <div className="flex items-center min-w-0 flex-1">
-          <div className="text-gray-900 text-2xl font-semibold tracking-tight shrink-0">
-            WP FlowForms
+          <div>
+            <Logo />
+            <span className="sr-only">WP FlowForms</span>
           </div>
           {!isSetup && <FormName />}
         </div>

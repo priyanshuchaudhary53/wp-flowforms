@@ -151,8 +151,64 @@ class FlowForms_Builder
 
   public function admin_head()
   {
-    // Force hide an admin side menu.
-    echo '<style>#adminmenumain { display: none !important }</style>';
+    echo '<style>
+      #adminmenumain { display: none !important }
+
+      #wpff-page-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F5F3EE;
+      }
+
+      #wpff-page-loader.wpff-page-loader--leaving {
+        animation: wpff-loader-fade-up-out 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+        pointer-events: none;
+      }
+
+      @keyframes wpff-loader-fade-up-out {
+        0%   { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      @keyframes wpff-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      #wpff-page-loader .wpff-loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+
+      #wpff-page-loader .wpff-loader-logo img {
+        width: auto;
+        height: 60px;
+      }
+
+      #wpff-page-loader .wpff-loader-spinner {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #e0e0e0;
+        border-top-color: #5B4EE8;
+        animation: wpff-spin 0.7s linear infinite;
+      }
+    </style>
+    <div id="wpff-page-loader" aria-hidden="true">
+      <div class="wpff-loader-content">
+        <div class="wpff-loader-logo">
+          <img width="100" height="60" src="' . WP_FLOWFORMS_URL . 'assets/images/wpff-logo.svg" />
+        </div>
+        <div class="wpff-loader-spinner" role="status">
+          <span class="screen-reader-text">' . esc_html__('Loading…', 'wp-flowforms') . '</span>
+        </div>
+      </div>
+    </div>';
 
     /**
      * Form Builder admin head action.
