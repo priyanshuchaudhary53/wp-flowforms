@@ -53,6 +53,9 @@ class FlowForms_Entries_Overview
     // Register AJAX handler
     add_action('wp_ajax_wpff_toggle_star', [$this, 'ajax_toggle_star']);
 
+    // Save per page screen option
+    add_filter('set-screen-option', [$this, 'set_screen_option'], 10, 3);
+
     add_action('admin_init', [$this, 'init']);
   }
 
@@ -76,10 +79,10 @@ class FlowForms_Entries_Overview
     // Handle bulk/single actions (redirect-based).
     $this->process_actions();
 
-    add_action('load-wpff_forms_page_wpff_entries', [$this, 'register_screen_options']);
-    add_action('current_screen',                    [$this, 'init_list_table']);
-    add_action('admin_enqueue_scripts',             [$this, 'enqueues']);
-    add_action('wpff_admin_page',                   [$this, 'output']);
+    add_action('load-wp-flowforms_page_wpff_entries', [$this, 'register_screen_options']);
+    add_action('current_screen', [$this, 'init_list_table']);
+    add_action('admin_enqueue_scripts', [$this, 'enqueues']);
+    add_action('wpff_admin_page', [$this, 'output']);
   }
 
   /**
@@ -92,8 +95,18 @@ class FlowForms_Entries_Overview
       'default' => self::PER_PAGE_DEFAULT,
       'option'  => 'wpff_entries_per_page',
     ]);
+  }
 
-    add_filter('set_screen_option_wpff_entries_per_page', fn($s, $o, $v) => (int) $v, 10, 3);
+  /**
+   * Saves the entries per page screen option value.
+   */
+  public function set_screen_option($status, $option, $value)
+  {
+    if ($option === 'wpff_entries_per_page') {
+      return (int) $value;
+    }
+
+    return $status;
   }
 
   /**
