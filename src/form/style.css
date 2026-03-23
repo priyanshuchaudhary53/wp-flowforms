@@ -433,16 +433,20 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .ff-choices {
   display:   flex;
   gap:       10px;
-  width:     100%;
+  width:     max-content;
+}
+
+.ff-choices.ff-choices--horizontal {
+  width: 100%;
 }
 
 /* ── Vertical list (default) ─────────────────────────────────────────────── */
 .ff-choices--vertical {
   flex-direction: column;
-  align-items:    center;
+  margin: 0 auto;
 }
 .ff-choices--vertical.ff-choices--left {
-  align-items:    flex-start;
+  margin: 0;
 }
 
 /* ── Horizontal wrap ─────────────────────────────────────────────────────── */
@@ -458,6 +462,14 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .ff-choices--grid_2 {
   display:               grid;
   grid-template-columns: 1fr 1fr;
+  margin: 0 auto;
+}
+.ff-choices--grid_2.ff-choices--left {
+  margin: 0;
+}
+
+.ff-choices--vertical .ff-choice-item {
+  width: 100%;
 }
 
 .ff-choice-item {
@@ -474,6 +486,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   background:    transparent;
   transition:    background-color 0.12s, border-color 0.12s;
   user-select:   none;
+  box-sizing: border-box;
 }
 
 .ff-choice-item:hover {

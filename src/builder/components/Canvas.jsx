@@ -419,12 +419,15 @@ function QuestionInputMockup({ question, design }) {
 
     return (
       <div
-        className={[layoutClass, alignClass, "w-full gap-2"].filter(Boolean).join(" ")}
+        className={[layoutClass, alignClass, "gap-2"].filter(Boolean).join(" ")}
       >
         {options.map((opt, i) => (
           <label
             key={i}
-            className="choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-(--answer-color) border-(--answer-color)"
+            className={[
+              s.layout === "vertical" ? "w-full" : "",
+              "choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-(--answer-color) border-(--answer-color)"
+            ].filter(Boolean).join(" ")}
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
@@ -433,7 +436,10 @@ function QuestionInputMockup({ question, design }) {
         ))}
         {s.allowOther && (
           <div
-            className="choice-item flex items-center gap-3 p-2.5 pr-4 border text-(--answer-color) border-(--answer-color) opacity-60"
+            className={[
+              s.layout === "vertical" ? "w-full" : "",
+              "choice-item flex items-center gap-3 p-2.5 pr-4 border text-(--answer-color) border-(--answer-color) opacity-60"
+            ].filter(Boolean).join(" ")}
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
@@ -461,12 +467,15 @@ function QuestionInputMockup({ question, design }) {
 
     return (
       <div
-        className={[layoutClass, alignClass, "w-full gap-2"].filter(Boolean).join(" ")}
+        className={[layoutClass, alignClass, "gap-2"].filter(Boolean).join(" ")}
       >
         {options.map((opt, i) => (
           <label
             key={i}
-            className="choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-(--answer-color) border-(--answer-color)"
+            className={[
+              s.layout === "vertical" ? "w-full" : "",
+              "choice-item flex items-center gap-3 p-2.5 pr-4 border cursor-pointer transition-[background-color] hover:bg-(--answer-color)/10 text-(--answer-color) border-(--answer-color)"
+            ].filter(Boolean).join(" ")}
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
@@ -475,7 +484,10 @@ function QuestionInputMockup({ question, design }) {
         ))}
         {s.allowOther && (
           <div
-            className="choice-item flex items-center gap-3 p-2.5 pr-4 border text-(--answer-color) border-(--answer-color) opacity-60"
+            className={[
+              s.layout === "vertical" ? "w-full" : "",
+              "choice-item flex items-center gap-3 p-2.5 pr-4 border text-(--answer-color) border-(--answer-color) opacity-60"
+            ].filter(Boolean).join(" ")}  
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
