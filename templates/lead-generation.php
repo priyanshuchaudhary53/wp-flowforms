@@ -6,7 +6,7 @@ return [
   'slug'          => 'lead-generation-survey',
   'name'          => 'Lead Generation Survey',
   'description'   => 'Find out how your business is generating leads and which marketing channels are most successful.',
-  'category'      => 'lead-gen',
+  'category'      => 'survey',
   'thumbnail_url' => WP_FLOWFORMS_URL . 'assets/images/templates/lead-generation-survey.webp',
   'content'     => [
     'welcomeScreen' => [

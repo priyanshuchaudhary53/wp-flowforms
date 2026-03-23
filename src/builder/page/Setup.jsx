@@ -121,7 +121,7 @@ export default function Setup({ className }) {
   return (
     <>
       <div
-        className={`overflow-y-auto px-4 py-4 sm:py-20 bg-gray-100 ${className}`}
+        className={`overflow-y-auto px-4 py-4 sm:py-20 bg-ff-surface ${className}`}
       >
         <div className="bg-white rounded-xl max-w-5xl mx-auto px-4 py-6 sm:p-8">
           <div className="mb-6 pb-6 border-b border-gray-200 sm:flex sm:items-center sm:gap-2">
@@ -137,7 +137,7 @@ export default function Setup({ className }) {
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
               placeholder="Enter your form name here..."
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 sm:grow"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 sm:grow"
             />
           </div>
 
@@ -158,7 +158,7 @@ export default function Setup({ className }) {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search templates…"
-                className="w-full rounded-lg border border-gray-200 bg-white pl-9 pr-8 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                className="w-full rounded-lg border border-gray-200 bg-gray-50 pl-9 pr-8 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
               />
               {search && (
                 <button
@@ -242,8 +242,8 @@ function CategoryTab({ label, active, onClick }) {
       onClick={onClick}
       className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
         active
-          ? "bg-gray-900 text-white"
-          : "bg-white text-gray-600 border border-gray-200 hover:border-gray-400 hover:text-gray-900"
+          ? "bg-ff-secondary-100 text-ff-secondary-700"
+          : "bg-white text-gray-600 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 hover:text-gray-900"
       }`}
     >
       {label}
@@ -255,7 +255,7 @@ function CategoryTab({ label, active, onClick }) {
 
 function BlankCard({ name, description, loading, disabled, onUse }) {
   return (
-    <div className="group relative bg-white rounded-xl border border-gray-200 hover:border-gray-400 hover:shadow-sm transition-all flex flex-col overflow-hidden">
+    <div className="group relative bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all flex flex-col overflow-hidden">
       <div className="w-full aspect-3/2 bg-gray-50 flex items-center justify-center border-b border-gray-100">
         <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
           <PlusIcon className="w-6 h-6 text-gray-500" />
@@ -275,7 +275,7 @@ function BlankCard({ name, description, loading, disabled, onUse }) {
         <button
           onClick={onUse}
           disabled={disabled}
-          className="w-full rounded-lg bg-gray-900 text-white text-sm font-medium py-2 hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="cursor-pointer w-full rounded-lg bg-ff-primary-500 text-white text-sm font-medium px-4 py-2 hover:bg-ff-primary-600 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -340,7 +340,7 @@ function TemplateCard({
         <button
           onClick={onUse}
           disabled={disabled}
-          className="cursor-pointer w-full rounded-lg bg-gray-900 text-white text-sm font-medium py-2 hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="cursor-pointer w-full rounded-lg bg-ff-primary-500 text-white text-sm font-medium px-4 py-2 hover:bg-ff-primary-600 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ff-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -354,13 +354,13 @@ function TemplateCard({
         <button
           onClick={onPreview}
           disabled={disabled}
-          className="cursor-pointer w-full rounded-lg bg-white text-gray-900 ring-1 ring-inset ring-gray-300 text-sm font-medium py-2 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="cursor-pointer w-full rounded-lg bg-white text-gray-900 ring-1 ring-inset ring-gray-300 text-sm font-medium px-4 py-2 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {previewLoading ? (
             <span className="w-3.5 h-3.5 border-2 border-gray-400 border-t-gray-800 rounded-full animate-spin" />
           ) : (
             <>
-              <EyeIcon width={16} height={16} />
+              <EyeIcon width={16} height={16} className="stroke-2" />
               <span>Preview</span>
             </>
           )}

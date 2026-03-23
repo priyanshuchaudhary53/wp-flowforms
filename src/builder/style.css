@@ -2,10 +2,40 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-
 @source "./src/**/*.{js,jsx}";
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+@theme inline {
+  --color-ff-accent: #8D83F0;
+  --color-ff-dark: #1C1A3E;
+  --color-ff-background: #F5F3EE;
+  --color-ff-surface: #E8E4DC;
+  
+  --color-ff-primary-950: #090817;
+  --color-ff-primary-900: #12102e;
+  --color-ff-primary-800: #241f5d;
+  --color-ff-primary-700: #372f8b;
+  --color-ff-primary-600: #493eba;
+  --color-ff-primary-500: #5B4EE8;
+  --color-ff-primary-400: #7c71ed;
+  --color-ff-primary-300: #9d95f1;
+  --color-ff-primary-200: #bdb8f6;
+  --color-ff-primary-100: #dedcfa;
+  --color-ff-primary-50: #efedfd;
+
+  --color-ff-secondary-950: #011215;
+  --color-ff-secondary-900: #01242a;
+  --color-ff-secondary-800: #024955;
+  --color-ff-secondary-700: #046d7f;
+  --color-ff-secondary-600: #0592aa;
+  --color-ff-secondary-500: #06B6D4;
+  --color-ff-secondary-400: #38c5dd;
+  --color-ff-secondary-300: #6ad3e5;
+  --color-ff-secondary-200: #9be2ee;
+  --color-ff-secondary-100: #cdf0f6;
+  --color-ff-secondary-50: #e6f8fb;
+}
 
 html, body {
   font-family: "Inter", sans-serif;

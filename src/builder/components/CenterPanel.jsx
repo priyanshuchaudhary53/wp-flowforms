@@ -12,12 +12,12 @@ export default function CenterPanel({ className }) {
 
   return (
     <div className={`px-1.5 py-3 flex flex-col gap-3 min-h-0 ${className}`}>
-      <div className="p-2 shrink-0 rounded-2xl md:px-4 h-14 bg-gray-100 flex items-center">
+      <div className="p-2 shrink-0 rounded-2xl md:px-4 h-14 bg-white flex items-center">
         <div className="flex items-center">
           <div>
             <button
               onClick={setAddBlockDialogOpen}
-              className="flex items-center gap-1 rounded-md cursor-pointer bg-white px-3 py-2 text-sm font-medium text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-gray-900"
+              className="flex items-center gap-1 rounded-md cursor-pointer bg-ff-primary-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-ff-primary-600"
             >
               <PlusIcon className="stroke-2 -ml-0.5" width={16} height={16} />
               <span>Add block</span>

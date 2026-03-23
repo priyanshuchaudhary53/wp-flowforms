@@ -14,7 +14,7 @@ export default function LeftPanel({ className }) {
 
   return (
     <div className={`p-3 pr-1.5 min-h-0 ${className}`}>
-      <div className="flex flex-col rounded-2xl px-3 pt-6 pb-4 h-full bg-gray-100 overflow-y-auto">
+      <div className="flex flex-col rounded-2xl px-3 pt-6 pb-4 h-full bg-white overflow-y-auto">
         {welcomeScreen && (
           <div className="shrink-0">
             <p className="text-xs/5 text-gray-600">Welcome page</p>

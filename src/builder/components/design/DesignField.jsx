@@ -133,7 +133,7 @@ function SelectField({ field, value, onChange }) {
                 Icon ? "p-2.5" : "py-2 px-4",
                 "rounded-md text-sm transition-colors duration-150 cursor-pointer",
                 isSelected
-                  ? "bg-gray-95 bg-cyan-100 text-cyan-700"
+                  ? "bg-ff-secondary-100 text-ff-secondary-700"
                   : "bg-white ring-1 ring-inset ring-gray-900/20 hover:bg-gray-50 text-gray-800",
               ].join(" ")}
             >
@@ -270,7 +270,7 @@ function GoogleFontField({ field, value, onChange }) {
             style={
               currentFont ? { fontFamily: `"${currentFont}", sans-serif` } : {}
             }
-            className="w-full rounded-md border-0 bg-white pr-8 pl-3.5 py-2 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-500"
+            className="w-full rounded-md border-0 bg-white pr-8 pl-3.5 py-2 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-ff-secondary-500"
           />
           {/* Clear button */}
           {currentFont && (
@@ -315,7 +315,7 @@ function GoogleFontField({ field, value, onChange }) {
                     className={[
                       "px-3 py-2 cursor-pointer flex items-center justify-between gap-2",
                       font === currentFont
-                        ? "bg-cyan-100 text-cyan-700"
+                        ? "bg-ff-secondary-100 text-ff-secondary-700"
                         : "text-gray-800 hover:bg-gray-50",
                     ].join(" ")}
                   >

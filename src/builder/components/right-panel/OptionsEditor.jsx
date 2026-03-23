@@ -59,7 +59,7 @@ function OptionRow({ option, onChange, onDelete, canDelete }) {
         value={option.label}
         onChange={(e) => onChange(option.id, e.target.value)}
         placeholder="Option label"
-        className="flex-1 min-w-0 text-sm/6 border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 placeholder:text-gray-300"
+        className="flex-1 min-w-0 text-sm/6 border border-gray-200 rounded-md px-2 py-1 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 placeholder:text-gray-300"
       />
 
       {/* Delete button */}
@@ -68,7 +68,7 @@ function OptionRow({ option, onChange, onDelete, canDelete }) {
         onClick={() => onDelete(option.id)}
         disabled={!canDelete}
         aria-label="Remove option"
-        className="shrink-0 text-gray-300 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none transition-colors"
+        className="shrink-0 text-gray-300 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none transition-colors"
       >
         <XIcon width={14} height={14} />
       </button>

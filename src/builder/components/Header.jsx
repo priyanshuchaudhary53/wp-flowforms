@@ -82,7 +82,7 @@ export default function Header() {
 
         {/* ── Centre: view tabs ──────────────────────────────────────── */}
         {!isSetup && (
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center bg-gray-100 gap-1 p-1 rounded-lg">
             {TABS.map((tab) => (
               <a
                 key={tab.id}
@@ -90,8 +90,8 @@ export default function Header() {
                 className={[
                   "px-3.5 h-8 inline-flex items-center rounded-md text-sm font-medium transition-colors",
                   currentView === tab.id
-                    ? "bg-gray-100 text-gray-900"
-                    : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+                    ? "bg-white text-gray-900"
+                    : "text-gray-600 hover:bg-white hover:text-gray-900",
                 ].join(" ")}
               >
                 {tab.label}
@@ -107,7 +107,7 @@ export default function Header() {
               {/* Preview */}
               <button
                 onClick={() => setPreviewOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 hover:text-gray-900"
+                className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium bg-ff-secondary-100 text-ff-secondary-700 cursor-pointer transition-colors hover:bg-ff-secondary-200"
               >
                 <EyeIcon width={16} height={16} className="stroke-2 shrink-0" />
                 <span>Preview</span>
@@ -117,7 +117,7 @@ export default function Header() {
               {hasDraft && hasPublished && (
                 <button
                   onClick={() => setRevertDialogOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 hover:text-gray-900"
+                  className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium text-red-700 bg-red-100 cursor-pointer transition-colors hover:bg-red-200"
                 >
                   <ArrowUturnLeftIcon
                     width={16}
@@ -136,7 +136,7 @@ export default function Header() {
                     <button
                       onClick={handlePublish}
                       disabled={publishing}
-                      className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium bg-gray-900 text-white cursor-pointer transition-colors hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium bg-ff-primary-500 text-white cursor-pointer transition-colors hover:bg-ff-primary-600 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       <RocketLaunchIcon
                         width={15}

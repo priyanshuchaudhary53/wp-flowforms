@@ -11,7 +11,7 @@ function SaveStatusIcon({ status }) {
         <svg className="w-4 h-4 animate-pulse text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v-8m0 0-3 3m3-3 3 3M6.75 19.5a4.5 4.5 0 0 1-1.455-8.766 5.25 5.25 0 0 1 10.338-1.036A3.75 3.75 0 0 1 17.25 19.5H6.75Z" />
         </svg>
-        <span className="text-blue-400 font-medium">Saving…</span>
+        <span className="text-gray-600 font-medium">Saving…</span>
       </span>
     );
   }
@@ -21,7 +21,7 @@ function SaveStatusIcon({ status }) {
         <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
         </svg>
-        <span className="text-amber-500 font-medium">Unsaved</span>
+        <span className="text-gray-600 font-medium">Unsaved</span>
       </span>
     );
   }
@@ -31,7 +31,7 @@ function SaveStatusIcon({ status }) {
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
         <path strokeLinecap="round" strokeLinejoin="round" d="m9 12.75 2 2 4-4" />
       </svg>
-      <span className="text-emerald-600 font-medium">Saved</span>
+      <span className="text-gray-600 font-medium">Saved</span>
     </span>
   );
 }
@@ -53,7 +53,7 @@ function ToggleField({ field, value, onChange }) {
         onClick={() => onChange(!checked)}
         className={[
           "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 focus:outline-none",
-          checked ? "bg-gray-900" : "bg-gray-300",
+          checked ? "bg-ff-primary-500" : "bg-gray-300",
         ].join(" ")}
       >
         <span className={[
@@ -74,7 +74,7 @@ function TextField({ field, value, onChange }) {
         value={value ?? field.default ?? ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={field.default || ""}
-        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 placeholder:text-gray-300"
+        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 placeholder:text-gray-300"
       />
       {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
     </div>
@@ -90,7 +90,7 @@ function TextareaField({ field, value, onChange }) {
         value={value ?? field.default ?? ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={field.default || ""}
-        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none placeholder:text-gray-300"
+        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none placeholder:text-gray-300"
       />
       {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
     </div>
@@ -107,7 +107,7 @@ function NumberField({ field, value, onChange }) {
         min={field.min}
         max={field.max}
         onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
-        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400"
+        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400"
       />
       {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
     </div>
@@ -121,7 +121,7 @@ function SelectField({ field, value, onChange }) {
       <select
         value={value ?? field.default ?? ""}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
+        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
       >
         {field.options?.map((opt) => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -173,7 +173,7 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
   };
 
   return (
-    <fieldset className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+    <fieldset className="rounded-lg border border-gray-200 bg-gray-50 overflow-hidden">
       {/* ── Group label ── */}
       <legend className="mx-3 px-1 text-xs font-semibold text-gray-400 uppercase tracking-wider select-none">
         Background
@@ -217,7 +217,7 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
             <button
               type="button"
               onClick={openMediaFrame}
-              className="w-full h-20 flex flex-col items-center justify-center gap-1.5 rounded-md border-2 border-dashed border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-colors"
+              className="w-full h-20 flex flex-col items-center justify-center gap-1.5 rounded-md border-2 border-dashed bg-white border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600 transition-colors"
             >
               <svg className="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.5}>
                 <rect x="2" y="2" width="16" height="16" rx="2" />
@@ -366,7 +366,7 @@ function BlockSettingsPanel({ blockType, blockContent, blockSettings, onFieldCha
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-2 text-center text-gray-400 px-6">
+    <div className="flex flex-col items-center justify-center h-full gap-2 text-center text-gray-500 px-6">
       <svg className="w-8 h-8 opacity-25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
           d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
@@ -422,7 +422,7 @@ export default function RightPanel({ className }) {
 
   return (
     <div className={`p-3 pl-1.5 min-h-0 ${className}`}>
-      <div className="h-full rounded-2xl bg-gray-100 flex flex-col overflow-hidden">
+      <div className="h-full rounded-2xl bg-white flex flex-col overflow-hidden">
 
         {/* Header */}
         <div className="px-4 pt-4 pb-3 border-b border-gray-200 shrink-0 flex items-start justify-between gap-2">
@@ -432,7 +432,7 @@ export default function RightPanel({ className }) {
               <p className="text-sm font-medium text-gray-900 mt-0.5 truncate">{blockLabel}</p>
             )}
           </div>
-          <div className="shrink-0 mt-0.5">
+          <div className="shrink-0 mt-0.5 rounded-sm bg-gray-100 px-2.5 py-1.5">
             <SaveStatusIcon status={saveStatus} />
           </div>
         </div>
