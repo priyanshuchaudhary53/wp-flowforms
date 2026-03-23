@@ -376,10 +376,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
   public function prepare_items()
   {
     // Column headers.
-    $columns               = $this->get_columns();
-    $hidden                = [];
-    $sortable              = $this->get_sortable_columns();
-    $this->_column_headers = [$columns, $hidden, $sortable];
+    $this->_column_headers = $this->get_column_info();
 
     // Pagination.
     // phpcs:disable WordPress.Security.NonceVerification.Recommended
