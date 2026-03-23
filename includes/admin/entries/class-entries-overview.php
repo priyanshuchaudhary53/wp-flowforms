@@ -90,6 +90,10 @@ class FlowForms_Entries_Overview
    */
   public function register_screen_options()
   {
+    if ($this->view !== 'list') {
+      return;
+    }
+
     add_screen_option('per_page', [
       'label'   => __('Number of entries per page', 'wp-flowforms'),
       'default' => self::PER_PAGE_DEFAULT,
