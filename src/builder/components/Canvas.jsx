@@ -121,7 +121,7 @@ function WelcomePreview({ screen, design }) {
           ].join(" ")}
         >
           <h1
-            className="font-bold text-(--title-color)"
+            className="font-bold leading-tight text-(--title-color)"
             style={{ fontSize: "var(--fs-title)" }}
           >
             {c.title || "Welcome!"}
@@ -197,7 +197,7 @@ function ThankYouPreview({ screen, design }) {
           ].join(" ")}
         >
           <h1
-            className="font-bold text-(--title-color)"
+            className="font-bold leading-tight text-(--title-color)"
             style={{ fontSize: "var(--fs-title)" }}
           >
             {c.title || "Thank you!"}
@@ -298,14 +298,14 @@ function QuestionPreview({ question, design }) {
           ].join(" ")}
         >
           <h2
-            className="font-semibold text-(--title-color)"
+            className="font-semibold leading-snug text-(--title-color)"
             style={{ fontSize: "var(--fs-subtitle)" }}
           >
             {c.title || "Untitled question"}
           </h2>
           {c.description && (
             <p
-              className="text-(--desc-color)"
+              className="leading-relaxed text-(--desc-color)"
               style={{ fontSize: "var(--fs-body)" }}
             >
               {c.description}

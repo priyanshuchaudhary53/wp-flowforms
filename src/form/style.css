@@ -339,7 +339,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   font-weight:    700;
   color:          var(--title-color, #111827);
   margin:         0;
-  line-height:    1.15;
+  line-height:    1.25;
   letter-spacing: -0.02em;
 }
 
@@ -347,7 +347,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   font-size:   var(--fs-body, 1rem);
   color:       var(--desc-color, #6b7280);
   margin:      0;
-  line-height: 1.65;
+  line-height: 1.625;
 }
 
 .ff-hint {
@@ -375,14 +375,14 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   font-weight: 600;
   color:       var(--title-color, #111827);
   margin:      0;
-  line-height: 1.3;
+  line-height: 1.375;
 }
 
 .ff-question-desc {
   font-size:   var(--fs-body, 1rem);
   color:       var(--desc-color, #6b7280);
   margin:      0;
-  line-height: 1.6;
+  line-height: 1.625;
 }
 
 .ff-question-input { width: 100%; }
