@@ -253,6 +253,63 @@ class FlowForms_REST_API
     return ['content' => $data, 'design' => $design];
   }
 
+    /**
+   * Load the default form design from the PHP defaults file.
+   *
+   * Used for blank forms. Template forms use their own bundled design instead.
+   * If the incoming form_data already contains a design (e.g. custom form_data
+   * passed via the API), that takes precedence and this is not called.
+   *
+   * @return array
+   */
+  private function default_design(): array
+  {
+    $file = WP_FLOWFORMS_PATH . 'includes/defaults/form-design.php';
+ 
+    if (! file_exists($file)) {
+      return [];
+    }
+ 
+    $design = require $file;
+ 
+    /**
+     * Filter the default design applied to every new blank form.
+     *
+     * @since 1.0.0
+     *
+     * @param array $design Default design array.
+     */
+    return (array) apply_filters('wpff_default_form_design', $design);
+  }
+
+  /**
+   * Load the default form settings from the PHP defaults file.
+   *
+   * This is the single source of truth for initial settings on every new form,
+   * whether created blank or from a template.
+   *
+   * @return array
+   */
+  private function default_settings(): array
+  {
+    $file = WP_FLOWFORMS_PATH . 'includes/defaults/form-settings.php';
+
+    if (! file_exists($file)) {
+      return [];
+    }
+
+    $settings = require $file;
+
+    /**
+     * Filter the default settings applied to every new form.
+     *
+     * @since 1.0.0
+     *
+     * @param array $settings Default settings array.
+     */
+    return (array) apply_filters('wpff_default_form_settings', $settings);
+  }
+
   /**
    * Write post_content directly via $wpdb to bypass wp_insert_post /
    * wp_update_post's internal wp_slash() call.
@@ -370,10 +427,13 @@ class FlowForms_REST_API
     // New forms: store content in the draft slot only so the user must
     // explicitly hit Publish before the form goes live.
     // Hoist any embedded "design" key out of the content array to the top level.
-    $extracted = $this->extract_design($form_data);
-    $json      = $this->encode_slots(null, $extracted['content'], $extracted['design'], []);
-    $saved     = $this->save_post_content($post_id, $json);
-
+    $extracted   = $this->extract_design($form_data);
+    // Fall back to default design when the incoming data carries no design
+    // (blank form). Template-created forms always have their own design.
+    $form_design = ! empty($extracted['design']) ? $extracted['design'] : $this->default_design();
+    $json        = $this->encode_slots(null, $extracted['content'], $form_design, $this->default_settings());
+    $saved       = $this->save_post_content($post_id, $json);
+ 
     if (! $saved) {
       return new WP_REST_Response(['message' => 'Failed to save form content.'], 500);
     }
@@ -797,8 +857,10 @@ class FlowForms_REST_API
 
     // Store template content in the draft slot — user must publish before it goes live.
     // Templates now store design at the top level, separate from content.
-    $json  = $this->encode_slots(null, $template['content'], $template['design'] ?? [], []);
-    $saved = $this->save_post_content($post_id, $json);
+    // Merge default settings with any settings the template itself ships.
+    $form_settings = array_replace_recursive($this->default_settings(), $template['settings'] ?? []);
+    $json          = $this->encode_slots(null, $template['content'], $template['design'] ?? [], $form_settings);
+    $saved         = $this->save_post_content($post_id, $json);
 
     if (! $saved) {
       return new WP_REST_Response(['message' => __('Failed to save form content.', 'wp-flowforms')], 500);

@@ -52,24 +52,4 @@ return [
   //   ]
   'questions' => [],
 
-  // ── Design ────────────────────────────────────────────────────────────────
-  'design' => [
-    // Colours
-    'bg_color'            => '#ffffff',
-    'title_color'         => '#111827', // gray-900
-    'description_color'   => '#6b7280', // gray-500
-    'field_color'         => '#f9fafb', // gray-50
-    'button_color'        => '#111827', // gray-900
-    'button_hover_color'  => '#374151', // gray-700
-    'button_text_color'   => '#ffffff',
-    'star_color'          => '#f59e0b', // amber-500
-
-    // Layout
-    'alignment'           => 'left',  // center | left
-
-    // Typography
-    'google_font'         => 'Inter',
-    'font_size'           => 'regular', // small | regular | large
-  ],
-
 ];
