@@ -195,8 +195,25 @@ class FlowForms_Frontend {
 
 		$post = get_post( $form_id );
 
-		if ( ! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish' ) {
+		// Form doesn't exist at all — generic 404 for everyone.
+		if ( ! $post || $post->post_type !== 'wpff_forms' ) {
 			$this->render_form_unavailable_page();
+			exit;
+		}
+
+		// Form exists but has never been published — content.published slot is null.
+		$decoded   = wpff_decode( $post->post_content );
+		$published = is_array( $decoded ) && isset( $decoded['content']['published'] )
+			? $decoded['content']['published']
+			: null;
+
+		if ( empty( $published ) ) {
+			if ( current_user_can( 'edit_posts' ) ) {
+				$builder_url = admin_url( 'admin.php?page=wpff_form_builder&form_id=' . $form_id );
+				$this->render_form_not_published_page( $post->post_title, $builder_url );
+			} else {
+				$this->render_form_unavailable_page();
+			}
 			exit;
 		}
 
@@ -589,9 +606,46 @@ html { margin-top: 0 !important; }
 	}
 
 	/**
-	 * Render a minimal standalone HTML page for unavailable (trashed/deleted) forms.
-	 * Used by handle_full_page_embed() when the form cannot be served.
-	 * Sets a 404 response code and outputs a polite message — no WP chrome.
+	 * Shared inline styles for the standalone unavailable/not-published pages.
+	 */
+	private function standalone_page_styles(): string {
+		return '
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+	height: 100%; background: #fafafa;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	color: #1f2937;
+}
+.wpff-standalone {
+	min-height: 100vh; display: flex; flex-direction: column;
+	align-items: center; justify-content: center;
+	padding: 40px 24px; text-align: center; gap: 16px;
+}
+.wpff-standalone__icon {
+	width: 64px; height: 64px; border-radius: 50%;
+	display: flex; align-items: center;
+	justify-content: center; font-size: 28px; flex-shrink: 0;
+}
+.wpff-standalone__icon--grey { background: #f3f4f6; }
+.wpff-standalone__icon--amber { background: #fef3c7; }
+.wpff-standalone__title { font-size: 22px; font-weight: 600; color: #111827; }
+.wpff-standalone__desc { font-size: 15px; color: #6b7280; max-width: 380px; line-height: 1.6; }
+.wpff-standalone__btn {
+	display: inline-flex; align-items: center; gap: 8px;
+	padding: 10px 22px; border-radius: 8px; border: none;
+	background: #111827; color: #fff; font-size: 15px;
+	font-family: inherit; font-weight: 500; text-decoration: none;
+	cursor: pointer; transition: background 0.15s;
+}
+.wpff-standalone__btn:hover { background: #374151; }
+.wpff-standalone__btn svg { flex-shrink: 0; }
+</style>';
+	}
+
+	/**
+	 * Render a minimal standalone HTML page for unavailable (missing/trashed) forms.
+	 * Sets a 404 response code. Shown to non-admin users for any unservable form.
 	 */
 	private function render_form_unavailable_page(): void {
 		status_header( 404 );
@@ -604,40 +658,63 @@ html { margin-top: 0 !important; }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title><?php esc_html_e( 'Form Not Available', 'wp-flowforms' ); ?></title>
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-	height: 100%; background: #fafafa;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-	color: #1f2937;
-}
-.wpff-unavailable {
-	min-height: 100vh; display: flex; flex-direction: column;
-	align-items: center; justify-content: center;
-	padding: 40px 24px; text-align: center; gap: 16px;
-}
-.wpff-unavailable__icon {
-	width: 64px; height: 64px; border-radius: 50%;
-	background: #f3f4f6; display: flex; align-items: center;
-	justify-content: center; font-size: 28px;
-}
-.wpff-unavailable__title {
-	font-size: 22px; font-weight: 600; color: #111827;
-}
-.wpff-unavailable__desc {
-	font-size: 15px; color: #6b7280; max-width: 360px; line-height: 1.6;
-}
-</style>
+<?php echo $this->standalone_page_styles(); ?>
 </head>
 <body>
-<div class="wpff-unavailable">
-	<div class="wpff-unavailable__icon">📋</div>
-	<h1 class="wpff-unavailable__title">
+<div class="wpff-standalone">
+	<div class="wpff-standalone__icon wpff-standalone__icon--grey">📋</div>
+	<h1 class="wpff-standalone__title">
 		<?php esc_html_e( 'This form is no longer available.', 'wp-flowforms' ); ?>
 	</h1>
-	<p class="wpff-unavailable__desc">
+	<p class="wpff-standalone__desc">
 		<?php esc_html_e( 'The form you are looking for has been removed or is currently unavailable.', 'wp-flowforms' ); ?>
 	</p>
+</div>
+</body>
+</html>
+		<?php
+	}
+
+	/**
+	 * Render a minimal standalone HTML page for forms that exist but aren't published yet.
+	 * Only shown to logged-in admins/editors — includes a link to the builder.
+	 *
+	 * @param string $form_title  The form's post title.
+	 * @param string $builder_url URL to the form's builder page.
+	 */
+	private function render_form_not_published_page( string $form_title, string $builder_url ): void {
+		status_header( 404 );
+		header( 'Content-Type: text/html; charset=utf-8' );
+		?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title><?php esc_html_e( 'Form Not Published', 'wp-flowforms' ); ?></title>
+<?php echo $this->standalone_page_styles(); ?>
+</head>
+<body>
+<div class="wpff-standalone">
+	<div class="wpff-standalone__icon wpff-standalone__icon--amber">🚧</div>
+	<h1 class="wpff-standalone__title">
+		<?php esc_html_e( 'This form hasn\'t been published yet.', 'wp-flowforms' ); ?>
+	</h1>
+	<p class="wpff-standalone__desc">
+		<?php
+			printf(
+				esc_html__( '"%s" is not live yet. Publish it from the builder so visitors can fill it out.', 'wp-flowforms' ),
+				esc_html( $form_title )
+			);
+		?>
+	</p>
+	<a href="<?php echo esc_url( $builder_url ); ?>" class="wpff-standalone__btn">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+		</svg>
+		<?php esc_html_e( 'Open in Builder', 'wp-flowforms' ); ?>
+	</a>
 </div>
 </body>
 </html>
