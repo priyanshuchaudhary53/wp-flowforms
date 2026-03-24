@@ -28,16 +28,16 @@ export default function Settings({ className }) {
   const activeTab = getActiveTab();
 
   return (
-    <div className={`overflow-y-auto bg-ff-background ${className}`}>
-      <div className="mx-auto max-w-2xl px-6 py-10">
+    <div className={`overflow-y-auto px-3 py-10 bg-ff-background ${className}`}>
+      <div className="mx-auto flex bg-white rounded-2xl max-w-4xl">
         {/* Tab bar */}
-        <div className="flex gap-1 border-b border-border mb-8">
+        <div className="shrink-0 min-w-64 flex flex-col gap-1 border-r border-border py-10 pl-6">
           {TABS.map((tab) => (
             <a
               key={tab.id}
               href={tabUrl(tab.id)}
               className={[
-                "px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
+                "inline-block px-4 py-2 text-sm font-medium border-r-2 -mr-px transition-colors",
                 activeTab === tab.id
                   ? "border-ff-primary-500 text-ff-primary-600"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
@@ -49,8 +49,10 @@ export default function Settings({ className }) {
         </div>
 
         {/* Tab content */}
-        {activeTab === "general" && <GeneralTab />}
-        {activeTab === "email" && <EmailTab />}
+        <div className="grow py-10">
+          {activeTab === "general" && <GeneralTab />}
+          {activeTab === "email" && <EmailTab />}
+        </div>
       </div>
     </div>
   );
@@ -94,15 +96,15 @@ function GeneralTab() {
   const values = { ...GENERAL_DEFAULTS, ...formSettings };
 
   return (
-    <section className="space-y-2">
-      <div className="mb-6">
+    <section className="">
+      <div className="px-10 pb-6 border-b">
         <h2 className="text-base font-semibold text-foreground">General</h2>
         <p className="text-sm text-muted-foreground mt-0.5">
           Control how your form looks and behaves for respondents.
         </p>
       </div>
 
-      <div className="rounded-lg border border-border bg-background divide-y divide-border">
+      <div className="mt-6 px-10 divide-y divide-border">
         {GENERAL_FIELDS.map((field) => (
           <ToggleRow
             key={field.key}
@@ -121,8 +123,8 @@ function GeneralTab() {
 
 function EmailTab() {
   return (
-    <section className="space-y-4">
-      <div className="mb-6">
+    <section className="">
+      <div className="px-10 pb-6 border-b">
         <h2 className="text-base font-semibold text-foreground">
           Email Notifications
         </h2>
@@ -131,10 +133,14 @@ function EmailTab() {
         </p>
       </div>
 
-      <div className="rounded-lg border border-dashed border-border bg-background px-6 py-12 text-center">
-        <p className="text-sm text-muted-foreground">
-          Email notification settings coming soon.
-        </p>
+      <div className="mt-6 px-10 divide-y divide-border">
+        <div className="py-4 first:pt-0 last:pb-0">
+          <div className="rounded-lg border border-dashed border-border bg-background px-6 py-12 text-center">
+            <p className="text-sm text-muted-foreground">
+              Email notification settings coming soon.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -146,7 +152,7 @@ function ToggleRow({ label, description, checked, onChange }) {
   const id = `toggle-${label.replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
-    <div className="flex items-start justify-between gap-6 px-4 py-4">
+    <div className="flex items-start justify-between gap-6 py-4 first:pt-0 last:pb-0">
       <div className="min-w-0">
         <label
           htmlFor={id}
