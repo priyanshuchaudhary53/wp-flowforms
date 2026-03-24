@@ -69,6 +69,12 @@ export class FormApp {
 		this._thankYou  = formData.content?.thankYouScreen;
 		this._design    = formData.design                ?? {};
 
+		// General settings — with safe defaults matching the builder's GENERAL_DEFAULTS
+		const general           = formData.settings?.general ?? {};
+		this._showProgressBar   = general.progress_bar       ?? true;
+		this._showNavArrows     = general.navigation_arrows  ?? true;
+		this._showPoweredBy     = general.powered_by         ?? false;
+
 		// Permanent structural elements (built once in boot)
 		this._progressEl     = null;
 		this._bgEl           = null;
@@ -108,6 +114,9 @@ export class FormApp {
 		this._progressEl.innerHTML =
 			'<div class="ff-progress-track"><div class="ff-progress-bar"></div></div>' +
 			'<span class="ff-progress-label"></span>';
+		if ( ! this._showProgressBar ) {
+			this._progressEl.setAttribute( 'hidden', '' );
+		}
 		this.container.appendChild( this._progressEl );
 
 		// 2. Background layer
@@ -136,7 +145,26 @@ export class FormApp {
   				'<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />' +
 				'</svg>' +
 			'</button>';
+		if ( ! this._showNavArrows ) {
+			this._navEl.setAttribute( 'hidden', '' );
+		}
 		this.container.appendChild( this._navEl );
+
+		// 5. "Powered by WP FlowForms" badge (only when setting is enabled)
+		if ( this._showPoweredBy ) {
+			this._poweredByEl = document.createElement( 'div' );
+			this._poweredByEl.className = 'ff-powered-by';
+			this._poweredByEl.innerHTML =
+				// '<a href="https://wpflowforms.com" target="_blank" rel="noopener noreferrer" class="ff-powered-by-link">' +
+				'<span class="ff-powered-by-link">' +
+					'<svg class="ff-powered-by-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+						'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' +
+					'</svg>' +
+					'Powered by WP FlowForms' +
+				'</span>';
+				// '</a>';
+			this.container.appendChild( this._poweredByEl );
+		}
 
 		this._prevBtn = this._navEl.querySelector( '.ff-btn-prev' );
 		this._nextBtn = this._navEl.querySelector( '.ff-btn-next' );
@@ -154,6 +182,7 @@ export class FormApp {
 
 		// Initial render — instant bg, no exit animation
 		this._updateProgress();
+		this._updatePoweredBy();
 		this._stampBackground( this._resolveBgForState( this.state ) );
 		this._renderScreenImmediate();
 		this._updateNav();
@@ -332,6 +361,12 @@ export class FormApp {
 		const el = this._progressEl;
 		if ( ! el ) return;
 
+		// Hidden unconditionally when the setting is off
+		if ( ! this._showProgressBar ) {
+			el.style.display = 'none';
+			return;
+		}
+
 		const total   = this._questions.length;
 		const isQ     = this.state.currentScreen === 'question';
 		const current = isQ ? this.state.currentIndex + 1 : 0;
@@ -348,6 +383,12 @@ export class FormApp {
 
 	_updateNav() {
 		if ( ! this._navEl ) return;
+
+		// Hidden unconditionally when the setting is off
+		if ( ! this._showNavArrows ) {
+			this._navEl.style.display = 'none';
+			return;
+		}
 
 		const isQ     = this.state.currentScreen === 'question';
 		const isFirst = isQ && this.state.currentIndex === 0;
@@ -366,12 +407,45 @@ export class FormApp {
 		if ( label ) label.textContent = 'Next';
 	}
 
+	// ── Powered-by badge visibility ──────────────────────────────────────────
+
+	_updatePoweredBy() {
+		if ( ! this._poweredByEl ) return;
+		const screen = this.state.currentScreen;
+		const show   = this._showPoweredBy && ( screen === 'welcome' || screen === 'thankYou' );
+		const el     = this._poweredByEl;
+
+		if ( show ) {
+			// Ensure visible, snap to transparent, then fade in.
+			// Delay matches 3 stagger steps so it trails the last screen element.
+			el.style.display    = '';
+			el.style.transition = 'none';
+			el.style.opacity    = '0';
+			requestAnimationFrame( () => {
+				requestAnimationFrame( () => {
+					el.style.transition = `opacity 0.38s cubic-bezier(0.22,1,0.36,1) ${ EXIT_GAP + ENTRY_STAGGER * 3 }ms`;
+					el.style.opacity    = '1';
+				} );
+			} );
+		} else {
+			// Fade out in sync with the screen exit.
+			el.style.transition = `opacity ${ EXIT_DURATION }ms cubic-bezier(0.4,0,1,1)`;
+			el.style.opacity    = '0';
+			// Hide from layout after the transition so it doesn't intercept clicks.
+			const t = setTimeout( () => {
+				if ( el.style.opacity === '0' ) el.style.display = 'none';
+			}, EXIT_DURATION + 50 );
+			this._poweredByHideTimer = t;
+		}
+	}
+
 	// ── State helpers ─────────────────────────────────────────────────────────
 
 	_setState( patch ) {
 		Object.assign( this.state, patch );
 		this._updateProgress();
 		this._updateNav();
+		this._updatePoweredBy();
 		this._transitionScreen();
 	}
 

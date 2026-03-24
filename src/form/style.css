@@ -818,3 +818,39 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   .ff-content-wrapper--split-left,
   .ff-content-wrapper--split-right { left: 0; right: 0; }
 }
+
+/* ── Powered by WP FlowForms badge ──────────────────────────────────────────── */
+
+.ff-powered-by {
+  position:       absolute;
+  bottom:         16px;
+  left:           50%;
+  transform:      translateX(-50%);
+  z-index:        60;
+  pointer-events: auto;
+  will-change:    opacity;
+  display:        flex;
+}
+
+.ff-powered-by-link {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             5px;
+  font-size:       0.6875rem;
+  font-family:     inherit;
+  color:           var(--hint-color, #9ca3af);
+  text-decoration: none;
+  opacity:         0.75;
+  white-space:     nowrap;
+  transition:      opacity 0.15s, color 0.15s;
+}
+
+/* .ff-powered-by-link:hover {
+  opacity: 1;
+  color:   var(--btn-color, #111827);
+} */
+
+.ff-powered-by-icon {
+  flex-shrink: 0;
+  color:       inherit;
+}

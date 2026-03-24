@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useFormStore } from "../store/useFormStore";
 
 // ── Tab definitions ───────────────────────────────────────────────────────────
@@ -21,10 +22,86 @@ function tabUrl(tabId) {
   return url.toString();
 }
 
+// ── Save status indicator ─────────────────────────────────────────────────────
+
+function SaveStatusBadge({ status }) {
+  if (status === "saved") return null;
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={[
+        "flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full transition-all",
+        status === "saving"
+          ? "bg-ff-primary-50 text-ff-primary-600"
+          : "bg-red-50 text-red-600",
+      ].join(" ")}
+    >
+      {status === "saving" ? (
+        <>
+          {/* Spinning circle */}
+          <svg
+            className="animate-spin h-3 w-3 shrink-0"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
+          </svg>
+          Saving…
+        </>
+      ) : (
+        <>
+          {/* Error X */}
+          <svg
+            className="h-3 w-3 shrink-0"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+          </svg>
+          Save failed
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── Root component ────────────────────────────────────────────────────────────
 
 export default function Settings({ className }) {
   const activeTab = getActiveTab();
+  const settingsSaveStatus = useFormStore((s) => s.settingsSaveStatus);
+
+  // Alert user if they try to navigate away while settings are saving
+  useEffect(() => {
+    if (settingsSaveStatus !== "saving") return;
+
+    function handleBeforeUnload(e) {
+      e.preventDefault();
+      // Modern browsers show their own message; setting returnValue triggers the dialog
+      e.returnValue = "";
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [settingsSaveStatus]);
 
   return (
     <div className={`overflow-y-auto px-3 py-10 bg-ff-background ${className}`}>
@@ -48,7 +125,12 @@ export default function Settings({ className }) {
         </div>
 
         {/* Tab content */}
-        <div className="grow">
+        <div className="relative grow">
+          {/* Save status banner sits just inside the content column */}
+          <div className="absolute top-6 right-6">
+            <SaveStatusBadge status={settingsSaveStatus} />
+          </div>
+
           {activeTab === "general" && <GeneralTab />}
           {activeTab === "email" && <EmailTab />}
         </div>

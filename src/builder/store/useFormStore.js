@@ -45,6 +45,9 @@ export const useFormStore = create((set, get) => ({
   draftDesign: null,
   designDirty: false,
 
+  // "saved" | "saving" | "error"  — tracks settings-only autosave state
+  settingsSaveStatus: "saved",
+
   // Whether the server currently has an unpublished draft for this form.
   hasDraft: false,
   // Whether a published version exists (false for brand-new forms).
@@ -391,7 +394,7 @@ export const useFormStore = create((set, get) => ({
           [key]: value,
         },
       };
-      return { form: { ...state.form, settings: updated } };
+      return { form: { ...state.form, settings: updated }, settingsSaveStatus: "saving" };
     });
 
     clearTimeout(saveTimer);
@@ -422,8 +425,11 @@ export const useFormStore = create((set, get) => ({
         const data = await res.json().catch(() => ({}));
         throw new Error(data.message || `API Error: ${res.status}`);
       }
+
+      set({ settingsSaveStatus: "saved" });
     } catch (err) {
       console.error("Settings save failed:", err);
+      set({ settingsSaveStatus: "error" });
     }
   },
 
