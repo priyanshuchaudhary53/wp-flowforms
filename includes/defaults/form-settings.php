@@ -24,10 +24,10 @@ return [
   'general' => [
 
     // Show a progress bar at the top of the form.
-    'progress_bar'      => false,
+    'progress_bar'      => true,
 
     // Show previous / next navigation arrows.
-    'navigation_arrows' => false,
+    'navigation_arrows' => true,
 
     // Show "Powered by WP FlowForms" badge at the bottom of the form.
     'powered_by'        => false,
