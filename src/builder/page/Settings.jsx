@@ -1,4 +1,3 @@
-import { useEffect, useCallback } from "react";
 import { useFormStore } from "../store/useFormStore";
 
 // ── Tab definitions ───────────────────────────────────────────────────────────
@@ -49,7 +48,7 @@ export default function Settings({ className }) {
         </div>
 
         {/* Tab content */}
-        <div className="grow py-10">
+        <div className="grow">
           {activeTab === "general" && <GeneralTab />}
           {activeTab === "email" && <EmailTab />}
         </div>
@@ -97,14 +96,14 @@ function GeneralTab() {
 
   return (
     <section className="">
-      <div className="px-10 pb-6 border-b">
+      <div className="px-10 pt-10 pb-6 border-b">
         <h2 className="text-base font-semibold text-foreground">General</h2>
         <p className="text-sm text-muted-foreground mt-0.5">
           Control how your form looks and behaves for respondents.
         </p>
       </div>
 
-      <div className="mt-6 px-10 divide-y divide-border">
+      <div className="py-10 px-10 divide-y divide-border">
         {GENERAL_FIELDS.map((field) => (
           <ToggleRow
             key={field.key}
@@ -124,7 +123,7 @@ function GeneralTab() {
 function EmailTab() {
   return (
     <section className="">
-      <div className="px-10 pb-6 border-b">
+      <div className="pt-10 px-10 pb-6 border-b">
         <h2 className="text-base font-semibold text-foreground">
           Email Notifications
         </h2>
@@ -133,7 +132,7 @@ function EmailTab() {
         </p>
       </div>
 
-      <div className="mt-6 px-10 divide-y divide-border">
+      <div className="py-10 px-10 divide-y divide-border">
         <div className="py-4 first:pt-0 last:pb-0">
           <div className="rounded-lg border border-dashed border-border bg-background px-6 py-12 text-center">
             <p className="text-sm text-muted-foreground">
