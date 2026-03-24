@@ -201,6 +201,23 @@ class FlowForms_Frontend {
 			exit;
 		}
 
+		// Form is in the trash.
+		if ( $post->post_status === 'trash' ) {
+			if ( current_user_can( 'edit_posts' ) ) {
+				$restore_url = wp_nonce_url(
+					add_query_arg(
+						[ 'page' => 'wpff_forms', 'action' => 'restore', 'form_id' => $form_id, 'status' => 'trash' ],
+						admin_url( 'admin.php' )
+					),
+					'wpff_restore_form_nonce'
+				);
+				$this->render_form_trashed_page( $post->post_title, $restore_url );
+			} else {
+				$this->render_form_unavailable_page();
+			}
+			exit;
+		}
+
 		// Form exists but has never been published — content.published slot is null.
 		$decoded   = wpff_decode( $post->post_content );
 		$published = is_array( $decoded ) && isset( $decoded['content']['published'] )
@@ -603,6 +620,52 @@ html { margin-top: 0 !important; }
 		</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Render a minimal standalone HTML page for trashed forms.
+	 * Only shown to logged-in admins/editors — includes a restore link.
+	 *
+	 * @param string $form_title  The form's post title.
+	 * @param string $restore_url Nonce-signed URL to restore the form from trash.
+	 */
+	private function render_form_trashed_page( string $form_title, string $restore_url ): void {
+		status_header( 404 );
+		header( 'Content-Type: text/html; charset=utf-8' );
+		?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title><?php esc_html_e( 'Form In Trash', 'wp-flowforms' ); ?></title>
+<?php echo $this->standalone_page_styles(); ?>
+</head>
+<body>
+<div class="wpff-standalone">
+	<div class="wpff-standalone__icon wpff-standalone__icon--amber">🗑️</div>
+	<h1 class="wpff-standalone__title">
+		<?php esc_html_e( 'This form is in the trash.', 'wp-flowforms' ); ?>
+	</h1>
+	<p class="wpff-standalone__desc">
+		<?php
+			printf(
+				esc_html__( '"%s" has been moved to the trash and is not visible to visitors. Restore it to make it available again.', 'wp-flowforms' ),
+				esc_html( $form_title )
+			);
+		?>
+	</p>
+	<a href="<?php echo esc_url( $restore_url ); ?>" class="wpff-standalone__btn">
+		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+		</svg>
+		<?php esc_html_e( 'Restore Form', 'wp-flowforms' ); ?>
+	</a>
+</div>
+</body>
+</html>
+		<?php
 	}
 
 	/**
