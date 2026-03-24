@@ -16,6 +16,9 @@ class FlowForms_Form_Handler
   public function __construct()
   {
     add_action('init', [$this, 'register_post_type']);
+
+    // Cascade-delete entries when a form is permanently deleted.
+    add_action('before_delete_post', [$this, 'delete_form_entries'], 10, 2);
   }
 
   public function register_post_type()
@@ -47,6 +50,38 @@ class FlowForms_Form_Handler
 
     // Register the post type.
     register_post_type('wpff_forms', $args);
+  }
+
+  /**
+   * Permanently delete all entries belonging to a form when the form itself
+   * is permanently deleted.
+   *
+   * Hooked to `before_delete_post` which fires only on permanent deletion,
+   * not when a form is moved to trash — allowing the user to restore the form
+   * and keep its entries intact until the final delete.
+   * 
+   * @since 1.0.0
+   *
+   * @param int     $post_id Post ID being deleted.
+   * @param WP_Post $post    Post object.
+   */
+  public function delete_form_entries(int $post_id, WP_Post $post): void
+  {
+    if (! in_array($post->post_type, self::POST_TYPES, true)) {
+      return;
+    }
+
+    $entry = wp_flowforms()->obj('entry');
+
+    if (! $entry) {
+      return;
+    }
+
+    global $wpdb;
+
+    $table = FlowForms_Entry_Handler::table();
+
+    $wpdb->delete($table, ['form_id' => $post_id], ['%d']);
   }
 
   /**
