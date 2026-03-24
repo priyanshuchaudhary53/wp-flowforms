@@ -378,6 +378,55 @@ export const useFormStore = create((set, get) => ({
     }
   },
 
+  // ── Update a single setting and persist immediately ───────────────────────
+  // Settings, like design, are not versioned — they go live on save without
+  // going through the draft/publish cycle.
+  updateSetting: (section, key, value) => {
+    set((state) => {
+      const current  = state.form?.settings ?? {};
+      const updated  = {
+        ...current,
+        [section]: {
+          ...(current[section] ?? {}),
+          [key]: value,
+        },
+      };
+      return { form: { ...state.form, settings: updated } };
+    });
+
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => get()._persistSettings(), 800);
+  },
+
+  // ── Persist settings to the top-level settings key ───────────────────────
+  _persistSettings: async () => {
+    const { formId, form } = get();
+    if (!formId || !form) return;
+
+    const settings = form.settings ?? {};
+
+    try {
+      const res = await fetch(
+        `${formflowData.apiUrl}/forms/${formId}/settings`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "X-WP-Nonce": formflowData.nonce,
+          },
+          body: JSON.stringify({ settings }),
+        },
+      );
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || `API Error: ${res.status}`);
+      }
+    } catch (err) {
+      console.error("Settings save failed:", err);
+    }
+  },
+
   // ── Publish: promote draft → published, clear draft ───────────────────────
   publishForm: async () => {
     const { formId } = get();

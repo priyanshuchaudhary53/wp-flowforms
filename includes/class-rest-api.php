@@ -48,6 +48,13 @@ class FlowForms_REST_API
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
 
+    // PATCH update form settings — writes directly to top-level settings key
+    register_rest_route($ns, '/forms/(?P<id>\d+)/settings', [
+      'methods'             => 'PATCH',
+      'callback'            => [$this, 'update_settings'],
+      'permission_callback' => fn() => current_user_can('edit_posts'),
+    ]);
+
     // POST publish form (promote draft → published, clear draft)
     register_rest_route($ns, '/forms/(?P<id>\d+)/publish', [
       'methods'             => 'POST',
@@ -147,7 +154,8 @@ class FlowForms_REST_API
           'published' => $decoded['content']['published'] ?? null,
           'draft'     => $decoded['content']['draft']     ?? null,
         ],
-        'design'  => $decoded['design'] ?? [],
+        'design'   => $decoded['design']   ?? [],
+        'settings' => $decoded['settings'] ?? [],
       ];
     }
 
@@ -170,8 +178,9 @@ class FlowForms_REST_API
       }
 
       return [
-        'content' => ['published' => $pub, 'draft' => $draft],
-        'design'  => $design,
+        'content'  => ['published' => $pub, 'draft' => $draft],
+        'design'   => $design,
+        'settings' => [],
       ];
     }
 
@@ -184,8 +193,9 @@ class FlowForms_REST_API
     }
 
     return [
-      'content' => ['published' => $decoded, 'draft' => null],
-      'design'  => $design,
+      'content'  => ['published' => $decoded, 'draft' => null],
+      'design'   => $design,
+      'settings' => [],
     ];
   }
 
@@ -195,14 +205,16 @@ class FlowForms_REST_API
    * @param  array|null $published  Published content slot.
    * @param  array|null $draft      Draft content slot (null = no draft).
    * @param  array      $design     Design object (top-level, always live).
+   * @param  array      $settings   Settings object (top-level, always live).
    * @return string
    */
-  private function encode_slots(?array $published, ?array $draft, array $design = []): string
+  private function encode_slots(?array $published, ?array $draft, array $design = [], array $settings = []): string
   {
     return wp_json_encode(
       [
-        'content' => ['published' => $published, 'draft' => $draft],
-        'design'  => $design,
+        'content'  => ['published' => $published, 'draft' => $draft],
+        'design'   => $design,
+        'settings' => $settings,
       ],
       JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
     );
@@ -312,6 +324,7 @@ class FlowForms_REST_API
       'status'        => $post->post_status,
       'content'       => $content,
       'design'        => $slots['design'],
+      'settings'      => $slots['settings'],
       'has_draft'     => $has_draft,
       'has_published' => ! is_null($slots['content']['published']),
       'date_created'  => $post->post_date,
@@ -358,7 +371,7 @@ class FlowForms_REST_API
     // explicitly hit Publish before the form goes live.
     // Hoist any embedded "design" key out of the content array to the top level.
     $extracted = $this->extract_design($form_data);
-    $json      = $this->encode_slots(null, $extracted['content'], $extracted['design']);
+    $json      = $this->encode_slots(null, $extracted['content'], $extracted['design'], []);
     $saved     = $this->save_post_content($post_id, $json);
 
     if (! $saved) {
@@ -415,7 +428,7 @@ class FlowForms_REST_API
       if (! empty($form_data)) {
         // Always write to the DRAFT slot; never touch published during auto-save.
         $slots = $this->decode_slots($post->post_content);
-        $json  = $this->encode_slots($slots['content']['published'], $form_data, $slots['design']);
+        $json  = $this->encode_slots($slots['content']['published'], $form_data, $slots['design'], $slots['settings']);
         $saved = $this->save_post_content($form_id, $json);
 
         if (! $saved) {
@@ -465,7 +478,7 @@ class FlowForms_REST_API
     $slots = $this->decode_slots($post->post_content);
 
     // Design sits at the top level — just replace it, content slots untouched.
-    $json  = $this->encode_slots($slots['content']['published'], $slots['content']['draft'], $design);
+    $json  = $this->encode_slots($slots['content']['published'], $slots['content']['draft'], $design, $slots['settings']);
     $saved = $this->save_post_content($form_id, $json);
 
     if (! $saved) {
@@ -476,6 +489,49 @@ class FlowForms_REST_API
       'success' => true,
       'form_id' => $form_id,
       'message' => 'Design updated successfully.',
+    ], 200);
+  }
+
+
+  /**
+   * PATCH /forms/{id}/settings
+   *
+   * Writes settings directly to the top-level "settings" key — not versioned,
+   * goes live immediately, independent of the content draft/publish cycle.
+   */
+  public function update_settings($request)
+  {
+    $form_id  = absint($request['id']);
+    $settings = $request->get_param('settings');
+
+    if (! $form_id) {
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+    }
+
+    if (empty($settings) || ! is_array($settings)) {
+      return new WP_Error('invalid_settings', __('No settings data provided.', 'wp-flowforms'), ['status' => 400]);
+    }
+
+    $post = get_post($form_id);
+
+    if (! $post || $post->post_type !== 'wpff_forms') {
+      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+    }
+
+    $slots = $this->decode_slots($post->post_content);
+
+    // Settings sit at the top level — replace entirely, content and design untouched.
+    $json  = $this->encode_slots($slots['content']['published'], $slots['content']['draft'], $slots['design'], $settings);
+    $saved = $this->save_post_content($form_id, $json);
+
+    if (! $saved) {
+      return new WP_REST_Response(['message' => 'Failed to save settings.'], 500);
+    }
+
+    return new WP_REST_Response([
+      'success' => true,
+      'form_id' => $form_id,
+      'message' => 'Settings updated successfully.',
     ], 200);
   }
 
@@ -506,7 +562,7 @@ class FlowForms_REST_API
     }
 
     // Promote draft → published, clear draft. Design is untouched (top-level).
-    $json  = $this->encode_slots($slots['content']['draft'], null, $slots['design']);
+    $json  = $this->encode_slots($slots['content']['draft'], null, $slots['design'], $slots['settings']);
     $saved = $this->save_post_content($form_id, $json);
 
     if (! $saved) {
@@ -542,7 +598,7 @@ class FlowForms_REST_API
     $slots = $this->decode_slots($post->post_content);
 
     // Clear the draft slot, keep published and design untouched.
-    $json  = $this->encode_slots($slots['content']['published'], null, $slots['design']);
+    $json  = $this->encode_slots($slots['content']['published'], null, $slots['design'], $slots['settings']);
     $saved = $this->save_post_content($form_id, $json);
 
     if (! $saved) {
@@ -584,10 +640,11 @@ class FlowForms_REST_API
     }
 
     return rest_ensure_response([
-      'id'      => $post->ID,
-      'title'   => $post->post_title,
-      'content' => $content,
-      'design'  => $slots['design'],
+      'id'       => $post->ID,
+      'title'    => $post->post_title,
+      'content'  => $content,
+      'design'   => $slots['design'],
+      'settings' => $slots['settings'],
     ]);
   }
 
@@ -621,10 +678,11 @@ class FlowForms_REST_API
     }
 
     return rest_ensure_response([
-      'id'      => $post->ID,
-      'title'   => $post->post_title,
-      'content' => $content,
-      'design'  => $slots['design'],
+      'id'       => $post->ID,
+      'title'    => $post->post_title,
+      'content'  => $content,
+      'design'   => $slots['design'],
+      'settings' => $slots['settings'],
     ]);
   }
 
@@ -739,7 +797,7 @@ class FlowForms_REST_API
 
     // Store template content in the draft slot — user must publish before it goes live.
     // Templates now store design at the top level, separate from content.
-    $json  = $this->encode_slots(null, $template['content'], $template['design'] ?? []);
+    $json  = $this->encode_slots(null, $template['content'], $template['design'] ?? [], []);
     $saved = $this->save_post_content($post_id, $json);
 
     if (! $saved) {
