@@ -67,7 +67,7 @@ export class FormApp {
 		this._questions = formData.content?.questions    ?? [];
 		this._welcome   = formData.content?.welcomeScreen;
 		this._thankYou  = formData.content?.thankYouScreen;
-		this._design    = formData.content?.design       ?? {};
+		this._design    = formData.design                ?? {};
 
 		// Permanent structural elements (built once in boot)
 		this._progressEl     = null;

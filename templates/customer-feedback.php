@@ -117,21 +117,21 @@ return [
         ]
       ]
     ],
-    'design' => [
-      'bg_color' => '#1C3D50',
-      'title_color' => '#b5ddfc',
-      'description_color' => '#96bdda',
-      'field_color' => '#f9fafb',
-      'button_color' => '#B5DEFC',
-      'button_hover_color' => '#a3c8e3',
-      'button_text_color' => '#2a4d61',
-      'star_color' => '#96bdda',
-      'alignment' => 'left',
-      'google_font' => 'Cormorant Garamond',
-      'font_size' => 'large',
-      'border_radius' => 'angular',
-      'answer_color' => '#b5ddfc',
-      'hint_color' => '#597D94'
-    ],
+  ],
+  'design' => [
+    'bg_color' => '#1C3D50',
+    'title_color' => '#b5ddfc',
+    'description_color' => '#96bdda',
+    'field_color' => '#f9fafb',
+    'button_color' => '#B5DEFC',
+    'button_hover_color' => '#a3c8e3',
+    'button_text_color' => '#2a4d61',
+    'star_color' => '#96bdda',
+    'alignment' => 'left',
+    'google_font' => 'Cormorant Garamond',
+    'font_size' => 'large',
+    'border_radius' => 'angular',
+    'answer_color' => '#b5ddfc',
+    'hint_color' => '#597D94'
   ],
 ];

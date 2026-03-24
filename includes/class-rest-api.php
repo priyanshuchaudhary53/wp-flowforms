@@ -105,54 +105,105 @@ class FlowForms_REST_API
   }
 
   /**
-   * Decode the raw post_content into the dual-slot structure.
+   * Decode raw post_content into the new top-level structure:
    *
-   * Legacy forms (plain JSON, no wrapper) are treated as published-only with
-   * no draft. New forms are stored as:
-   *   { "published": { ...formContent }, "draft": { ...formContent } | null }
+   *   {
+   *     "content": { "published": {...}|null, "draft": {...}|null },
+   *     "design":  {...}
+   *   }
+   *
+   * Migration rules:
+   *   - New format:    has top-level "content" key that is an array
+   *                    → read directly.
+   *   - Old format v1: has top-level "published" key (old slot wrapper)
+   *                    → migrate: hoist design out of slots, restructure.
+   *   - Legacy format: entire decoded value is form content (no wrapper)
+   *                    → treat as published content, no draft, no design.
    *
    * @param  string $raw  Raw post_content string.
-   * @return array{ published: array|null, draft: array|null }
+   * @return array{ content: array{ published: array|null, draft: array|null }, design: array }
    */
   private function decode_slots(string $raw): array
   {
+    $empty = [
+      'content' => ['published' => null, 'draft' => null],
+      'design'  => [],
+    ];
+
     if (empty($raw)) {
-      return ['published' => null, 'draft' => null];
+      return $empty;
     }
 
     $decoded = wpff_decode($raw);
 
     if (! is_array($decoded)) {
-      return ['published' => null, 'draft' => null];
+      return $empty;
     }
 
-    // New dual-slot format: must have a "published" key at top level.
-    if (array_key_exists('published', $decoded)) {
+    // ── New format: top-level "content" key ──────────────────────────────
+    if (array_key_exists('content', $decoded) && is_array($decoded['content'])) {
       return [
-        'published' => $decoded['published'] ?? null,
-        'draft'     => $decoded['draft']     ?? null,
+        'content' => [
+          'published' => $decoded['content']['published'] ?? null,
+          'draft'     => $decoded['content']['draft']     ?? null,
+        ],
+        'design'  => $decoded['design'] ?? [],
       ];
     }
 
-    // Legacy format: the entire decoded array IS the form content.
-    // Treat it as published with no draft.
+    // ── Old format v1: top-level "published" slot wrapper ────────────────
+    // { "published": { "content": {...}, "design": {...} }, "draft": {...}|null }
+    if (array_key_exists('published', $decoded)) {
+      $pub   = $decoded['published'] ?? null;
+      $draft = $decoded['draft']     ?? null;
+
+      // Extract design from published slot (authoritative copy).
+      $design = [];
+      if (is_array($pub) && isset($pub['design'])) {
+        $design = $pub['design'];
+        unset($pub['design']);
+      }
+
+      // Strip design from draft slot too (we no longer store it there).
+      if (is_array($draft) && isset($draft['design'])) {
+        unset($draft['design']);
+      }
+
+      return [
+        'content' => ['published' => $pub, 'draft' => $draft],
+        'design'  => $design,
+      ];
+    }
+
+    // ── Legacy format: raw content array ─────────────────────────────────
+    // Strip design if it was embedded in the content array.
+    $design = [];
+    if (isset($decoded['design'])) {
+      $design = $decoded['design'];
+      unset($decoded['design']);
+    }
+
     return [
-      'published' => $decoded,
-      'draft'     => null,
+      'content' => ['published' => $decoded, 'draft' => null],
+      'design'  => $design,
     ];
   }
 
   /**
-   * Encode both slots back into a single JSON string for post_content.
+   * Encode the new top-level structure back to a JSON string for post_content.
    *
-   * @param  array|null $published
-   * @param  array|null $draft
+   * @param  array|null $published  Published content slot.
+   * @param  array|null $draft      Draft content slot (null = no draft).
+   * @param  array      $design     Design object (top-level, always live).
    * @return string
    */
-  private function encode_slots(?array $published, ?array $draft): string
+  private function encode_slots(?array $published, ?array $draft, array $design = []): string
   {
     return wp_json_encode(
-      ['published' => $published, 'draft' => $draft],
+      [
+        'content' => ['published' => $published, 'draft' => $draft],
+        'design'  => $design,
+      ],
       JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
     );
   }
@@ -166,6 +217,28 @@ class FlowForms_REST_API
   private function encode_form_data(array $data): string
   {
     return wp_json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+  }
+
+  /**
+   * Separate design from form content.
+   *
+   * Templates (and any incoming form_data) may embed a "design" key inside the
+   * content array. With the new top-level structure, design must be stored
+   * separately. This helper pulls it out and returns both parts cleanly.
+   *
+   * @param  array $data  Raw content array, possibly containing a "design" key.
+   * @return array{ content: array, design: array }
+   */
+  private function extract_design(array $data): array
+  {
+    $design = [];
+
+    if (isset($data['design']) && is_array($data['design'])) {
+      $design = $data['design'];
+      unset($data['design']);
+    }
+
+    return ['content' => $data, 'design' => $design];
   }
 
   /**
@@ -228,22 +301,23 @@ class FlowForms_REST_API
     }
 
     $slots     = $this->decode_slots($post->post_content);
-    $has_draft = ! is_null($slots['draft']);
+    $has_draft = ! is_null($slots['content']['draft']);
 
     // Builder always loads the draft when one exists, otherwise published.
-    $content = $has_draft ? $slots['draft'] : $slots['published'];
+    $content = $has_draft ? $slots['content']['draft'] : $slots['content']['published'];
 
     $form = [
-      'id'           => $post->ID,
-      'title'        => $post->post_title,
-      'status'       => $post->post_status,
-      'content'      => $content,
-      'has_draft'    => $has_draft,
-      'has_published' => ! is_null($slots['published']),
-      'date_created' => $post->post_date,
-      'date_updated' => $post->post_modified,
-      'public_url'   => FlowForms_Frontend::get_public_url($post->ID),
-      'preview_url'  => FlowForms_Frontend::get_preview_url($post->ID),
+      'id'            => $post->ID,
+      'title'         => $post->post_title,
+      'status'        => $post->post_status,
+      'content'       => $content,
+      'design'        => $slots['design'],
+      'has_draft'     => $has_draft,
+      'has_published' => ! is_null($slots['content']['published']),
+      'date_created'  => $post->post_date,
+      'date_updated'  => $post->post_modified,
+      'public_url'    => FlowForms_Frontend::get_public_url($post->ID),
+      'preview_url'   => FlowForms_Frontend::get_preview_url($post->ID),
     ];
 
     return rest_ensure_response($form);
@@ -282,8 +356,10 @@ class FlowForms_REST_API
 
     // New forms: store content in the draft slot only so the user must
     // explicitly hit Publish before the form goes live.
-    $json  = $this->encode_slots(null, $form_data);
-    $saved = $this->save_post_content($post_id, $json);
+    // Hoist any embedded "design" key out of the content array to the top level.
+    $extracted = $this->extract_design($form_data);
+    $json      = $this->encode_slots(null, $extracted['content'], $extracted['design']);
+    $saved     = $this->save_post_content($post_id, $json);
 
     if (! $saved) {
       return new WP_REST_Response(['message' => 'Failed to save form content.'], 500);
@@ -339,7 +415,7 @@ class FlowForms_REST_API
       if (! empty($form_data)) {
         // Always write to the DRAFT slot; never touch published during auto-save.
         $slots = $this->decode_slots($post->post_content);
-        $json  = $this->encode_slots($slots['published'], $form_data);
+        $json  = $this->encode_slots($slots['content']['published'], $form_data, $slots['design']);
         $saved = $this->save_post_content($form_id, $json);
 
         if (! $saved) {
@@ -364,14 +440,13 @@ class FlowForms_REST_API
   /**
    * PATCH /forms/{id}/design
    *
-   * Writes the design object directly into the published slot so design
-   * changes are always live immediately. If a draft slot also exists, the
-   * design is mirrored there too so the builder canvas stays in sync.
+   * Writes design directly to the top-level "design" key — it is never
+   * versioned and goes live immediately, independent of content draft/publish.
    */
   public function update_design($request)
   {
-    $form_id    = absint($request['id']);
-    $design     = $request->get_param('design');
+    $form_id = absint($request['id']);
+    $design  = $request->get_param('design');
 
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
@@ -389,21 +464,8 @@ class FlowForms_REST_API
 
     $slots = $this->decode_slots($post->post_content);
 
-    // Write design into published slot.
-    if (! empty($slots['published'])) {
-      $slots['published']['design'] = $design;
-    } else {
-      // Form has never been published — create a minimal published entry
-      // so design is preserved even before first publish.
-      $slots['published'] = ['design' => $design];
-    }
-
-    // Mirror design into draft slot so the builder canvas reflects it.
-    if (! is_null($slots['draft'])) {
-      $slots['draft']['design'] = $design;
-    }
-
-    $json  = $this->encode_slots($slots['published'], $slots['draft']);
+    // Design sits at the top level — just replace it, content slots untouched.
+    $json  = $this->encode_slots($slots['content']['published'], $slots['content']['draft'], $design);
     $saved = $this->save_post_content($form_id, $json);
 
     if (! $saved) {
@@ -439,12 +501,12 @@ class FlowForms_REST_API
 
     $slots = $this->decode_slots($post->post_content);
 
-    if (is_null($slots['draft'])) {
+    if (is_null($slots['content']['draft'])) {
       return new WP_Error('no_draft', __('No draft to publish.', 'wp-flowforms'), ['status' => 400]);
     }
 
-    // Promote draft → published, clear draft.
-    $json  = $this->encode_slots($slots['draft'], null);
+    // Promote draft → published, clear draft. Design is untouched (top-level).
+    $json  = $this->encode_slots($slots['content']['draft'], null, $slots['design']);
     $saved = $this->save_post_content($form_id, $json);
 
     if (! $saved) {
@@ -479,8 +541,8 @@ class FlowForms_REST_API
 
     $slots = $this->decode_slots($post->post_content);
 
-    // Clear the draft slot, keep published untouched.
-    $json  = $this->encode_slots($slots['published'], null);
+    // Clear the draft slot, keep published and design untouched.
+    $json  = $this->encode_slots($slots['content']['published'], null, $slots['design']);
     $saved = $this->save_post_content($form_id, $json);
 
     if (! $saved) {
@@ -490,7 +552,7 @@ class FlowForms_REST_API
     return new WP_REST_Response([
       'success'   => true,
       'form_id'   => $form_id,
-      'content'   => $slots['published'],
+      'content'   => $slots['content']['published'],
       'message'   => 'Form reverted to published state.',
     ], 200);
   }
@@ -515,7 +577,7 @@ class FlowForms_REST_API
     }
 
     $slots   = $this->decode_slots($post->post_content);
-    $content = $slots['published'];
+    $content = $slots['content']['published'];
 
     if (empty($content)) {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
@@ -525,6 +587,7 @@ class FlowForms_REST_API
       'id'      => $post->ID,
       'title'   => $post->post_title,
       'content' => $content,
+      'design'  => $slots['design'],
     ]);
   }
 
@@ -551,7 +614,7 @@ class FlowForms_REST_API
     }
 
     $slots   = $this->decode_slots($post->post_content);
-    $content = $slots['draft'] ?? $slots['published'];
+    $content = $slots['content']['draft'] ?? $slots['content']['published'];
 
     if (empty($content)) {
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
@@ -561,6 +624,7 @@ class FlowForms_REST_API
       'id'      => $post->ID,
       'title'   => $post->post_title,
       'content' => $content,
+      'design'  => $slots['design'],
     ]);
   }
 
@@ -583,7 +647,7 @@ class FlowForms_REST_API
 
     // Submissions always validate against the PUBLISHED slot.
     $slots        = $this->decode_slots($post->post_content);
-    $form_content = $slots['published'];
+    $form_content = $slots['content']['published'];
 
     if (empty($form_content)) {
       return new WP_Error('invalid_form', __('Form content could not be read.', 'wp-flowforms'), ['status' => 500]);
@@ -674,9 +738,9 @@ class FlowForms_REST_API
     }
 
     // Store template content in the draft slot — user must publish before it goes live.
-    $content = $template['content'];
-    $json    = $this->encode_slots(null, $content);
-    $saved   = $this->save_post_content($post_id, $json);
+    // Templates now store design at the top level, separate from content.
+    $json  = $this->encode_slots(null, $template['content'], $template['design'] ?? []);
+    $saved = $this->save_post_content($post_id, $json);
 
     if (! $saved) {
       return new WP_REST_Response(['message' => __('Failed to save form content.', 'wp-flowforms')], 500);
@@ -708,7 +772,10 @@ class FlowForms_REST_API
     // TTL matches WP nonce lifetime (10 minutes is plenty for a preview session).
     $token           = wp_create_nonce('flowform_preview');
     $transient_key   = 'wpff_tpl_preview_' . md5($slug . $token);
-    set_transient($transient_key, $template['content'], 10 * MINUTE_IN_SECONDS);
+    set_transient($transient_key, [
+      'content' => $template['content'],
+      'design'  => $template['design'] ?? [],
+    ], 10 * MINUTE_IN_SECONDS);
 
     $preview_url = add_query_arg([
       'flowform_preview'      => '1',

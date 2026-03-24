@@ -598,7 +598,7 @@ export default function Canvas() {
 
   // While the design drawer is open, preview uses draftDesign so changes are
   // visible in the canvas before they are committed/saved.
-  const committedDesign = form?.content?.design ?? {};
+  const committedDesign = form?.design ?? {};
   const design =
     designDrawerOpen && draftDesign ? draftDesign : committedDesign;
 

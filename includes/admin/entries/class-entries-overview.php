@@ -409,12 +409,24 @@ class FlowForms_Entries_Overview
       'is_starred' => $this->status === 'starred' ? true : null,
     ]);
 
-    // Form schema for labels.
+    // Form schema for labels — use the REST API's decode_slots logic directly
+    // so we always read the correct slot regardless of format version.
     $form_post    = get_post($entry->form_id);
     $questions    = [];
     if ($form_post) {
-      $data      = wpff_decode($form_post->post_content);
-      $content   = isset($data['published']) ? ($data['published'] ?? []) : $data;
+      $data    = wpff_decode($form_post->post_content);
+      // New format: { content: { published, draft }, design }
+      // Always prefer published for entry display; fall back to draft for
+      // forms that have never been published (edge case).
+      if (isset($data['content']) && is_array($data['content'])) {
+        $content = $data['content']['published'] ?? $data['content']['draft'] ?? [];
+      // Old v1 format: { published: { questions, ... }, draft: ... }
+      } elseif (isset($data['published'])) {
+        $content = $data['published'] ?? [];
+      // Legacy format: raw content array.
+      } else {
+        $content = $data ?? [];
+      }
       $questions = $content['questions'] ?? [];
     }
 

@@ -53,7 +53,7 @@ export default function PreviewModal({ open, onClose }) {
     if (!iframe || !iframe.contentWindow) return;
 
     const effectiveDesign =
-      draftDesign ?? form?.content?.design ?? {};
+      draftDesign ?? form?.design ?? {};
 
     iframe.contentWindow.postMessage(
       { type: "DESIGN_UPDATE", design: effectiveDesign },

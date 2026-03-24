@@ -72,7 +72,7 @@ export const useFormStore = create((set, get) => ({
 
   setDesignDrawerOpen: (open) => {
     if (open) {
-      const committedDesign = get().form?.content?.design ?? {};
+      const committedDesign = get().form?.design ?? {};
       set({
         designDrawerOpen: true,
         draftDesign: { ...committedDesign },
@@ -89,7 +89,7 @@ export const useFormStore = create((set, get) => ({
   setDraftDesign: (key, value) => {
     set((state) => {
       const newDraft   = { ...(state.draftDesign ?? {}), [key]: value };
-      const committed  = state.form?.content?.design ?? {};
+      const committed  = state.form?.design ?? {};
 
       // A key is dirty only when its value differs from what is committed.
       // Keys that exist in newDraft but not in committed are dirty only if
@@ -115,7 +115,7 @@ export const useFormStore = create((set, get) => ({
     set((state) => ({
       form: {
         ...state.form,
-        content: { ...state.form.content, design: { ...draftDesign } },
+        design: { ...draftDesign },
       },
       designDirty: false,
     }));
@@ -347,15 +347,14 @@ export const useFormStore = create((set, get) => ({
     }
   },
 
-  // ── Persist design directly to published slot ─────────────────────────────
-  // Design changes bypass the draft system — they go live immediately on
-  // the published version. The PHP endpoint also mirrors into the draft slot
-  // if one exists, so the builder canvas stays in sync.
+  // ── Persist design to the top-level design key ───────────────────────────
+  // Design is not versioned — changes go live immediately, independent of
+  // the content draft/publish cycle.
   _persistDesign: async () => {
     const { formId, form } = get();
     if (!formId || !form) return;
 
-    const design = form.content?.design ?? {};
+    const design = form.design ?? {};
 
     try {
       const res = await fetch(

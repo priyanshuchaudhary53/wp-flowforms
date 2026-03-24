@@ -242,9 +242,9 @@ class FlowForms_Frontend {
 		$transient_key = sanitize_key( $_GET['template_preview_key'] ?? '' );
 
 		if ( $transient_key ) {
-			$content = get_transient( $transient_key );
+			$template = get_transient( $transient_key );
 
-			if ( ! $content || ! is_array( $content ) ) {
+			if ( ! $template || ! is_array( $template ) ) {
 				wp_die(
 					esc_html__( 'Template preview has expired. Please try again.', 'wp-flowforms' ),
 					esc_html__( 'Preview Expired', 'wp-flowforms' ),
@@ -252,7 +252,7 @@ class FlowForms_Frontend {
 				);
 			}
 
-			$this->render_template_preview_page( $content );
+			$this->render_template_preview_page( $template );
 			exit;
 		}
 
@@ -293,13 +293,15 @@ class FlowForms_Frontend {
 	 *
 	 * @param array $content Template form content array.
 	 */
-	private function render_template_preview_page( array $content ): void {
+	private function render_template_preview_page( array $template ): void {
 		show_admin_bar( false );
 
-		$design = is_array( $content['design'] ?? null ) ? $content['design'] : [];
-		$bg     = esc_attr( $design['bg_color']     ?? '#ffffff' );
-		$btn    = esc_attr( $design['button_color'] ?? '#111827' );
-		$hint   = esc_attr( $design['hint_color']   ?? '#9ca3af' );
+		$design  = is_array( $template['design'] ?? null ) ? $template['design'] : [];
+		$content = $template['content'] ?? [];
+
+		$bg   = esc_attr( $design['bg_color']     ?? '#ffffff' );
+		$btn  = esc_attr( $design['button_color'] ?? '#111827' );
+		$hint = esc_attr( $design['hint_color']   ?? '#9ca3af' );
 
 		// Enqueue renderer assets manually.
 		$asset_file = WP_FLOWFORMS_PATH . 'build/form/index.asset.php';
@@ -310,7 +312,8 @@ class FlowForms_Frontend {
 		wp_enqueue_script( 'flowform-renderer', WP_FLOWFORMS_URL . 'build/form/index.js', $asset['dependencies'], $asset['version'], true );
 		wp_enqueue_style( 'flowform-renderer', WP_FLOWFORMS_URL . 'build/form/style-index.css', [], $asset['version'] );
 
-		// Pass template content directly — renderer reads templateContent when formId is 0.
+		// Pass content and design separately — FormApp expects design at the top
+		// level of formData, not nested inside content.
 		wp_localize_script( 'flowform-renderer', 'flowformPublicData', [
 			'apiUrl'          => rest_url( 'formflow/v1' ),
 			'nonce'           => wp_create_nonce( 'wp_rest' ),
@@ -318,6 +321,7 @@ class FlowForms_Frontend {
 			'formIds'         => [],
 			'templatePreview' => true,
 			'templateContent' => $content,
+			'templateDesign'  => $design,
 		] );
 
 		do_action( 'wp_enqueue_scripts' );

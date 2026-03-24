@@ -15,7 +15,8 @@ if (! defined('ABSPATH')) exit;
  *     'description'      => 'A simple contact form.',
  *     'category'         => 'contact',
  *     'thumbnail_url'    => '../contact-form.webp',
- *     'content'          => [ ...same shape as form post_content... ],
+ *     'content'          => [ ...questions, welcomeScreen, thankYouScreen... ],
+ *     'design'           => [ ...design tokens... ],
  *   ];
  *
  * To add a new free template: drop a PHP file in includes/templates/.
@@ -123,6 +124,7 @@ class FlowForms_Templates
         'is_pro'        => false,
         'thumbnail_url' => sanitize_text_field($template['thumbnail_url'] ?? ''),
         'content'       => $template['content'] ?? [],
+        'design'        => $template['design']  ?? [],
       ];
     }
 
