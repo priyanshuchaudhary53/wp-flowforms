@@ -160,10 +160,10 @@ Table: `{prefix}flowforms_entries`
 
 **Key store methods:**
 - `fetchForm()` — loads form from REST on mount
-- `saveForm()` — debounced auto-save to draft slot (800ms)
+- `_persistForm()` — debounced auto-save of content to draft slot (800ms, `saveTimer`)
 - `publishForm()` — promotes draft to published
-- `updateSetting(section, key, value)` — updates `form.settings[section][key]`, debounced persist to `/settings` endpoint
-- `updateDesign(design)` — updates design, saves via `/design` endpoint
+- `updateSetting(section, key, value)` — updates `form.settings[section][key]`, debounced persist to `/settings` endpoint (800ms, separate `settingsTimer` — does not share timer with content saves)
+- `updateDesign(key, value)` — updates design draft, saves via `/design` endpoint on commit
 
 **Pages** (`src/builder/page/`):
 - `Setup.jsx` — template picker shown when `formId === 0`
@@ -298,7 +298,7 @@ Stored in `form.settings.email`:
       "sender_name":    "{site_name}",
       "sender_address": "{admin_email}",
       "replyto":        "",
-      "message":        "{all_fields}"
+      "message":        "Hi,\n\nYour form {form_name} just received a new submission.\n\nHere are the details:\n\n{all_fields}\n\nThanks,\n{site_name}"
     }
   }
 }
@@ -310,6 +310,9 @@ Stored in `form.settings.email`:
 - **Pro:** will iterate all items
 - All values support smart tags. Current tags: `{admin_email}`, `{site_name}`, `{form_name}`, `{all_fields}`, `{field:question_uuid}`, `{entry_id}`, `{date}`
 - Smart tags are resolved at send time server-side. The raw tag string is always what gets saved — never the resolved value
+- `subject` and `sender_name` do **not** support `{all_fields}` — use `SMART_TAGS_INLINE` for those fields in the builder
+- `replyto` — when empty or invalid, `send_notifications()` falls back to the resolved `sender_address` value
+- `message` supports multiline content; the builder renders it in a tall `SmartTagInput` with `multiline={true}`
 
 ---
 
