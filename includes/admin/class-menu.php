@@ -1,20 +1,28 @@
 <?php
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 class FlowForms_Admin_Menu
 {
+  /**
+   * Registers the admin_menu hook when in the admin context.
+   *
+   * @since 1.0.0
+   */
   public function __construct()
   {
     if (is_admin()) {
-      // Add admin pages
       add_action('admin_menu', [$this, 'add_admin_pages']);
     }
   }
 
+  /**
+   * Registers all WP FlowForms admin menu and submenu pages.
+   *
+   * @since 1.0.0
+   */
   public function add_admin_pages()
   {
-    // Set page title.
     $title = wp_flowforms()->name;
     $title_suffix = ' &lsaquo; ' . $title;
 
@@ -48,6 +56,11 @@ class FlowForms_Admin_Menu
     do_action('wpff_admin_menu', $this);
   }
 
+  /**
+   * Fires the wpff_admin_page action to render the current admin page.
+   *
+   * @since 1.0.0
+   */
   public function admin_page()
   {
     /**

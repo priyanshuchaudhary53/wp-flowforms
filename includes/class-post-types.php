@@ -1,14 +1,24 @@
 <?php
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 class FlowForms_Post_Types
 {
+  /**
+   * Hook post type registration into the init action.
+   *
+   * @since 1.0.0
+   */
   public function __construct()
   {
     // add_action('init', [$this, 'register_post_types']);
   }
 
+  /**
+   * Register all custom post types defined by this plugin.
+   *
+   * @since 1.0.0
+   */
   public function register_post_types()
   {
     $post_types = $this->get_post_types();
@@ -18,6 +28,13 @@ class FlowForms_Post_Types
     }
   }
 
+  /**
+   * Return the array of post type definitions keyed by post type slug.
+   *
+   * @since 1.0.0
+   *
+   * @return array
+   */
   private function get_post_types()
   {
     $post_types = [
@@ -50,9 +67,9 @@ class FlowForms_Post_Types
 
     /**
      * Allow developers to register additional CPTs.
-     * 
+     *
      * @since 1.0.0
-     * 
+     *
      * @param array $post_types Array of post type definitions keyed by post type slug.
      * @return array Filtered array of post type definitions.
      */

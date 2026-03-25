@@ -1,18 +1,23 @@
 <?php
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 class FlowForms_Form_Handler
 {
   /**
    * Allowed post types.
    *
-   * @since 1.8.8
+   * @since 1.0.0
    */
   public const POST_TYPES = [
     'wpff_forms',
   ];
 
+  /**
+   * Register WordPress hooks for post type registration and entry cascade-delete.
+   *
+   * @since 1.0.0
+   */
   public function __construct()
   {
     add_action('init', [$this, 'register_post_type']);
@@ -21,6 +26,11 @@ class FlowForms_Form_Handler
     add_action('before_delete_post', [$this, 'delete_form_entries'], 10, 2);
   }
 
+  /**
+   * Register the wpff_forms custom post type with WordPress.
+   *
+   * @since 1.0.0
+   */
   public function register_post_type()
   {
     /**
@@ -48,7 +58,6 @@ class FlowForms_Form_Handler
       ]
     );
 
-    // Register the post type.
     register_post_type('wpff_forms', $args);
   }
 
@@ -59,7 +68,7 @@ class FlowForms_Form_Handler
    * Hooked to `before_delete_post` which fires only on permanent deletion,
    * not when a form is moved to trash — allowing the user to restore the form
    * and keep its entries intact until the final delete.
-   * 
+   *
    * @since 1.0.0
    *
    * @param int     $post_id Post ID being deleted.
@@ -138,7 +147,7 @@ class FlowForms_Form_Handler
     /**
      * Allow developers to filter the get_single() arguments.
      *
-     * @since 1.5.8
+     * @since 1.0.0
      *
      * @param array      $args Arguments' array, same as for `get_post()` function.
      * @param string|int $id   Form ID.
@@ -149,25 +158,20 @@ class FlowForms_Form_Handler
       return false;
     }
 
-    // If no ID provided, we can't get a single form.
     if (empty($id)) {
       return false;
     }
 
-    // If ID is provided, we get a single form.
     $form = get_post(absint($id));
 
-    // Check if the form exists.
     if (empty($form) || ! $form instanceof WP_Post) {
       return false;
     }
 
-    // Check if the form is of the allowed post type.
     if (! in_array($form->post_type, self::POST_TYPES, true)) {
       return false;
     }
 
-    // Decode the form content.
     if (! empty($args['content_only'])) {
       $form = wpff_decode($form->post_content);
     }
@@ -179,7 +183,6 @@ class FlowForms_Form_Handler
    * Fetch multiple forms.
    *
    * @since 1.0.0
-   * @since 1.7.2 Added support for $args['search']['term'] - search form title or description by term.
    *
    * @param array $args Additional arguments array.
    *
@@ -190,13 +193,12 @@ class FlowForms_Form_Handler
     /**
      * Allow developers to filter the get_multiple() arguments.
      *
-     * @since 1.5.8
+     * @since 1.0.0
      *
      * @param array $args Arguments' array. Almost the same as for the `get_posts ()` function.
      */
     $args = (array) apply_filters('wpforms_get_multiple_forms_args', $args);
 
-    // No ID provided, get multiple forms.
     $defaults = [
       'orderby'          => 'id',
       'order'            => 'ASC',

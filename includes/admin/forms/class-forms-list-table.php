@@ -54,7 +54,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
       'ajax'     => false,
     ]);
 
-    // Determine current view.
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     $status             = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
     $this->current_view = ($status === 'trash') ? 'trash' : 'all';
@@ -123,7 +122,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
   {
     $title = ! empty($form->post_title) ? $form->post_title : __('(no title)', 'wp-flowforms');
 
-    // Build the title link.
     if ($this->current_view === 'trash') {
       $name_html = '<strong>' . esc_html($title) . '</strong>';
     } else {
@@ -138,7 +136,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
       );
     }
 
-    // Build row actions.
     $base_url = remove_query_arg(['action', 'action2', '_wpnonce', 'form_id', 'paged', '_wp_http_referer']);
 
     if ($this->current_view === 'trash') {
@@ -375,10 +372,8 @@ class FlowForms_Forms_List_Table extends WP_List_Table
    */
   public function prepare_items()
   {
-    // Column headers.
     $this->_column_headers = $this->get_column_info();
 
-    // Pagination.
     // phpcs:disable WordPress.Security.NonceVerification.Recommended
     $page     = $this->get_pagenum();
     $order    = (isset($_GET['order']) && $_GET['order'] === 'asc') ? 'ASC' : 'DESC';
@@ -392,7 +387,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
     $orderby_map = ['title' => 'title', 'date' => 'date', 'ID' => 'ID'];
     $orderby     = $orderby_map[$orderby] ?? 'ID';
 
-    // Base query args.
     $args = [
       'post_type'      => 'wpff_forms',
       'post_status'    => ($this->current_view === 'trash') ? 'trash' : 'publish',
@@ -419,7 +413,6 @@ class FlowForms_Forms_List_Table extends WP_List_Table
 
     $this->items = $query->posts;
 
-    // Count for pagination.
     $this->view_counts = $this->get_view_counts();
     $total_items       = $this->view_counts[$this->current_view] ?? $query->found_posts;
 

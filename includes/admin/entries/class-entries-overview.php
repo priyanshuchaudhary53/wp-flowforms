@@ -46,21 +46,24 @@ class FlowForms_Entries_Overview
   private string $status = 'active';
 
   /**
-   * Constructor.
+   * Registers AJAX handlers and hooks admin_init to initialise the entries page.
+   *
+   * @since 1.0.0
    */
   public function __construct()
   {
-    // Register AJAX handler
+    // AJAX handlers must be registered in the constructor — page guards in init() would block them.
     add_action('wp_ajax_wpff_toggle_star', [$this, 'ajax_toggle_star']);
 
-    // Save per page screen option
     add_filter('set-screen-option', [$this, 'set_screen_option'], 10, 3);
 
     add_action('admin_init', [$this, 'init']);
   }
 
   /**
-   * Initialize — only runs on the entries page.
+   * Initialises view state and hooks; bails if not on the entries page.
+   *
+   * @since 1.0.0
    */
   public function init()
   {
@@ -68,7 +71,6 @@ class FlowForms_Entries_Overview
       return;
     }
 
-    // Resolve current state from URL.
     // phpcs:disable WordPress.Security.NonceVerification.Recommended
     $this->view    = isset($_GET['view']) && $_GET['view'] === 'single' ? 'single' : 'list';
     $this->form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : 0;
@@ -76,7 +78,6 @@ class FlowForms_Entries_Overview
     $this->status  = in_array($status, ['active', 'starred', 'spam', 'trash'], true) ? $status : 'active';
     // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-    // Handle bulk/single actions (redirect-based).
     $this->process_actions();
 
     add_action('load-wp-flowforms_page_wpff_entries', [$this, 'register_screen_options']);
@@ -86,7 +87,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Register screen options (per-page).
+   * Registers the entries-per-page screen option on the list view.
+   *
+   * @since 1.0.0
    */
   public function register_screen_options()
   {
@@ -102,7 +105,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Saves the entries per page screen option value.
+   * Persists the entries-per-page screen option value when saved.
+   *
+   * @since 1.0.0
    */
   public function set_screen_option($status, $option, $value)
   {
@@ -114,7 +119,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Instantiate the list table after current_screen is set.
+   * Instantiates the entries list table once current_screen is available.
+   *
+   * @since 1.0.0
    */
   public function init_list_table()
   {
@@ -127,7 +134,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Enqueue entries page assets.
+   * Enqueues CSS and JS assets for the entries admin page.
+   *
+   * @since 1.0.0
    */
   public function enqueues()
   {
@@ -155,7 +164,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Process bulk and single-row actions before any output.
+   * Processes bulk and single-row entry actions before any output is sent.
+   *
+   * @since 1.0.0
    */
   private function process_actions()
   {
@@ -239,7 +250,6 @@ class FlowForms_Entries_Overview
     } elseif ($this->view === 'single' && in_array($action, ['star', 'unstar', 'mark_read', 'mark_unread'], true)) {
       // Stay on same entry — base_url already has view + entry_id intact.
     } else {
-      // List-level actions — drop single-entry params.
       $base_url = remove_query_arg(['entry_id', 'view', 'status'], $base_url);
     }
 
@@ -251,7 +261,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Map action slug to the URL result key used for admin notices.
+   * Maps an action slug to the URL query key used to show the result notice.
+   *
+   * @since 1.0.0
    */
   private function action_to_result_key(string $action): string
   {
@@ -273,7 +285,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * AJAX handler: toggle star on a single entry.
+   * Handles the AJAX request to toggle the starred state of an entry.
+   *
+   * @since 1.0.0
    */
   public function ajax_toggle_star()
   {
@@ -297,7 +311,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Main output dispatcher.
+   * Dispatches rendering to the list or single entry view.
+   *
+   * @since 1.0.0
    */
   public function output()
   {
@@ -309,7 +325,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Render the entries list view.
+   * Renders the paginated entries list table view.
+   *
+   * @since 1.0.0
    */
   private function output_list()
   {
@@ -374,7 +392,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Render the single entry detail view.
+   * Renders the single entry detail view with field answers and navigation.
+   *
+   * @since 1.0.0
    */
   private function output_single()
   {
@@ -400,7 +420,6 @@ class FlowForms_Entries_Overview
       $entry->is_read = true;
     }
 
-    // Adjacent navigation within the current filter context.
     // Use the entry's actual DB status so navigation stays within the correct set.
     $entry_status = $entry->status;
     $adjacent = $entry_obj->get_adjacent_ids($entry_id, [
@@ -409,15 +428,13 @@ class FlowForms_Entries_Overview
       'is_starred' => $this->status === 'starred' ? true : null,
     ]);
 
-    // Form schema for labels — use the REST API's decode_slots logic directly
-    // so we always read the correct slot regardless of format version.
+    // Always prefer published for entry display; fall back to draft for
+    // forms that have never been published (edge case).
     $form_post    = get_post($entry->form_id);
     $questions    = [];
     if ($form_post) {
       $data    = wpff_decode($form_post->post_content);
       // New format: { content: { published, draft }, design }
-      // Always prefer published for entry display; fall back to draft for
-      // forms that have never been published (edge case).
       if (isset($data['content']) && is_array($data['content'])) {
         $content = $data['content']['published'] ?? $data['content']['draft'] ?? [];
       // Old v1 format: { published: { questions, ... }, draft: ... }
@@ -430,7 +447,6 @@ class FlowForms_Entries_Overview
       $questions = $content['questions'] ?? [];
     }
 
-    // URLs.
     $back_url   = remove_query_arg(['view', 'entry_id']);
     $trash_url  = wp_nonce_url(
       add_query_arg(['action' => 'trash', 'entry_id' => $entry_id], remove_query_arg(['view', 'entry_id'])),
@@ -575,7 +591,7 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Format an answer value for display.
+   * Formats a raw answer value as safe HTML for display.
    *
    * @param mixed  $answer
    * @param string $type
@@ -595,10 +611,12 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Render the form + date filter bar above the table.
+   * Renders the form and date filter dropdowns above the entries table.
    *
    * Uses its own standalone <form> so it only submits the params it owns,
    * keeping the URL clean and not mixing with list table hidden fields.
+   *
+   * @since 1.0.0
    *
    * @param array $form_options
    */
@@ -661,7 +679,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Render action result notices.
+   * Renders admin notice banners for completed bulk or single-row actions.
+   *
+   * @since 1.0.0
    */
   private function render_action_notices()
   {
@@ -692,7 +712,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Render the empty state when no entries exist at all.
+   * Renders the empty state message when no entries exist for the form.
+   *
+   * @since 1.0.0
    */
   private function render_empty_state()
   {
@@ -719,7 +741,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Render a not-found message for an invalid single entry.
+   * Renders a not-found message when the requested entry does not exist.
+   *
+   * @since 1.0.0
    */
   private function render_not_found()
   {
@@ -735,7 +759,9 @@ class FlowForms_Entries_Overview
   }
 
   /**
-   * Build form options array for the filter dropdown.
+   * Builds the list of published forms for the filter dropdown.
+   *
+   * @since 1.0.0
    *
    * @return array
    */

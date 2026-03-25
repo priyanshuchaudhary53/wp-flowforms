@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 class FlowForms_Builder
 {
@@ -40,6 +40,11 @@ class FlowForms_Builder
    */
   public $form_data;
 
+  /**
+   * Returns the singleton instance, creating it on the first call.
+   *
+   * @since 1.0.0
+   */
   public static function instance()
   {
     if (! isset(self::$instance) && ! (self::$instance instanceof self)) {
@@ -53,14 +58,17 @@ class FlowForms_Builder
     return self::$instance;
   }
 
+  /**
+   * Initialises builder state and hooks; bails if not on the form builder page.
+   *
+   * @since 1.0.0
+   */
   public function init()
   {
-    // Only load on the builder.
     if (! wpff_is_admin_page('form_builder')) {
       return;
     }
 
-    // Load form if found.
     $form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : false;
 
     // Abort early if form ID is set, but the value is empty, 0 or any non-numeric value.
@@ -86,7 +94,6 @@ class FlowForms_Builder
       wp_die(esc_html__('Sorry, you are not allowed to edit this form.', 'wp-flowforms'), 403);
     }
 
-    // Fetch form.
     $form_obj   = wp_flowforms()->obj('form');
     $this->form = $form_obj ? $form_obj->get($form_id) : null;
 
@@ -98,7 +105,6 @@ class FlowForms_Builder
       wp_die(esc_html__('You can\'t edit this form because it\'s in the trash.', 'wp-flowforms'), 403);
     }
 
-    // Retrieve form data.
     $this->form_data = $this->form ? wpff_decode($this->form->post_content) : false;
 
     add_action('admin_head', [$this, 'admin_head']);
@@ -117,6 +123,11 @@ class FlowForms_Builder
     do_action('wpff_builder_init', $this->view);
   }
 
+  /**
+   * Removes all wp-admin stylesheets except those needed by the builder.
+   *
+   * @since 1.0.0
+   */
   public function deregister_admin_styles()
   {
     if (! wpff_is_admin_page('form_builder')) {
@@ -149,6 +160,11 @@ class FlowForms_Builder
     wp_styles()->registered = array_intersect_key(wp_styles()->registered, array_flip($allowed_styles));
   }
 
+  /**
+   * Outputs the page-loader overlay styles and markup in the admin <head>.
+   *
+   * @since 1.0.0
+   */
   public function admin_head()
   {
     echo '<style>
@@ -220,6 +236,11 @@ class FlowForms_Builder
     do_action('wpff_builder_admin_head', $this->view);
   }
 
+  /**
+   * Enqueues the builder script and stylesheet and localises formflowData.
+   *
+   * @since 1.0.0
+   */
   public function enqueues()
   {
     wp_enqueue_media();
@@ -265,6 +286,11 @@ class FlowForms_Builder
     ]);
   }
 
+  /**
+   * Renders the builder mount-point div.
+   *
+   * @since 1.0.0
+   */
   public function output()
   {
     /**

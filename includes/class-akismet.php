@@ -13,6 +13,8 @@ class FlowForms_Akismet
   /**
    * Check whether Akismet is installed, active, and configured.
    *
+   * @since 1.0.0
+   *
    * @return bool
    */
   public static function is_available(): bool
@@ -27,6 +29,8 @@ class FlowForms_Akismet
    *
    * Sends text-based field values to the Akismet comment-check API.
    * Only short_text, long_text, and email field types are evaluated.
+   *
+   * @since 1.0.0
    *
    * @param int   $form_id   Form post ID.
    * @param array $answers   Sanitized answers keyed by question UUID.

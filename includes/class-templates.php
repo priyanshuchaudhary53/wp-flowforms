@@ -43,6 +43,7 @@ class FlowForms_Templates
   /**
    * Return all templates as a flat array, keyed by slug.
    *
+   * @since 1.0.0
    * @return array
    */
   public function get_all(): array
@@ -58,6 +59,7 @@ class FlowForms_Templates
    * Return a single template by slug, or null if not found.
    *
    * @param string $slug
+   * @since 1.0.0
    * @return array|null
    */
   public function get(string $slug): ?array
@@ -70,6 +72,7 @@ class FlowForms_Templates
    * Return template metadata suitable for passing to JS.
    * Strips the 'content' key — content is only sent server-side on form creation.
    *
+   * @since 1.0.0
    * @return array
    */
   public function get_metadata(): array
@@ -89,6 +92,7 @@ class FlowForms_Templates
   /**
    * Return all unique category slugs across loaded templates.
    *
+   * @since 1.0.0
    * @return string[]
    */
   public function get_categories(): array
@@ -99,6 +103,8 @@ class FlowForms_Templates
 
   /**
    * Scan the templates directory and load every PHP file.
+   *
+   * @since 1.0.0
    */
   private function load(): void
   {

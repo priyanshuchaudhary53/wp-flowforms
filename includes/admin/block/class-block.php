@@ -10,6 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class FlowForms_Block {
 
+	/**
+	 * Registers the block type on the init hook.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_block' ] );
 	}
@@ -27,7 +32,6 @@ class FlowForms_Block {
 
 		register_block_type( WP_FLOWFORMS_PATH . 'build/block/block.json' );
 
-		// Make admin URL available to the block editor JS.
 		add_action( 'enqueue_block_editor_assets', [ $this, 'localize_block_data' ] );
 	}
 

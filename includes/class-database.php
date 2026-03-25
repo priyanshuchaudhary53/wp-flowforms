@@ -1,9 +1,14 @@
 <?php
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 class FlowForms_Database
 {
+  /**
+   * Create or upgrade the entries database table using dbDelta.
+   *
+   * @since 1.0.0
+   */
   public static function create_tables()
   {
     global $wpdb;

@@ -23,6 +23,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Return the full table name with wpdb prefix.
+   *
+   * @since 1.0.0
    */
   public static function table(): string
   {
@@ -32,6 +34,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Fetch a single entry by ID.
+   *
+   * @since 1.0.0
    *
    * @param int $entry_id
    * @return object|null
@@ -53,6 +57,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Fetch multiple entries with filtering, sorting and pagination.
+   *
+   * @since 1.0.0
    *
    * @param array $args {
    *   @type int    $form_id     Filter by form ID.
@@ -142,14 +148,12 @@ class FlowForms_Entry_Handler
 
     $table = self::table();
 
-    // Total count.
     $count_sql = $values
       ? $wpdb->prepare("SELECT COUNT(*) FROM `{$table}` {$where_sql}", ...$values)
       : "SELECT COUNT(*) FROM `{$table}` {$where_sql}";
 
     $total = (int) $wpdb->get_var($count_sql);
 
-    // Rows.
     $rows_sql = $values
       ? $wpdb->prepare(
         "SELECT * FROM `{$table}` {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
@@ -171,6 +175,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Get entry counts grouped by status (and starred) for a given form.
+   *
+   * @since 1.0.0
    *
    * @param int $form_id 0 = all forms.
    * @return array{ active: int, starred: int, spam: int, trash: int, unread: int }
@@ -216,6 +222,8 @@ class FlowForms_Entry_Handler
    * Get the previous and next entry IDs relative to a given entry,
    * within the same filtered set used to build the list.
    *
+   * @since 1.0.0
+   *
    * @param int   $entry_id Current entry ID.
    * @param array $args     Same filter args used for get_multiple().
    * @return array{ prev: int|null, next: int|null }
@@ -237,6 +245,8 @@ class FlowForms_Entry_Handler
   /**
    * Mark one or more entries as read.
    *
+   * @since 1.0.0
+   *
    * @param int|int[] $ids
    */
   public function mark_read($ids): void
@@ -246,6 +256,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Mark one or more entries as unread.
+   *
+   * @since 1.0.0
    *
    * @param int|int[] $ids
    */
@@ -257,6 +269,8 @@ class FlowForms_Entry_Handler
   /**
    * Star one or more entries.
    *
+   * @since 1.0.0
+   *
    * @param int|int[] $ids
    */
   public function star($ids): void
@@ -267,6 +281,8 @@ class FlowForms_Entry_Handler
   /**
    * Unstar one or more entries.
    *
+   * @since 1.0.0
+   *
    * @param int|int[] $ids
    */
   public function unstar($ids): void
@@ -276,6 +292,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Move entries to a given status.
+   *
+   * @since 1.0.0
    *
    * @param int|int[] $ids
    * @param string    $status 'active' | 'spam' | 'trash'
@@ -290,6 +308,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Permanently delete entries.
+   *
+   * @since 1.0.0
    *
    * @param int|int[] $ids
    * @return int Rows deleted.
@@ -315,6 +335,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Permanently delete all entries with a given status for a given form (or all forms).
+   *
+   * @since 1.0.0
    *
    * @param string $status  'trash' | 'spam'
    * @param int    $form_id 0 = all forms.
@@ -348,6 +370,8 @@ class FlowForms_Entry_Handler
   /**
    * Decode the answers JSON and cast typed fields on a raw DB row.
    *
+   * @since 1.0.0
+   *
    * @param object $row Raw stdClass from $wpdb.
    * @return object
    */
@@ -364,6 +388,8 @@ class FlowForms_Entry_Handler
 
   /**
    * Update a single column for one or more entry IDs.
+   *
+   * @since 1.0.0
    *
    * @param int|int[] $ids
    * @param string    $column Whitelisted column name.

@@ -1,6 +1,6 @@
 <?php
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 final class WP_FlowForms
 {
@@ -63,7 +63,7 @@ final class WP_FlowForms
    * Initialize the plugin.
    *
    * @since 1.0.0
-   * 
+   *
    */
   private function init(): void
   {
@@ -91,7 +91,6 @@ final class WP_FlowForms
    */
   private function includes()
   {
-    // Autoload classes
     require_once WP_FLOWFORMS_PATH . 'includes/class-install.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-database.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-post-types.php';
@@ -117,6 +116,11 @@ final class WP_FlowForms
     }
   }
 
+  /**
+   * Instantiate and register all shared plugin objects into the registry.
+   *
+   * @since 1.0.0
+   */
   public function objects()
   {
     $this->registry['form']       = new FlowForms_Form_Handler();

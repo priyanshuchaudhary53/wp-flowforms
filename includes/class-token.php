@@ -16,6 +16,8 @@ class FlowForms_Token
 {
   /**
    * Retrieve (or generate) the persistent secret key.
+   *
+   * @since 1.0.0
    */
   private function get_secret_key(): string
   {
@@ -29,6 +31,8 @@ class FlowForms_Token
 
   /**
    * Generate a token for the current moment.
+   *
+   * @since 1.0.0
    */
   public function generate(int $form_id): string
   {
@@ -40,6 +44,8 @@ class FlowForms_Token
    *
    * Accepts tokens generated up to 5 years in the past (cached pages)
    * and up to 45 minutes in the future (midnight edge cases).
+   *
+   * @since 1.0.0
    *
    * @param string $token   Token submitted by the browser.
    * @param int    $form_id Form post ID.
@@ -62,6 +68,8 @@ class FlowForms_Token
 
   /**
    * Generate a token for a specific Unix timestamp.
+   *
+   * @since 1.0.0
    */
   private function generate_at(int $timestamp, int $form_id): string
   {

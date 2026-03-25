@@ -2,18 +2,24 @@
 
 /**
  * Global functions.
- * 
+ *
  * @since 1.0.0
  */
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
+/**
+ * Check whether the current request is for a specific WP FlowForms admin page.
+ *
+ * @since 1.0.0
+ *
+ * @param string $slug Page slug suffix (without the `wpff_` prefix).
+ * @return bool
+ */
 function wpff_is_admin_page($slug)
 {
   $page = ((array) ($_REQUEST['page'] ?? ''))[0];
 
-
-  // Check against basic requirements.
   if (
     strpos($page, 'wpff') === false ||
     ! is_admin()
@@ -21,7 +27,6 @@ function wpff_is_admin_page($slug)
     return false;
   }
 
-  // Check against page slug identifier.
   if (
     (! empty($slug) && $_REQUEST['page'] !== 'wpff_' . $slug) ||
     (empty($slug) && $_REQUEST['page'] === 'wpff_form_builder')
@@ -32,6 +37,14 @@ function wpff_is_admin_page($slug)
   return true;
 }
 
+/**
+ * Safely decode a JSON string, unslash it, and return the result as an array.
+ *
+ * @since 1.0.0
+ *
+ * @param string $data JSON-encoded string.
+ * @return array|false Decoded array on success, false if input is empty, empty array on JSON error.
+ */
 function wpff_decode($data)
 {
   if (empty($data)) {

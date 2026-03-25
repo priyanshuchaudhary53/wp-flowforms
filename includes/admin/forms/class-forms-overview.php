@@ -179,7 +179,11 @@ class FlowForms_Forms_Overview
     exit;
   }
 
-  /** Move a form to trash. */
+  /**
+   * Moves a form to trash.
+   *
+   * @since 1.0.0
+   */
   private function action_trash(int $id): bool
   {
     if (! current_user_can('manage_options')) {
@@ -189,7 +193,11 @@ class FlowForms_Forms_Overview
     return (bool) wp_trash_post($id);
   }
 
-  /** Restore a form from trash. */
+  /**
+   * Restores a trashed form back to published status.
+   *
+   * @since 1.0.0
+   */
   private function action_restore(int $id): bool
   {
     if (! current_user_can('manage_options')) {
@@ -208,7 +216,11 @@ class FlowForms_Forms_Overview
     return (bool) wp_untrash_post($id);
   }
 
-  /** Permanently delete a form. */
+  /**
+   * Permanently deletes a form post.
+   *
+   * @since 1.0.0
+   */
   private function action_delete(int $id): bool
   {
     if (! current_user_can('manage_options')) {
@@ -218,7 +230,11 @@ class FlowForms_Forms_Overview
     return (bool) wp_delete_post($id, true);
   }
 
-  /** Duplicate a form. */
+  /**
+   * Duplicates a form by inserting a new post with the same content.
+   *
+   * @since 1.0.0
+   */
   private function action_duplicate(int $id): bool
   {
     if (! current_user_can('manage_options')) {
@@ -249,10 +265,8 @@ class FlowForms_Forms_Overview
    */
   public function output()
   {
-    // Show admin notices for completed actions.
     $this->render_action_notices();
 
-    // Prepare items before we check empty state.
     $this->list_table->prepare_items();
 
     $is_empty = empty($this->list_table->items)

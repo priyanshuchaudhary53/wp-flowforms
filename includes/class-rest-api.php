@@ -1,33 +1,40 @@
 <?php
 
-if (! defined('ABSPATH')) exit; // Exit if accessed directly  
+if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 class FlowForms_REST_API
 {
+  /**
+   * Register the rest_api_init hook to set up all REST routes.
+   *
+   * @since 1.0.0
+   */
   public function __construct()
   {
     add_action('rest_api_init', [$this, 'register_routes']);
   }
 
+  /**
+   * Register all formflow/v1 REST API routes.
+   *
+   * @since 1.0.0
+   */
   public function register_routes()
   {
     $ns = 'formflow/v1';
 
-    // GET all forms
     register_rest_route($ns, '/forms', [
       'methods'             => 'GET',
       'callback'            => [$this, 'get_forms'],
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
 
-    // GET single form (builder loads this)
     register_rest_route($ns, '/forms/(?P<id>\d+)', [
       'methods'  => 'GET',
       'callback' => [$this, 'get_form'],
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
 
-    // POST create form
     register_rest_route($ns, '/forms', [
       'methods'  => 'POST',
       'callback' => [$this, 'create_form'],
@@ -96,7 +103,6 @@ class FlowForms_REST_API
       ],
     ]);
 
-    // POST /forms/from-template
     register_rest_route($ns, '/forms/from-template', [
       'methods'             => 'POST',
       'callback'            => [$this, 'create_form_from_template'],
@@ -128,6 +134,7 @@ class FlowForms_REST_API
    *                    → treat as published content, no draft, no design.
    *
    * @param  string $raw  Raw post_content string.
+   * @since 1.0.0
    * @return array{ content: array{ published: array|null, draft: array|null }, design: array }
    */
   private function decode_slots(string $raw): array
@@ -206,6 +213,7 @@ class FlowForms_REST_API
    * @param  array|null $draft      Draft content slot (null = no draft).
    * @param  array      $design     Design object (top-level, always live).
    * @param  array      $settings   Settings object (top-level, always live).
+   * @since 1.0.0
    * @return string
    */
   private function encode_slots(?array $published, ?array $draft, array $design = [], array $settings = []): string
@@ -224,6 +232,7 @@ class FlowForms_REST_API
    * Encode a single form-data array to JSON, preserving emoji.
    *
    * @param  array $data
+   * @since 1.0.0
    * @return string
    */
   private function encode_form_data(array $data): string
@@ -239,6 +248,7 @@ class FlowForms_REST_API
    * separately. This helper pulls it out and returns both parts cleanly.
    *
    * @param  array $data  Raw content array, possibly containing a "design" key.
+   * @since 1.0.0
    * @return array{ content: array, design: array }
    */
   private function extract_design(array $data): array
@@ -253,25 +263,26 @@ class FlowForms_REST_API
     return ['content' => $data, 'design' => $design];
   }
 
-    /**
+  /**
    * Load the default form design from the PHP defaults file.
    *
    * Used for blank forms. Template forms use their own bundled design instead.
    * If the incoming form_data already contains a design (e.g. custom form_data
    * passed via the API), that takes precedence and this is not called.
    *
+   * @since 1.0.0
    * @return array
    */
   private function default_design(): array
   {
     $file = WP_FLOWFORMS_PATH . 'includes/defaults/form-design.php';
- 
+
     if (! file_exists($file)) {
       return [];
     }
- 
+
     $design = require $file;
- 
+
     /**
      * Filter the default design applied to every new blank form.
      *
@@ -288,6 +299,7 @@ class FlowForms_REST_API
    * This is the single source of truth for initial settings on every new form,
    * whether created blank or from a template.
    *
+   * @since 1.0.0
    * @return array
    */
   private function default_settings(): array
@@ -316,6 +328,7 @@ class FlowForms_REST_API
    *
    * @param  int    $post_id
    * @param  string $json
+   * @since 1.0.0
    * @return bool
    */
   private function save_post_content(int $post_id, string $json): bool
@@ -337,6 +350,11 @@ class FlowForms_REST_API
     return $result !== false;
   }
 
+  /**
+   * Return a list of all published forms.
+   *
+   * @since 1.0.0
+   */
   public function get_forms($request)
   {
     $posts = get_posts([
@@ -355,6 +373,11 @@ class FlowForms_REST_API
     return rest_ensure_response([]);
   }
 
+  /**
+   * Return a single form for the builder, loading draft content when available.
+   *
+   * @since 1.0.0
+   */
   public function get_form($request)
   {
     $form_id = absint($request['id']);
@@ -393,6 +416,11 @@ class FlowForms_REST_API
     return rest_ensure_response($form);
   }
 
+  /**
+   * Create a new blank form and store its initial content in the draft slot.
+   *
+   * @since 1.0.0
+   */
   public function create_form($request)
   {
     $form_name = sanitize_text_field($request->get_param('form_name'));
@@ -433,7 +461,7 @@ class FlowForms_REST_API
     $form_design = ! empty($extracted['design']) ? $extracted['design'] : $this->default_design();
     $json        = $this->encode_slots(null, $extracted['content'], $form_design, $this->default_settings());
     $saved       = $this->save_post_content($post_id, $json);
- 
+
     if (! $saved) {
       return new WP_REST_Response(['message' => 'Failed to save form content.'], 500);
     }
@@ -446,6 +474,11 @@ class FlowForms_REST_API
     ], 201);
   }
 
+  /**
+   * Auto-save builder changes to the draft content slot.
+   *
+   * @since 1.0.0
+   */
   public function update_form($request)
   {
     $form_id   = absint($request['id']);
@@ -511,10 +544,9 @@ class FlowForms_REST_API
   }
 
   /**
-   * PATCH /forms/{id}/design
+   * Update the form design and write it live immediately to the top-level design key.
    *
-   * Writes design directly to the top-level "design" key — it is never
-   * versioned and goes live immediately, independent of content draft/publish.
+   * @since 1.0.0
    */
   public function update_design($request)
   {
@@ -552,12 +584,10 @@ class FlowForms_REST_API
     ], 200);
   }
 
-
   /**
-   * PATCH /forms/{id}/settings
+   * Update form settings and write them live immediately to the top-level settings key.
    *
-   * Writes settings directly to the top-level "settings" key — not versioned,
-   * goes live immediately, independent of the content draft/publish cycle.
+   * @since 1.0.0
    */
   public function update_settings($request)
   {
@@ -600,10 +630,9 @@ class FlowForms_REST_API
   }
 
   /**
-   * POST /forms/{id}/publish
+   * Promote the draft content slot to published and clear the draft.
    *
-   * Promotes the draft slot to published, then clears the draft slot.
-   * If there is no draft, returns a 400 error.
+   * @since 1.0.0
    */
   public function publish_form($request)
   {
@@ -641,9 +670,9 @@ class FlowForms_REST_API
   }
 
   /**
-   * POST /forms/{id}/revert
+   * Discard the draft content slot and restore the builder to the published version.
    *
-   * Discards the draft slot. Builder falls back to published version.
+   * @since 1.0.0
    */
   public function revert_form($request)
   {
@@ -678,9 +707,9 @@ class FlowForms_REST_API
   }
 
   /**
-   * GET /forms/{id}/public
+   * Return the published form content for the public renderer, including the anti-spam token.
    *
-   * Returns only the PUBLISHED slot. No auth required.
+   * @since 1.0.0
    */
   public function get_form_public($request)
   {
@@ -714,12 +743,9 @@ class FlowForms_REST_API
   }
 
   /**
-   * GET /forms/{id}/preview
+   * Return form content for the builder preview iframe, preferring the draft slot.
    *
-   * Auth-gated endpoint used by the builder's preview iframe.
-   * Returns the draft slot when one exists, otherwise falls back to published.
-   * This ensures the preview always reflects the current builder state,
-   * even before the form has been published for the first time.
+   * @since 1.0.0
    */
   public function get_form_preview($request)
   {
@@ -852,6 +878,7 @@ class FlowForms_REST_API
    * @param int   $form_id      Form post ID.
    * @param array $answers      Sanitized answers keyed by question UUID.
    * @param array $form_content Published form content (questions etc.).
+   * @since 1.0.0
    */
   private function send_notifications(int $entry_id, int $form_id, array $answers, array $form_content): void
   {
@@ -869,7 +896,6 @@ class FlowForms_REST_API
       return;
     }
 
-    // Only process notifications['1']
     $notif = $email_settings['notifications']['1'] ?? [];
 
     $defaults = [
@@ -883,7 +909,6 @@ class FlowForms_REST_API
 
     $notif = array_merge($defaults, array_filter($notif, fn($v) => $v !== ''));
 
-    // Resolve smart tags in all fields
     $smart_tags = wp_flowforms()->obj('smart_tags');
     $context    = [
       'form_id'   => $form_id,
@@ -900,7 +925,6 @@ class FlowForms_REST_API
     $sender_address = trim($smart_tags->resolve($notif['sender_address'], $context));
     $replyto        = trim($smart_tags->resolve($notif['replyto'],        $context));
 
-    // Skip if recipient address is invalid after resolution
     if (! is_email($to)) {
       error_log(sprintf(
         '[WP FlowForms] Email notification skipped — invalid recipient "%s" (form %d, entry %d)',
@@ -909,7 +933,6 @@ class FlowForms_REST_API
       return;
     }
 
-    // Build headers
     $headers = [
       'Content-Type: text/plain; charset=UTF-8',
       sprintf('From: %s <%s>', $sender_name, $sender_address),
@@ -936,6 +959,11 @@ class FlowForms_REST_API
     }
   }
 
+  /**
+   * Determine whether a submitted answer should be considered empty.
+   *
+   * @since 1.0.0
+   */
   private function is_empty_answer($answer, string $type): bool
   {
     if (is_null($answer))      return true;
@@ -949,6 +977,7 @@ class FlowForms_REST_API
    * Create a new form pre-filled with a free template's content.
    *
    * @param WP_REST_Request $request
+   * @since 1.0.0
    * @return WP_REST_Response|WP_Error
    */
   public function create_form_from_template(WP_REST_Request $request)
@@ -1004,6 +1033,7 @@ class FlowForms_REST_API
    *
    * Stores the template content in a short-lived transient and returns a
    * signed preview URL that handle_preview() can serve without a real post.
+   * @since 1.0.0
    */
   public function get_template_preview_url(WP_REST_Request $request)
   {
@@ -1033,6 +1063,11 @@ class FlowForms_REST_API
     return rest_ensure_response(['preview_url' => $preview_url]);
   }
 
+  /**
+   * Validate a single answer against type-specific rules and return an error message or null.
+   *
+   * @since 1.0.0
+   */
   private function validate_answer_type(string $type, $answer, array $settings, array $content = []): ?string
   {
     if ($this->is_empty_answer($answer, $type)) return null;
@@ -1158,6 +1193,7 @@ class FlowForms_REST_API
    * @param  mixed  $val
    * @param  array  $valid_values  Flat list of allowed option values.
    * @param  array  $settings      Question settings array.
+   * @since 1.0.0
    * @return bool
    */
   private function is_valid_choice_value($val, array $valid_values, array $settings): bool
@@ -1172,6 +1208,11 @@ class FlowForms_REST_API
     return false;
   }
 
+  /**
+   * Sanitize all submitted answers according to each question's type.
+   *
+   * @since 1.0.0
+   */
   private function sanitize_answers(array $answers, array $questions): array
   {
     $clean = [];
@@ -1237,6 +1278,11 @@ class FlowForms_REST_API
     return $clean;
   }
 
+  /**
+   * Insert a new entry row into the database and return the inserted ID.
+   *
+   * @since 1.0.0
+   */
   private function save_entry(int $form_id, array $sanitized_answers, WP_REST_Request $request, string $status = 'active')
   {
     global $wpdb;
@@ -1258,6 +1304,11 @@ class FlowForms_REST_API
     return $result !== false ? (int) $wpdb->insert_id : false;
   }
 
+  /**
+   * Extract the real client IP address from the request, checking proxy headers first.
+   *
+   * @since 1.0.0
+   */
   private function get_ip_address(WP_REST_Request $request): string
   {
     $headers = [

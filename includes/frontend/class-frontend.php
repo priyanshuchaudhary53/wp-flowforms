@@ -32,15 +32,18 @@ class FlowForms_Frontend {
 	 */
 	private array $form_ids = [];
 
+	/**
+	 * Register the shortcode, asset enqueue hooks, rewrite rules, and template redirect handlers.
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
-		// Shortcode.
 		add_shortcode( 'flowform', [ $this, 'render_shortcode' ] );
 
 		// Enqueue assets after the shortcode / block has had a chance to flag
 		// which form IDs are on the page.
 		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_assets' ], 20 );
 
-		// Full-page embed + preview rewrite.
 		add_action( 'init', [ $this, 'register_rewrites' ] );
 		add_action( 'template_redirect', [ $this, 'handle_full_page_embed' ] );
 		add_action( 'template_redirect', [ $this, 'handle_preview' ] );
@@ -53,6 +56,7 @@ class FlowForms_Frontend {
 	 * DOMContentLoaded. Registers the form ID so assets get enqueued.
 	 *
 	 * @param array $atts Shortcode attributes.
+	 * @since 1.0.0
 	 * @return string HTML output.
 	 */
 	public function render_shortcode( array $atts ): string {
@@ -90,6 +94,7 @@ class FlowForms_Frontend {
 	 * Called by both the shortcode and the Gutenberg block render callback.
 	 *
 	 * @param int $form_id
+	 * @since 1.0.0
 	 */
 	public function flag_form_id( int $form_id ): void {
 		if ( $form_id && ! in_array( $form_id, $this->form_ids, true ) ) {
@@ -102,6 +107,7 @@ class FlowForms_Frontend {
 	 *
 	 * Hooked to wp_enqueue_scripts at priority 20, so shortcodes at priority 10
 	 * have already run and registered their form IDs.
+	 * @since 1.0.0
 	 */
 	public function maybe_enqueue_assets(): void {
 		// Also trigger for full-page embed and preview requests.
@@ -126,6 +132,7 @@ class FlowForms_Frontend {
 
 	/**
 	 * Enqueue the compiled form renderer bundle.
+	 * @since 1.0.0
 	 */
 	private function enqueue_renderer_assets(): void {
 		if ( $this->assets_enqueued ) {
@@ -152,7 +159,6 @@ class FlowForms_Frontend {
 			$asset['version']
 		);
 
-		// Determine preview mode.
 		$is_preview  = ! empty( $_GET['flowform_preview'] );
 		$preview_ok  = $is_preview && $this->verify_preview_token( $_GET['token'] ?? '' );
 
@@ -176,6 +182,7 @@ class FlowForms_Frontend {
 	 * Register the /flowform/{id} rewrite rule.
 	 *
 	 * Maps pretty URL to a query var the template_redirect hook picks up.
+	 * @since 1.0.0
 	 */
 	public function register_rewrites(): void {
 		add_rewrite_rule(
@@ -191,6 +198,7 @@ class FlowForms_Frontend {
 	 * Output a bare full-page form embed — no theme header/footer.
 	 *
 	 * Triggered when the /flowform/{id} URL is visited.
+	 * @since 1.0.0
 	 */
 	public function handle_full_page_embed(): void {
 		$form_id = absint( get_query_var( 'flowform_id', 0 ) );
@@ -240,7 +248,6 @@ class FlowForms_Frontend {
 			exit;
 		}
 
-		// Enqueue assets manually for this bare page.
 		$this->flag_form_id( $form_id );
 		$this->enqueue_renderer_assets();
 		do_action( 'wp_enqueue_scripts' );
@@ -253,6 +260,7 @@ class FlowForms_Frontend {
 	 * Handle the builder preview URL: ?flowform_preview=1&id=X&token=Y
 	 *
 	 * Serves the same bare page but with previewMode:true injected into JS.
+	 * @since 1.0.0
 	 */
 	public function handle_preview(): void {
 		if ( empty( $_GET['flowform_preview'] ) ) {
@@ -332,6 +340,7 @@ class FlowForms_Frontend {
 	 * Creates a synthetic form ID (0) and injects content via JS.
 	 *
 	 * @param array $content Template form content array.
+	 * @since 1.0.0
 	 */
 	private function render_template_preview_page( array $template ): void {
 		show_admin_bar( false );
@@ -343,7 +352,6 @@ class FlowForms_Frontend {
 		$btn  = esc_attr( $design['button_color'] ?? '#111827' );
 		$hint = esc_attr( $design['hint_color']   ?? '#9ca3af' );
 
-		// Enqueue renderer assets manually.
 		$asset_file = WP_FLOWFORMS_PATH . 'build/form/index.asset.php';
 		$asset      = file_exists( $asset_file )
 			? require $asset_file
@@ -405,6 +413,7 @@ html { margin-top: 0 !important; }
 	 * @param int    $form_id
 	 * @param string $title      Escaped page title.
 	 * @param bool   $is_preview True when rendered inside the builder preview iframe.
+	 * @since 1.0.0
 	 */
 	private function render_full_page( int $form_id, string $title, bool $is_preview = false ): void {
 		if ( $is_preview ) {
@@ -423,10 +432,7 @@ html { margin-top: 0 !important; }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title><?php echo $title; ?></title>
-<?php
-		// Output all enqueued styles and scripts via wp_head().
-		wp_head();
-?>
+<?php wp_head(); ?>
 <style>
 html, body {
 	margin: 0 !important;
@@ -466,6 +472,7 @@ html { margin-top: 0 !important; }
 	 *
 	 * The token is a short-lived nonce scoped to the flowform_preview action.
 	 *
+	 * @since 1.0.0
 	 * @return string
 	 */
 	public static function generate_preview_token(): string {
@@ -476,6 +483,7 @@ html { margin-top: 0 !important; }
 	 * Verify a preview token.
 	 *
 	 * @param string $token
+	 * @since 1.0.0
 	 * @return bool
 	 */
 	private function verify_preview_token( string $token ): bool {
@@ -486,6 +494,7 @@ html { margin-top: 0 !important; }
 	 * Read the design object from a form's published slot, merged with defaults.
 	 *
 	 * @param  int   $form_id
+	 * @since 1.0.0
 	 * @return array
 	 */
 	private function get_form_design( int $form_id ): array {
@@ -500,7 +509,7 @@ html { margin-top: 0 !important; }
 
 		$decoded = wpff_decode( $post->post_content );
 		if ( ! is_array( $decoded ) ) return $defaults;
- 
+
 		// Dual-slot format: { published: {...}|null, draft: {...}|null }
 		// Read published first, fall back to draft (e.g. new form not yet published).
 		// Legacy flat format (no 'published' key) is used as-is.
@@ -524,6 +533,7 @@ html { margin-top: 0 !important; }
 	 *
 	 * @param  string $selector  CSS selector to scope the rules to.
 	 * @param  array  $design    Design array from get_form_design().
+	 * @since 1.0.0
 	 * @return string
 	 */
 	private function design_vars_css( string $selector, array $design ): string {
@@ -548,6 +558,7 @@ html { margin-top: 0 !important; }
 	 *                               Fullpage ignores height/border-radius (CSS handles it).
 	 * @param string $height         CSS min-height value (e.g. "520px", "80vh").
 	 * @param string $border_radius  CSS border-radius value (e.g. "16px").
+	 * @since 1.0.0
 	 * @return string
 	 */
 	public function container_html(
@@ -587,6 +598,7 @@ html { margin-top: 0 !important; }
 	 * Regular visitors see nothing (empty string).
 	 *
 	 * @param int $form_id
+	 * @since 1.0.0
 	 * @return string
 	 */
 	public function trashed_form_notice( int $form_id ): string {
@@ -634,6 +646,7 @@ html { margin-top: 0 !important; }
 	 *
 	 * @param string $form_title  The form's post title.
 	 * @param string $restore_url Nonce-signed URL to restore the form from trash.
+	 * @since 1.0.0
 	 */
 	private function render_form_trashed_page( string $form_title, string $restore_url ): void {
 		status_header( 404 );
@@ -676,6 +689,8 @@ html { margin-top: 0 !important; }
 
 	/**
 	 * Shared inline styles for the standalone unavailable/not-published pages.
+	 *
+	 * @since 1.0.0
 	 */
 	private function standalone_page_styles(): string {
 		return '
@@ -715,6 +730,7 @@ html, body {
 	/**
 	 * Render a minimal standalone HTML page for unavailable (missing/trashed) forms.
 	 * Sets a 404 response code. Shown to non-admin users for any unservable form.
+	 * @since 1.0.0
 	 */
 	private function render_form_unavailable_page(): void {
 		status_header( 404 );
@@ -750,6 +766,7 @@ html, body {
 	 *
 	 * @param string $form_title  The form's post title.
 	 * @param string $builder_url URL to the form's builder page.
+	 * @since 1.0.0
 	 */
 	private function render_form_not_published_page( string $form_title, string $builder_url ): void {
 		status_header( 404 );
@@ -797,6 +814,7 @@ html, body {
 	 * otherwise falls back to a query-string URL.
 	 *
 	 * @param int $form_id
+	 * @since 1.0.0
 	 * @return string
 	 */
 	public static function get_public_url( int $form_id ): string {
@@ -813,6 +831,7 @@ html, body {
 	 * This URL is used by the React builder's PreviewModal iframe src.
 	 *
 	 * @param int $form_id
+	 * @since 1.0.0
 	 * @return string
 	 */
 	public static function get_preview_url( int $form_id ): string {

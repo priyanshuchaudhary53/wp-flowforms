@@ -24,6 +24,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
   /** @var array View counts from the entry handler. */
   private array $counts = [];
 
+  /**
+   * Sets up the list table with the active form filter and status tab.
+   *
+   * @since 1.0.0
+   */
   public function __construct(int $form_id = 0, string $status = 'active')
   {
     parent::__construct([
@@ -36,6 +41,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     $this->status  = $status;
   }
 
+  /**
+   * Defines the table columns, conditionally including the Form column.
+   *
+   * @since 1.0.0
+   */
   public function get_columns(): array
   {
     $cols = [
@@ -56,6 +66,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return $cols;
   }
 
+  /**
+   * Returns the columns that support sorting.
+   *
+   * @since 1.0.0
+   */
   protected function get_sortable_columns(): array
   {
     return [
@@ -64,11 +79,21 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     ];
   }
 
+  /**
+   * Renders the bulk-select checkbox for an entry row.
+   *
+   * @since 1.0.0
+   */
   public function column_cb($entry): string
   {
     return sprintf('<input type="checkbox" name="entry_id[]" value="%d">', $entry->id);
   }
 
+  /**
+   * Renders the entry ID as a link to the single entry view.
+   *
+   * @since 1.0.0
+   */
   public function column_id($entry): string
   {
     $view_url = add_query_arg([
@@ -80,6 +105,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return sprintf('<a href="%s">#%d</a>', esc_url($view_url), $entry->id);
   }
 
+  /**
+   * Renders the star toggle button for an entry row.
+   *
+   * @since 1.0.0
+   */
   public function column_star($entry): string
   {
     $cls = $entry->is_starred ? 'wpff-star wpff-star--on' : 'wpff-star';
@@ -92,6 +122,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     );
   }
 
+  /**
+   * Renders the form name as a filterable link for an entry row.
+   *
+   * @since 1.0.0
+   */
   public function column_form($entry): string
   {
     $post = get_post($entry->form_id);
@@ -109,6 +144,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     );
   }
 
+  /**
+   * Renders a short answer preview linked to the single entry view.
+   *
+   * @since 1.0.0
+   */
   public function column_summary($entry): string
   {
     $view_url = add_query_arg([
@@ -128,6 +168,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     );
   }
 
+  /**
+   * Renders the submission timestamp as a relative time with absolute title tooltip.
+   *
+   * @since 1.0.0
+   */
   public function column_submitted($entry): string
   {
     $ts        = strtotime($entry->created_at);
@@ -137,6 +182,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return sprintf('<span title="%s">%s</span>', esc_attr($absolute), esc_html($relative));
   }
 
+  /**
+   * Renders the row action links appropriate for the current status tab.
+   *
+   * @since 1.0.0
+   */
   public function column_actions($entry): string
   {
     $base = remove_query_arg(['action', '_wpnonce', 'entry_id', 'paged']);
@@ -204,6 +254,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return '<div class="wpff-actions">' . implode(' | ', $parts) . '</div>';
   }
 
+  /**
+   * Renders the read/unread status badge for an entry row.
+   *
+   * @since 1.0.0
+   */
   public function column_status($entry): string
   {
     if ($entry->is_read) {
@@ -213,11 +268,21 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return '<span class="wpff-status wpff-status--unread">' . esc_html__('Unread', 'wp-flowforms') . '</span>';
   }
 
+  /**
+   * Fallback column renderer that applies a filter for custom columns.
+   *
+   * @since 1.0.0
+   */
   public function column_default($entry, $column_name): string
   {
     return apply_filters('wpff_entries_column_value', '', $entry, $column_name);
   }
 
+  /**
+   * Returns the bulk action options appropriate for the current status tab.
+   *
+   * @since 1.0.0
+   */
   public function get_bulk_actions(): array
   {
     if ($this->status === 'trash') {
@@ -243,6 +308,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     ];
   }
 
+  /**
+   * Builds the status tab links with entry counts.
+   *
+   * @since 1.0.0
+   */
   protected function get_views(): array
   {
     $base   = admin_url('admin.php?page=wpff_entries');
@@ -253,7 +323,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     $counts = $this->counts;
     $views  = [];
 
-    // All (active).
     $unread_badge = $counts['unread'] > 0
       ? ' <span class="wpff-unread-badge">' . $counts['unread'] . '</span>'
       : '';
@@ -267,7 +336,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       $counts['active']
     );
 
-    // Starred.
     if ($counts['starred'] > 0 || $this->status === 'starred') {
       $views['starred'] = sprintf(
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
@@ -278,7 +346,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       );
     }
 
-    // Spam.
     if ($counts['spam'] > 0 || $this->status === 'spam') {
       $views['spam'] = sprintf(
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
@@ -289,7 +356,6 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       );
     }
 
-    // Trash.
     if ($counts['trash'] > 0 || $this->status === 'trash') {
       $views['trash'] = sprintf(
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
@@ -303,6 +369,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     return $views;
   }
 
+  /**
+   * Renders the Empty Trash or Empty Spam button above the table when applicable.
+   *
+   * @since 1.0.0
+   */
   protected function extra_tablenav($which)
   {
     if ($which !== 'top' || empty($this->items)) {
@@ -330,6 +401,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     }
   }
 
+  /**
+   * Fetches entries from the database and sets pagination arguments.
+   *
+   * @since 1.0.0
+   */
   public function prepare_items()
   {
     $this->_column_headers = $this->get_column_info();
@@ -377,6 +453,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     ]);
   }
 
+  /**
+   * Displays a status-appropriate message when no entries match the current view.
+   *
+   * @since 1.0.0
+   */
   public function no_items()
   {
     if ($this->status === 'trash') {

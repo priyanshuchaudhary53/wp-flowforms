@@ -32,6 +32,7 @@ class FlowForms_Smart_Tags
    *   @type array  $answers   Answers keyed by question UUID.
    *   @type array  $questions Question objects from formContent (id, type, content, settings).
    * }
+   * @since 1.0.0
    * @return string
    */
   public function resolve(string $template, array $context): string
