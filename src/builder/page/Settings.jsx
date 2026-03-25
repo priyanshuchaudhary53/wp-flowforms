@@ -45,7 +45,7 @@ function ensureChipStyles() {
       display: inline-flex;
       align-items: center;
       gap: 2px;
-      background: #efedfd;
+      background: #dedcfa;
       color: #493eba;
       border: 1px solid #dedcfa;
       border-radius: 4px;
@@ -68,11 +68,7 @@ function ensureChipStyles() {
       padding: 0 0 0 2px;
       font-size: 13px;
       line-height: 1;
-      opacity: 0;
       transition: opacity 0.12s;
-    }
-    .ff-smart-tag:hover .ff-smart-tag-remove {
-      opacity: 1;
     }
     .ff-smart-tag-remove:hover {
       color: #e11d48;
@@ -282,7 +278,7 @@ function SmartTagInput({ value, placeholder, onChange, tags }) {
         onBlur={handleBlur}
         data-placeholder={placeholder}
         className={[
-          "w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground",
+          "w-full rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground",
           "focus:outline-none focus:ring-2 focus:ring-ring/50 min-h-[38px] leading-relaxed",
           "empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground",
           "empty:before:pointer-events-none",
@@ -570,6 +566,7 @@ function EmailTab() {
               }]}
               value={notif.sender_address}
               onChange={(val) => updateNotif("sender_address", val)}
+              warningText="These sender settings may be overridden by an SMTP plugin (e.g. WP Mail SMTP, Postman SMTP) installed on your site."
             />
 
             {/* Reply-To */}
@@ -657,7 +654,7 @@ function InputRow({ label, description, value, placeholder, resolvedHint, onChan
             value={value}
             placeholder={placeholder}
             onChange={(e) => onChange(e.target.value)}
-            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+            className="w-full rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
           />
           {showHint && (
             <p className="mt-1.5 text-xs text-muted-foreground">
@@ -691,7 +688,7 @@ function ReplyToRow({ value, onChange, emailQuestions }) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+        className="w-1/2 rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
       >
         <option value="">— None (use From address) —</option>
         {emailQuestions.length > 0 && (
@@ -771,11 +768,11 @@ function EmailRecipientRow({ label, description, value, onChange }) {
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <select
           value={selectValue}
           onChange={handleSelectChange}
-          className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+          className="rounded-lg min-h-9.5 border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
         >
           <option value="{admin_email}">{adminLabel}</option>
           <option value={CUSTOM_EMAIL_SENTINEL}>Custom email address…</option>
@@ -787,7 +784,7 @@ function EmailRecipientRow({ label, description, value, onChange }) {
             value={customEmail}
             placeholder="Enter email address"
             onChange={handleCustomChange}
-            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+            className="gw-full rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
           />
         )}
       </div>
@@ -798,7 +795,7 @@ function EmailRecipientRow({ label, description, value, onChange }) {
 /**
  * A generic select dropdown row.
  */
-function SelectRow({ label, description, options, value, onChange }) {
+function SelectRow({ label, description, options, value, onChange, warningText }) {
   return (
     <div className="py-4 first:pt-0 last:pb-0">
       <div className="flex flex-col gap-1 mb-2">
@@ -811,7 +808,7 @@ function SelectRow({ label, description, options, value, onChange }) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+        className="w-1/2 rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
@@ -819,6 +816,12 @@ function SelectRow({ label, description, options, value, onChange }) {
           </option>
         ))}
       </select>
+
+      {warningText && (
+        <p className="text-xs text-amber-500 mt-1.5">
+          <strong>Note:</strong> {warningText}
+        </p>
+      )}
     </div>
   );
 }
