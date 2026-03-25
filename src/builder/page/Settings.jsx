@@ -34,6 +34,10 @@ const SMART_TAGS = [
   { tag: "{all_fields}",  label: "All Fields",   description: "All submitted field values" },
 ];
 
+// Smart tags available in single-line fields (subject, sender name) — {all_fields} excluded
+// because it renders a multi-line block and makes no sense in those contexts.
+const SMART_TAGS_INLINE = SMART_TAGS.filter((t) => t.tag !== "{all_fields}");
+
 // Inject chip styles once at module level (not per-component, avoids flicker)
 let _chipStylesInjected = false;
 function ensureChipStyles() {
@@ -543,7 +547,7 @@ function EmailTab() {
               value={notif.subject}
               placeholder="New submission: {form_name}"
               onChange={(val) => updateNotif("subject", val)}
-              smartTags={SMART_TAGS}
+              smartTags={SMART_TAGS_INLINE}
             />
 
             {/* From name */}
@@ -553,7 +557,7 @@ function EmailTab() {
               value={notif.sender_name}
               placeholder="{site_name}"
               onChange={(val) => updateNotif("sender_name", val)}
-              smartTags={SMART_TAGS}
+              smartTags={SMART_TAGS_INLINE}
             />
 
             {/* From email */}
