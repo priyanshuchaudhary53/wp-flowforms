@@ -889,8 +889,10 @@ class FlowForms_REST_API
       sprintf('From: %s <%s>', $sender_name, $sender_address),
     ];
 
-    if (! empty($replyto) && is_email($replyto)) {
-      $headers[] = 'Reply-To: ' . $replyto;
+    // If no reply-to is set, fall back to the sender address.
+    $effective_replyto = (! empty($replyto) && is_email($replyto)) ? $replyto : $sender_address;
+    if (is_email($effective_replyto)) {
+      $headers[] = 'Reply-To: ' . $effective_replyto;
     }
 
     $sent = wp_mail($to, $subject, $message, $headers);

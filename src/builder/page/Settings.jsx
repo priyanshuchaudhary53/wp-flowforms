@@ -84,8 +84,9 @@ function ensureChipStyles() {
 /**
  * Convert a raw value string (e.g. "Hello {form_name}!") to innerHTML
  * for the contenteditable editor, turning known tags into chip spans.
+ * In multiline mode, \n characters are converted to <br> elements.
  */
-function rawToEditorHtml(raw, tags) {
+function rawToEditorHtml(raw, tags, multiline = false) {
   if (!raw) return "";
   const escape = (s) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -93,8 +94,11 @@ function rawToEditorHtml(raw, tags) {
     .split(/(\{[^}]+\})/g)
     .map((part) => {
       const tagDef = tags.find((t) => t.tag === part);
-      if (!tagDef) return escape(part);
-      return `<span class="ff-smart-tag" data-tag="${part}" contenteditable="false">${tagDef.label}<button class="ff-smart-tag-remove" type="button" tabindex="-1">×</button></span>`;
+      if (tagDef) {
+        return `<span class="ff-smart-tag" data-tag="${part}" contenteditable="false">${tagDef.label}<button class="ff-smart-tag-remove" type="button" tabindex="-1">×</button></span>`;
+      }
+      const escaped = escape(part);
+      return multiline ? escaped.replace(/\n/g, "<br>") : escaped;
     })
     .join("");
 }
@@ -102,14 +106,20 @@ function rawToEditorHtml(raw, tags) {
 /**
  * Walk the contenteditable DOM and produce the raw tag string.
  * Text nodes → their text; chip spans → their data-tag attribute.
+ * In multiline mode, <br> and block-level <div> nodes are converted to \n.
  */
-function editorToRaw(el) {
+function editorToRaw(el, multiline = false) {
   let raw = "";
   el.childNodes.forEach((node) => {
     if (node.nodeType === Node.TEXT_NODE) {
       raw += node.textContent;
     } else if (node.dataset?.tag) {
       raw += node.dataset.tag;
+    } else if (multiline && node.nodeName === "BR") {
+      raw += "\n";
+    } else if (multiline && node.nodeName === "DIV") {
+      // Chrome wraps each new line in a <div>; prepend \n for all but the first
+      raw += "\n" + editorToRaw(node, multiline);
     } else {
       raw += node.textContent;
     }
@@ -124,7 +134,7 @@ function editorToRaw(el) {
  * by typing @. Selected tags are displayed as highlighted chips with a hover
  * remove (×) button.
  */
-function SmartTagInput({ value, placeholder, onChange, tags }) {
+function SmartTagInput({ value, placeholder, onChange, tags, multiline = false }) {
   const editorRef = useRef(null);
   // Track the last value we wrote to the DOM so we can skip unnecessary re-renders
   const lastSetValue = useRef(value);
@@ -140,7 +150,7 @@ function SmartTagInput({ value, placeholder, onChange, tags }) {
   // Set initial HTML on mount & wire up the remove-button click delegation
   useEffect(() => {
     if (!editorRef.current) return;
-    editorRef.current.innerHTML = rawToEditorHtml(value, tags);
+    editorRef.current.innerHTML = rawToEditorHtml(value, tags, multiline);
 
     const handleClick = (e) => {
       if (!e.target.classList.contains("ff-smart-tag-remove")) return;
@@ -148,7 +158,7 @@ function SmartTagInput({ value, placeholder, onChange, tags }) {
       const chip = e.target.closest(".ff-smart-tag");
       if (!chip) return;
       chip.remove();
-      const newVal = editorToRaw(editorRef.current);
+      const newVal = editorToRaw(editorRef.current, multiline);
       lastSetValue.current = newVal;
       onChange(newVal);
     };
@@ -162,7 +172,7 @@ function SmartTagInput({ value, placeholder, onChange, tags }) {
     if (!editorRef.current) return;
     if (value === lastSetValue.current) return;
     lastSetValue.current = value;
-    editorRef.current.innerHTML = rawToEditorHtml(value, tags);
+    editorRef.current.innerHTML = rawToEditorHtml(value, tags, multiline);
   }, [value, tags]);
 
   // Detect if cursor is inside an @… sequence and show/position the dropdown
@@ -202,11 +212,11 @@ function SmartTagInput({ value, placeholder, onChange, tags }) {
   }, []);
 
   const handleInput = useCallback(() => {
-    const newVal = editorToRaw(editorRef.current);
+    const newVal = editorToRaw(editorRef.current, multiline);
     lastSetValue.current = newVal;
     onChange(newVal);
     checkAtPattern();
-  }, [onChange, checkAtPattern]);
+  }, [onChange, checkAtPattern, multiline]);
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === "Escape") setShowDropdown(false);
@@ -255,7 +265,7 @@ function SmartTagInput({ value, placeholder, onChange, tags }) {
       setShowDropdown(false);
       atPosRef.current = null;
 
-      const newVal = editorToRaw(editorRef.current);
+      const newVal = editorToRaw(editorRef.current, multiline);
       lastSetValue.current = newVal;
       onChange(newVal);
       editorRef.current.focus();
@@ -283,7 +293,8 @@ function SmartTagInput({ value, placeholder, onChange, tags }) {
         data-placeholder={placeholder}
         className={[
           "w-full rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground",
-          "focus:outline-none focus:ring-2 focus:ring-ring/50 min-h-[38px] leading-relaxed",
+          "focus:outline-none focus:ring-2 focus:ring-ring/50 leading-relaxed",
+          multiline ? "min-h-[120px]" : "min-h-[38px]",
           "empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground",
           "empty:before:pointer-events-none",
         ].join(" ")}
@@ -478,7 +489,7 @@ const NOTIF_DEFAULTS = {
   sender_name:    "{site_name}",
   sender_address: "{admin_email}",
   replyto:        "",
-  message:        "{all_fields}",
+  message:        "Hi,\n\nYour form {form_name} just received a new submission.\n\nHere are the details:\n\n{all_fields}\n\nThanks,\n{site_name}",
 };
 
 // Sentinel used in the <select> to represent the custom-email option.
@@ -579,6 +590,17 @@ function EmailTab() {
               onChange={(val) => updateNotif("replyto", val)}
               emailQuestions={emailQuestions}
             />
+
+            {/* Email body */}
+            <InputRow
+              label="Email body"
+              description="The body of the notification email. Use {all_fields} to include all submitted values."
+              value={notif.message}
+              placeholder="{all_fields}"
+              onChange={(val) => updateNotif("message", val)}
+              smartTags={SMART_TAGS}
+              multiline={true}
+            />
           </>
         )}
 
@@ -632,7 +654,7 @@ function ToggleRow({ label, description, checked, onChange }) {
  * Pass `smartTags` to enable the @ mention smart tag picker.
  * Without `smartTags`, shows a plain input with an optional `resolvedHint`.
  */
-function InputRow({ label, description, value, placeholder, resolvedHint, onChange, smartTags }) {
+function InputRow({ label, description, value, placeholder, resolvedHint, onChange, smartTags, multiline = false }) {
   const showHint = !smartTags && resolvedHint && resolvedHint !== value;
 
   return (
@@ -650,6 +672,7 @@ function InputRow({ label, description, value, placeholder, resolvedHint, onChan
           placeholder={placeholder}
           onChange={onChange}
           tags={smartTags}
+          multiline={multiline}
         />
       ) : (
         <>

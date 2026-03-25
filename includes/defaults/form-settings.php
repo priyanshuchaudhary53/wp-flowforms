@@ -67,7 +67,7 @@ return [
         'replyto' => '',
 
         // Email body. {all_fields} renders all submitted field values.
-        'message' => '{all_fields}',
+        'message' => "Hi,\n\nYour form {form_name} just received a new submission.\n\nHere are the details:\n\n{all_fields}",
 
       ],
 
