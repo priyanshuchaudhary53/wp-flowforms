@@ -173,6 +173,8 @@ export class FormApp {
 
 		// Honeypot — hidden field to catch bots. Injected via JS so it sits
 		// inside the container but never in the visible question flow.
+		// autocomplete="new-password" is the one value all browsers are spec-required
+		// to never autofill, unlike "off" which Chrome ignores for personal-data fields.
 		const hpData = window.flowformPublicData?.honeypot;
 		if ( hpData ) {
 			const label = document.createElement( 'label' );
@@ -181,7 +183,7 @@ export class FormApp {
 			const hp = document.createElement( 'input' );
 			hp.type = 'text';
 			hp.name = hpData.field_name ?? 'wpff_hp';
-			hp.setAttribute( 'autocomplete', 'off' );
+			hp.setAttribute( 'autocomplete', 'new-password' );
 			hp.setAttribute( 'tabindex', '-1' );
 			hp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
 			label.appendChild( hp );
