@@ -580,8 +580,12 @@ class FlowForms_REST_API
 
     $slots = $this->decode_slots($post->post_content);
 
-    // Settings sit at the top level — replace entirely, content and design untouched.
-    $json  = $this->encode_slots($slots['content']['published'], $slots['content']['draft'], $slots['design'], $settings);
+    // Merge incoming settings over defaults so any keys added in future plugin
+    // updates are backfilled into existing forms on their next save.
+    $merged = array_replace_recursive($this->default_settings(), $slots['settings'] ?? [], $settings);
+
+    // Settings sit at the top level — content and design are untouched.
+    $json  = $this->encode_slots($slots['content']['published'], $slots['content']['draft'], $slots['design'], $merged);
     $saved = $this->save_post_content($form_id, $json);
 
     if (! $saved) {
@@ -807,7 +811,101 @@ class FlowForms_REST_API
 
     do_action('wpff_form_submitted', $entry_id, $form_id, $sanitized, $form_content);
 
+    $this->send_notifications($entry_id, $form_id, $sanitized, $form_content);
+
     return new WP_REST_Response(['success' => true, 'entry_id' => $entry_id], 200);
+  }
+
+  /**
+   * Send email notification(s) for a new form submission.
+   *
+   * Errors are logged but never propagate — a failed email must not affect
+   * the submission response. The entry is already saved at this point.
+   *
+   * @param int   $entry_id     Saved entry ID.
+   * @param int   $form_id      Form post ID.
+   * @param array $answers      Sanitized answers keyed by question UUID.
+   * @param array $form_content Published form content (questions etc.).
+   */
+  private function send_notifications(int $entry_id, int $form_id, array $answers, array $form_content): void
+  {
+    $post = get_post($form_id);
+    if (! $post) {
+      return;
+    }
+
+    $slots          = $this->decode_slots($post->post_content);
+    $email_settings = $slots['settings']['email'] ?? [];
+
+    // Global kill switch — absent key means enabled (matches JS default: enabled ?? true).
+    // Only bail when the admin has explicitly set enabled = false.
+    if (($email_settings['enabled'] ?? true) === false) {
+      return;
+    }
+
+    // Only process notifications['1']
+    $notif = $email_settings['notifications']['1'] ?? [];
+
+    $defaults = [
+      'email'          => '{admin_email}',
+      'subject'        => 'New submission: {form_name}',
+      'sender_name'    => '{site_name}',
+      'sender_address' => '{admin_email}',
+      'replyto'        => '',
+      'message'        => '{all_fields}',
+    ];
+
+    $notif = array_merge($defaults, array_filter($notif, fn($v) => $v !== ''));
+
+    // Resolve smart tags in all fields
+    $smart_tags = wp_flowforms()->obj('smart_tags');
+    $context    = [
+      'form_id'   => $form_id,
+      'form_name' => $post->post_title,
+      'entry_id'  => $entry_id,
+      'answers'   => $answers,
+      'questions' => $form_content['questions'] ?? [],
+    ];
+
+    $to             = trim($smart_tags->resolve($notif['email'],          $context));
+    $subject        = $smart_tags->resolve($notif['subject'],        $context);
+    $message        = $smart_tags->resolve($notif['message'],        $context);
+    $sender_name    = $smart_tags->resolve($notif['sender_name'],    $context);
+    $sender_address = trim($smart_tags->resolve($notif['sender_address'], $context));
+    $replyto        = trim($smart_tags->resolve($notif['replyto'],        $context));
+
+    // Skip if recipient address is invalid after resolution
+    if (! is_email($to)) {
+      error_log(sprintf(
+        '[WP FlowForms] Email notification skipped — invalid recipient "%s" (form %d, entry %d)',
+        $to, $form_id, $entry_id
+      ));
+      return;
+    }
+
+    // Build headers
+    $headers = [
+      'Content-Type: text/plain; charset=UTF-8',
+      sprintf('From: %s <%s>', $sender_name, $sender_address),
+    ];
+
+    if (! empty($replyto) && is_email($replyto)) {
+      $headers[] = 'Reply-To: ' . $replyto;
+    }
+
+    $sent = wp_mail($to, $subject, $message, $headers);
+
+    if ($sent) {
+      error_log(sprintf(
+        '[WP FlowForms] Email notification sent to %s (form %d, entry %d)',
+        $to, $form_id, $entry_id
+      ));
+    } else {
+      error_log(sprintf(
+        '[WP FlowForms] Email notification failed (form %d, entry %d)',
+        $form_id, $entry_id
+      ));
+    }
   }
 
   private function is_empty_answer($answer, string $type): bool
