@@ -11,7 +11,7 @@ if (! defined('ABSPATH')) exit;
  * All SVG paths are from Lucide (lucide.dev) — MIT licence.
  * Viewbox is always "0 0 24 24", stroke-based, stroke-width="2".
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
 class FlowForms_Field_Icons
 {

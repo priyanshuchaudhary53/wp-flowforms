@@ -11,7 +11,7 @@ if (! class_exists('WP_List_Table')) {
  *
  * WP_List_Table for the entries overview page.
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
 class FlowForms_Entries_List_Table extends WP_List_Table
 {

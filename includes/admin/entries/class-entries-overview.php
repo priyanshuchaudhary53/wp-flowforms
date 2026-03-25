@@ -8,7 +8,7 @@ if (! defined('ABSPATH')) exit;
  * Controller for wp-admin/admin.php?page=wpff_entries.
  * Handles the list view, single entry view, bulk actions and CSV export.
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
 class FlowForms_Entries_Overview
 {

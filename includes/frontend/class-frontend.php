@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *  - Handling the full-page embed URL  (/flowform/{id})
  *  - Handling the builder preview URL  (?flowform_preview=1&id=X&token=Y)
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
 class FlowForms_Frontend {
 
