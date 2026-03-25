@@ -1,8 +1,10 @@
 import { create } from "zustand";
 import BLOCK_SETTINGS from "../components/right-panel/blockSettings";
 
-// ── Debounce helper ────────────────────────────────────────────────────────
-let saveTimer = null;
+// ── Debounce helpers — separate timers so content/design/settings saves
+//    cannot cancel each other.
+let saveTimer     = null;   // form content + design
+let settingsTimer = null;   // settings only
 
 // ── Build default content/settings from blockSettings schema ───────────────
 function buildDefaultQuestion(fieldType) {
@@ -397,8 +399,8 @@ export const useFormStore = create((set, get) => ({
       return { form: { ...state.form, settings: updated }, settingsSaveStatus: "saving" };
     });
 
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => get()._persistSettings(), 800);
+    clearTimeout(settingsTimer);
+    settingsTimer = setTimeout(() => get()._persistSettings(), 800);
   },
 
   // ── Persist settings to the top-level settings key ───────────────────────

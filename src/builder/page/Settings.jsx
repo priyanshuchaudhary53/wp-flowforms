@@ -495,6 +495,10 @@ function EmailTab() {
   const savedNotif = emailSettings.notifications?.["1"] ?? {};
   const notif      = { ...NOTIF_DEFAULTS, ...savedNotif };
 
+  // Email-type questions available as Reply-To options.
+  const questions      = form?.content?.questions ?? [];
+  const emailQuestions = questions.filter((q) => q.type === "email");
+
   /**
    * Update a field on notification item "1".
    * Writes the full notifications object back to avoid overwriting other items.
@@ -569,13 +573,10 @@ function EmailTab() {
             />
 
             {/* Reply-To */}
-            <InputRow
-              label="Reply-To"
-              description="When the recipient replies, their email client will address it here. Leave empty to use the From email."
+            <ReplyToRow
               value={notif.replyto}
-              placeholder="Leave empty to use From email"
               onChange={(val) => updateNotif("replyto", val)}
-              smartTags={SMART_TAGS}
+              emailQuestions={emailQuestions}
             />
           </>
         )}
@@ -664,6 +665,57 @@ function InputRow({ label, description, value, placeholder, resolvedHint, onChan
             </p>
           )}
         </>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Reply-To row — dropdown populated from the form's email-type questions.
+ * Empty selection means no Reply-To header (replies go to the From address).
+ * Selecting a question stores {field:uuid} which resolves at send time.
+ */
+function ReplyToRow({ value, onChange, emailQuestions }) {
+  const selected = emailQuestions.find((q) => `{field:${q.id}}` === value);
+
+  return (
+    <div className="py-4 first:pt-0 last:pb-0">
+      <div className="flex flex-col gap-1 mb-2">
+        <span className="text-sm font-medium text-foreground">Reply-To</span>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Replies from the recipient will go to the email entered in the selected form field.
+          Leave unset to reply to the From address.
+        </p>
+      </div>
+
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+      >
+        <option value="">— None (use From address) —</option>
+        {emailQuestions.length > 0 && (
+          <optgroup label="Email blocks in this form">
+            {emailQuestions.map((q) => (
+              <option key={q.id} value={`{field:${q.id}}`}>
+                {q.content?.title?.trim() || "(Untitled email field)"}
+              </option>
+            ))}
+          </optgroup>
+        )}
+      </select>
+
+      {emailQuestions.length === 0 && (
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          No email fields found in your form. Add an Email block to enable this option.
+        </p>
+      )}
+
+      {selected && (
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          Replies will go to the email entered in the{" "}
+          <span className="font-medium text-foreground">{selected.content?.title}</span> field.
+        </p>
       )}
     </div>
   );
