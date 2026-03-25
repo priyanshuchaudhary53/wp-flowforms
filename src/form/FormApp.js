@@ -75,6 +75,11 @@ export class FormApp {
 		this._showNavArrows     = general.navigation_arrows  ?? true;
 		this._showPoweredBy     = general.powered_by         ?? false;
 
+		// Anti-spam: token received from the /public endpoint
+		this._token   = formData.token ?? '';
+		// Anti-spam: honeypot input element (injected in boot)
+		this._hpField = null;
+
 		// Permanent structural elements (built once in boot)
 		this._progressEl     = null;
 		this._bgEl           = null;
@@ -164,6 +169,24 @@ export class FormApp {
 				'</span>';
 				// '</a>';
 			this.container.appendChild( this._poweredByEl );
+		}
+
+		// Honeypot — hidden field to catch bots. Injected via JS so it sits
+		// inside the container but never in the visible question flow.
+		const hpData = window.flowformPublicData?.honeypot;
+		if ( hpData ) {
+			const label = document.createElement( 'label' );
+			label.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
+			label.textContent   = hpData.label ?? 'Name';
+			const hp = document.createElement( 'input' );
+			hp.type = 'text';
+			hp.name = hpData.field_name ?? 'wpff_hp';
+			hp.setAttribute( 'autocomplete', 'off' );
+			hp.setAttribute( 'tabindex', '-1' );
+			hp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
+			label.appendChild( hp );
+			this.container.appendChild( label );
+			this._hpField = hp;
 		}
 
 		this._prevBtn = this._navEl.querySelector( '.ff-btn-prev' );
@@ -555,7 +578,11 @@ export class FormApp {
 			const res  = await fetch( `${ apiUrl }/forms/${ formId }/submit`, {
 				method:  'POST',
 				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
-				body:    JSON.stringify( { answers } ),
+				body:    JSON.stringify( {
+					answers,
+					wpff_hp:    this._hpField?.value ?? '',
+					wpff_token: this._token ?? '',
+				} ),
 			} );
 
 			const body = await res.json().catch( () => ({}) );
@@ -581,8 +608,16 @@ export class FormApp {
 						submitted:       false,
 					} );
 				}
+			} else if ( body.success === false ) {
+				// Anti-spam rejection — 200 status but success: false.
+				this._lastDir = 'forward';
+				this._setState( {
+					currentScreen:  'submitError',
+					submitErrorMsg: body.message || 'Something went wrong. Please try again.',
+					submitted:      false,
+				} );
 			} else {
-				// Success — now transition to the thank-you screen.
+				// Genuine success — transition to the thank-you screen.
 				this._setState( { currentScreen: 'thankYou', submitted: true } );
 				this._handlePostSubmitRedirect();
 			}

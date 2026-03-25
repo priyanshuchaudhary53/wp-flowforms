@@ -156,11 +156,17 @@ class FlowForms_Frontend {
 		$is_preview  = ! empty( $_GET['flowform_preview'] );
 		$preview_ok  = $is_preview && $this->verify_preview_token( $_GET['token'] ?? '' );
 
+		$hp_labels = [ 'Name', 'Email', 'Phone', 'Website', 'Comment', 'Message' ];
+
 		wp_localize_script( 'flowform-renderer', 'flowformPublicData', [
 			'apiUrl'      => rest_url( 'formflow/v1' ),
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
 			'previewMode' => $preview_ok,
 			'formIds'     => $this->form_ids,
+			'honeypot'    => [
+				'field_name' => 'wpff_hp',
+				'label'      => $hp_labels[ array_rand( $hp_labels ) ],
+			],
 		] );
 
 		$this->assets_enqueued = true;

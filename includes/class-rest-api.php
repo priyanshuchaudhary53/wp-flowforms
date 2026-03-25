@@ -709,6 +709,7 @@ class FlowForms_REST_API
       'content'  => $content,
       'design'   => $slots['design'],
       'settings' => $slots['settings'],
+      'token'    => wp_flowforms()->obj('token')->generate($form_id),
     ]);
   }
 
@@ -775,6 +776,19 @@ class FlowForms_REST_API
       return new WP_Error('invalid_form', __('Form content could not be read.', 'wp-flowforms'), ['status' => 500]);
     }
 
+    // ── Layer 1: Honeypot ────────────────────────────────────────────────────
+    $honeypot = sanitize_text_field($request->get_param('wpff_hp') ?? '');
+    if (! empty($honeypot)) {
+      return new WP_REST_Response(['success' => false, 'message' => __('Something went wrong. Please try again.', 'wp-flowforms')], 200);
+    }
+
+    // ── Layer 2: Token ───────────────────────────────────────────────────────
+    $token = sanitize_text_field($request->get_param('wpff_token') ?? '');
+    if (empty($token) || ! wp_flowforms()->obj('token')->verify($token, $form_id)) {
+      error_log('[WP FlowForms] Token verification failed for form ID ' . $form_id);
+      return new WP_REST_Response(['success' => false, 'message' => __('Security check failed. Please reload the page and try again.', 'wp-flowforms')], 200);
+    }
+
     $raw_answers = $request->get_param('answers');
     $answers     = is_array($raw_answers) ? $raw_answers : [];
     $questions   = $form_content['questions'] ?? [];
@@ -803,6 +817,18 @@ class FlowForms_REST_API
     }
 
     $sanitized = $this->sanitize_answers($answers, $questions);
+
+    // ── Layer 3: Akismet ─────────────────────────────────────────────────────
+    if (FlowForms_Akismet::is_available()) {
+      $akismet = new FlowForms_Akismet();
+      $is_spam = $akismet->check($form_id, $sanitized, $questions);
+      if ($is_spam) {
+        $this->save_entry($form_id, $sanitized, $request, 'spam');
+        // Return success — never reveal spam detection to the submitter.
+        return new WP_REST_Response(['success' => true], 200);
+      }
+    }
+
     $entry_id  = $this->save_entry($form_id, $sanitized, $request);
 
     if (! $entry_id) {
@@ -1211,7 +1237,7 @@ class FlowForms_REST_API
     return $clean;
   }
 
-  private function save_entry(int $form_id, array $sanitized_answers, WP_REST_Request $request)
+  private function save_entry(int $form_id, array $sanitized_answers, WP_REST_Request $request, string $status = 'active')
   {
     global $wpdb;
 
@@ -1223,9 +1249,10 @@ class FlowForms_REST_API
         'answers'    => wp_json_encode($sanitized_answers, JSON_UNESCAPED_UNICODE),
         'ip_address' => $this->get_ip_address($request),
         'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
+        'status'     => $status,
         'created_at' => current_time('mysql'),
       ],
-      ['%d', '%s', '%s', '%s', '%s']
+      ['%d', '%s', '%s', '%s', '%s', '%s']
     );
 
     return $result !== false ? (int) $wpdb->insert_id : false;

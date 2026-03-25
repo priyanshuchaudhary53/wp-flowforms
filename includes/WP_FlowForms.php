@@ -100,6 +100,8 @@ final class WP_FlowForms
     require_once WP_FLOWFORMS_PATH . 'includes/class-entry.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-templates.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-smart-tags.php';
+    require_once WP_FLOWFORMS_PATH . 'includes/class-token.php';
+    require_once WP_FLOWFORMS_PATH . 'includes/class-akismet.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-rest-api.php';
     require_once WP_FLOWFORMS_PATH . 'includes/frontend/class-frontend.php';
     require_once WP_FLOWFORMS_PATH . 'includes/admin/block/class-block.php';
@@ -122,6 +124,7 @@ final class WP_FlowForms
     $this->registry['frontend']   = new FlowForms_Frontend();
     $this->registry['templates']  = new FlowForms_Templates();
     $this->registry['smart_tags'] = new FlowForms_Smart_Tags();
+    $this->registry['token']      = new FlowForms_Token();
 
     /**
      * Executes when all the WPForms stuff was loaded.
