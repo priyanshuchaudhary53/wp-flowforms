@@ -257,6 +257,12 @@ return [
 ];
 ```
 
+**Background images in templates** are bundled with the plugin in `assets/images/templates/bg/`. Reference them using `WP_FLOWFORMS_URL . 'assets/images/templates/bg/filename.jpg'` with `id => null`. Never hardcode WordPress media library IDs or upload URLs — they are specific to the install where the template was created.
+
+```php
+'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
+```
+
 `FlowForms_Templates` auto-scans the directory — drop a file in, no registration needed.
 
 **Pro templates** hook in via:
@@ -323,7 +329,7 @@ Stored in `form.settings.email`:
 Three layers run in order inside `handle_submission()` in `class-rest-api.php`, before any entry is saved. All checks must pass or the submission is rejected.
 
 ### Layer 1 — Honeypot (`includes/class-rest-api.php`)
-A hidden `<input name="wpff_hp">` is injected into the form container by `FormApp.boot()` using metadata from `flowformPublicData.honeypot`. The label is chosen randomly from Name/Email/Phone/Website/Comment/Message so it looks real to bots. The field is hidden via inline CSS (`position:absolute;left:-9999px`), not a class. `FormApp._submit()` includes the field value as `wpff_hp` in the POST body. If the value is non-empty on the server, the submission returns `{ success: false }` with HTTP 200 — no log entry.
+A hidden `<input name="wpff_hp">` is injected into the form container by `FormApp.boot()` using metadata from `flowformPublicData.honeypot`. The label is chosen randomly from Name/Email/Phone/Website/Comment/Message so it looks real to bots. The field is hidden via inline CSS (`position:absolute;left:-9999px`), not a class. It uses `autocomplete="new-password"` (the one value all browsers are spec-required to never autofill). `FormApp._submit()` includes the field value as `wpff_hp` in the POST body. If the value is non-empty on the server, the submission returns `{ success: false }` with HTTP 200 — no log entry.
 
 ### Layer 2 — Token (`includes/class-token.php`)
 `FlowForms_Token` generates a daily-rotating MD5 token tied to the form ID and a server-side secret stored in `wp_options` as `wpff_token_secret`. The token is appended to the `/public` endpoint response and stored in `FormApp._token`. `FormApp._submit()` sends it as `wpff_token`. Verification accepts tokens from the past **5 years** (cached pages) plus 45 minutes into the future (midnight edge cases). Token failures are logged with `error_log()` and a `[WP FlowForms]` prefix — they signal direct POST attacks.

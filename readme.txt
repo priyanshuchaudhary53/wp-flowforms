@@ -34,17 +34,18 @@ Unlike traditional form plugins that show every field at once, WP FlowForms guid
 
 * Short text
 * Long text (paragraph)
-* Email
-* Number
-* Multiple choice
-* Dropdown
-* Date
+* Multiple choice (single select)
+* Checkboxes (multi-select)
+* Star rating
+* Yes/No
+* Email field
+* Number field
 
 **Smart Tags:**
 
 Use dynamic values anywhere in your email notifications:
 
-`{form_name}` `{admin_email}` `{site_name}` `{all_fields}` `{field:uuid}` `{entry_id}` `{date}`
+`{form_name}` `{admin_email}` `{site_name}` `{all_fields}`
 
 **Privacy & Data Ownership:**
 
