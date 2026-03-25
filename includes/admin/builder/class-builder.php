@@ -258,6 +258,10 @@ class FlowForms_Builder
         ? FlowForms_Frontend::get_public_url(intval($_GET['form_id']))
         : '',
       'templates'     => array_values(wp_flowforms()->obj('templates')->get_metadata()),
+      'site'          => [
+        'adminEmail' => get_option('admin_email'),
+        'siteName'   => get_bloginfo('name'),
+      ],
     ]);
   }
 

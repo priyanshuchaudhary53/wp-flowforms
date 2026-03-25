@@ -36,7 +36,43 @@ return [
 
   // ── Email notifications ───────────────────────────────────────────────────
   'email' => [
-    'notifications' => [],
+
+    // Global on/off switch for all notifications on this form.
+    'enabled' => true,
+
+    // Numbered notification items. Key is the stable notification ID.
+    'notifications' => [
+
+      '1' => [
+
+        // Human-readable name shown in the builder (not sent in the email).
+        'name' => 'Admin Notification',
+
+        // Recipient address. Supports smart tags.
+        // Default: {admin_email} — resolves to get_option('admin_email').
+        'email' => '{admin_email}',
+
+        // Email subject line. Supports smart tags.
+        'subject' => 'New submission: {form_name}',
+
+        // From name shown in the email client. Supports smart tags.
+        // Default: {site_name} — resolves to get_bloginfo('name').
+        'sender_name' => '{site_name}',
+
+        // From address. Supports smart tags.
+        // Default: {admin_email} — resolves to get_option('admin_email').
+        'sender_address' => '{admin_email}',
+
+        // Reply-To address. Empty = use sender_address. Supports smart tags.
+        'replyto' => '',
+
+        // Email body. {all_fields} renders all submitted field values.
+        'message' => '{all_fields}',
+
+      ],
+
+    ],
+
   ],
 
 ];
