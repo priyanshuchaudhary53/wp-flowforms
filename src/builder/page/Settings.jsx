@@ -481,15 +481,8 @@ const NOTIF_DEFAULTS = {
   message:        "{all_fields}",
 };
 
-// Recipient options for the "Send to" dropdown.
-// More options (e.g. a specific field's email answer) can be added in Pro.
-const EMAIL_OPTIONS = [
-  {
-    value: "{admin_email}",
-    label: "Admin email",
-    hint: SITE.adminEmail ?? "",
-  },
-];
+// Sentinel used in the <select> to represent the custom-email option.
+const CUSTOM_EMAIL_SENTINEL = "__custom__";
 
 function EmailTab() {
   const form          = useFormStore((s) => s.form);
@@ -536,10 +529,9 @@ function EmailTab() {
         {enabled && (
           <>
             {/* Send to */}
-            <SelectRow
+            <EmailRecipientRow
               label="Send to"
               description="Who receives this notification email."
-              options={EMAIL_OPTIONS}
               value={notif.email}
               onChange={(val) => updateNotif("email", val)}
             />
@@ -568,7 +560,10 @@ function EmailTab() {
             <SelectRow
               label="From email"
               description="The sender address shown in the recipient's email client."
-              options={EMAIL_OPTIONS}
+              options={[{
+                value: "{admin_email}",
+                label: `Admin email${SITE.adminEmail ? ` (${SITE.adminEmail})` : ""}`,
+              }]}
               value={notif.sender_address}
               onChange={(val) => updateNotif("sender_address", val)}
             />
@@ -675,11 +670,45 @@ function InputRow({ label, description, value, placeholder, resolvedHint, onChan
 }
 
 /**
- * A select dropdown row.
- * Shows the resolved hint (e.g. actual email address) beside the selected label.
+ * "Send to" row — dropdown with a built-in Admin email option (showing the
+ * real address in the label) plus a "Custom email address…" option that
+ * reveals an inline text input.
+ *
+ * Stored value: "{admin_email}" for the admin option, or a raw email string
+ * for custom addresses. PHP resolves "{admin_email}" via smart tags at send time.
  */
-function SelectRow({ label, description, options, value, onChange }) {
-  const selected = options.find((o) => o.value === value) ?? options[0];
+function EmailRecipientRow({ label, description, value, onChange }) {
+  const isCustom = value !== "{admin_email}" && value !== "";
+  const [showCustom, setShowCustom] = useState(isCustom);
+  const [customEmail, setCustomEmail] = useState(isCustom ? value : "");
+
+  // When the form data loads asynchronously from the API, `value` changes after
+  // the initial render. Re-sync local state so the saved custom email is restored.
+  useEffect(() => {
+    const custom = value !== "{admin_email}" && value !== "";
+    setShowCustom(custom);
+    if (custom) setCustomEmail(value);
+  }, [value]);
+
+  const adminLabel = `Admin email${SITE.adminEmail ? ` (${SITE.adminEmail})` : ""}`;
+  const selectValue = showCustom ? CUSTOM_EMAIL_SENTINEL : "{admin_email}";
+
+  const handleSelectChange = (e) => {
+    if (e.target.value === CUSTOM_EMAIL_SENTINEL) {
+      setShowCustom(true);
+      // Don't call onChange yet — wait for the user to type
+    } else {
+      setShowCustom(false);
+      setCustomEmail("");
+      onChange("{admin_email}");
+    }
+  };
+
+  const handleCustomChange = (e) => {
+    const email = e.target.value;
+    setCustomEmail(email);
+    onChange(email);
+  };
 
   return (
     <div className="py-4 first:pt-0 last:pb-0">
@@ -690,25 +719,54 @@ function SelectRow({ label, description, options, value, onChange }) {
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-2">
         <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={selectValue}
+          onChange={handleSelectChange}
           className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
         >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
+          <option value="{admin_email}">{adminLabel}</option>
+          <option value={CUSTOM_EMAIL_SENTINEL}>Custom email address…</option>
         </select>
 
-        {selected?.hint && (
-          <span className="text-xs text-muted-foreground">
-            {selected.hint}
-          </span>
+        {showCustom && (
+          <input
+            type="email"
+            value={customEmail}
+            placeholder="Enter email address"
+            onChange={handleCustomChange}
+            className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+          />
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * A generic select dropdown row.
+ */
+function SelectRow({ label, description, options, value, onChange }) {
+  return (
+    <div className="py-4 first:pt-0 last:pb-0">
+      <div className="flex flex-col gap-1 mb-2">
+        <span className="text-sm font-medium text-foreground">{label}</span>
+        {description && (
+          <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
+        )}
+      </div>
+
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
