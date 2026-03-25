@@ -7,7 +7,7 @@ if (! defined('ABSPATH')) exit;
  *
  * All database operations for form entries.
  *
- * @since 1.1.0
+ * @since 1.0.0
  */
 class FlowForms_Entry_Handler
 {
