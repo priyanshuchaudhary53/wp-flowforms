@@ -280,7 +280,7 @@ class FlowForms_Builder
 
     $form_id         = $this->form ? absint($this->form->ID) : '';
 ?>
-    <div id="wpff-builder" data-view="<?php echo $this->view; ?>"></div>
+    <div id="wpff-builder" data-view="<?php echo esc_attr($this->view); ?>"></div>
 <?php
   }
 }
