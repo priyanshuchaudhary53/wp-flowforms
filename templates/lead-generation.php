@@ -17,7 +17,7 @@ return [
       ],
       'settings' => [
         'layout'          => 'default',
-        'backgroundImage' => ['id' => 289, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/toa-heftiba-4xe-yVFJCvw-unsplash-scaled.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/lead-generation-welcome.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],
@@ -99,7 +99,7 @@ return [
           'allowOther' => true,
           'randomize' => false,
           'layout' => 'vertical',
-          'backgroundImage' => ['id' => 290, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/daria-pimkina-Dj5HnHMtkH0-unsplash-scaled.jpg'],
+          'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/lead-generation-question.jpg'],
           'bgBrightness' => 0,
           'bgLayout' => 'split',
           'bgPosition' => 'right',
@@ -165,6 +165,6 @@ return [
     'font_size' => 'large',
     'answer_color' => '#2e2c2c',
     'hint_color' => '#ABABAB',
-    'bg_image' => ['id' => 287, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/gradient-bg-1.webp'],
+    'bg_image' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/lead-generation-bg.webp'],
   ],
 ];

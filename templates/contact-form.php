@@ -17,7 +17,7 @@ return [
       ],
       'settings' => [
         'layout' => 'default',
-        'backgroundImage' => ['id' => 304, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/lea-l-q-99IzY8Lw-unsplash-scaled.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'left',
       ],
@@ -32,7 +32,7 @@ return [
         'showSocialShare' => true,
         'redirectUrl' => '',
         'redirectDelay' => 0,
-        'backgroundImage' => ['id' => 306, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/lea-l-4N6qT784t3A-unsplash-scaled.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/contact-form-thanks.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],

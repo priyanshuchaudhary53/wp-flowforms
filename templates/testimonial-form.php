@@ -17,7 +17,7 @@ return [
       ],
       'settings' => [
         'layout' => 'default',
-        'backgroundImage' => ['id' => 282, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/markus-spiske-NDaENZB88vc-unsplash-scaled.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/testimonial-welcome.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],
@@ -32,7 +32,7 @@ return [
         'showSocialShare' => false,
         'redirectUrl' => '',
         'redirectDelay' => 0,
-        'backgroundImage' => ['id' => 283, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/christina-wocintechchat-com-m-0Zx1bDv5BNY-unsplash-scaled.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/testimonial-thanks.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],

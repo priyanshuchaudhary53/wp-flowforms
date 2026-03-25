@@ -74,7 +74,7 @@ return [
         'settings' => [
           'required' => true,
           'steps' => 5,
-          'backgroundImage' => ['id' => 294, 'url' => 'http://localhost:10053/wp-content/uploads/2026/03/ruslan-bardash-4kTbAMRAHtQ-unsplash-scaled.jpg'],
+          'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/customer-feedback-rating.jpg'],
           'bgLayout' => 'split',
           'bgPosition' => 'right'
         ]
