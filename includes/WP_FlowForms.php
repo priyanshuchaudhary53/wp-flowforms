@@ -93,7 +93,6 @@ final class WP_FlowForms
   {
     require_once WP_FLOWFORMS_PATH . 'includes/class-install.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-database.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-post-types.php';
     require_once WP_FLOWFORMS_PATH . 'includes/functions.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-form.php';
     require_once WP_FLOWFORMS_PATH . 'includes/class-entry.php';

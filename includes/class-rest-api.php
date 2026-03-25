@@ -121,17 +121,10 @@ class FlowForms_REST_API
    * Decode raw post_content into the new top-level structure:
    *
    *   {
-   *     "content": { "published": {...}|null, "draft": {...}|null },
-   *     "design":  {...}
+   *     "content":   { "published": {...}|null, "draft": {...}|null },
+   *     "design":    {...}
+   *     "settings":  {...}
    *   }
-   *
-   * Migration rules:
-   *   - New format:    has top-level "content" key that is an array
-   *                    → read directly.
-   *   - Old format v1: has top-level "published" key (old slot wrapper)
-   *                    → migrate: hoist design out of slots, restructure.
-   *   - Legacy format: entire decoded value is form content (no wrapper)
-   *                    → treat as published content, no draft, no design.
    *
    * @param  string $raw  Raw post_content string.
    * @since 1.0.0
@@ -154,55 +147,13 @@ class FlowForms_REST_API
       return $empty;
     }
 
-    // ── New format: top-level "content" key ──────────────────────────────
-    if (array_key_exists('content', $decoded) && is_array($decoded['content'])) {
-      return [
-        'content' => [
-          'published' => $decoded['content']['published'] ?? null,
-          'draft'     => $decoded['content']['draft']     ?? null,
-        ],
-        'design'   => $decoded['design']   ?? [],
-        'settings' => $decoded['settings'] ?? [],
-      ];
-    }
-
-    // ── Old format v1: top-level "published" slot wrapper ────────────────
-    // { "published": { "content": {...}, "design": {...} }, "draft": {...}|null }
-    if (array_key_exists('published', $decoded)) {
-      $pub   = $decoded['published'] ?? null;
-      $draft = $decoded['draft']     ?? null;
-
-      // Extract design from published slot (authoritative copy).
-      $design = [];
-      if (is_array($pub) && isset($pub['design'])) {
-        $design = $pub['design'];
-        unset($pub['design']);
-      }
-
-      // Strip design from draft slot too (we no longer store it there).
-      if (is_array($draft) && isset($draft['design'])) {
-        unset($draft['design']);
-      }
-
-      return [
-        'content'  => ['published' => $pub, 'draft' => $draft],
-        'design'   => $design,
-        'settings' => [],
-      ];
-    }
-
-    // ── Legacy format: raw content array ─────────────────────────────────
-    // Strip design if it was embedded in the content array.
-    $design = [];
-    if (isset($decoded['design'])) {
-      $design = $decoded['design'];
-      unset($decoded['design']);
-    }
-
     return [
-      'content'  => ['published' => $decoded, 'draft' => null],
-      'design'   => $design,
-      'settings' => [],
+      'content' => [
+        'published' => $decoded['content']['published'] ?? null,
+        'draft'     => $decoded['content']['draft']     ?? null,
+      ],
+      'design'   => $decoded['design']   ?? [],
+      'settings' => $decoded['settings'] ?? [],
     ];
   }
 

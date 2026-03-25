@@ -433,17 +433,9 @@ class FlowForms_Entries_Overview
     $form_post    = get_post($entry->form_id);
     $questions    = [];
     if ($form_post) {
-      $data    = wpff_decode($form_post->post_content);
-      // New format: { content: { published, draft }, design }
-      if (isset($data['content']) && is_array($data['content'])) {
-        $content = $data['content']['published'] ?? $data['content']['draft'] ?? [];
-      // Old v1 format: { published: { questions, ... }, draft: ... }
-      } elseif (isset($data['published'])) {
-        $content = $data['published'] ?? [];
-      // Legacy format: raw content array.
-      } else {
-        $content = $data ?? [];
-      }
+      $data      = wpff_decode($form_post->post_content);
+      $slots     = $data['content'] ?? [];
+      $content   = $slots['published'] ?? $slots['draft'] ?? [];
       $questions = $content['questions'] ?? [];
     }
 

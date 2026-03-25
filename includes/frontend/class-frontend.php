@@ -510,16 +510,7 @@ html { margin-top: 0 !important; }
 		$decoded = wpff_decode( $post->post_content );
 		if ( ! is_array( $decoded ) ) return $defaults;
 
-		// Dual-slot format: { published: {...}|null, draft: {...}|null }
-		// Read published first, fall back to draft (e.g. new form not yet published).
-		// Legacy flat format (no 'published' key) is used as-is.
-		if ( array_key_exists( 'published', $decoded ) ) {
-			$content = ! empty( $decoded['published'] ) ? $decoded['published'] : ( $decoded['draft'] ?? [] );
-		} else {
-			$content = $decoded;
-		}
-
-		$design = is_array( $content['design'] ?? null ) ? $content['design'] : [];
+		$design = $decoded['design'] ?? [];
 
 		return array_merge( $defaults, array_filter( $design, fn( $v ) => $v !== '' && $v !== null ) );
 	}
