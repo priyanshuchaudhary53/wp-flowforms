@@ -1,0 +1,1809 @@
+# Copyright (C) 2026 Priyanshu
+# This file is distributed under the GPL-3.0-only.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP FlowForms 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-flowforms\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-03-26T01:17:11+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.10.0\n"
+"X-Domain: wp-flowforms\n"
+
+#. Plugin Name of the plugin
+#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+#: src/builder/components/Header.jsx:81
+msgid "WP FlowForms"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+msgid "https://wpflowforms.com/"
+msgstr ""
+
+#. Description of the plugin
+#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+msgid "WP FlowForms lets you create beautiful step-by-step forms in WordPress. A modern conversational form builder and Typeform alternative for WordPress."
+msgstr ""
+
+#. Author of the plugin
+#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+msgid "Priyanshu"
+msgstr ""
+
+#. Author URI of the plugin
+#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+msgid "https://priyanshuc.dev/"
+msgstr ""
+
+#: includes/admin/builder/class-builder.php:76
+#: includes/admin/builder/class-builder.php:101
+msgid "It looks like the form you are trying to access is no longer available."
+msgstr ""
+
+#: includes/admin/builder/class-builder.php:90
+msgid "Sorry, you are not allowed to create new forms."
+msgstr ""
+
+#: includes/admin/builder/class-builder.php:94
+msgid "Sorry, you are not allowed to edit this form."
+msgstr ""
+
+#: includes/admin/builder/class-builder.php:105
+msgid "You can't edit this form because it's in the trash."
+msgstr ""
+
+#: includes/admin/builder/class-builder.php:224
+#: src/block/index.js:116
+msgid "Loading…"
+msgstr ""
+
+#: includes/admin/class-menu.php:30
+#: includes/admin/entries/class-entries-overview.php:645
+#: includes/admin/forms/class-forms-overview.php:281
+msgid "All Forms"
+msgstr ""
+
+#: includes/admin/class-menu.php:47
+#: src/builder/components/Header.jsx:41
+msgid "Builder"
+msgstr ""
+
+#: includes/admin/class-menu.php:47
+#: includes/admin/forms/class-forms-overview.php:287
+msgid "Add New Form"
+msgstr ""
+
+#: includes/admin/class-menu.php:48
+#: includes/admin/entries/class-entries-overview.php:345
+msgid "Entries"
+msgstr ""
+
+#: includes/admin/class-menu.php:49
+#: src/builder/components/Header.jsx:42
+#: src/builder/components/RightPanel.jsx:431
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:53
+msgid "ID"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:55
+msgid "Status"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:56
+msgid "Summary"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:57
+msgid "Submitted"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:58
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:63
+#: src/block/index.js:59
+msgid "Form"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:121
+#: includes/admin/entries/class-entries-overview.php:162
+#: includes/admin/entries/class-entries-overview.php:490
+msgid "Unstar"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:121
+#: includes/admin/entries/class-entries-list-table.php:305
+#: includes/admin/entries/class-entries-overview.php:161
+#: includes/admin/entries/class-entries-overview.php:490
+#: includes/admin/entries/class-entries-overview.php:492
+msgid "Star"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:179
+msgid "ago"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:205
+#: includes/admin/entries/class-entries-list-table.php:290
+#: includes/admin/forms/class-forms-list-table.php:149
+#: includes/admin/forms/class-forms-list-table.php:320
+msgid "Restore"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:210
+msgid "Permanently delete this entry?"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:211
+#: includes/admin/entries/class-entries-list-table.php:291
+#: includes/admin/entries/class-entries-list-table.php:298
+#: includes/admin/forms/class-forms-list-table.php:158
+#: includes/admin/forms/class-forms-list-table.php:321
+msgid "Delete Permanently"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:219
+#: includes/admin/entries/class-entries-list-table.php:297
+#: includes/admin/entries/class-entries-overview.php:496
+msgid "Not Spam"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:224
+#: includes/admin/entries/class-entries-list-table.php:242
+#: includes/admin/entries/class-entries-list-table.php:364
+#: includes/admin/forms/class-forms-list-table.php:196
+#: includes/admin/forms/class-forms-list-table.php:360
+msgid "Trash"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:232
+msgid "View"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:237
+#: includes/admin/entries/class-entries-list-table.php:354
+msgid "Spam"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:265
+msgid "Read"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:268
+msgid "Unread"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:303
+msgid "Mark as Read"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:304
+msgid "Mark as Unread"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:306
+#: includes/admin/entries/class-entries-overview.php:503
+#: includes/admin/forms/class-forms-list-table.php:326
+msgid "Move to Trash"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:307
+#: includes/admin/entries/class-entries-overview.php:500
+msgid "Mark as Spam"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:334
+#: includes/admin/forms/class-forms-list-table.php:351
+#: src/builder/page/Setup.jsx:176
+msgid "All"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:344
+#: includes/admin/entries/class-entries-overview.php:492
+msgid "Starred"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:390
+msgid "Permanently delete all trashed entries?"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:391
+#: includes/admin/forms/class-forms-list-table.php:518
+msgid "Empty Trash"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:398
+msgid "Permanently delete all spam entries?"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:399
+msgid "Empty Spam"
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:464
+msgid "Trash is empty."
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:466
+msgid "No spam entries."
+msgstr ""
+
+#: includes/admin/entries/class-entries-list-table.php:468
+msgid "No entries found. Try adjusting your filters."
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:101
+msgid "Number of entries per page"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:191
+#: includes/admin/forms/class-forms-overview.php:159
+#: includes/class-rest-api.php:738
+msgid "Security check failed."
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:195
+msgid "You do not have permission to manage entries."
+msgstr ""
+
+#. translators: %s form name
+#: includes/admin/entries/class-entries-overview.php:362
+msgid "Viewing: %s"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:366
+msgid "Clear"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:381
+msgid "Search Entries"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:474
+#: includes/admin/entries/class-entries-overview.php:755
+msgid "Back to Entries"
+msgstr ""
+
+#. translators: %d entry ID
+#: includes/admin/entries/class-entries-overview.php:481
+msgid "Entry #%d"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:513
+msgid "Submitted:"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:518
+msgid "Form:"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:526
+msgid "IP:"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:546
+msgid "—"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:569
+#: includes/admin/entries/class-entries-overview.php:571
+#: src/form/FormApp.js:146
+msgid "Previous"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:575
+#: includes/admin/entries/class-entries-overview.php:577
+#: src/form/FormApp.js:149
+#: src/form/FormApp.js:433
+msgid "Next"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:621
+msgid "Any date"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:622
+msgid "Today"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:623
+msgid "Yesterday"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:624
+msgid "Last 7 days"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:625
+msgid "Last 30 days"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:626
+msgid "This month"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:642
+msgid "Filter by form"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:657
+msgid "Filter by date"
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:683
+msgid "%d entry moved to Trash."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:685
+msgid "%d entry restored."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:687
+msgid "%d entry permanently deleted."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:689
+msgid "%d entry marked as spam."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:691
+msgid "%d entry restored from spam."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:693
+msgid "%d entry marked as read."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:695
+msgid "%d entry marked as unread."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:697
+msgid "%d entry starred."
+msgstr ""
+
+#. translators: %d: number of entries
+#: includes/admin/entries/class-entries-overview.php:699
+msgid "%d entry unstarred."
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:729
+msgid "No entries yet."
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:732
+msgid "Share your form to start collecting responses."
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:737
+msgid "Share Form"
+msgstr ""
+
+#: includes/admin/entries/class-entries-overview.php:753
+msgid "Entry not found."
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:73
+msgid "Name"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:74
+#: src/builder/page/Share.jsx:100
+#: src/builder/page/Share.jsx:107
+msgid "Shortcode"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:75
+msgid "Author"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:76
+msgid "Date"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:123
+msgid "(no title)"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:157
+msgid "Are you sure you want to permanently delete this form?"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:172
+#: src/builder/components/left-panel/BlockItemMenu.jsx:46
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:181
+#: includes/admin/forms/class-forms-list-table.php:327
+#: src/builder/components/left-panel/BlockItemMenu.jsx:50
+msgid "Duplicate"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:187
+#: src/builder/components/Header.jsx:116
+#: src/builder/components/PreviewModal.jsx:118
+#: src/builder/page/Setup.jsx:365
+msgid "Preview"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:273
+msgid "Created"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:280
+msgid "Modified"
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:484
+msgid "No forms found in Trash."
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:486
+msgid "No forms found."
+msgstr ""
+
+#: includes/admin/forms/class-forms-list-table.php:517
+msgid "Are you sure you want to permanently delete all forms in Trash?"
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:70
+msgid "Number of forms per page"
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:251
+msgid "(Copy)"
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:306
+msgid "Search Forms"
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:330
+msgid "Form moved to Trash."
+msgstr ""
+
+#. translators: %d: number of forms
+#: includes/admin/forms/class-forms-overview.php:332
+msgid "%d forms moved to Trash."
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:335
+msgid "Form restored from Trash."
+msgstr ""
+
+#. translators: %d: number of forms
+#: includes/admin/forms/class-forms-overview.php:337
+msgid "%d forms restored from Trash."
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:340
+msgid "Form permanently deleted."
+msgstr ""
+
+#. translators: %d: number of forms
+#: includes/admin/forms/class-forms-overview.php:342
+msgid "%d forms permanently deleted."
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:345
+msgid "Form duplicated."
+msgstr ""
+
+#. translators: %d: number of forms
+#: includes/admin/forms/class-forms-overview.php:347
+msgid "%d forms duplicated."
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:380
+msgid "You haven't created any forms yet."
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:383
+msgid "Create your first form to start collecting responses."
+msgstr ""
+
+#: includes/admin/forms/class-forms-overview.php:388
+msgid "Create Your First Form"
+msgstr ""
+
+#: includes/class-rest-api.php:337
+#: includes/class-rest-api.php:440
+#: includes/class-rest-api.php:508
+#: includes/class-rest-api.php:549
+#: includes/class-rest-api.php:593
+#: includes/class-rest-api.php:633
+#: includes/class-rest-api.php:670
+#: includes/class-rest-api.php:706
+msgid "Invalid form ID."
+msgstr ""
+
+#: includes/class-rest-api.php:343
+#: includes/class-rest-api.php:446
+#: includes/class-rest-api.php:518
+#: includes/class-rest-api.php:559
+#: includes/class-rest-api.php:599
+#: includes/class-rest-api.php:639
+#: includes/class-rest-api.php:676
+#: includes/class-rest-api.php:683
+#: includes/class-rest-api.php:712
+#: includes/class-rest-api.php:719
+#: includes/class-rest-api.php:745
+#: includes/frontend/class-frontend.php:324
+msgid "Form not found."
+msgstr ""
+
+#: includes/class-rest-api.php:381
+msgid "Untitled form"
+msgstr ""
+
+#: includes/class-rest-api.php:487
+msgid "No data provided to update."
+msgstr ""
+
+#: includes/class-rest-api.php:512
+msgid "No design data provided."
+msgstr ""
+
+#: includes/class-rest-api.php:553
+msgid "No settings data provided."
+msgstr ""
+
+#: includes/class-rest-api.php:605
+msgid "No draft to publish."
+msgstr ""
+
+#: includes/class-rest-api.php:753
+msgid "Form content could not be read."
+msgstr ""
+
+#: includes/class-rest-api.php:759
+#: src/form/FormApp.js:610
+#: src/form/FormApp.js:619
+#: src/form/FormApp.js:1023
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: includes/class-rest-api.php:766
+msgid "Security check failed. Please reload the page and try again."
+msgstr ""
+
+#: includes/class-rest-api.php:782
+#: src/form/Validator.js:26
+msgid "This field is required."
+msgstr ""
+
+#: includes/class-rest-api.php:812
+msgid "Failed to save submission."
+msgstr ""
+
+#: includes/class-rest-api.php:940
+msgid "Template slug is required."
+msgstr ""
+
+#: includes/class-rest-api.php:946
+#: includes/class-rest-api.php:995
+msgid "Template not found."
+msgstr ""
+
+#: includes/class-rest-api.php:961
+msgid "Failed to create form."
+msgstr ""
+
+#: includes/class-rest-api.php:972
+msgid "Failed to save form content."
+msgstr ""
+
+#: includes/class-rest-api.php:1030
+#: src/form/Validator.js:40
+#: src/form/Validator.js:47
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: includes/class-rest-api.php:1036
+#: src/form/Validator.js:54
+msgid "Please enter a valid number."
+msgstr ""
+
+#. translators: %s: minimum allowed value
+#: includes/class-rest-api.php:1042
+#: src/form/Validator.js:58
+msgid "Value must be at least %s."
+msgstr ""
+
+#. translators: %s: maximum allowed value
+#: includes/class-rest-api.php:1046
+#: src/form/Validator.js:61
+msgid "Value must be at most %s."
+msgstr ""
+
+#. translators: %d: maximum character limit
+#: includes/class-rest-api.php:1056
+msgid "Please keep your answer under %d characters."
+msgstr ""
+
+#: includes/class-rest-api.php:1066
+#: src/form/Validator.js:70
+msgid "Please select a valid rating."
+msgstr ""
+
+#: includes/class-rest-api.php:1072
+#: src/form/Validator.js:77
+#: src/form/Validator.js:83
+msgid "Please make a selection."
+msgstr ""
+
+#: includes/class-rest-api.php:1075
+msgid "Please select only one option."
+msgstr ""
+
+#: includes/class-rest-api.php:1084
+#: includes/class-rest-api.php:1090
+#: includes/class-rest-api.php:1125
+msgid "Invalid selection."
+msgstr ""
+
+#. translators: %d: minimum number of selections required
+#: includes/class-rest-api.php:1097
+msgid "Please select at least %d option."
+msgid_plural "Please select at least %d options."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: maximum number of selections allowed
+#: includes/class-rest-api.php:1109
+msgid "Please select at most %d option."
+msgid_plural "Please select at most %d options."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-rest-api.php:1131
+#: src/form/Validator.js:98
+msgid "Please select yes or no."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:276
+#: includes/frontend/class-frontend.php:314
+msgid "Preview link is invalid or has expired."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:277
+#: includes/frontend/class-frontend.php:315
+msgid "Invalid Preview"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:285
+msgid "You do not have permission to preview forms."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:286
+msgid "Permission Denied"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:299
+msgid "Template preview has expired. Please try again."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:300
+msgid "Preview Expired"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:325
+msgid "Form Not Found"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:386
+#: src/builder/page/Setup.jsx:439
+msgid "Template Preview"
+msgstr ""
+
+#. translators: %d: form ID
+#: includes/frontend/class-frontend.php:613
+msgid "Form #%d"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:627
+msgid "is in the Trash and is not visible to visitors."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:630
+msgid "Restore form"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:656
+msgid "Form In Trash"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:663
+msgid "This form is in the trash."
+msgstr ""
+
+#. translators: %s: form name
+#: includes/frontend/class-frontend.php:669
+msgid "\"%s\" has been moved to the trash and is not visible to visitors. Restore it to make it available again."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:678
+msgid "Restore Form"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:741
+msgid "Form Not Available"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:748
+msgid "This form is no longer available."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:751
+msgid "The form you are looking for has been removed or is currently unavailable."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:777
+msgid "Form Not Published"
+msgstr ""
+
+#: includes/frontend/class-frontend.php:784
+msgid "This form hasn't been published yet."
+msgstr ""
+
+#. translators: %s: form name
+#: includes/frontend/class-frontend.php:790
+msgid "\"%s\" is not live yet. Publish it from the builder so visitors can fill it out."
+msgstr ""
+
+#: includes/frontend/class-frontend.php:799
+msgid "Open in Builder"
+msgstr ""
+
+#: src/block/index.js:51
+msgid "— Select a form —"
+msgstr ""
+
+#: src/block/index.js:64
+msgid "Select form"
+msgstr ""
+
+#: src/block/index.js:72
+msgid "Dimensions"
+msgstr ""
+
+#: src/block/index.js:74
+#: src/builder/page/Share.jsx:118
+#: src/builder/page/Share.jsx:167
+msgid "Height"
+msgstr ""
+
+#: src/block/index.js:75
+msgid "Any valid CSS value — px, vh, em, etc."
+msgstr ""
+
+#: src/block/index.js:81
+#: src/builder/page/Share.jsx:134
+msgid "Border radius"
+msgstr ""
+
+#: src/block/index.js:82
+msgid "Any valid CSS value — px, %, em, etc."
+msgstr ""
+
+#: src/block/index.js:95
+msgid "FlowForm"
+msgstr ""
+
+#: src/block/index.js:96
+msgid "Select a form from the sidebar to embed it here."
+msgstr ""
+
+#: src/block/index.js:167
+msgid "Rendered on the frontend"
+msgstr ""
+
+#: src/block/index.js:181
+msgid "is in the Trash and will not be visible to visitors."
+msgstr ""
+
+#: src/block/index.js:184
+msgid "Go to Trash to restore it →"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:128
+msgid "Welcome!"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:143
+#: src/form/FormApp.js:824
+msgid "Start"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:204
+#: src/form/FormApp.js:904
+msgid "Thank you!"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:227
+#: src/form/FormApp.js:946
+msgid "Share this form"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:233
+msgid "X / Twitter"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:242
+msgid "Facebook"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:251
+msgid "LinkedIn"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:305
+#: src/form/QuestionRenderer.js:40
+msgid "Untitled question"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:324
+#: src/form/FormApp.js:866
+msgid "OK"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:330
+#: src/form/FormApp.js:877
+msgid "press Enter ↵"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:348
+#: src/builder/components/Canvas.jsx:359
+msgid "Your answer here..."
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:370
+#: src/form/QuestionRenderer.js:122
+#: src/form/QuestionRenderer.js:134
+msgid "name@example.com"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:390
+msgid "0"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:409
+#: src/builder/components/Canvas.jsx:457
+msgid "Option A"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:409
+#: src/builder/components/Canvas.jsx:457
+msgid "Option B"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:409
+#: src/builder/components/Canvas.jsx:457
+msgid "Option C"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:435
+#: src/builder/components/Canvas.jsx:483
+msgid "Untitled option"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:447
+#: src/builder/components/Canvas.jsx:495
+#: src/form/QuestionRenderer.js:317
+msgid "Other"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:523
+#: src/form/QuestionRenderer.js:479
+msgid "Yes"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:529
+#: src/form/QuestionRenderer.js:480
+msgid "No"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:537
+msgid "No preview available for this block type."
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:560
+msgid "Select a block on the left to preview it here"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:570
+msgid "Insert block before"
+msgstr ""
+
+#: src/builder/components/Canvas.jsx:570
+msgid "Insert block after"
+msgstr ""
+
+#: src/builder/components/CenterPanel.jsx:24
+msgid "Add block"
+msgstr ""
+
+#: src/builder/components/CenterPanel.jsx:33
+#: src/builder/lookup/DesignDrawer.jsx:146
+msgid "Design"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:264
+msgid "Default (system font)"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:282
+msgid "Clear font"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:352
+#: src/builder/components/RightPanel.jsx:156
+msgid "Select Background Image"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:353
+#: src/builder/components/RightPanel.jsx:157
+msgid "Use this image"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:381
+#: src/builder/components/RightPanel.jsx:180
+#: src/builder/components/RightPanel.jsx:194
+msgid "Background"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:388
+#: src/builder/components/RightPanel.jsx:201
+msgid "Remove image"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:398
+#: src/builder/components/RightPanel.jsx:211
+msgid "Replace image"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:401
+#: src/builder/components/RightPanel.jsx:214
+msgid "Replace"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:415
+#: src/builder/components/RightPanel.jsx:228
+msgid "Select image"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:458
+#: src/builder/components/RightPanel.jsx:295
+msgid "Darker"
+msgstr ""
+
+#: src/builder/components/design/DesignField.jsx:459
+#: src/builder/components/RightPanel.jsx:296
+msgid "Brighter"
+msgstr ""
+
+#: src/builder/components/design/ThemeGallery.jsx:84
+msgid "Apply →"
+msgstr ""
+
+#: src/builder/components/design/ThemeGallery.jsx:105
+msgid "Theme Gallery"
+msgstr ""
+
+#: src/builder/components/design/ThemeGallery.jsx:108
+msgid "Pick a theme to instantly apply its colour palette to your form. You can fine-tune individual colours afterwards."
+msgstr ""
+
+#: src/builder/components/FormName.jsx:60
+msgid "Edit form name"
+msgstr ""
+
+#: src/builder/components/FormName.jsx:66
+msgid "Rename form"
+msgstr ""
+
+#: src/builder/components/FormName.jsx:69
+msgid "Rename your form"
+msgstr ""
+
+#: src/builder/components/FormName.jsx:76
+#: src/builder/page/Setup.jsx:140
+msgid "Enter your form name here..."
+msgstr ""
+
+#: src/builder/components/FormName.jsx:82
+#: src/builder/components/Header.jsx:215
+msgid "Cancel"
+msgstr ""
+
+#: src/builder/components/FormName.jsx:90
+msgid "Saving..."
+msgstr ""
+
+#: src/builder/components/FormName.jsx:90
+msgid "Rename"
+msgstr ""
+
+#: src/builder/components/Header.jsx:43
+msgid "Share"
+msgstr ""
+
+#: src/builder/components/Header.jsx:130
+msgid "Revert"
+msgstr ""
+
+#: src/builder/components/Header.jsx:149
+msgid "Publishing…"
+msgstr ""
+
+#: src/builder/components/Header.jsx:149
+msgid "Publish"
+msgstr ""
+
+#: src/builder/components/Header.jsx:154
+msgid "Make your changes live"
+msgstr ""
+
+#: src/builder/components/Header.jsx:169
+msgid "Published"
+msgstr ""
+
+#: src/builder/components/Header.jsx:179
+msgid "Exit"
+msgstr ""
+
+#: src/builder/components/Header.jsx:203
+msgid "Are you sure you want to revert to previous published state?"
+msgstr ""
+
+#: src/builder/components/Header.jsx:206
+msgid "All your current changes (excluding design changes) will be discarded. This action is irreversible."
+msgstr ""
+
+#: src/builder/components/Header.jsx:222
+msgid "Reverting…"
+msgstr ""
+
+#: src/builder/components/Header.jsx:222
+msgid "Yes, revert my form"
+msgstr ""
+
+#: src/builder/components/left-panel/BlockItemMenu.jsx:38
+msgid "Open options"
+msgstr ""
+
+#: src/builder/components/left-panel/BlockItemMenu.jsx:57
+msgid "Delete"
+msgstr ""
+
+#: src/builder/components/left-panel/BlockList.jsx:68
+#: src/builder/components/right-panel/OptionsEditor.jsx:51
+msgid "Drag to reorder"
+msgstr ""
+
+#: src/builder/components/left-panel/BlockList.jsx:119
+#: src/builder/lookup/AddBlockDialog.jsx:50
+msgid "Blocks"
+msgstr ""
+
+#: src/builder/components/left-panel/BlockList.jsx:124
+msgid "Add new block"
+msgstr ""
+
+#: src/builder/components/left-panel/BlockList.jsx:150
+msgid "Add a block"
+msgstr ""
+
+#: src/builder/components/LeftPanel.jsx:21
+msgid "Welcome page"
+msgstr ""
+
+#: src/builder/components/LeftPanel.jsx:40
+msgid "Thank you page"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:24
+#: src/builder/page/Setup.jsx:379
+msgid "Desktop"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:25
+msgid "Tablet"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:26
+#: src/builder/page/Setup.jsx:386
+msgid "Mobile"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:91
+#: src/builder/components/PreviewModal.jsx:177
+msgid "Form preview"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:131
+msgid "Open in new tab"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:141
+#: src/builder/page/Setup.jsx:445
+msgid "Close preview"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:168
+#: src/builder/page/Setup.jsx:472
+msgid "Loading preview…"
+msgstr ""
+
+#: src/builder/components/PreviewModal.jsx:191
+msgid "Preview URL not available. Save the form first."
+msgstr ""
+
+#: src/builder/components/right-panel/OptionsEditor.jsx:62
+msgid "Option label"
+msgstr ""
+
+#: src/builder/components/right-panel/OptionsEditor.jsx:71
+msgid "Remove option"
+msgstr ""
+
+#: src/builder/components/right-panel/OptionsEditor.jsx:162
+msgid "Add option"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:15
+#: src/builder/page/Settings.jsx:358
+msgid "Saving…"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:25
+msgid "Unsaved"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:35
+msgid "Saved"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:149
+msgid "Background image"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:151
+msgid "Split image"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:152
+msgid "Cover image"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:187
+msgid "Image"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:241
+msgid "Layout"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:247
+msgid "Wallpaper"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:248
+msgid "Split"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:254
+msgid "Position"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:260
+msgid "Left"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:261
+msgid "Right"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:269
+msgid "Brightness"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:337
+msgid "No settings available for this block."
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:375
+msgid "Select a block to see its settings"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:399
+msgid "Welcome screen"
+msgstr ""
+
+#: src/builder/components/RightPanel.jsx:405
+msgid "Thank you screen"
+msgstr ""
+
+#: src/builder/lookup/AddBlockDialog.jsx:47
+msgid "Search blocks..."
+msgstr ""
+
+#: src/builder/lookup/AddBlockDialog.jsx:49
+msgid "No blocks found."
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:148
+msgid "Customise colours, typography, and layout — or pick a theme to get started instantly"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:161
+msgid "Open theme gallery"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:201
+msgid "Close"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:209
+msgid "Save changes"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:222
+msgid "Save design changes?"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:224
+msgid "These changes will be saved directly to the published version of your form and will be visible to users immediately."
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:232
+msgid "No, go back"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:234
+msgid "Yes, save"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:246
+msgid "Discard design changes?"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:248
+msgid "Are you sure you want to discard all unsaved design changes? The canvas will revert to the last saved state."
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:256
+msgid "No, keep editing"
+msgstr ""
+
+#: src/builder/lookup/DesignDrawer.jsx:259
+msgid "Yes, discard"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:8
+#: src/builder/page/Settings.jsx:462
+#: src/builder/page/Setup.jsx:18
+msgid "General"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:9
+#: src/builder/page/Settings.jsx:528
+msgid "Email Notifications"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:32
+msgid "Admin Email"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:32
+msgid "The site administrator's email"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:33
+msgid "Site Name"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:33
+msgid "The name of your website"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:34
+msgid "Form Name"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:34
+msgid "The name of this form"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:35
+msgid "All Fields"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:35
+msgid "All submitted field values"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:326
+msgid "Start typing"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:330
+msgid "to see all available smart tags"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:365
+msgid "Save failed"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:435
+msgid "Progress bar"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:436
+msgid "Show a progress indicator at the top of the form so respondents know how far along they are."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:441
+msgid "Navigation arrows"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:442
+msgid "Display previous and next arrow buttons to let respondents move between questions freely."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:447
+msgid "Show \"Powered by WP FlowForms\""
+msgstr ""
+
+#: src/builder/page/Settings.jsx:448
+msgid "Loved WP FlowForms? Spread the word to others about this awesome plugin by showing a small badge at the bottom of your form."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:464
+msgid "Control how your form looks and behaves for respondents."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:487
+msgid "Admin Notification"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:489
+#: src/builder/page/Settings.jsx:560
+msgid "New submission: {form_name}"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:493
+msgid ""
+"Hi,\n"
+"\n"
+"Your form {form_name} just received a new submission.\n"
+"\n"
+"Here are the details:\n"
+"\n"
+"{all_fields}\n"
+"\n"
+"Thanks,\n"
+"{site_name}"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:530
+msgid "Configure automated emails sent when a form is submitted."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:538
+msgid "Enable email notifications"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:539
+msgid "Send an email notification whenever a new form submission is received."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:549
+msgid "Send to"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:550
+msgid "Who receives this notification email."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:557
+msgid "Subject"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:558
+msgid "The subject line of the notification email."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:567
+msgid "From name"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:568
+msgid "The sender name shown in the recipient's email client."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:577
+msgid "From email"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:578
+msgid "The sender address shown in the recipient's email client."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:581
+#: src/builder/page/Settings.jsx:769
+msgid "Admin email"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:585
+msgid "These sender settings may be overridden by an SMTP plugin (e.g. WP Mail SMTP, Postman SMTP) installed on your site."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:597
+msgid "Email body"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:598
+msgid "The body of the notification email. Use {all_fields} to include all submitted values."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:689
+msgid "Resolves to:"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:709
+msgid "Reply-To"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:711
+msgid "Replies from the recipient will go to the email entered in the selected form field. Leave unset to reply to the From address."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:720
+msgid "— None (use From address) —"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:722
+msgid "Email blocks in this form"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:725
+msgid "(Untitled email field)"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:734
+msgid "No email fields found in your form. Add an Email block to enable this option."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:740
+msgid "Replies will go to the email entered in the"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:741
+msgid "field."
+msgstr ""
+
+#: src/builder/page/Settings.jsx:805
+msgid "Custom email address…"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:812
+msgid "Enter email address"
+msgstr ""
+
+#: src/builder/page/Settings.jsx:849
+msgid "Note:"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:14
+msgid "Contact"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:15
+msgid "Feedback"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:16
+msgid "Lead Gen"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:17
+msgid "Survey"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:66
+#: src/builder/page/Setup.jsx:93
+msgid "Something went wrong."
+msgstr ""
+
+#: src/builder/page/Setup.jsx:113
+msgid "Could not load preview."
+msgstr ""
+
+#: src/builder/page/Setup.jsx:133
+msgid "Name your form"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:147
+msgid "Select a template"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:150
+msgid "Start from a template or build from scratch."
+msgstr ""
+
+#: src/builder/page/Setup.jsx:161
+msgid "Search templates…"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:193
+msgid "No templates match"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:198
+msgid "Blank form"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:199
+msgid "Start from scratch with an empty form"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:284
+#: src/builder/page/Setup.jsx:349
+msgid "Creating…"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:287
+msgid "Start from scratch"
+msgstr ""
+
+#. translators: %s: template name
+#: src/builder/page/Setup.jsx:314
+msgid "%s template screenshot"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:352
+msgid "Use template"
+msgstr ""
+
+#: src/builder/page/Setup.jsx:415
+#: src/builder/page/Setup.jsx:479
+msgid "Template preview"
+msgstr ""
+
+#. translators: %s: field label (e.g. "Embed Code")
+#: src/builder/page/Share.jsx:38
+msgid "Copy %s"
+msgstr ""
+
+#: src/builder/page/Share.jsx:71
+msgid "Direct link"
+msgstr ""
+
+#: src/builder/page/Share.jsx:73
+msgid "Share this URL so anyone can fill in your form directly."
+msgstr ""
+
+#: src/builder/page/Share.jsx:79
+msgid "Form URL"
+msgstr ""
+
+#: src/builder/page/Share.jsx:89
+msgid "Open"
+msgstr ""
+
+#: src/builder/page/Share.jsx:102
+msgid "Paste this shortcode into any WordPress page or post to embed the form."
+msgstr ""
+
+#: src/builder/page/Share.jsx:112
+msgid "Customize embed"
+msgstr ""
+
+#: src/builder/page/Share.jsx:128
+#: src/builder/page/Share.jsx:144
+msgid "e.g."
+msgstr ""
+
+#: src/builder/page/Share.jsx:156
+msgid "Gutenberg block"
+msgstr ""
+
+#: src/builder/page/Share.jsx:158
+msgid "The"
+msgstr ""
+
+#: src/builder/page/Share.jsx:158
+msgid "block is available in the WordPress block editor — no shortcode needed."
+msgstr ""
+
+#: src/builder/page/Share.jsx:164
+msgid "Open the page or post where you want to embed the form in the"
+msgstr ""
+
+#: src/builder/page/Share.jsx:164
+msgid "Block Editor"
+msgstr ""
+
+#: src/builder/page/Share.jsx:165
+msgid "Click the"
+msgstr ""
+
+#: src/builder/page/Share.jsx:165
+msgid "inserter and search for"
+msgstr ""
+
+#: src/builder/page/Share.jsx:165
+msgid "then select the block."
+msgstr ""
+
+#: src/builder/page/Share.jsx:166
+msgid "Choose this form from the dropdown in the block toolbar or sidebar."
+msgstr ""
+
+#: src/builder/page/Share.jsx:167
+msgid "In the block sidebar, set"
+msgstr ""
+
+#: src/builder/page/Share.jsx:167
+msgid "and"
+msgstr ""
+
+#: src/builder/page/Share.jsx:167
+msgid "Border Radius"
+msgstr ""
+
+#: src/builder/page/Share.jsx:167
+msgid "to match your design."
+msgstr ""
+
+#: src/builder/page/Share.jsx:168
+msgid "Publish or update the page — the form is live."
+msgstr ""
+
+#: src/form/FormApp.js:169
+msgid "Powered by WP FlowForms"
+msgstr ""
+
+#: src/form/FormApp.js:632
+msgid "Could not reach the server. Please check your connection and try again."
+msgstr ""
+
+#: src/form/FormApp.js:864
+msgid "Submit"
+msgstr ""
+
+#. translators: %s: number of seconds
+#: src/form/FormApp.js:922
+#: src/form/FormApp.js:931
+msgid "Redirecting in %s…"
+msgstr ""
+
+#: src/form/FormApp.js:929
+msgid "Redirecting…"
+msgstr ""
+
+#: src/form/FormApp.js:939
+msgid "Check this out!"
+msgstr ""
+
+#. translators: %s: social network name (e.g. "Twitter")
+#: src/form/FormApp.js:976
+msgid "Share on %s"
+msgstr ""
+
+#: src/form/FormApp.js:998
+msgid "Submitting…"
+msgstr ""
+
+#: src/form/FormApp.js:1018
+msgid "Submission failed"
+msgstr ""
+
+#: src/form/FormApp.js:1029
+msgid "Try again"
+msgstr ""
+
+#: src/form/index.js:130
+msgid "Loading form…"
+msgstr ""
+
+#: src/form/index.js:142
+msgid "Sorry, this form could not be loaded. Please try again later."
+msgstr ""
+
+#: src/form/QuestionRenderer.js:84
+msgid "This question type is not supported."
+msgstr ""
+
+#: src/form/QuestionRenderer.js:94
+#: src/form/QuestionRenderer.js:104
+msgid "Your answer here…"
+msgstr ""
+
+#: src/form/QuestionRenderer.js:138
+msgid "Confirm email"
+msgstr ""
+
+#: src/form/QuestionRenderer.js:143
+msgid "Confirm your email"
+msgstr ""
+
+#: src/form/QuestionRenderer.js:342
+msgid "Type your answer…"
+msgstr ""
+
+#: src/form/QuestionRenderer.js:349
+msgid "Confirm"
+msgstr ""
+
+#. translators: %1$s: current rating value, %2$s: maximum rating value
+#: src/form/QuestionRenderer.js:447
+msgid "Rate %1$s out of %2$s"
+msgstr ""
+
+#: src/form/Validator.js:43
+msgid "Email addresses do not match."
+msgstr ""
+
+#. translators: %s: minimum number of options
+#: src/form/Validator.js:88
+msgid "Please select at least %s option."
+msgid_plural "Please select at least %s options."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: maximum number of options
+#: src/form/Validator.js:91
+msgid "Please select at most %s option."
+msgid_plural "Please select at most %s options."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/block/block.json
+msgctxt "block title"
+msgid "FlowForm"
+msgstr ""
+
+#: src/block/block.json
+msgctxt "block description"
+msgid "Embed a WP FlowForm on your page."
+msgstr ""
+
+#: src/block/block.json
+msgctxt "block keyword"
+msgid "form"
+msgstr ""
+
+#: src/block/block.json
+msgctxt "block keyword"
+msgid "flowform"
+msgstr ""
+
+#: src/block/block.json
+msgctxt "block keyword"
+msgid "survey"
+msgstr ""
+
+#: src/block/block.json
+msgctxt "block keyword"
+msgid "contact"
+msgstr ""
