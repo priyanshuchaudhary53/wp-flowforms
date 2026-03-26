@@ -278,6 +278,7 @@ class FlowForms_Frontend {
 				'ok'                => wpff_get_setting( 'form-ok-label',                 __( 'OK', 'wp-flowforms' ) ),
 				'tryAgain'          => wpff_get_setting( 'form-try-again-label',          __( 'Try again', 'wp-flowforms' ) ),
 				'enterHint'         => wpff_get_setting( 'form-enter-hint',               __( 'press Enter ↵', 'wp-flowforms' ) ),
+				'shiftEnterHint'    => wpff_get_setting( 'form-shift-enter-hint',        	__( 'Shift ⇧ + Enter ↵ to make a line break', 'wp-flowforms' ) ),
 				'previous'          => wpff_get_setting( 'nav-previous-label',            __( 'Previous', 'wp-flowforms' ) ),
 				'next'              => wpff_get_setting( 'nav-next-label',                __( 'Next', 'wp-flowforms' ) ),
 				'thankYou'          => wpff_get_setting( 'form-thankyou-title',           __( 'Thank you!', 'wp-flowforms' ) ),

@@ -453,6 +453,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 .flowform-container .ff-textarea-input { resize: vertical; }
 
+.flowform-container .ff-textarea-hint {
+  margin-top:  0.5rem;
+  font-size:   var(--fs-hint, 0.875rem);
+  color:       var(--hint-color, #9ca3af);
+  line-height: 1.4;
+}
+
 .flowform-container .ff-number-wrap {
   display:        flex;
   align-items:    center;
@@ -892,7 +899,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   gap:             5px;
   font-size:       0.6875rem;
   font-family:     inherit;
-  color:           var(--hint-color, #9ca3af);
+  background:      var(--btn-color, #111827);
+  color:           var(--btn-text-color, #ffffff);
+  border:          6px;
+  padding:         4px 8px;
+  border-radius:   6px;
   text-decoration: none;
   opacity:         0.75;
   white-space:     nowrap;

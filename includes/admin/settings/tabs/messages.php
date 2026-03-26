@@ -67,6 +67,13 @@ return [
 		'default' => __( 'press Enter ↵', 'wp-flowforms' ),
 	],
 
+	'form-shift-enter-hint' => [
+		'type'    => 'text',
+		'label'   => __( 'Shift + Enter Hint', 'wp-flowforms' ),
+		'desc'    => __( 'Line-break hint shown below long text (textarea) questions.', 'wp-flowforms' ),
+		'default' => __( 'Shift ⇧ + Enter ↵ to make a line break', 'wp-flowforms' ),
+	],
+
 	'nav-previous-label' => [
 		'type'    => 'text',
 		'label'   => __( 'Previous Button Label', 'wp-flowforms' ),

@@ -713,6 +713,15 @@ export class FormApp {
 				wrapper.appendChild( next );
 				this._animateEntry( next, dir );
 
+				// Auto-focus first text input after the input-wrap entry animation starts
+				if ( this.state.currentScreen === 'question' ) {
+					setTimeout( () => {
+						if ( this._transitionGen !== gen ) return;
+						const focusable = next.querySelector( '.ff-question-input input, .ff-question-input textarea' );
+						if ( focusable ) focusable.focus( { preventScroll: true } );
+					}, ENTRY_STAGGER + 50 );
+				}
+
 			}, EXIT_GAP );
 		} );
 	}
@@ -847,6 +856,13 @@ export class FormApp {
 			( id, val ) => this._setAnswer( id, val )
 		);
 		inner.appendChild( questionEl );
+
+		if ( q.type === 'long_text' ) {
+			const lineBreakHint = document.createElement( 'p' );
+			lineBreakHint.className   = 'ff-textarea-hint';
+			lineBreakHint.textContent = window.flowformPublicData?.i18n?.shiftEnterHint ?? __( 'Shift ⇧ + Enter ↵ to make a line break', 'wp-flowforms' );
+			questionEl.querySelector( '.ff-question-input' )?.appendChild( lineBreakHint );
+		}
 
 		const actions = document.createElement( 'div' );
 		actions.className = 'ff-actions';
@@ -1048,10 +1064,13 @@ export class FormApp {
 			document.removeEventListener( 'keydown', this._boundEnterHandler );
 		}
 		this._boundEnterHandler = ( e ) => {
-			if ( e.key === 'Enter' && document.activeElement?.tagName !== 'TEXTAREA' ) {
-				e.preventDefault();
-				okBtn.click();
+			if ( e.key !== 'Enter' ) return;
+			if ( document.activeElement?.tagName === 'TEXTAREA' ) {
+				// Shift+Enter → allow default line break; plain Enter → advance
+				if ( e.shiftKey ) return;
 			}
+			e.preventDefault();
+			okBtn.click();
 		};
 		document.addEventListener( 'keydown', this._boundEnterHandler );
 	}
