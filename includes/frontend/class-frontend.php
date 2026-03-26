@@ -40,9 +40,15 @@ class FlowForms_Frontend {
 	public function __construct() {
 		add_shortcode( 'flowform', [ $this, 'render_shortcode' ] );
 
-		// Enqueue assets after the shortcode / block has had a chance to flag
-		// which form IDs are on the page.
+		// Primary: scan queried post content for form IDs before wp_head fires,
+		// then enqueue if any are found.
 		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_assets' ], 20 );
+
+		// Fallback: for forms rendered after wp_head (widgets, page builders, etc.)
+		// the shortcode/block will have called flag_form_id() by the time wp_footer
+		// fires. Enqueue at priority 1 so wp_print_footer_scripts() at priority 20
+		// picks up the JS bundle.
+		add_action( 'wp_footer', [ $this, 'maybe_late_enqueue_assets' ], 1 );
 
 		add_action( 'init', [ $this, 'register_rewrites' ] );
 		add_action( 'template_redirect', [ $this, 'handle_full_page_embed' ] );
@@ -105,12 +111,14 @@ class FlowForms_Frontend {
 	/**
 	 * Enqueue the renderer bundle — but only if at least one form is present.
 	 *
-	 * Hooked to wp_enqueue_scripts at priority 20, so shortcodes at priority 10
-	 * have already run and registered their form IDs.
+	 * Hooked to wp_enqueue_scripts at priority 20. Proactively scans the queried
+	 * post's content for shortcodes and blocks so assets are enqueued even when
+	 * wp_enqueue_scripts fires before the content loop (the normal WordPress flow).
+	 *
 	 * @since 1.0.0
 	 */
 	public function maybe_enqueue_assets(): void {
-		// Also trigger for full-page embed and preview requests.
+		// Full-page embed and preview requests.
 		$query_form_id = absint( get_query_var( 'flowform_id', 0 ) );
 		$preview_id    = absint( $_GET['id'] ?? 0 );
 		$is_preview    = ! empty( $_GET['flowform_preview'] );
@@ -123,11 +131,81 @@ class FlowForms_Frontend {
 			$this->flag_form_id( $preview_id );
 		}
 
+		// Proactively scan the current post/page content so we don't rely on
+		// shortcodes having already rendered (they haven't at wp_enqueue_scripts time).
+		$this->scan_queried_object_for_forms();
+
 		if ( empty( $this->form_ids ) ) {
 			return;
 		}
 
 		$this->enqueue_renderer_assets();
+	}
+
+	/**
+	 * Late-enqueue fallback for forms that were not found in the post content scan.
+	 *
+	 * Covers shortcodes/blocks rendered after wp_head() — e.g. in widget areas,
+	 * page builder templates, or custom theme output. By the time wp_footer fires,
+	 * every shortcode/block on the page has already called flag_form_id().
+	 *
+	 * The JS bundle is picked up by wp_print_footer_scripts() at priority 20.
+	 * The CSS cannot go through wp_head at this point, so it is injected directly.
+	 *
+	 * @since 1.0.0
+	 */
+	public function maybe_late_enqueue_assets(): void {
+		if ( $this->assets_enqueued || empty( $this->form_ids ) ) {
+			return;
+		}
+
+		$this->enqueue_renderer_assets();
+
+		// wp_head() has already fired — inject the stylesheet directly.
+		$asset_file = WP_FLOWFORMS_PATH . 'build/form/index.asset.php';
+		$version    = file_exists( $asset_file )
+			? ( require $asset_file )['version']
+			: WP_FLOWFORMS_VERSION;
+
+		printf(
+			'<link rel="stylesheet" id="flowform-renderer-css" href="%s?ver=%s" media="all">' . "\n",
+			esc_url( WP_FLOWFORMS_URL . 'build/form/style-index.css' ),
+			esc_attr( $version )
+		);
+	}
+
+	/**
+	 * Scan the current queried post's stored content for [flowform] shortcodes
+	 * and wp:wp-flowforms/form block comments, and flag any form IDs found.
+	 *
+	 * This runs before the content loop so that wp_enqueue_scripts can enqueue
+	 * assets even when shortcodes have not yet been processed.
+	 *
+	 * @since 1.0.0
+	 */
+	private function scan_queried_object_for_forms(): void {
+		$post = get_queried_object();
+
+		if ( ! $post instanceof WP_Post || empty( $post->post_content ) ) {
+			return;
+		}
+
+		// [flowform id="123"] or [flowform id='123'] or [flowform id=123]
+		if ( preg_match_all( '/\[flowform\b[^\]]*\bid=["\']?(\d+)/i', $post->post_content, $matches ) ) {
+			foreach ( $matches[1] as $id ) {
+				$this->flag_form_id( (int) $id );
+			}
+		}
+
+		// <!-- wp:wp-flowforms/form {"formId":123} -->
+		if ( preg_match_all( '/<!--\s*wp:wp-flowforms\/form\s*(\{[^}]+\})/i', $post->post_content, $matches ) ) {
+			foreach ( $matches[1] as $attrs_json ) {
+				$attrs = json_decode( $attrs_json, true );
+				if ( ! empty( $attrs['formId'] ) ) {
+					$this->flag_form_id( (int) $attrs['formId'] );
+				}
+			}
+		}
 	}
 
 	/**
