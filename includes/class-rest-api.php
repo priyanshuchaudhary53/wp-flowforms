@@ -1038,9 +1038,11 @@ class FlowForms_REST_API
         $num = (float) $answer;
         // Only apply min/max when explicitly set (non-empty string or numeric)
         if (isset($settings['min']) && $settings['min'] !== '' && $num < (float) $settings['min']) {
+          /* translators: %s: minimum allowed value */
           return sprintf(__('Value must be at least %s.', 'wp-flowforms'), $settings['min']);
         }
         if (isset($settings['max']) && $settings['max'] !== '' && $num > (float) $settings['max']) {
+          /* translators: %s: maximum allowed value */
           return sprintf(__('Value must be at most %s.', 'wp-flowforms'), $settings['max']);
         }
         break;

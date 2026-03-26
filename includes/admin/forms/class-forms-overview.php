@@ -328,18 +328,22 @@ class FlowForms_Forms_Overview
     $messages = [
       'trashed'    => [
         'singular' => __('Form moved to Trash.', 'wp-flowforms'),
+        /* translators: %d: number of forms */
         'plural'   => __('%d forms moved to Trash.', 'wp-flowforms'),
       ],
       'restored'   => [
         'singular' => __('Form restored from Trash.', 'wp-flowforms'),
+        /* translators: %d: number of forms */
         'plural'   => __('%d forms restored from Trash.', 'wp-flowforms'),
       ],
       'deleted'    => [
         'singular' => __('Form permanently deleted.', 'wp-flowforms'),
+        /* translators: %d: number of forms */
         'plural'   => __('%d forms permanently deleted.', 'wp-flowforms'),
       ],
       'duplicated' => [
         'singular' => __('Form duplicated.', 'wp-flowforms'),
+        /* translators: %d: number of forms */
         'plural'   => __('%d forms duplicated.', 'wp-flowforms'),
       ],
     ];

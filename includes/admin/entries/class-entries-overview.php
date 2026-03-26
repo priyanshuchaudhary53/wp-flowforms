@@ -679,14 +679,23 @@ class FlowForms_Entries_Overview
   {
     // phpcs:disable WordPress.Security.NonceVerification.Recommended
     $messages = [
+      /* translators: %d: number of entries */
       'trashed'      => __('%d entry moved to Trash.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'restored'     => __('%d entry restored.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'deleted'      => __('%d entry permanently deleted.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'spammed'      => __('%d entry marked as spam.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'unspammed'    => __('%d entry restored from spam.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'marked_read'  => __('%d entry marked as read.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'marked_unread' => __('%d entry marked as unread.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'starred'      => __('%d entry starred.', 'wp-flowforms'),
+      /* translators: %d: number of entries */
       'unstarred'    => __('%d entry unstarred.', 'wp-flowforms'),
     ];
 

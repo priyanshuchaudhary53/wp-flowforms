@@ -609,7 +609,8 @@ html { margin-top: 0 !important; }
 		);
 
 		$post  = get_post( $form_id );
-		$label = $post ? esc_html( $post->post_title ) : sprintf( __( 'Form #%d', 'wp-flowforms' ), $form_id );
+		/* translators: %d: form ID */
+	$label = $post ? esc_html( $post->post_title ) : sprintf( __( 'Form #%d', 'wp-flowforms' ), $form_id );
 
 		ob_start();
 		?>
@@ -663,6 +664,7 @@ html { margin-top: 0 !important; }
 	</h1>
 	<p class="wpff-standalone__desc">
 		<?php
+			/* translators: %s: form name */
 			printf(
 				esc_html__( '"%s" has been moved to the trash and is not visible to visitors. Restore it to make it available again.', 'wp-flowforms' ),
 				esc_html( $form_title )
@@ -783,6 +785,7 @@ html, body {
 	</h1>
 	<p class="wpff-standalone__desc">
 		<?php
+			/* translators: %s: form name */
 			printf(
 				esc_html__( '"%s" is not live yet. Publish it from the builder so visitors can fill it out.', 'wp-flowforms' ),
 				esc_html( $form_title )
