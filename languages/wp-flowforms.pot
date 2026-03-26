@@ -9,34 +9,34 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-26T01:17:11+00:00\n"
+"POT-Creation-Date: 2026-03-26T21:10:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: wp-flowforms\n"
 
 #. Plugin Name of the plugin
-#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
-#: src/builder/components/Header.jsx:81
+#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+#: build/builder/index.js:1
 msgid "WP FlowForms"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
 msgid "https://wpflowforms.com/"
 msgstr ""
 
 #. Description of the plugin
-#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
 msgid "WP FlowForms lets you create beautiful step-by-step forms in WordPress. A modern conversational form builder and Typeform alternative for WordPress."
 msgstr ""
 
 #. Author of the plugin
-#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
 msgid "Priyanshu"
 msgstr ""
 
 #. Author URI of the plugin
-#: C:\Users\priya\Local Sites\template-1\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
+#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
 msgid "https://priyanshuc.dev/"
 msgstr ""
 
@@ -58,7 +58,7 @@ msgid "You can't edit this form because it's in the trash."
 msgstr ""
 
 #: includes/admin/builder/class-builder.php:224
-#: src/block/index.js:116
+#: build/block/index.js:1
 msgid "Loading…"
 msgstr ""
 
@@ -69,7 +69,7 @@ msgid "All Forms"
 msgstr ""
 
 #: includes/admin/class-menu.php:47
-#: src/builder/components/Header.jsx:41
+#: build/builder/index.js:1
 msgid "Builder"
 msgstr ""
 
@@ -84,9 +84,21 @@ msgid "Entries"
 msgstr ""
 
 #: includes/admin/class-menu.php:49
-#: src/builder/components/Header.jsx:42
-#: src/builder/components/RightPanel.jsx:431
+#: includes/admin/class-settings.php:200
+#: build/builder/index.js:1
 msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-settings.php:76
+msgid "Messages"
+msgstr ""
+
+#: includes/admin/class-settings.php:78
+msgid "Save Settings"
+msgstr ""
+
+#: includes/admin/class-settings.php:183
+msgid "Settings saved."
 msgstr ""
 
 #: includes/admin/entries/class-entries-list-table.php:53
@@ -110,7 +122,7 @@ msgid "Actions"
 msgstr ""
 
 #: includes/admin/entries/class-entries-list-table.php:63
-#: src/block/index.js:59
+#: build/block/index.js:1
 msgid "Form"
 msgstr ""
 
@@ -203,7 +215,7 @@ msgstr ""
 
 #: includes/admin/entries/class-entries-list-table.php:334
 #: includes/admin/forms/class-forms-list-table.php:351
-#: src/builder/page/Setup.jsx:176
+#: build/builder/index.js:1
 msgid "All"
 msgstr ""
 
@@ -247,7 +259,7 @@ msgstr ""
 
 #: includes/admin/entries/class-entries-overview.php:191
 #: includes/admin/forms/class-forms-overview.php:159
-#: includes/class-rest-api.php:738
+#: includes/class-rest-api.php:745
 msgid "Security check failed."
 msgstr ""
 
@@ -296,14 +308,17 @@ msgstr ""
 
 #: includes/admin/entries/class-entries-overview.php:569
 #: includes/admin/entries/class-entries-overview.php:571
-#: src/form/FormApp.js:146
+#: includes/admin/settings/tabs/messages.php:81
+#: includes/frontend/class-frontend.php:282
+#: build/form/index.js:1
 msgid "Previous"
 msgstr ""
 
 #: includes/admin/entries/class-entries-overview.php:575
 #: includes/admin/entries/class-entries-overview.php:577
-#: src/form/FormApp.js:149
-#: src/form/FormApp.js:433
+#: includes/admin/settings/tabs/messages.php:88
+#: includes/frontend/class-frontend.php:283
+#: build/form/index.js:1
 msgid "Next"
 msgstr ""
 
@@ -405,8 +420,7 @@ msgid "Name"
 msgstr ""
 
 #: includes/admin/forms/class-forms-list-table.php:74
-#: src/builder/page/Share.jsx:100
-#: src/builder/page/Share.jsx:107
+#: build/builder/index.js:1
 msgid "Shortcode"
 msgstr ""
 
@@ -427,20 +441,18 @@ msgid "Are you sure you want to permanently delete this form?"
 msgstr ""
 
 #: includes/admin/forms/class-forms-list-table.php:172
-#: src/builder/components/left-panel/BlockItemMenu.jsx:46
+#: build/builder/index.js:1
 msgid "Edit"
 msgstr ""
 
 #: includes/admin/forms/class-forms-list-table.php:181
 #: includes/admin/forms/class-forms-list-table.php:327
-#: src/builder/components/left-panel/BlockItemMenu.jsx:50
+#: build/builder/index.js:1
 msgid "Duplicate"
 msgstr ""
 
 #: includes/admin/forms/class-forms-list-table.php:187
-#: src/builder/components/Header.jsx:116
-#: src/builder/components/PreviewModal.jsx:118
-#: src/builder/page/Setup.jsx:365
+#: build/builder/index.js:1
 msgid "Preview"
 msgstr ""
 
@@ -524,6 +536,612 @@ msgstr ""
 msgid "Create Your First Form"
 msgstr ""
 
+#: includes/admin/settings/tabs/messages.php:24
+msgid "Buttons, Labels and Hints"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:25
+msgid "Button text, input labels and UI hints shown throughout the form."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:30
+msgid "Submit Button Text"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:31
+msgid "Text shown on the final submit button."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:32
+#: includes/frontend/class-frontend.php:275
+#: build/form/index.js:1
+msgid "Submit"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:37
+msgid "Submitting State Text"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:38
+msgid "Shown while the form is being submitted."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:39
+#: includes/frontend/class-frontend.php:276
+msgid "Submitting..."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:44
+msgid "Start Button Text"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:45
+msgid "Default text for the Start button on the welcome screen when no per-form label is set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:46
+#: includes/frontend/class-frontend.php:277
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "Start"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:51
+msgid "OK Button Text"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:52
+msgid "Default text for the OK / Next button on each question when no per-question label is set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:53
+#: includes/frontend/class-frontend.php:278
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "OK"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:58
+msgid "Try Again Button Text"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:59
+msgid "Text for the retry button shown on the submission error screen."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:60
+#: includes/frontend/class-frontend.php:279
+#: build/form/index.js:1
+msgid "Try again"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:65
+msgid "Press Enter Hint"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:66
+msgid "Keyboard shortcut hint shown below each question."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:67
+#: includes/frontend/class-frontend.php:280
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "press Enter ↵"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:72
+msgid "Shift + Enter Hint"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:73
+msgid "Line-break hint shown below long text (textarea) questions."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:74
+#: includes/frontend/class-frontend.php:281
+#: build/form/index.js:1
+msgid "Shift ⇧ + Enter ↵ to make a line break"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:79
+msgid "Previous Button Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:80
+msgid "Accessible label for the Previous navigation button (screen-reader text)."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:86
+msgid "Next Button Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:87
+msgid "Accessible label for the Next navigation button (screen-reader text)."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:93
+msgid "Thank You Title (fallback)"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:94
+msgid "Default thank-you screen title when no per-form title is set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:95
+#: includes/frontend/class-frontend.php:284
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "Thank you!"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:100
+msgid "Loading Text"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:101
+msgid "Shown while the form is being fetched."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:102
+#: includes/frontend/class-frontend.php:285
+#: build/form/index.js:1
+msgid "Loading form…"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:107
+msgid "Redirect Countdown"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:108
+msgid "Countdown shown on the thank-you screen before a redirect. Use {seconds} as a placeholder."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:109
+#: includes/frontend/class-frontend.php:286
+#: build/form/index.js:1
+msgid "Redirecting in {seconds}…"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:114
+msgid "Redirecting Text"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:115
+msgid "Shown when the redirect countdown reaches zero."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:116
+#: includes/frontend/class-frontend.php:287
+#: build/form/index.js:1
+msgid "Redirecting…"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:121
+msgid "Text / Long Text Placeholder"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:122
+msgid "Default placeholder for short text and long text fields when no per-field placeholder is set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:123
+#: includes/frontend/class-frontend.php:288
+#: build/form/index.js:1
+msgid "Your answer here…"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:128
+msgid "Email Placeholder"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:129
+msgid "Default placeholder for email fields when no per-field placeholder is set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:130
+#: includes/frontend/class-frontend.php:289
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "name@example.com"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:135
+msgid "Confirm Email Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:136
+msgid "Label shown above the second email input in confirm-email mode."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:137
+#: includes/frontend/class-frontend.php:290
+#: build/form/index.js:1
+msgid "Confirm email"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:142
+msgid "Confirm Email Placeholder"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:143
+msgid "Placeholder for the confirmation email input."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:144
+#: includes/frontend/class-frontend.php:291
+#: build/form/index.js:1
+msgid "Confirm your email"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:149
+msgid "\"Other\" Option Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:150
+msgid "Label for the \"Other\" option in multiple choice and checkbox questions."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:151
+#: includes/frontend/class-frontend.php:292
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "Other"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:156
+msgid "\"Other\" Input Placeholder"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:157
+msgid "Placeholder inside the inline text input that appears when \"Other\" is selected."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:158
+#: includes/frontend/class-frontend.php:293
+#: build/form/index.js:1
+msgid "Type your answer…"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:163
+msgid "\"Other\" Confirm Button Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:164
+msgid "Accessible label for the tick button that confirms the \"Other\" free-text answer."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:165
+#: includes/frontend/class-frontend.php:294
+#: build/form/index.js:1
+msgid "Confirm"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:170
+msgid "Rating Button Aria Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:171
+msgid "Accessible label for each star button. Use {value} for the star number and {max} for the total."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:172
+#: includes/frontend/class-frontend.php:295
+#: build/form/index.js:1
+msgid "Rate {value} out of {max}"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:177
+msgid "Yes Button (fallback)"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:178
+msgid "Default label for the Yes button when no per-form label is set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:179
+#: includes/frontend/class-frontend.php:296
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "Yes"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:184
+msgid "No Button (fallback)"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:185
+msgid "Default label for the No button when no per-form label is set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:186
+#: includes/frontend/class-frontend.php:297
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "No"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:191
+msgid "Share This Form Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:192
+msgid "Heading shown above the social share buttons on the thank-you screen."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:193
+#: includes/frontend/class-frontend.php:298
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "Share this form"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:198
+msgid "Share On Aria Label"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:199
+msgid "Accessible label for social share buttons. Use {network} as a placeholder for the network name."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:200
+#: includes/frontend/class-frontend.php:299
+#: build/form/index.js:1
+msgid "Share on {network}"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:205
+msgid "Share Title Fallback"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:206
+msgid "Default text used as the share title when the thank-you screen has no title set."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:207
+#: includes/frontend/class-frontend.php:300
+#: build/form/index.js:1
+msgid "Check this out!"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:214
+msgid "Error and Validation Messages"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:215
+msgid "Messages shown when form input fails validation or a submission cannot be completed."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:220
+msgid "Required Field"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:221
+msgid "Shown when a required question is left blank."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:222
+#: includes/class-rest-api.php:789
+#: includes/frontend/class-frontend.php:258
+#: build/form/index.js:1
+msgid "This field is required."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:227
+msgid "Invalid Email"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:228
+msgid "Shown when an email address fails format validation."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:229
+#: includes/class-rest-api.php:1037
+#: includes/frontend/class-frontend.php:259
+#: build/form/index.js:1
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:234
+msgid "Email Mismatch"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:235
+msgid "Shown when the confirmation email does not match the first email field."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:236
+#: includes/frontend/class-frontend.php:260
+#: build/form/index.js:1
+msgid "Email addresses do not match."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:241
+msgid "Invalid Number"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:242
+msgid "Shown when a number field contains non-numeric input."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:243
+#: includes/class-rest-api.php:1043
+#: includes/frontend/class-frontend.php:261
+#: build/form/index.js:1
+msgid "Please enter a valid number."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:248
+msgid "Number Too Small"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:249
+msgid "Shown when a number is below the minimum. Use {min} as a placeholder for the minimum value."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:250
+#: includes/frontend/class-frontend.php:262
+#: build/form/index.js:1
+msgid "Value must be at least {min}."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:255
+msgid "Number Too Large"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:256
+msgid "Shown when a number exceeds the maximum. Use {max} as a placeholder for the maximum value."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:257
+#: includes/frontend/class-frontend.php:263
+#: build/form/index.js:1
+msgid "Value must be at most {max}."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:262
+msgid "Max Length Exceeded"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:263
+msgid "Shown when text exceeds the character limit. Use {limit} as a placeholder for the limit."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:264
+#: includes/frontend/class-frontend.php:264
+msgid "Please enter no more than {limit} characters."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:269
+msgid "Invalid Rating"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:270
+msgid "Shown when a rating field has an out-of-range or missing value."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:271
+#: includes/class-rest-api.php:1073
+#: includes/frontend/class-frontend.php:265
+#: build/form/index.js:1
+msgid "Please select a valid rating."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:276
+msgid "No Selection Made"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:277
+msgid "Shown when a multiple choice or checkbox question has no option selected."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:278
+#: includes/class-rest-api.php:1079
+#: includes/frontend/class-frontend.php:266
+#: build/form/index.js:1
+msgid "Please make a selection."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:283
+msgid "Too Few Selections"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:284
+msgid "Shown when fewer than the minimum number of checkboxes are selected. Use {count} as a placeholder for the minimum."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:285
+#: includes/frontend/class-frontend.php:267
+#: build/form/index.js:1
+msgid "Please select at least {count} options."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:290
+msgid "Too Many Selections"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:291
+msgid "Shown when more than the maximum number of checkboxes are selected. Use {count} as a placeholder for the maximum."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:292
+#: includes/frontend/class-frontend.php:268
+#: build/form/index.js:1
+msgid "Please select at most {count} options."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:297
+msgid "Yes / No Not Answered"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:298
+msgid "Shown when a yes/no question has no answer selected."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:299
+#: includes/class-rest-api.php:1138
+#: includes/frontend/class-frontend.php:269
+#: build/form/index.js:1
+msgid "Please select yes or no."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:304
+msgid "Submission Failed Heading"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:305
+msgid "Heading shown on the error screen when a submission fails."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:306
+#: includes/frontend/class-frontend.php:270
+#: build/form/index.js:1
+msgid "Submission failed"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:311
+msgid "Generic Error Message"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:312
+msgid "Shown when a submission fails due to a server or network error."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:313
+#: includes/class-rest-api.php:766
+#: includes/frontend/class-frontend.php:271
+#: build/form/index.js:1
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:318
+msgid "Spam Detection Message"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:319
+msgid "Shown when a submission is rejected by the honeypot or token checks."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:320
+#: includes/frontend/class-frontend.php:272
+#: build/form/index.js:1
+msgid "Your submission could not be processed. Please reload the page and try again."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:325
+msgid "Form Load Error"
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:326
+msgid "Shown when the form cannot be fetched from the server."
+msgstr ""
+
+#: includes/admin/settings/tabs/messages.php:327
+#: includes/frontend/class-frontend.php:273
+#: build/form/index.js:1
+msgid "Sorry, this form could not be loaded. Please try again later."
+msgstr ""
+
 #: includes/class-rest-api.php:337
 #: includes/class-rest-api.php:440
 #: includes/class-rest-api.php:508
@@ -531,7 +1149,7 @@ msgstr ""
 #: includes/class-rest-api.php:593
 #: includes/class-rest-api.php:633
 #: includes/class-rest-api.php:670
-#: includes/class-rest-api.php:706
+#: includes/class-rest-api.php:713
 msgid "Invalid form ID."
 msgstr ""
 
@@ -543,10 +1161,10 @@ msgstr ""
 #: includes/class-rest-api.php:639
 #: includes/class-rest-api.php:676
 #: includes/class-rest-api.php:683
-#: includes/class-rest-api.php:712
 #: includes/class-rest-api.php:719
-#: includes/class-rest-api.php:745
-#: includes/frontend/class-frontend.php:324
+#: includes/class-rest-api.php:726
+#: includes/class-rest-api.php:752
+#: includes/frontend/class-frontend.php:448
 msgid "Form not found."
 msgstr ""
 
@@ -570,827 +1188,781 @@ msgstr ""
 msgid "No draft to publish."
 msgstr ""
 
-#: includes/class-rest-api.php:753
+#: includes/class-rest-api.php:760
 msgid "Form content could not be read."
 msgstr ""
 
-#: includes/class-rest-api.php:759
-#: src/form/FormApp.js:610
-#: src/form/FormApp.js:619
-#: src/form/FormApp.js:1023
-msgid "Something went wrong. Please try again."
-msgstr ""
-
-#: includes/class-rest-api.php:766
+#: includes/class-rest-api.php:773
 msgid "Security check failed. Please reload the page and try again."
 msgstr ""
 
-#: includes/class-rest-api.php:782
-#: src/form/Validator.js:26
-msgid "This field is required."
-msgstr ""
-
-#: includes/class-rest-api.php:812
+#: includes/class-rest-api.php:819
 msgid "Failed to save submission."
 msgstr ""
 
-#: includes/class-rest-api.php:940
+#: includes/class-rest-api.php:947
 msgid "Template slug is required."
 msgstr ""
 
-#: includes/class-rest-api.php:946
-#: includes/class-rest-api.php:995
+#: includes/class-rest-api.php:953
+#: includes/class-rest-api.php:1002
 msgid "Template not found."
 msgstr ""
 
-#: includes/class-rest-api.php:961
+#: includes/class-rest-api.php:968
 msgid "Failed to create form."
 msgstr ""
 
-#: includes/class-rest-api.php:972
+#: includes/class-rest-api.php:979
 msgid "Failed to save form content."
 msgstr ""
 
-#: includes/class-rest-api.php:1030
-#: src/form/Validator.js:40
-#: src/form/Validator.js:47
-msgid "Please enter a valid email address."
-msgstr ""
-
-#: includes/class-rest-api.php:1036
-#: src/form/Validator.js:54
-msgid "Please enter a valid number."
-msgstr ""
-
 #. translators: %s: minimum allowed value
-#: includes/class-rest-api.php:1042
-#: src/form/Validator.js:58
+#: includes/class-rest-api.php:1049
 msgid "Value must be at least %s."
 msgstr ""
 
 #. translators: %s: maximum allowed value
-#: includes/class-rest-api.php:1046
-#: src/form/Validator.js:61
+#: includes/class-rest-api.php:1053
 msgid "Value must be at most %s."
 msgstr ""
 
 #. translators: %d: maximum character limit
-#: includes/class-rest-api.php:1056
+#: includes/class-rest-api.php:1063
 msgid "Please keep your answer under %d characters."
 msgstr ""
 
-#: includes/class-rest-api.php:1066
-#: src/form/Validator.js:70
-msgid "Please select a valid rating."
-msgstr ""
-
-#: includes/class-rest-api.php:1072
-#: src/form/Validator.js:77
-#: src/form/Validator.js:83
-msgid "Please make a selection."
-msgstr ""
-
-#: includes/class-rest-api.php:1075
+#: includes/class-rest-api.php:1082
 msgid "Please select only one option."
 msgstr ""
 
-#: includes/class-rest-api.php:1084
-#: includes/class-rest-api.php:1090
-#: includes/class-rest-api.php:1125
+#: includes/class-rest-api.php:1091
+#: includes/class-rest-api.php:1097
+#: includes/class-rest-api.php:1132
 msgid "Invalid selection."
 msgstr ""
 
 #. translators: %d: minimum number of selections required
-#: includes/class-rest-api.php:1097
+#: includes/class-rest-api.php:1104
 msgid "Please select at least %d option."
 msgid_plural "Please select at least %d options."
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: maximum number of selections allowed
-#: includes/class-rest-api.php:1109
+#: includes/class-rest-api.php:1116
 msgid "Please select at most %d option."
 msgid_plural "Please select at most %d options."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-rest-api.php:1131
-#: src/form/Validator.js:98
-msgid "Please select yes or no."
-msgstr ""
-
-#: includes/frontend/class-frontend.php:276
-#: includes/frontend/class-frontend.php:314
+#: includes/frontend/class-frontend.php:400
+#: includes/frontend/class-frontend.php:438
 msgid "Preview link is invalid or has expired."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:277
-#: includes/frontend/class-frontend.php:315
+#: includes/frontend/class-frontend.php:401
+#: includes/frontend/class-frontend.php:439
 msgid "Invalid Preview"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:285
+#: includes/frontend/class-frontend.php:409
 msgid "You do not have permission to preview forms."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:286
+#: includes/frontend/class-frontend.php:410
 msgid "Permission Denied"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:299
+#: includes/frontend/class-frontend.php:423
 msgid "Template preview has expired. Please try again."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:300
+#: includes/frontend/class-frontend.php:424
 msgid "Preview Expired"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:325
+#: includes/frontend/class-frontend.php:449
 msgid "Form Not Found"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:386
-#: src/builder/page/Setup.jsx:439
+#: includes/frontend/class-frontend.php:510
+#: build/builder/index.js:1
 msgid "Template Preview"
 msgstr ""
 
 #. translators: %d: form ID
-#: includes/frontend/class-frontend.php:613
+#: includes/frontend/class-frontend.php:737
 msgid "Form #%d"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:627
+#: includes/frontend/class-frontend.php:751
 msgid "is in the Trash and is not visible to visitors."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:630
+#: includes/frontend/class-frontend.php:754
 msgid "Restore form"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:656
+#: includes/frontend/class-frontend.php:780
 msgid "Form In Trash"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:663
+#: includes/frontend/class-frontend.php:787
 msgid "This form is in the trash."
 msgstr ""
 
 #. translators: %s: form name
-#: includes/frontend/class-frontend.php:669
+#: includes/frontend/class-frontend.php:793
 msgid "\"%s\" has been moved to the trash and is not visible to visitors. Restore it to make it available again."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:678
+#: includes/frontend/class-frontend.php:802
 msgid "Restore Form"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:741
+#: includes/frontend/class-frontend.php:865
 msgid "Form Not Available"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:748
+#: includes/frontend/class-frontend.php:872
 msgid "This form is no longer available."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:751
+#: includes/frontend/class-frontend.php:875
 msgid "The form you are looking for has been removed or is currently unavailable."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:777
+#: includes/frontend/class-frontend.php:901
 msgid "Form Not Published"
 msgstr ""
 
-#: includes/frontend/class-frontend.php:784
+#: includes/frontend/class-frontend.php:908
 msgid "This form hasn't been published yet."
 msgstr ""
 
 #. translators: %s: form name
-#: includes/frontend/class-frontend.php:790
+#: includes/frontend/class-frontend.php:914
 msgid "\"%s\" is not live yet. Publish it from the builder so visitors can fill it out."
 msgstr ""
 
-#: includes/frontend/class-frontend.php:799
+#: includes/frontend/class-frontend.php:923
 msgid "Open in Builder"
 msgstr ""
 
-#: src/block/index.js:51
-msgid "— Select a form —"
-msgstr ""
-
-#: src/block/index.js:64
-msgid "Select form"
-msgstr ""
-
-#: src/block/index.js:72
-msgid "Dimensions"
-msgstr ""
-
-#: src/block/index.js:74
-#: src/builder/page/Share.jsx:118
-#: src/builder/page/Share.jsx:167
-msgid "Height"
-msgstr ""
-
-#: src/block/index.js:75
-msgid "Any valid CSS value — px, vh, em, etc."
-msgstr ""
-
-#: src/block/index.js:81
-#: src/builder/page/Share.jsx:134
-msgid "Border radius"
-msgstr ""
-
-#: src/block/index.js:82
-msgid "Any valid CSS value — px, %, em, etc."
-msgstr ""
-
-#: src/block/index.js:95
-msgid "FlowForm"
-msgstr ""
-
-#: src/block/index.js:96
-msgid "Select a form from the sidebar to embed it here."
-msgstr ""
-
-#: src/block/index.js:167
+#: build/block/index.js:1
 msgid "Rendered on the frontend"
 msgstr ""
 
-#: src/block/index.js:181
+#: build/block/index.js:1
 msgid "is in the Trash and will not be visible to visitors."
 msgstr ""
 
-#: src/block/index.js:184
+#: build/block/index.js:1
 msgid "Go to Trash to restore it →"
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:128
-msgid "Welcome!"
+#: build/block/index.js:1
+msgid "— Select a form —"
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:143
-#: src/form/FormApp.js:824
-msgid "Start"
+#: build/block/index.js:1
+msgid "Select form"
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:204
-#: src/form/FormApp.js:904
-msgid "Thank you!"
+#: build/block/index.js:1
+msgid "Dimensions"
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:227
-#: src/form/FormApp.js:946
-msgid "Share this form"
+#: build/block/index.js:1
+#: build/builder/index.js:1
+msgid "Height"
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:233
-msgid "X / Twitter"
+#: build/block/index.js:1
+msgid "Any valid CSS value — px, vh, em, etc."
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:242
-msgid "Facebook"
+#: build/block/index.js:1
+#: build/builder/index.js:1
+msgid "Border radius"
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:251
-msgid "LinkedIn"
+#: build/block/index.js:1
+msgid "Any valid CSS value — px, %, em, etc."
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:305
-#: src/form/QuestionRenderer.js:40
-msgid "Untitled question"
+#: build/block/index.js:1
+msgid "FlowForm"
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:324
-#: src/form/FormApp.js:866
-msgid "OK"
+#: build/block/index.js:1
+msgid "Select a form from the sidebar to embed it here."
 msgstr ""
 
-#: src/builder/components/Canvas.jsx:330
-#: src/form/FormApp.js:877
-msgid "press Enter ↵"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:348
-#: src/builder/components/Canvas.jsx:359
-msgid "Your answer here..."
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:370
-#: src/form/QuestionRenderer.js:122
-#: src/form/QuestionRenderer.js:134
-msgid "name@example.com"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:390
-msgid "0"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:409
-#: src/builder/components/Canvas.jsx:457
-msgid "Option A"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:409
-#: src/builder/components/Canvas.jsx:457
-msgid "Option B"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:409
-#: src/builder/components/Canvas.jsx:457
-msgid "Option C"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:435
-#: src/builder/components/Canvas.jsx:483
-msgid "Untitled option"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:447
-#: src/builder/components/Canvas.jsx:495
-#: src/form/QuestionRenderer.js:317
-msgid "Other"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:523
-#: src/form/QuestionRenderer.js:479
-msgid "Yes"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:529
-#: src/form/QuestionRenderer.js:480
-msgid "No"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:537
-msgid "No preview available for this block type."
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:560
-msgid "Select a block on the left to preview it here"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:570
-msgid "Insert block before"
-msgstr ""
-
-#: src/builder/components/Canvas.jsx:570
-msgid "Insert block after"
-msgstr ""
-
-#: src/builder/components/CenterPanel.jsx:24
-msgid "Add block"
-msgstr ""
-
-#: src/builder/components/CenterPanel.jsx:33
-#: src/builder/lookup/DesignDrawer.jsx:146
-msgid "Design"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:264
-msgid "Default (system font)"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:282
-msgid "Clear font"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:352
-#: src/builder/components/RightPanel.jsx:156
-msgid "Select Background Image"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:353
-#: src/builder/components/RightPanel.jsx:157
-msgid "Use this image"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:381
-#: src/builder/components/RightPanel.jsx:180
-#: src/builder/components/RightPanel.jsx:194
-msgid "Background"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:388
-#: src/builder/components/RightPanel.jsx:201
-msgid "Remove image"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:398
-#: src/builder/components/RightPanel.jsx:211
-msgid "Replace image"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:401
-#: src/builder/components/RightPanel.jsx:214
-msgid "Replace"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:415
-#: src/builder/components/RightPanel.jsx:228
-msgid "Select image"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:458
-#: src/builder/components/RightPanel.jsx:295
-msgid "Darker"
-msgstr ""
-
-#: src/builder/components/design/DesignField.jsx:459
-#: src/builder/components/RightPanel.jsx:296
-msgid "Brighter"
-msgstr ""
-
-#: src/builder/components/design/ThemeGallery.jsx:84
-msgid "Apply →"
-msgstr ""
-
-#: src/builder/components/design/ThemeGallery.jsx:105
-msgid "Theme Gallery"
-msgstr ""
-
-#: src/builder/components/design/ThemeGallery.jsx:108
-msgid "Pick a theme to instantly apply its colour palette to your form. You can fine-tune individual colours afterwards."
-msgstr ""
-
-#: src/builder/components/FormName.jsx:60
+#: build/builder/index.js:1
 msgid "Edit form name"
 msgstr ""
 
-#: src/builder/components/FormName.jsx:66
+#: build/builder/index.js:1
 msgid "Rename form"
 msgstr ""
 
-#: src/builder/components/FormName.jsx:69
+#: build/builder/index.js:1
 msgid "Rename your form"
 msgstr ""
 
-#: src/builder/components/FormName.jsx:76
-#: src/builder/page/Setup.jsx:140
+#: build/builder/index.js:1
 msgid "Enter your form name here..."
 msgstr ""
 
-#: src/builder/components/FormName.jsx:82
-#: src/builder/components/Header.jsx:215
+#: build/builder/index.js:1
 msgid "Cancel"
 msgstr ""
 
-#: src/builder/components/FormName.jsx:90
+#: build/builder/index.js:1
 msgid "Saving..."
 msgstr ""
 
-#: src/builder/components/FormName.jsx:90
+#: build/builder/index.js:1
 msgid "Rename"
 msgstr ""
 
-#: src/builder/components/Header.jsx:43
-msgid "Share"
-msgstr ""
-
-#: src/builder/components/Header.jsx:130
-msgid "Revert"
-msgstr ""
-
-#: src/builder/components/Header.jsx:149
-msgid "Publishing…"
-msgstr ""
-
-#: src/builder/components/Header.jsx:149
-msgid "Publish"
-msgstr ""
-
-#: src/builder/components/Header.jsx:154
-msgid "Make your changes live"
-msgstr ""
-
-#: src/builder/components/Header.jsx:169
-msgid "Published"
-msgstr ""
-
-#: src/builder/components/Header.jsx:179
-msgid "Exit"
-msgstr ""
-
-#: src/builder/components/Header.jsx:203
-msgid "Are you sure you want to revert to previous published state?"
-msgstr ""
-
-#: src/builder/components/Header.jsx:206
-msgid "All your current changes (excluding design changes) will be discarded. This action is irreversible."
-msgstr ""
-
-#: src/builder/components/Header.jsx:222
-msgid "Reverting…"
-msgstr ""
-
-#: src/builder/components/Header.jsx:222
-msgid "Yes, revert my form"
-msgstr ""
-
-#: src/builder/components/left-panel/BlockItemMenu.jsx:38
-msgid "Open options"
-msgstr ""
-
-#: src/builder/components/left-panel/BlockItemMenu.jsx:57
-msgid "Delete"
-msgstr ""
-
-#: src/builder/components/left-panel/BlockList.jsx:68
-#: src/builder/components/right-panel/OptionsEditor.jsx:51
-msgid "Drag to reorder"
-msgstr ""
-
-#: src/builder/components/left-panel/BlockList.jsx:119
-#: src/builder/lookup/AddBlockDialog.jsx:50
-msgid "Blocks"
-msgstr ""
-
-#: src/builder/components/left-panel/BlockList.jsx:124
-msgid "Add new block"
-msgstr ""
-
-#: src/builder/components/left-panel/BlockList.jsx:150
-msgid "Add a block"
-msgstr ""
-
-#: src/builder/components/LeftPanel.jsx:21
-msgid "Welcome page"
-msgstr ""
-
-#: src/builder/components/LeftPanel.jsx:40
-msgid "Thank you page"
-msgstr ""
-
-#: src/builder/components/PreviewModal.jsx:24
-#: src/builder/page/Setup.jsx:379
+#: build/builder/index.js:1
 msgid "Desktop"
 msgstr ""
 
-#: src/builder/components/PreviewModal.jsx:25
+#: build/builder/index.js:1
 msgid "Tablet"
 msgstr ""
 
-#: src/builder/components/PreviewModal.jsx:26
-#: src/builder/page/Setup.jsx:386
+#: build/builder/index.js:1
 msgid "Mobile"
 msgstr ""
 
-#: src/builder/components/PreviewModal.jsx:91
-#: src/builder/components/PreviewModal.jsx:177
+#: build/builder/index.js:1
 msgid "Form preview"
 msgstr ""
 
-#: src/builder/components/PreviewModal.jsx:131
+#: build/builder/index.js:1
 msgid "Open in new tab"
 msgstr ""
 
-#: src/builder/components/PreviewModal.jsx:141
-#: src/builder/page/Setup.jsx:445
+#: build/builder/index.js:1
 msgid "Close preview"
 msgstr ""
 
-#: src/builder/components/PreviewModal.jsx:168
-#: src/builder/page/Setup.jsx:472
+#: build/builder/index.js:1
 msgid "Loading preview…"
 msgstr ""
 
-#: src/builder/components/PreviewModal.jsx:191
+#: build/builder/index.js:1
 msgid "Preview URL not available. Save the form first."
 msgstr ""
 
-#: src/builder/components/right-panel/OptionsEditor.jsx:62
+#: build/builder/index.js:1
+msgid "Share"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Revert"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Publishing…"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Publish"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Make your changes live"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Published"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Exit"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Are you sure you want to revert to previous published state?"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "All your current changes (excluding design changes) will be discarded. This action is irreversible."
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Reverting…"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Yes, revert my form"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Open options"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Delete"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Drag to reorder"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Blocks"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Add new block"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Add a block"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Welcome page"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Thank you page"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Welcome!"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "X / Twitter"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Facebook"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "LinkedIn"
+msgstr ""
+
+#: build/builder/index.js:1
+#: build/form/index.js:1
+msgid "Untitled question"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Your answer here..."
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "0"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Option A"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Option B"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Option C"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Untitled option"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "No preview available for this block type."
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Select a block on the left to preview it here"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Insert block before"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Insert block after"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Add block"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Design"
+msgstr ""
+
+#: build/builder/index.js:1
 msgid "Option label"
 msgstr ""
 
-#: src/builder/components/right-panel/OptionsEditor.jsx:71
+#: build/builder/index.js:1
 msgid "Remove option"
 msgstr ""
 
-#: src/builder/components/right-panel/OptionsEditor.jsx:162
+#: build/builder/index.js:1
 msgid "Add option"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:15
-#: src/builder/page/Settings.jsx:358
+#: build/builder/index.js:1
 msgid "Saving…"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:25
+#: build/builder/index.js:1
 msgid "Unsaved"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:35
+#: build/builder/index.js:1
 msgid "Saved"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:149
-msgid "Background image"
-msgstr ""
-
-#: src/builder/components/RightPanel.jsx:151
+#: build/builder/index.js:1
 msgid "Split image"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:152
+#: build/builder/index.js:1
 msgid "Cover image"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:187
+#: build/builder/index.js:1
+msgid "Background image"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Select Background Image"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Use this image"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Background"
+msgstr ""
+
+#: build/builder/index.js:1
 msgid "Image"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:241
+#: build/builder/index.js:1
+msgid "Remove image"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Replace image"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Replace"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Select image"
+msgstr ""
+
+#: build/builder/index.js:1
 msgid "Layout"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:247
+#: build/builder/index.js:1
 msgid "Wallpaper"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:248
+#: build/builder/index.js:1
 msgid "Split"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:254
+#: build/builder/index.js:1
 msgid "Position"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:260
+#: build/builder/index.js:1
 msgid "Left"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:261
+#: build/builder/index.js:1
 msgid "Right"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:269
+#: build/builder/index.js:1
 msgid "Brightness"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:337
+#: build/builder/index.js:1
+msgid "Darker"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Brighter"
+msgstr ""
+
+#: build/builder/index.js:1
 msgid "No settings available for this block."
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:375
+#: build/builder/index.js:1
 msgid "Select a block to see its settings"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:399
+#: build/builder/index.js:1
 msgid "Welcome screen"
 msgstr ""
 
-#: src/builder/components/RightPanel.jsx:405
+#: build/builder/index.js:1
 msgid "Thank you screen"
 msgstr ""
 
-#: src/builder/lookup/AddBlockDialog.jsx:47
+#: build/builder/index.js:1
 msgid "Search blocks..."
 msgstr ""
 
-#: src/builder/lookup/AddBlockDialog.jsx:49
+#: build/builder/index.js:1
 msgid "No blocks found."
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:148
+#: build/builder/index.js:1
+msgid "Default (system font)"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Clear font"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Apply →"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Theme Gallery"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Pick a theme to instantly apply its colour palette to your form. You can fine-tune individual colours afterwards."
+msgstr ""
+
+#: build/builder/index.js:1
 msgid "Customise colours, typography, and layout — or pick a theme to get started instantly"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:161
+#: build/builder/index.js:1
 msgid "Open theme gallery"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:201
+#: build/builder/index.js:1
 msgid "Close"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:209
+#: build/builder/index.js:1
 msgid "Save changes"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:222
+#: build/builder/index.js:1
 msgid "Save design changes?"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:224
+#: build/builder/index.js:1
 msgid "These changes will be saved directly to the published version of your form and will be visible to users immediately."
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:232
+#: build/builder/index.js:1
 msgid "No, go back"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:234
+#: build/builder/index.js:1
 msgid "Yes, save"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:246
+#: build/builder/index.js:1
 msgid "Discard design changes?"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:248
+#: build/builder/index.js:1
 msgid "Are you sure you want to discard all unsaved design changes? The canvas will revert to the last saved state."
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:256
+#: build/builder/index.js:1
 msgid "No, keep editing"
 msgstr ""
 
-#: src/builder/lookup/DesignDrawer.jsx:259
+#: build/builder/index.js:1
 msgid "Yes, discard"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:8
-#: src/builder/page/Settings.jsx:462
-#: src/builder/page/Setup.jsx:18
+#: build/builder/index.js:1
+msgid "Contact"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Feedback"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Lead Gen"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Survey"
+msgstr ""
+
+#: build/builder/index.js:1
 msgid "General"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:9
-#: src/builder/page/Settings.jsx:528
+#: build/builder/index.js:1
+msgid "Name your form"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Select a template"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Start from a template or build from scratch."
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Search templates…"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "No templates match"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Blank form"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Start from scratch with an empty form"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Something went wrong."
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Could not load preview."
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Creating…"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Start from scratch"
+msgstr ""
+
+#. translators: %s: template name
+#: build/builder/index.js:1
+msgid "%s template screenshot"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Use template"
+msgstr ""
+
+#: build/builder/index.js:1
+msgid "Template preview"
+msgstr ""
+
+#: build/builder/index.js:1
 msgid "Email Notifications"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:32
+#: build/builder/index.js:1
 msgid "Admin Email"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:32
+#: build/builder/index.js:1
 msgid "The site administrator's email"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:33
+#: build/builder/index.js:1
 msgid "Site Name"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:33
+#: build/builder/index.js:1
 msgid "The name of your website"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:34
+#: build/builder/index.js:1
 msgid "Form Name"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:34
+#: build/builder/index.js:1
 msgid "The name of this form"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:35
+#: build/builder/index.js:1
 msgid "All Fields"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:35
+#: build/builder/index.js:1
 msgid "All submitted field values"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:326
+#: build/builder/index.js:1
 msgid "Start typing"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:330
+#: build/builder/index.js:1
 msgid "to see all available smart tags"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:365
+#: build/builder/index.js:1
 msgid "Save failed"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:435
+#: build/builder/index.js:1
 msgid "Progress bar"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:436
+#: build/builder/index.js:1
 msgid "Show a progress indicator at the top of the form so respondents know how far along they are."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:441
+#: build/builder/index.js:1
 msgid "Navigation arrows"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:442
+#: build/builder/index.js:1
 msgid "Display previous and next arrow buttons to let respondents move between questions freely."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:447
+#: build/builder/index.js:1
 msgid "Show \"Powered by WP FlowForms\""
 msgstr ""
 
-#: src/builder/page/Settings.jsx:448
+#: build/builder/index.js:1
 msgid "Loved WP FlowForms? Spread the word to others about this awesome plugin by showing a small badge at the bottom of your form."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:464
+#: build/builder/index.js:1
 msgid "Control how your form looks and behaves for respondents."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:487
+#: build/builder/index.js:1
 msgid "Admin Notification"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:489
-#: src/builder/page/Settings.jsx:560
+#: build/builder/index.js:1
 msgid "New submission: {form_name}"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:493
+#: build/builder/index.js:1
 msgid ""
 "Hi,\n"
 "\n"
@@ -1404,406 +1976,253 @@ msgid ""
 "{site_name}"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:530
+#: build/builder/index.js:1
 msgid "Configure automated emails sent when a form is submitted."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:538
+#: build/builder/index.js:1
 msgid "Enable email notifications"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:539
+#: build/builder/index.js:1
 msgid "Send an email notification whenever a new form submission is received."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:549
+#: build/builder/index.js:1
 msgid "Send to"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:550
+#: build/builder/index.js:1
 msgid "Who receives this notification email."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:557
+#: build/builder/index.js:1
 msgid "Subject"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:558
+#: build/builder/index.js:1
 msgid "The subject line of the notification email."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:567
+#: build/builder/index.js:1
 msgid "From name"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:568
+#: build/builder/index.js:1
 msgid "The sender name shown in the recipient's email client."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:577
+#: build/builder/index.js:1
 msgid "From email"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:578
+#: build/builder/index.js:1
 msgid "The sender address shown in the recipient's email client."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:581
-#: src/builder/page/Settings.jsx:769
+#: build/builder/index.js:1
 msgid "Admin email"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:585
+#: build/builder/index.js:1
 msgid "These sender settings may be overridden by an SMTP plugin (e.g. WP Mail SMTP, Postman SMTP) installed on your site."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:597
+#: build/builder/index.js:1
 msgid "Email body"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:598
+#: build/builder/index.js:1
 msgid "The body of the notification email. Use {all_fields} to include all submitted values."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:689
+#: build/builder/index.js:1
 msgid "Resolves to:"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:709
+#: build/builder/index.js:1
 msgid "Reply-To"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:711
+#: build/builder/index.js:1
 msgid "Replies from the recipient will go to the email entered in the selected form field. Leave unset to reply to the From address."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:720
+#: build/builder/index.js:1
 msgid "— None (use From address) —"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:722
+#: build/builder/index.js:1
 msgid "Email blocks in this form"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:725
+#: build/builder/index.js:1
 msgid "(Untitled email field)"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:734
+#: build/builder/index.js:1
 msgid "No email fields found in your form. Add an Email block to enable this option."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:740
+#: build/builder/index.js:1
 msgid "Replies will go to the email entered in the"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:741
+#: build/builder/index.js:1
 msgid "field."
 msgstr ""
 
-#: src/builder/page/Settings.jsx:805
+#: build/builder/index.js:1
 msgid "Custom email address…"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:812
+#: build/builder/index.js:1
 msgid "Enter email address"
 msgstr ""
 
-#: src/builder/page/Settings.jsx:849
+#: build/builder/index.js:1
 msgid "Note:"
 msgstr ""
 
-#: src/builder/page/Setup.jsx:14
-msgid "Contact"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:15
-msgid "Feedback"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:16
-msgid "Lead Gen"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:17
-msgid "Survey"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:66
-#: src/builder/page/Setup.jsx:93
-msgid "Something went wrong."
-msgstr ""
-
-#: src/builder/page/Setup.jsx:113
-msgid "Could not load preview."
-msgstr ""
-
-#: src/builder/page/Setup.jsx:133
-msgid "Name your form"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:147
-msgid "Select a template"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:150
-msgid "Start from a template or build from scratch."
-msgstr ""
-
-#: src/builder/page/Setup.jsx:161
-msgid "Search templates…"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:193
-msgid "No templates match"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:198
-msgid "Blank form"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:199
-msgid "Start from scratch with an empty form"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:284
-#: src/builder/page/Setup.jsx:349
-msgid "Creating…"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:287
-msgid "Start from scratch"
-msgstr ""
-
-#. translators: %s: template name
-#: src/builder/page/Setup.jsx:314
-msgid "%s template screenshot"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:352
-msgid "Use template"
-msgstr ""
-
-#: src/builder/page/Setup.jsx:415
-#: src/builder/page/Setup.jsx:479
-msgid "Template preview"
-msgstr ""
-
 #. translators: %s: field label (e.g. "Embed Code")
-#: src/builder/page/Share.jsx:38
+#: build/builder/index.js:1
 msgid "Copy %s"
 msgstr ""
 
-#: src/builder/page/Share.jsx:71
+#: build/builder/index.js:1
 msgid "Direct link"
 msgstr ""
 
-#: src/builder/page/Share.jsx:73
+#: build/builder/index.js:1
 msgid "Share this URL so anyone can fill in your form directly."
 msgstr ""
 
-#: src/builder/page/Share.jsx:79
+#: build/builder/index.js:1
 msgid "Form URL"
 msgstr ""
 
-#: src/builder/page/Share.jsx:89
+#: build/builder/index.js:1
 msgid "Open"
 msgstr ""
 
-#: src/builder/page/Share.jsx:102
+#: build/builder/index.js:1
 msgid "Paste this shortcode into any WordPress page or post to embed the form."
 msgstr ""
 
-#: src/builder/page/Share.jsx:112
+#: build/builder/index.js:1
 msgid "Customize embed"
 msgstr ""
 
-#: src/builder/page/Share.jsx:128
-#: src/builder/page/Share.jsx:144
+#: build/builder/index.js:1
 msgid "e.g."
 msgstr ""
 
-#: src/builder/page/Share.jsx:156
+#: build/builder/index.js:1
 msgid "Gutenberg block"
 msgstr ""
 
-#: src/builder/page/Share.jsx:158
+#: build/builder/index.js:1
 msgid "The"
 msgstr ""
 
-#: src/builder/page/Share.jsx:158
+#: build/builder/index.js:1
 msgid "block is available in the WordPress block editor — no shortcode needed."
 msgstr ""
 
-#: src/builder/page/Share.jsx:164
+#: build/builder/index.js:1
 msgid "Open the page or post where you want to embed the form in the"
 msgstr ""
 
-#: src/builder/page/Share.jsx:164
+#: build/builder/index.js:1
 msgid "Block Editor"
 msgstr ""
 
-#: src/builder/page/Share.jsx:165
+#: build/builder/index.js:1
 msgid "Click the"
 msgstr ""
 
-#: src/builder/page/Share.jsx:165
+#: build/builder/index.js:1
 msgid "inserter and search for"
 msgstr ""
 
-#: src/builder/page/Share.jsx:165
+#: build/builder/index.js:1
 msgid "then select the block."
 msgstr ""
 
-#: src/builder/page/Share.jsx:166
+#: build/builder/index.js:1
 msgid "Choose this form from the dropdown in the block toolbar or sidebar."
 msgstr ""
 
-#: src/builder/page/Share.jsx:167
+#: build/builder/index.js:1
 msgid "In the block sidebar, set"
 msgstr ""
 
-#: src/builder/page/Share.jsx:167
+#: build/builder/index.js:1
 msgid "and"
 msgstr ""
 
-#: src/builder/page/Share.jsx:167
+#: build/builder/index.js:1
 msgid "Border Radius"
 msgstr ""
 
-#: src/builder/page/Share.jsx:167
+#: build/builder/index.js:1
 msgid "to match your design."
 msgstr ""
 
-#: src/builder/page/Share.jsx:168
+#: build/builder/index.js:1
 msgid "Publish or update the page — the form is live."
 msgstr ""
 
-#: src/form/FormApp.js:169
+#: build/form/index.js:1
 msgid "Powered by WP FlowForms"
 msgstr ""
 
-#: src/form/FormApp.js:632
-msgid "Could not reach the server. Please check your connection and try again."
+#: build/form/index.js:1
+msgid "This form has unpublished changes."
 msgstr ""
 
-#: src/form/FormApp.js:864
-msgid "Submit"
+#: build/form/index.js:1
+msgid "Publish from builder"
 msgstr ""
 
-#. translators: %s: number of seconds
-#: src/form/FormApp.js:922
-#: src/form/FormApp.js:931
-msgid "Redirecting in %s…"
+#: build/form/index.js:1
+msgid "Dismiss"
 msgstr ""
 
-#: src/form/FormApp.js:929
-msgid "Redirecting…"
-msgstr ""
-
-#: src/form/FormApp.js:939
-msgid "Check this out!"
-msgstr ""
-
-#. translators: %s: social network name (e.g. "Twitter")
-#: src/form/FormApp.js:976
-msgid "Share on %s"
-msgstr ""
-
-#: src/form/FormApp.js:998
-msgid "Submitting…"
-msgstr ""
-
-#: src/form/FormApp.js:1018
-msgid "Submission failed"
-msgstr ""
-
-#: src/form/FormApp.js:1029
-msgid "Try again"
-msgstr ""
-
-#: src/form/index.js:130
-msgid "Loading form…"
-msgstr ""
-
-#: src/form/index.js:142
-msgid "Sorry, this form could not be loaded. Please try again later."
-msgstr ""
-
-#: src/form/QuestionRenderer.js:84
+#: build/form/index.js:1
 msgid "This question type is not supported."
 msgstr ""
 
-#: src/form/QuestionRenderer.js:94
-#: src/form/QuestionRenderer.js:104
-msgid "Your answer here…"
+#: build/form/index.js:1
+msgid "Submitting…"
 msgstr ""
 
-#: src/form/QuestionRenderer.js:138
-msgid "Confirm email"
-msgstr ""
-
-#: src/form/QuestionRenderer.js:143
-msgid "Confirm your email"
-msgstr ""
-
-#: src/form/QuestionRenderer.js:342
-msgid "Type your answer…"
-msgstr ""
-
-#: src/form/QuestionRenderer.js:349
-msgid "Confirm"
-msgstr ""
-
-#. translators: %1$s: current rating value, %2$s: maximum rating value
-#: src/form/QuestionRenderer.js:447
-msgid "Rate %1$s out of %2$s"
-msgstr ""
-
-#: src/form/Validator.js:43
-msgid "Email addresses do not match."
-msgstr ""
-
-#. translators: %s: minimum number of options
-#: src/form/Validator.js:88
-msgid "Please select at least %s option."
-msgid_plural "Please select at least %s options."
-msgstr[0] ""
-msgstr[1] ""
-
-#. translators: %s: maximum number of options
-#: src/form/Validator.js:91
-msgid "Please select at most %s option."
-msgid_plural "Please select at most %s options."
-msgstr[0] ""
-msgstr[1] ""
-
-#: src/block/block.json
+#: build/block/block.json
 msgctxt "block title"
 msgid "FlowForm"
 msgstr ""
 
-#: src/block/block.json
+#: build/block/block.json
 msgctxt "block description"
 msgid "Embed a WP FlowForm on your page."
 msgstr ""
 
-#: src/block/block.json
+#: build/block/block.json
 msgctxt "block keyword"
 msgid "form"
 msgstr ""
 
-#: src/block/block.json
+#: build/block/block.json
 msgctxt "block keyword"
 msgid "flowform"
 msgstr ""
 
-#: src/block/block.json
+#: build/block/block.json
 msgctxt "block keyword"
 msgid "survey"
 msgstr ""
 
-#: src/block/block.json
+#: build/block/block.json
 msgctxt "block keyword"
 msgid "contact"
 msgstr ""

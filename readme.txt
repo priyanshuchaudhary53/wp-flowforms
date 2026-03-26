@@ -24,9 +24,9 @@ Unlike traditional form plugins that show every field at once, WP FlowForms guid
 * **Shortcode support** — `[flowform id="123"]` works anywhere
 * **Full-page form URLs** — dedicated landing pages for your forms
 * **Welcome & Thank You screens** — customisable start and end screens
-* **Built-in entries manager** — view, star, trash, and export responses in wp-admin
+* **Built-in entries manager** — view, star, and trash responses in wp-admin
 * **Email notifications** — notify your team when a form is submitted, with smart tag support
-* **Anti-spam protection** — honeypot, token verification, and optional Akismet integration
+* **Anti-spam protection** — built-in modern anti-spam protection, and optional Akismet integration
 * **Design customisation** — adjust colours, fonts, and layout to match your brand
 * **Free starter templates** — contact form, lead generation, customer feedback, testimonial
 
@@ -55,7 +55,7 @@ All form submissions are stored in your own WordPress database. Nothing is sent 
 
 1. Upload the `wp-flowforms` folder to `/wp-content/plugins/`
 2. Activate the plugin through the **Plugins** menu in WordPress
-3. Go to **FlowForms** in the admin sidebar to create your first form
+3. Go to **WP FlowForms** in the admin sidebar to create your first form
 4. Embed using the Gutenberg block, shortcode `[flowform id="123"]`, or share the full-page URL
 
 == Frequently Asked Questions ==
@@ -78,7 +78,7 @@ Any page builder that supports shortcodes will work with the `[flowform id="123"
 
 = Is Akismet required for anti-spam? =
 
-No. Akismet is optional. WP FlowForms includes honeypot and token-based spam protection out of the box. Akismet adds an extra layer if you have it installed and configured.
+No. Akismet is optional. WP FlowForms includes modern spam protection out of the box. Akismet adds an extra layer if you have it installed and configured.
 
 = Can I customise the form design? =
 
@@ -110,7 +110,7 @@ Changes you make in the builder are auto-saved to a draft. Your live form is onl
 * Email notifications with smart tags
 * Welcome and Thank You screens
 * Free starter templates: Contact Form, Lead Generation, Customer Feedback, Testimonial
-* Three-layer anti-spam: honeypot, token verification, Akismet integration
+* Three-layer anti-spam with Akismet integration
 * Design customisation panel
 * Draft/publish workflow
 * Full-page form URLs

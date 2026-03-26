@@ -53,8 +53,8 @@ class FlowForms_Form_Handler
         'can_export'          => false,
         'show_in_rest'        => true,
         'supports'            => ['title', 'author', 'revisions'],
-        'capability_type'     => 'wpff_forms',
-        'map_meta_cap'        => false,
+        // 'capability_type'     => 'wpff_forms',
+        // 'map_meta_cap'        => false,
       ]
     );
 

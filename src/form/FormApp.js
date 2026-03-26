@@ -212,6 +212,7 @@ export class FormApp {
 		this._stampBackground( this._resolveBgForState( this.state ) );
 		this._renderScreenImmediate();
 		this._updateNav();
+		this._renderDraftAlert();
 
 		document.addEventListener( 'flowform:previewToggle', ( e ) => {
 			this.state.previewMode = e.detail.skipRequired;
@@ -463,6 +464,43 @@ export class FormApp {
 			}, EXIT_DURATION + 50 );
 			this._poweredByHideTimer = t;
 		}
+	}
+
+	// ── Draft alert ───────────────────────────────────────────────────────────
+
+	_renderDraftAlert() {
+		if ( ! this.formData.has_draft ) return;
+
+		const alert = document.createElement( 'div' );
+		alert.className   = 'ff-draft-alert';
+		alert.setAttribute( 'role', 'alert' );
+
+		const msg = document.createElement( 'span' );
+		msg.className = 'ff-draft-alert__msg';
+
+		const text = document.createTextNode(
+			__( 'This form has unpublished changes.', 'wp-flowforms' ) + ' '
+		);
+		msg.appendChild( text );
+
+		if ( this.formData.builder_url ) {
+			const link = document.createElement( 'a' );
+			link.href        = this.formData.builder_url;
+			link.textContent = __( 'Publish from builder', 'wp-flowforms' );
+			link.className   = 'ff-draft-alert__link';
+			msg.appendChild( link );
+		}
+
+		const dismiss = document.createElement( 'button' );
+		dismiss.type        = 'button';
+		dismiss.className   = 'ff-draft-alert__dismiss';
+		dismiss.setAttribute( 'aria-label', __( 'Dismiss', 'wp-flowforms' ) );
+		dismiss.innerHTML   = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+		dismiss.addEventListener( 'click', () => alert.remove() );
+
+		alert.appendChild( msg );
+		alert.appendChild( dismiss );
+		this.container.appendChild( alert );
 	}
 
 	// ── State helpers ─────────────────────────────────────────────────────────

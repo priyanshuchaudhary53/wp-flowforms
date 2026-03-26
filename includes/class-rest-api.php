@@ -683,14 +683,21 @@ class FlowForms_REST_API
       return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
     }
 
-    return rest_ensure_response([
+    $response = [
       'id'       => $post->ID,
       'title'    => $post->post_title,
       'content'  => $content,
       'design'   => $slots['design'],
       'settings' => $slots['settings'],
       'token'    => wp_flowforms()->obj('token')->generate($form_id),
-    ]);
+    ];
+
+    if ( current_user_can( 'edit_posts' ) && ! empty( $slots['content']['draft'] ) ) {
+      $response['has_draft']   = true;
+      $response['builder_url'] = admin_url( 'admin.php?page=wpff_form_builder&form_id=' . $form_id );
+    }
+
+    return rest_ensure_response( $response );
   }
 
   /**
