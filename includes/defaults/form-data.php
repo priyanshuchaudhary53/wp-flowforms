@@ -4,7 +4,7 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 return [
 
-  // ── Welcome screen ────────────────────────────────────────────────────────
+  // Welcome screen
   'welcomeScreen' => [
     'content' => [
       'title'       => "Let's get started",
@@ -17,7 +17,7 @@ return [
     ],
   ],
 
-  // ── Thank you screen ──────────────────────────────────────────────────────
+  // Thank you screen
   'thankYouScreen' => [
     'content' => [
       'title'       => 'Thank you!',
@@ -31,7 +31,7 @@ return [
     ],
   ],
 
-  // ── Questions ─────────────────────────────────────────────────────────────
+  // Questions
   // Empty by default — blocks are added via AddBlockDialog at runtime.
   //
   // Each question follows this shape:

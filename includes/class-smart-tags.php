@@ -46,7 +46,7 @@ class FlowForms_Smart_Tags
     $answers   = $context['answers']   ?? [];
     $questions = $context['questions'] ?? [];
 
-    // ── Static tag replacements ───────────────────────────────────────────────
+    // Static tag replacements
     $result = str_replace(
       ['{admin_email}', '{site_name}', '{form_name}', '{entry_id}', '{date}'],
       [
@@ -59,7 +59,7 @@ class FlowForms_Smart_Tags
       $template
     );
 
-    // ── {all_fields} — all labels with their submitted values ─────────────────
+    // {all_fields} — all labels with their submitted values
     if (str_contains($result, '{all_fields}')) {
       $lines = [];
 
@@ -86,7 +86,7 @@ class FlowForms_Smart_Tags
       $result = str_replace('{all_fields}', implode("\n", $lines), $result);
     }
 
-    // ── {field:uuid} — single field value by question UUID ───────────────────
+    // {field:uuid} — single field value by question UUID
     $result = preg_replace_callback(
       '/\{field:([^}]+)\}/',
       function (array $matches) use ($answers): string {

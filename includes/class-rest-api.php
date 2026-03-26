@@ -753,13 +753,13 @@ class FlowForms_REST_API
       return new WP_Error('invalid_form', __('Form content could not be read.', 'wp-flowforms'), ['status' => 500]);
     }
 
-    // ── Layer 1: Honeypot ────────────────────────────────────────────────────
+    // Layer 1: Honeypot
     $honeypot = sanitize_text_field($request->get_param('wpff_hp') ?? '');
     if (! empty($honeypot)) {
       return new WP_REST_Response(['success' => false, 'message' => __('Something went wrong. Please try again.', 'wp-flowforms')], 200);
     }
 
-    // ── Layer 2: Token ───────────────────────────────────────────────────────
+    // Layer 2: Token
     $token = sanitize_text_field($request->get_param('wpff_token') ?? '');
     if (empty($token) || ! wp_flowforms()->obj('token')->verify($token, $form_id)) {
       error_log('[WP FlowForms] Token verification failed for form ID ' . $form_id);
@@ -795,7 +795,7 @@ class FlowForms_REST_API
 
     $sanitized = $this->sanitize_answers($answers, $questions);
 
-    // ── Layer 3: Akismet ─────────────────────────────────────────────────────
+    // Layer 3: Akismet
     if (FlowForms_Akismet::is_available()) {
       $akismet = new FlowForms_Akismet();
       $is_spam = $akismet->check($form_id, $sanitized, $questions);

@@ -20,7 +20,7 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
  */
 return [
 
-  // ── General ───────────────────────────────────────────────────────────────
+  // General
   'general' => [
 
     // Show a progress bar at the top of the form.
@@ -34,7 +34,7 @@ return [
 
   ],
 
-  // ── Email notifications ───────────────────────────────────────────────────
+  // Email notifications
   'email' => [
 
     // Global on/off switch for all notifications on this form.

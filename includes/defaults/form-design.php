@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
  */
 return [
 
-  // ── Colours ───────────────────────────────────────────────────────────────
+  // Colours
   'bg_color'           => '#ffffff',
   'title_color'        => '#111827', // gray-900
   'description_color'  => '#6b7280', // gray-500
@@ -31,11 +31,11 @@ return [
   'button_text_color'  => '#ffffff',
   'star_color'         => '#f59e0b', // amber-500
 
-  // ── Layout ────────────────────────────────────────────────────────────────
+  // Layout
   'alignment'          => 'left',    // left | center
   'border_radius'      => 'rounded', // angular | rounded | full
 
-  // ── Typography ────────────────────────────────────────────────────────────
+  // Typography
   'google_font'        => '',        // empty = use theme/system font
   'font_size'          => 'regular', // small | regular | large
 
