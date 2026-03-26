@@ -74,12 +74,13 @@
 /* Container */
 
 .flowform-container {
-  position:      relative;
-  overflow:      hidden;
-  width:         100%;
-  box-sizing:    border-box;
-  display: flex;
-  align-items: center;
+  position:       relative;
+  overflow:       hidden;
+  width:          100%;
+  box-sizing:     border-box;
+  display:        flex;
+  align-items:    center;
+  container-type: inline-size;
 }
 
 .flowform-container.ff-fullpage {
@@ -855,12 +856,15 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* Responsive */
 
-@media (max-width: 640px) {
+@container (max-width: 1024px) {
+  .flowform-container .ff-screen-inner { padding: 56px 32px 24px; max-width: 36rem; }
+
+  .flowform-container .ff-title { font-size: clamp(2rem, 6cqw, var(--fs-title, 2.25rem)); }
+}
+
+@container (max-width: 640px) {
   .flowform-container { border-radius: 0; min-height: 480px; }
 
-  .flowform-container .ff-screen-inner { padding: 56px 32px 24px; }
-
-  .flowform-container .ff-title { font-size: clamp(2rem, 6vw, var(--fs-title, 2.25rem)); }
 
   .flowform-container .ff-choices--grid_2 { grid-template-columns: 1fr; }
 
