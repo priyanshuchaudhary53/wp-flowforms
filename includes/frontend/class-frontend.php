@@ -664,8 +664,8 @@ html { margin-top: 0 !important; }
 	</h1>
 	<p class="wpff-standalone__desc">
 		<?php
-			/* translators: %s: form name */
 			printf(
+				/* translators: %s: form name */
 				esc_html__( '"%s" has been moved to the trash and is not visible to visitors. Restore it to make it available again.', 'wp-flowforms' ),
 				esc_html( $form_title )
 			);
@@ -785,8 +785,8 @@ html, body {
 	</h1>
 	<p class="wpff-standalone__desc">
 		<?php
-			/* translators: %s: form name */
 			printf(
+				/* translators: %s: form name */
 				esc_html__( '"%s" is not live yet. Publish it from the builder so visitors can fill it out.', 'wp-flowforms' ),
 				esc_html( $form_title )
 			);
