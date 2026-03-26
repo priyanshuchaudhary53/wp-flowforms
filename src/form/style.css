@@ -59,7 +59,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Background layer ────────────────────────────────────────────────────────── */
 
-.ff-bg-layer {
+.flowform-container .ff-bg-layer {
   position:       absolute;
   inset:          0;
   z-index:        0;
@@ -68,7 +68,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 
 /* Individual bg snapshot — fades in/out during cross-fade */
-.ff-bg-layer-inner {
+.flowform-container .ff-bg-layer-inner {
   position:            absolute;
   inset:               0;
   background-size:     cover;
@@ -76,12 +76,12 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 
 /* Split layout */
-.ff-bg-layer--split {
+.flowform-container .ff-bg-layer--split {
   display: flex;
 }
 
 /* Full-bleed global wallpaper behind the split panels */
-.ff-bg-global-wallpaper {
+.flowform-container .ff-bg-global-wallpaper {
   position:            absolute;
   inset:               0;
   background-size:     cover;
@@ -89,7 +89,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 
 /* Local image panel (50 %) */
-.ff-bg-split-panel {
+.flowform-container .ff-bg-split-panel {
   width:               50%;
   flex-shrink:         0;
   background-size:     cover;
@@ -98,14 +98,14 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   z-index:             1;
 }
 
-.ff-bg-split-panel--right {
+.flowform-container .ff-bg-split-panel--right {
   order:       1;
   margin-left: auto;
 }
 
 /* ── Content wrapper ─────────────────────────────────────────────────────────── */
 
-.ff-content-wrapper {
+.flowform-container .ff-content-wrapper {
   position:       absolute;
   inset:          0;
   z-index:        10;
@@ -115,13 +115,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 
 /* When split panel is on the left, content occupies the right 50 % */
-.ff-content-wrapper--split-left  { left:  50%; }
+.flowform-container .ff-content-wrapper--split-left  { left:  50%; }
 /* When split panel is on the right, content occupies the left 50 % */
-.ff-content-wrapper--split-right { right: 50%; }
+.flowform-container .ff-content-wrapper--split-right { right: 50%; }
 
 /* ── Fixed progress bar ──────────────────────────────────────────────────────── */
 
-.ff-progress-fixed {
+.flowform-container .ff-progress-fixed {
   position:        absolute;
   top:             0;
   left:            0;
@@ -134,7 +134,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   pointer-events:  none;
 }
 
-.ff-progress-track {
+.flowform-container .ff-progress-track {
   width:         100%;
   height:        3px;
   background:    rgba(0, 0, 0, 0.08);
@@ -142,7 +142,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   overflow:      hidden;
 }
 
-.ff-progress-bar {
+.flowform-container .ff-progress-bar {
   height:        100%;
   background:    var(--btn-color, #111827);
   border-radius: 100px;
@@ -150,7 +150,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   opacity:       0.7;
 }
 
-.ff-progress-label {
+.flowform-container .ff-progress-label {
   font-size:   var(--fs-hint, 0.75rem);
   color:       var(--hint-color, #9ca3af);
   text-align:  right;
@@ -159,7 +159,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Permanent bottom nav bar ────────────────────────────────────────────────── */
 
-.ff-nav-bar {
+.flowform-container .ff-nav-bar {
   position:        absolute;
   bottom:          0;
   right:           0;
@@ -177,7 +177,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Nav buttons ─────────────────────────────────────────────────────────────── */
 
-.ff-btn-nav {
+.flowform-container .ff-btn-nav {
   display:         inline-flex;
   align-items:     center;
   justify-content: center;
@@ -194,29 +194,29 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   transition:      border-color 0.15s, color 0.15s, background-color 0.15s, opacity 0.15s, scale 0.15s;
 }
 
-.ff-btn-nav:hover:not(:disabled) {
+.flowform-container .ff-btn-nav:hover:not(:disabled) {
   background-color: var(--btn-hover-color, #374151);
   scale: 1.05;
 }
 
-.ff-btn-nav:active:not(:disabled) {
+.flowform-container .ff-btn-nav:active:not(:disabled) {
   scale: 0.97;
 }
 
 /* Disabled state — button stays visible but muted, no pointer */
-.ff-btn-nav:disabled,
-.ff-btn-nav.ff-btn-nav--disabled {
+.flowform-container .ff-btn-nav:disabled,
+.flowform-container .ff-btn-nav.ff-btn-nav--disabled {
   opacity: 0.35;
   cursor:  not-allowed;
   /* pointer-events: none; */
 }
 
-.ff-btn-nav:focus {
+.flowform-container .ff-btn-nav:focus {
   outline: none;
   border: none
 }
 
-.ff-btn-nav:focus-visible {
+.flowform-container .ff-btn-nav:focus-visible {
   outline: var(--btn-color, #111827) solid 2px;
   outline-offset: 2px;
   z-index: 500;
@@ -224,7 +224,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Screen ─────────────────────────────────────────────────────────────────── */
 
-.ff-screen {
+.flowform-container .ff-screen {
   position:       relative;
   width:          100%;
   height:         100%;
@@ -234,7 +234,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   overflow-x:     hidden;
 }
 
-.ff-screen-inner {
+.flowform-container .ff-screen-inner {
   position:        relative;
   z-index:         1;
   display:         flex;
@@ -251,8 +251,8 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   box-sizing:      border-box;
 }
 
-.ff-screen-inner.ff-align-left   { align-items: flex-start; }
-.ff-screen-inner.ff-align-center { align-items: center; text-align: center; }
+.flowform-container .ff-screen-inner.ff-align-left   { align-items: flex-start; }
+.flowform-container .ff-screen-inner.ff-align-center { align-items: center; text-align: center; }
 
 /* ── Entry animations ─────────────────────────────────────────────────────────
  *
@@ -285,11 +285,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   }
 }
 
-.ff-entry--up {
+.flowform-container .ff-entry--up {
   animation: ff-enter-up 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.ff-entry--down {
+.flowform-container .ff-entry--down {
   animation: ff-enter-down 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -324,17 +324,17 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   }
 }
 
-.ff-exit--up {
+.flowform-container .ff-exit--up {
   animation: ff-exit-up 0.26s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
-.ff-exit--down {
+.flowform-container .ff-exit--down {
   animation: ff-exit-down 0.26s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 /* ── Typography ─────────────────────────────────────────────────────────────── */
 
-.ff-title {
+.flowform-container .ff-title {
   font-size:      var(--fs-title, 2.25rem);
   font-weight:    700;
   color:          var(--title-color, #111827);
@@ -343,34 +343,34 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   letter-spacing: -0.02em;
 }
 
-.ff-desc {
+.flowform-container .ff-desc {
   font-size:   var(--fs-body, 1rem);
   color:       var(--desc-color, #6b7280);
   margin:      0;
   line-height: 1.625;
 }
 
-.ff-hint {
+.flowform-container .ff-hint {
   font-size: var(--fs-hint, 0.875rem);
   color:     var(--hint-color, #9ca3af);
 }
 
 /* ── Question ───────────────────────────────────────────────────────────────── */
 
-.ff-question {
+.flowform-container .ff-question {
   width:          100%;
   display:        flex;
   flex-direction: column;
   gap:            20px;
 }
 
-.ff-question-header {
+.flowform-container .ff-question-header {
   display:        flex;
   flex-direction: column;
   gap:            8px;
 }
 
-.ff-question-title {
+.flowform-container .ff-question-title {
   font-size:   var(--fs-subtitle, 1.5rem);
   font-weight: 600;
   color:       var(--title-color, #111827);
@@ -378,16 +378,16 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   line-height: 1.375;
 }
 
-.ff-question-desc {
+.flowform-container .ff-question-desc {
   font-size:   var(--fs-body, 1rem);
   color:       var(--desc-color, #6b7280);
   margin:      0;
   line-height: 1.625;
 }
 
-.ff-question-input { width: 100%; }
+.flowform-container .ff-question-input { width: 100%; }
 
-.ff-question-error {
+.flowform-container .ff-question-error {
   font-size:   var(--fs-hint, 0.875rem);
   color:       #ef4444;
   margin:      0;
@@ -396,7 +396,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Inputs ─────────────────────────────────────────────────────────────────── */
 
-.ff-input {
+.flowform-container .ff-input {
   width:          100%;
   background:     transparent;
   border:         none;
@@ -411,11 +411,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   transition:     border-color 0.15s;
 }
 
-.ff-input::placeholder { color: var(--answer-color, #111827); opacity: 0.4; }
-.ff-input:focus { border-bottom-color: var(--btn-color, #111827); }
-.ff-textarea-input { resize: vertical; }
+.flowform-container .ff-input::placeholder { color: var(--answer-color, #111827); opacity: 0.4; }
+.flowform-container .ff-input:focus { border-bottom-color: var(--btn-color, #111827); }
+.flowform-container .ff-textarea-input { resize: vertical; }
 
-.ff-number-wrap {
+.flowform-container .ff-number-wrap {
   display:        flex;
   align-items:    center;
   gap:            8px;
@@ -423,56 +423,56 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   padding-bottom: 10px;
 }
 
-.ff-number-wrap .ff-number-input { border: none; padding: 0; flex: 1; }
+.flowform-container .ff-number-wrap .ff-number-input { border: none; padding: 0; flex: 1; }
 
-.ff-number-prefix,
-.ff-number-suffix { font-size: var(--fs-body, 1rem); color: var(--answer-color, #111827); }
+.flowform-container .ff-number-prefix,
+.flowform-container .ff-number-suffix { font-size: var(--fs-body, 1rem); color: var(--answer-color, #111827); }
 
 /* ── Choices ─────────────────────────────────────────────────────────────────── */
 
-.ff-choices {
+.flowform-container .ff-choices {
   display:   flex;
   gap:       10px;
   width:     max-content;
 }
 
-.ff-choices.ff-choices--horizontal {
+.flowform-container .ff-choices.ff-choices--horizontal {
   width: 100%;
 }
 
 /* ── Vertical list (default) ─────────────────────────────────────────────── */
-.ff-choices--vertical {
+.flowform-container .ff-choices--vertical {
   flex-direction: column;
   margin: 0 auto;
 }
-.ff-choices--vertical.ff-choices--left {
+.flowform-container .ff-choices--vertical.ff-choices--left {
   margin: 0;
 }
 
 /* ── Horizontal wrap ─────────────────────────────────────────────────────── */
-.ff-choices--horizontal {
+.flowform-container .ff-choices--horizontal {
   flex-wrap:       wrap;
   justify-content: center;
 }
-.ff-choices--horizontal.ff-choices--left {
+.flowform-container .ff-choices--horizontal.ff-choices--left {
   justify-content: flex-start;
 }
 
 /* ── 2-column grid ───────────────────────────────────────────────────────── */
-.ff-choices--grid_2 {
+.flowform-container .ff-choices--grid_2 {
   display:               grid;
   grid-template-columns: 1fr 1fr;
   margin: 0 auto;
 }
-.ff-choices--grid_2.ff-choices--left {
+.flowform-container .ff-choices--grid_2.ff-choices--left {
   margin: 0;
 }
 
-.ff-choices--vertical .ff-choice-item {
+.flowform-container .ff-choices--vertical .ff-choice-item {
   width: 100%;
 }
 
-.ff-choice-item {
+.flowform-container .ff-choice-item {
   display:       flex;
   align-items:   center;
   gap:           10px;
@@ -489,23 +489,23 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   box-sizing: border-box;
 }
 
-.ff-choice-item:hover {
+.flowform-container .ff-choice-item:hover {
   background-color: color-mix(in srgb, var(--answer-color, #111827) 8%, transparent);
 }
 
-.ff-choice-item.is-selected {
+.flowform-container .ff-choice-item.is-selected {
   background-color: color-mix(in srgb, var(--answer-color, #111827) 12%, transparent);
   border-color:     var(--btn-color, #111827);
 }
 
-.ff-choice-item:focus,
-.ff-choice-item:focus-visible {
+.flowform-container .ff-choice-item:focus,
+.flowform-container .ff-choice-item:focus-visible {
   outline: none;
   border: 1.5px solid var(--answer-color, #111827);
 }
 
-.ff-choice-radio,
-.ff-choice-checkbox {
+.flowform-container .ff-choice-radio,
+.flowform-container .ff-choice-checkbox {
   display:         flex;
   align-items:     center;
   justify-content: center;
@@ -517,14 +517,14 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   transition:      background-color 0.12s;
 }
 
-.ff-choice-item.is-selected .ff-choice-radio,
-.ff-choice-item.is-selected .ff-choice-checkbox {
+.flowform-container .ff-choice-item.is-selected .ff-choice-radio,
+.flowform-container .ff-choice-item.is-selected .ff-choice-checkbox {
   background-color: var(--btn-color, #111827);
   border-color:     var(--btn-color, #111827);
 }
 
-.ff-choice-item.is-selected .ff-choice-radio::after,
-.ff-choice-item.is-selected .ff-choice-checkbox::after {
+.flowform-container .ff-choice-item.is-selected .ff-choice-radio::after,
+.flowform-container .ff-choice-item.is-selected .ff-choice-checkbox::after {
   content:       '';
   display:       block;
   width:         6px;
@@ -533,20 +533,20 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   background:    var(--btn-text-color, #ffffff);
 }
 
-.ff-choice-label { line-height: 1.4; }
+.flowform-container .ff-choice-label { line-height: 1.4; }
 
 /* ── Yes / No ────────────────────────────────────────────────────────────────── */
 
-.ff-yes-no { display: flex; gap: 12px; }
-.ff-align-center .ff-yes-no { justify-content: center; } 
-.ff-yes-no-btn { min-width: 80px; justify-content: center; }
+.flowform-container .ff-yes-no { display: flex; gap: 12px; }
+.flowform-container .ff-align-center .ff-yes-no { justify-content: center; } 
+.flowform-container .ff-yes-no-btn { min-width: 80px; justify-content: center; }
 
 /* ── Rating ─────────────────────────────────────────────────────────────────── */
 
-.ff-rating { display: flex; flex-wrap: wrap; gap: 8px; }
-.ff-align-center .ff-rating { justify-content: center; }
+.flowform-container .ff-rating { display: flex; flex-wrap: wrap; gap: 8px; }
+.flowform-container .ff-align-center .ff-rating { justify-content: center; }
 
-.ff-rating-star {
+.flowform-container .ff-rating-star {
   background:  transparent;
   border:      none;
   padding:     0;
@@ -556,16 +556,16 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   transition:  transform 0.1s;
 }
 
-.ff-rating-star:hover { transform: scale(1.15); }
+.flowform-container .ff-rating-star:hover { transform: scale(1.15); }
 
-.ff-rating-star.is-active svg,
-.ff-rating-star svg[fill="currentColor"] { fill: var(--star-color, #f59e0b); }
-.ff-rating-star:focus,
-.ff-rating-star:focus-visible { outline: none; border: none; }
+.flowform-container .ff-rating-star.is-active svg,
+.flowform-container .ff-rating-star svg[fill="currentColor"] { fill: var(--star-color, #f59e0b); }
+.flowform-container .ff-rating-star:focus,
+.flowform-container .ff-rating-star:focus-visible { outline: none; border: none; }
 
 /* ── Primary button ─────────────────────────────────────────────────────────── */
 
-.ff-btn-primary {
+.flowform-container .ff-btn-primary {
   display:         inline-flex;
   align-items:     center;
   justify-content: center;
@@ -582,11 +582,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   text-decoration: none;
 }
 
-.ff-btn-primary:hover  { background-color: var(--btn-hover-color, #374151); scale: 1.03; }
-.ff-btn-primary:active { scale: 0.98; }
+.flowform-container .ff-btn-primary:hover  { background-color: var(--btn-hover-color, #374151); scale: 1.03; }
+.flowform-container .ff-btn-primary:active { scale: 0.98; }
 
-.ff-btn-primary:focus { border: none; outline: none; }
-.ff-btn-primary:focus-visible {
+.flowform-container .ff-btn-primary:focus { border: none; outline: none; }
+.flowform-container .ff-btn-primary:focus-visible {
   outline: var(--btn-color, #111827) solid 2px;
   outline-offset: 2px;
   z-index: 500;
@@ -594,11 +594,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Actions row ────────────────────────────────────────────────────────────── */
 
-.ff-actions { display: flex; align-items: center; gap: 16px; }
+.flowform-container .ff-actions { display: flex; align-items: center; gap: 16px; }
 
 /* ── Thank you ──────────────────────────────────────────────────────────────── */
 
-.ff-thankyou-icon {
+.flowform-container .ff-thankyou-icon {
   width:           56px;
   height:          56px;
   border-radius:   50%;
@@ -610,7 +610,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   flex-shrink:     0;
 }
 
-.ff-submission-error-icon {
+.flowform-container .ff-submission-error-icon {
   width:           56px;
   height:          56px;
   border-radius:   50%;
@@ -624,7 +624,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Submitting spinner ──────────────────────────────────────────────────────── */
 
-.ff-submitting-spinner {
+.flowform-container .ff-submitting-spinner {
   width:        40px;
   height:       40px;
   border:       3px solid rgba(0, 0, 0, 0.1);
@@ -636,7 +636,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Redirect countdown ──────────────────────────────────────────────────────── */
 
-.ff-redirect-countdown {
+.flowform-container .ff-redirect-countdown {
   font-size:  var(--fs-hint, 0.875rem);
   color:      var(--hint-color, #9ca3af);
   margin:     0;
@@ -644,7 +644,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Social share ────────────────────────────────────────────────────────────── */
 
-.ff-social-share {
+.flowform-container .ff-social-share {
   display:        flex;
   flex-direction: column;
   align-items:    inherit; /* inherits from ff-align-center / ff-align-left */
@@ -652,18 +652,18 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   margin-top:     8px;
 }
 
-.ff-social-share-label {
+.flowform-container .ff-social-share-label {
   font-size:  var(--fs-hint, 0.875rem);
   color:      var(--hint-color, #9ca3af);
   margin:     0;
 }
 
-.ff-social-share-btns {
+.flowform-container .ff-social-share-btns {
   display: flex;
   gap:     10px;
 }
 
-.ff-social-btn {
+.flowform-container .ff-social-btn {
   display:         inline-flex;
   align-items:     center;
   justify-content: center;
@@ -676,7 +676,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   transition:      border-color 0.15s, color 0.15s, background-color 0.15s;
 }
 
-.ff-social-btn:hover {
+.flowform-container .ff-social-btn:hover {
   border-color:     var(--btn-color, #111827);
   color:            var(--btn-color, #111827);
   background-color: color-mix(in srgb, var(--btn-color, #111827) 6%, transparent);
@@ -684,14 +684,14 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Email confirm ───────────────────────────────────────────────────────────── */
 
-.ff-email-confirm-wrap {
+.flowform-container .ff-email-confirm-wrap {
   display:        flex;
   flex-direction: column;
   gap:            16px;
   width:          100%;
 }
 
-.ff-confirm-label {
+.flowform-container .ff-confirm-label {
   font-size:   var(--fs-hint, 0.875rem);
   color:       var(--hint-color, #9ca3af);
   margin:      0 0 -8px;
@@ -699,19 +699,19 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── "Other" option ──────────────────────────────────────────────────────────── */
 
-.ff-other-wrap {
+.flowform-container .ff-other-wrap {
   /* matches sizing behaviour of sibling ff-choice-item pills */
   display: contents;
 }
 
 /* Idle and confirmed states look like regular choice pills */
-.ff-other-idle,
-.ff-other-confirmed {
+.flowform-container .ff-other-idle,
+.flowform-container .ff-other-confirmed {
   cursor: pointer;
 }
 
 /* Editing state — pill becomes an inline input row */
-.ff-other-editing {
+.flowform-container .ff-other-editing {
   display:     flex;
   align-items: center;
   gap:         8px;
@@ -719,7 +719,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   /* keep the is-selected highlight while editing */
 }
 
-.ff-other-inline-input {
+.flowform-container .ff-other-inline-input {
   flex:          1;
   min-width:     0;
   background:    transparent;
@@ -731,12 +731,12 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   padding:       0;
 }
 
-.ff-other-inline-input::placeholder {
+.flowform-container .ff-other-inline-input::placeholder {
   color:   var(--answer-color, #111827);
   opacity: 0.4;
 }
 
-.ff-other-tick {
+.flowform-container .ff-other-tick {
   display:         flex;
   align-items:     center;
   justify-content: center;
@@ -752,7 +752,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   transition:      background-color 0.12s, color 0.12s, border-color 0.12s;
 }
 
-.ff-other-tick:hover {
+.flowform-container .ff-other-tick:hover {
   background-color: var(--btn-color, #111827);
   border-color:     var(--btn-color, #111827);
   color:            var(--btn-text-color, #ffffff);
@@ -760,11 +760,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 /* ── Brightness overlay ──────────────────────────────────────────────────────── */
 
-.ff-bg-overlay { position: absolute; inset: 0; pointer-events: none; }
+.flowform-container .ff-bg-overlay { position: absolute; inset: 0; pointer-events: none; }
 
 /* ── Loading ────────────────────────────────────────────────────────────────── */
 
-.ff-loading {
+.flowform-container .ff-loading {
   display:         flex;
   flex-direction:  column;
   align-items:     center;
@@ -775,7 +775,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   width: 100%;
 }
 
-.ff-loading-spinner {
+.flowform-container .ff-loading-spinner {
   width:            32px;
   height:           32px;
   border:           3px solid rgba(0, 0, 0, 0.1);
@@ -784,9 +784,9 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   animation:        ff-spin 0.7s linear infinite;
 }
 
-.ff-loading-text { font-size: 0.875rem; color: var(--hint-color, #9ca3af); }
+.flowform-container .ff-loading-text { font-size: 0.875rem; color: var(--hint-color, #9ca3af); }
 
-.ff-error { width: 100%; padding: 32px; text-align: center; color: #ef4444; font-size: 0.875rem; }
+.flowform-container .ff-error { width: 100%; padding: 32px; text-align: center; color: #ef4444; font-size: 0.875rem; }
 
 /* ── Spinner keyframe ───────────────────────────────────────────────────────── */
 
@@ -797,31 +797,31 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 @media (max-width: 640px) {
   .flowform-container { border-radius: 0; min-height: 480px; }
 
-  .ff-screen-inner { padding: 56px 32px 24px; }
+  .flowform-container .ff-screen-inner { padding: 56px 32px 24px; }
 
-  .ff-title { font-size: clamp(2rem, 6vw, var(--fs-title, 2.25rem)); }
+  .flowform-container .ff-title { font-size: clamp(2rem, 6vw, var(--fs-title, 2.25rem)); }
 
-  .ff-choices--grid_2 { grid-template-columns: 1fr; }
+  .flowform-container .ff-choices--grid_2 { grid-template-columns: 1fr; }
 
-  .ff-nav-bar { padding: 0 16px; }
+  .flowform-container .ff-nav-bar { padding: 0 16px; }
 
   /* Collapse split — image becomes a faint wallpaper, content goes full-width */
-  .ff-bg-layer--split { display: block; }
+  .flowform-container .ff-bg-layer--split { display: block; }
 
-  .ff-bg-split-panel {
+  .flowform-container .ff-bg-split-panel {
     position: absolute;
     inset:    0;
     width:    100%;
     opacity:  0.2;
   }
 
-  .ff-content-wrapper--split-left,
-  .ff-content-wrapper--split-right { left: 0; right: 0; }
+  .flowform-container .ff-content-wrapper--split-left,
+  .flowform-container .ff-content-wrapper--split-right { left: 0; right: 0; }
 }
 
 /* ── Powered by WP FlowForms badge ──────────────────────────────────────────── */
 
-.ff-powered-by {
+.flowform-container .ff-powered-by {
   position:       absolute;
   bottom:         16px;
   left:           50%;
@@ -832,7 +832,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   display:        flex;
 }
 
-.ff-powered-by-link {
+.flowform-container .ff-powered-by-link {
   display:         inline-flex;
   align-items:     center;
   gap:             5px;
@@ -850,7 +850,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   color:   var(--btn-color, #111827);
 } */
 
-.ff-powered-by-icon {
+.flowform-container .ff-powered-by-icon {
   flex-shrink: 0;
   color:       inherit;
 }
