@@ -85,10 +85,10 @@ export function validate( question, answer, previewMode ) {
 			const minSel = settings.minSelections ?? 0;
 			const maxSel = settings.maxSelections ?? 0;
 			if ( minSel > 0 && answer.length < minSel ) {
-				return sprintf( _n( 'Please select at least %s option.', 'Please select at least %s options.', minSel, 'wp-flowforms' ), minSel );
+				return sprintf( /* translators: %s: minimum number of options */ _n( 'Please select at least %s option.', 'Please select at least %s options.', minSel, 'wp-flowforms' ), minSel );
 			}
 			if ( maxSel > 0 && answer.length > maxSel ) {
-				return sprintf( _n( 'Please select at most %s option.', 'Please select at most %s options.', maxSel, 'wp-flowforms' ), maxSel );
+				return sprintf( /* translators: %s: maximum number of options */ _n( 'Please select at most %s option.', 'Please select at most %s options.', maxSel, 'wp-flowforms' ), maxSel );
 			}
 			break;
 		}

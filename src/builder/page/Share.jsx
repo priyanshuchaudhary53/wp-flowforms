@@ -35,7 +35,7 @@ function CopyInputRow({ label, value }) {
       <InputGroup className="bg-gray-50!">
         <InputGroupInput readOnly value={value} className="font-mono text-xs text-muted-foreground" />
         <InputGroupAddon align="inline-end">
-          <InputGroupButton onClick={() => copy(value)} aria-label={ sprintf( __( "Copy %s", "wp-flowforms" ), label ) }>
+          <InputGroupButton onClick={() => copy(value)} aria-label={ sprintf( /* translators: %s: field label (e.g. "Embed Code") */ __( "Copy %s", "wp-flowforms" ), label ) }>
             {copied ? <Check className="text-green-500" /> : <Copy />}
           </InputGroupButton>
         </InputGroupAddon>

@@ -311,7 +311,7 @@ function TemplateCard({
         {thumbnailUrl ? (
           <img
             src={thumbnailUrl}
-            alt={ sprintf( __( "%s template screenshot", "wp-flowforms" ), name ) }
+            alt={ sprintf( /* translators: %s: template name */ __( "%s template screenshot", "wp-flowforms" ), name ) }
             className="w-full h-full object-cover"
           />
         ) : (

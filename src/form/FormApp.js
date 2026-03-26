@@ -919,7 +919,7 @@ export class FormApp {
 			const countdownEl       = document.createElement( 'p' );
 			countdownEl.className   = 'ff-redirect-countdown';
 			let remaining           = redirectDelay;
-			countdownEl.textContent = sprintf( __( 'Redirecting in %s…', 'wp-flowforms' ), remaining );
+			countdownEl.textContent = sprintf( /* translators: %s: number of seconds */ __( 'Redirecting in %s…', 'wp-flowforms' ), remaining );
 			inner.appendChild( countdownEl );
 
 			const timer = setInterval( () => {
@@ -973,7 +973,7 @@ export class FormApp {
 				btn.href      = url;
 				btn.target    = '_blank';
 				btn.rel       = 'noopener noreferrer';
-				btn.setAttribute( 'aria-label', sprintf( __( 'Share on %s', 'wp-flowforms' ), name ) );
+				btn.setAttribute( 'aria-label', sprintf( /* translators: %s: social network name (e.g. "Twitter") */ __( 'Share on %s', 'wp-flowforms' ), name ) );
 				btn.innerHTML = icon;
 				btnsWrap.appendChild( btn );
 			} );
