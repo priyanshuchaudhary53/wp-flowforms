@@ -27,7 +27,51 @@
   border-width: 0;
 }
 
-/* ── Container ───────────────────────────────────────────────────────────────── */
+/*
+ * Selectors use :where() so specificity is 0 — every .ff-* rule wins.
+ */
+
+:where(.flowform-container) *,
+:where(.flowform-container) *::before,
+:where(.flowform-container) *::after { box-sizing: border-box; }
+
+:where(.flowform-container p,
+       .flowform-container h1, .flowform-container h2, .flowform-container h3,
+       .flowform-container h4, .flowform-container h5, .flowform-container h6) {
+  margin: 0; padding: 0; font-size: inherit; font-weight: inherit;
+  line-height: inherit; color: inherit; border: none; background: transparent;
+}
+
+:where(.flowform-container ul, .flowform-container ol) { margin: 0; padding: 0; list-style: none; }
+
+:where(.flowform-container a) { color: inherit; text-decoration: none; background: transparent; }
+
+:where(.flowform-container button) {
+  margin: 0; padding: 0; border: none; background: transparent;
+  font-family: inherit; font-size: inherit; line-height: normal;
+  color: inherit; cursor: pointer; text-transform: none; letter-spacing: normal;
+  text-shadow: none; box-shadow: none; -webkit-appearance: none; appearance: none;
+}
+
+:where(.flowform-container input,
+       .flowform-container textarea,
+       .flowform-container select) {
+  margin: 0; padding: 0; border: none; background: transparent;
+  font-family: inherit; font-size: inherit; line-height: normal; color: inherit;
+  outline: none; box-shadow: none; text-shadow: none; letter-spacing: normal;
+  -webkit-appearance: none; appearance: none;
+}
+
+:where(.flowform-container img, .flowform-container svg) { display: block; max-width: 100%; border: none; }
+
+/* Restore browser default focus ring for any interactive element not explicitly styled. */
+.flowform-container button:focus-visible,
+.flowform-container input:focus-visible,
+.flowform-container textarea:focus-visible,
+.flowform-container select:focus-visible,
+.flowform-container a:focus-visible { outline: auto; }
+
+/* Container */
 
 .flowform-container {
   position:      relative;
@@ -57,7 +101,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   }
 }
 
-/* ── Background layer ────────────────────────────────────────────────────────── */
+/* Background layer */
 
 .flowform-container .ff-bg-layer {
   position:       absolute;
@@ -103,7 +147,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   margin-left: auto;
 }
 
-/* ── Content wrapper ─────────────────────────────────────────────────────────── */
+/* Content wrapper */
 
 .flowform-container .ff-content-wrapper {
   position:       absolute;
@@ -119,7 +163,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 /* When split panel is on the right, content occupies the left 50 % */
 .flowform-container .ff-content-wrapper--split-right { right: 50%; }
 
-/* ── Fixed progress bar ──────────────────────────────────────────────────────── */
+/* Fixed progress bar */
 
 .flowform-container .ff-progress-fixed {
   position:        absolute;
@@ -157,7 +201,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   line-height: 1;
 }
 
-/* ── Permanent bottom nav bar ────────────────────────────────────────────────── */
+/* Permanent bottom nav bar */
 
 .flowform-container .ff-nav-bar {
   position:        absolute;
@@ -175,7 +219,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   box-sizing:      border-box;
 }
 
-/* ── Nav buttons ─────────────────────────────────────────────────────────────── */
+/* Nav buttons */
 
 .flowform-container .ff-btn-nav {
   display:         inline-flex;
@@ -183,6 +227,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   justify-content: center;
   width:           32px;
   height:          32px;
+  padding:         4px;
   background:      var(--btn-color, #111827);
   color:           var(--btn-text-color, #ffffff);
   border:          none;
@@ -222,7 +267,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   z-index: 500;
 }
 
-/* ── Screen ─────────────────────────────────────────────────────────────────── */
+/* Screen */
 
 .flowform-container .ff-screen {
   position:       relative;
@@ -245,7 +290,6 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   max-width:       48rem;
   width:           100%;
   margin:          0 auto;
-  /* top padding clears progress bar; bottom padding is provided by nav bar via content-wrapper */
   padding:         72px 80px;
   gap:             24px;
   box-sizing:      border-box;
@@ -254,14 +298,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .flowform-container .ff-screen-inner.ff-align-left   { align-items: flex-start; }
 .flowform-container .ff-screen-inner.ff-align-center { align-items: center; text-align: center; }
 
-/* ── Entry animations ─────────────────────────────────────────────────────────
- *
- * --up   : used when navigating forward (next question / screen)
- * --down : used when navigating backward (previous question / screen)
- *
- * Applied per element via FormApp._animateEntry().
- * animationDelay is set inline (0ms, 80ms, 160ms, …).
- */
+/* animations */
 
 @keyframes ff-enter-up {
   from {
@@ -293,14 +330,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   animation: ff-enter-down 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ── Exit animations ──────────────────────────────────────────────────────────
- *
- * --up   : current screen slides up and fades out (forward navigation)
- * --down : current screen slides down and fades out (backward navigation)
- *
- * Applied to .ff-screen-inner via FormApp._animateExit().
- * Duration matches EXIT_DURATION (260ms) in FormApp.js.
- */
+/* Exit animations */
 
 @keyframes ff-exit-up {
   from {
@@ -332,9 +362,10 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   animation: ff-exit-down 0.26s cubic-bezier(0.4, 0, 1, 1) both;
 }
 
-/* ── Typography ─────────────────────────────────────────────────────────────── */
+/* Typography */
 
 .flowform-container .ff-title {
+  font-family:    inherit;
   font-size:      var(--fs-title, 2.25rem);
   font-weight:    700;
   color:          var(--title-color, #111827);
@@ -355,7 +386,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   color:     var(--hint-color, #9ca3af);
 }
 
-/* ── Question ───────────────────────────────────────────────────────────────── */
+/* Question */
 
 .flowform-container .ff-question {
   width:          100%;
@@ -371,6 +402,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 
 .flowform-container .ff-question-title {
+  font-family: inherit;
   font-size:   var(--fs-subtitle, 1.5rem);
   font-weight: 600;
   color:       var(--title-color, #111827);
@@ -394,7 +426,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   font-weight: 500;
 }
 
-/* ── Inputs ─────────────────────────────────────────────────────────────────── */
+/* Inputs */
 
 .flowform-container .ff-input {
   width:          100%;
@@ -412,7 +444,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 }
 
 .flowform-container .ff-input::placeholder { color: var(--answer-color, #111827); opacity: 0.4; }
-.flowform-container .ff-input:focus { border-bottom-color: var(--btn-color, #111827); }
+.flowform-container .ff-input:focus,
+.flowform-container .ff-input:focus-visible { 
+  border-bottom-color: var(--btn-color, #111827);
+  outline: none; 
+  background: transparent;
+  color: var(--answer-color, #111827);
+}
 .flowform-container .ff-textarea-input { resize: vertical; }
 
 .flowform-container .ff-number-wrap {
@@ -428,7 +466,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .flowform-container .ff-number-prefix,
 .flowform-container .ff-number-suffix { font-size: var(--fs-body, 1rem); color: var(--answer-color, #111827); }
 
-/* ── Choices ─────────────────────────────────────────────────────────────────── */
+/* Choices */
 
 .flowform-container .ff-choices {
   display:   flex;
@@ -440,7 +478,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   width: 100%;
 }
 
-/* ── Vertical list (default) ─────────────────────────────────────────────── */
+/* Vertical list (default) */
 .flowform-container .ff-choices--vertical {
   flex-direction: column;
   margin: 0 auto;
@@ -449,7 +487,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   margin: 0;
 }
 
-/* ── Horizontal wrap ─────────────────────────────────────────────────────── */
+/* Horizontal wrap */
 .flowform-container .ff-choices--horizontal {
   flex-wrap:       wrap;
   justify-content: center;
@@ -458,7 +496,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   justify-content: flex-start;
 }
 
-/* ── 2-column grid ───────────────────────────────────────────────────────── */
+/* 2-column grid */
 .flowform-container .ff-choices--grid_2 {
   display:               grid;
   grid-template-columns: 1fr 1fr;
@@ -535,13 +573,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 .flowform-container .ff-choice-label { line-height: 1.4; }
 
-/* ── Yes / No ────────────────────────────────────────────────────────────────── */
+/* Yes / No */
 
 .flowform-container .ff-yes-no { display: flex; gap: 12px; }
 .flowform-container .ff-align-center .ff-yes-no { justify-content: center; } 
 .flowform-container .ff-yes-no-btn { min-width: 80px; justify-content: center; }
 
-/* ── Rating ─────────────────────────────────────────────────────────────────── */
+/* Rating */
 
 .flowform-container .ff-rating { display: flex; flex-wrap: wrap; gap: 8px; }
 .flowform-container .ff-align-center .ff-rating { justify-content: center; }
@@ -563,7 +601,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .flowform-container .ff-rating-star:focus,
 .flowform-container .ff-rating-star:focus-visible { outline: none; border: none; }
 
-/* ── Primary button ─────────────────────────────────────────────────────────── */
+/* Primary button */
 
 .flowform-container .ff-btn-primary {
   display:         inline-flex;
@@ -592,11 +630,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   z-index: 500;
 }
 
-/* ── Actions row ────────────────────────────────────────────────────────────── */
+/* Actions row */
 
 .flowform-container .ff-actions { display: flex; align-items: center; gap: 16px; }
 
-/* ── Thank you ──────────────────────────────────────────────────────────────── */
+/* Thank you */
 
 .flowform-container .ff-thankyou-icon {
   width:           56px;
@@ -622,7 +660,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   flex-shrink:     0;
 }
 
-/* ── Submitting spinner ──────────────────────────────────────────────────────── */
+/* Submitting spinner */
 
 .flowform-container .ff-submitting-spinner {
   width:        40px;
@@ -634,7 +672,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   flex-shrink:  0;
 }
 
-/* ── Redirect countdown ──────────────────────────────────────────────────────── */
+/* Redirect countdown */
 
 .flowform-container .ff-redirect-countdown {
   font-size:  var(--fs-hint, 0.875rem);
@@ -642,12 +680,12 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   margin:     0;
 }
 
-/* ── Social share ────────────────────────────────────────────────────────────── */
+/* Social share */
 
 .flowform-container .ff-social-share {
   display:        flex;
   flex-direction: column;
-  align-items:    inherit; /* inherits from ff-align-center / ff-align-left */
+  align-items:    inherit;
   gap:            10px;
   margin-top:     8px;
 }
@@ -682,7 +720,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   background-color: color-mix(in srgb, var(--btn-color, #111827) 6%, transparent);
 }
 
-/* ── Email confirm ───────────────────────────────────────────────────────────── */
+.flowform-container .ff-social-btn:focus { outline: none; }
+.flowform-container .ff-social-btn:focus-visible {
+  outline:        var(--btn-color, #111827) solid 2px;
+  outline-offset: 2px;
+}
+
+/* Email confirm */
 
 .flowform-container .ff-email-confirm-wrap {
   display:        flex;
@@ -697,26 +741,22 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   margin:      0 0 -8px;
 }
 
-/* ── "Other" option ──────────────────────────────────────────────────────────── */
+/* "Other" option */
 
 .flowform-container .ff-other-wrap {
-  /* matches sizing behaviour of sibling ff-choice-item pills */
   display: contents;
 }
 
-/* Idle and confirmed states look like regular choice pills */
 .flowform-container .ff-other-idle,
 .flowform-container .ff-other-confirmed {
   cursor: pointer;
 }
 
-/* Editing state — pill becomes an inline input row */
 .flowform-container .ff-other-editing {
   display:     flex;
   align-items: center;
   gap:         8px;
   cursor:      default;
-  /* keep the is-selected highlight while editing */
 }
 
 .flowform-container .ff-other-inline-input {
@@ -729,6 +769,14 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   color:         var(--answer-color, #111827);
   font-family:   inherit;
   padding:       0;
+}
+
+.flowform-container .ff-other-inline-input:focus,
+.flowform-container .ff-other-inline-input:focus-visible {
+  background: transparent;
+  outline: none;
+  border: none;
+  color: var(--answer-color, #111827);
 }
 
 .flowform-container .ff-other-inline-input::placeholder {
@@ -758,11 +806,17 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   color:            var(--btn-text-color, #ffffff);
 }
 
-/* ── Brightness overlay ──────────────────────────────────────────────────────── */
+.flowform-container .ff-other-tick:focus { outline: none; }
+.flowform-container .ff-other-tick:focus-visible {
+  outline:        var(--btn-color, #111827) solid 2px;
+  outline-offset: 2px;
+}
+
+/* Brightness overlay */
 
 .flowform-container .ff-bg-overlay { position: absolute; inset: 0; pointer-events: none; }
 
-/* ── Loading ────────────────────────────────────────────────────────────────── */
+/* Loading */
 
 .flowform-container .ff-loading {
   display:         flex;
@@ -788,11 +842,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 .flowform-container .ff-error { width: 100%; padding: 32px; text-align: center; color: #ef4444; font-size: 0.875rem; }
 
-/* ── Spinner keyframe ───────────────────────────────────────────────────────── */
+/* Spinner keyframe */
 
 @keyframes ff-spin { to { transform: rotate(360deg); } }
 
-/* ── Responsive ─────────────────────────────────────────────────────────────── */
+/* Responsive */
 
 @media (max-width: 640px) {
   .flowform-container { border-radius: 0; min-height: 480px; }
@@ -819,7 +873,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   .flowform-container .ff-content-wrapper--split-right { left: 0; right: 0; }
 }
 
-/* ── Powered by WP FlowForms badge ──────────────────────────────────────────── */
+/* Powered by WP FlowForms badge */
 
 .flowform-container .ff-powered-by {
   position:       absolute;
@@ -849,6 +903,13 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   opacity: 1;
   color:   var(--btn-color, #111827);
 } */
+
+.flowform-container .ff-powered-by-link:focus { outline: none; }
+.flowform-container .ff-powered-by-link:focus-visible {
+  outline:        var(--btn-color, #111827) solid 2px;
+  outline-offset: 2px;
+  border-radius:  2px;
+}
 
 .flowform-container .ff-powered-by-icon {
   flex-shrink: 0;
