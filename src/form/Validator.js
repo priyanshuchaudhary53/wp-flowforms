@@ -6,6 +6,8 @@
  * navigate freely through required questions during testing.
  */
 
+import { __, _n, sprintf } from '@wordpress/i18n';
+
 /**
  * @param {Object}  question    The question object from form JSON.
  * @param {*}       answer      The current answer value.
@@ -21,7 +23,7 @@ export function validate( question, answer, previewMode ) {
 
 	// ── Required check ────────────────────────────────────────────────────────
 	if ( settings.required && isEmpty( answer, type ) ) {
-		return 'This field is required.';
+		return __( 'This field is required.', 'wp-flowforms' );
 	}
 
 	// If the field is empty and not required, nothing else to check.
@@ -35,28 +37,28 @@ export function validate( question, answer, previewMode ) {
 				const emailVal   = answer?.email   ?? '';
 				const confirmVal = answer?.confirm ?? '';
 				if ( ! isValidEmail( emailVal ) ) {
-					return 'Please enter a valid email address.';
+					return __( 'Please enter a valid email address.', 'wp-flowforms' );
 				}
 				if ( emailVal !== confirmVal ) {
-					return 'Email addresses do not match.';
+					return __( 'Email addresses do not match.', 'wp-flowforms' );
 				}
 			} else {
 				if ( ! isValidEmail( String( answer ) ) ) {
-					return 'Please enter a valid email address.';
+					return __( 'Please enter a valid email address.', 'wp-flowforms' );
 				}
 			}
 			break;
 
 		case 'number': {
 			const num    = Number( answer );
-			if ( isNaN( num ) ) return 'Please enter a valid number.';
+			if ( isNaN( num ) ) return __( 'Please enter a valid number.', 'wp-flowforms' );
 			const hasMin = settings.min !== undefined && settings.min !== '';
 			const hasMax = settings.max !== undefined && settings.max !== '';
 			if ( hasMin && num < Number( settings.min ) ) {
-				return `Value must be at least ${ settings.min }.`;
+				return sprintf( __( 'Value must be at least %s.', 'wp-flowforms' ), settings.min );
 			}
 			if ( hasMax && num > Number( settings.max ) ) {
-				return `Value must be at most ${ settings.max }.`;
+				return sprintf( __( 'Value must be at most %s.', 'wp-flowforms' ), settings.max );
 			}
 			break;
 		}
@@ -65,35 +67,35 @@ export function validate( question, answer, previewMode ) {
 			const steps = Math.min( settings.steps ?? 5, 10 );
 			const val   = Number( answer );
 			if ( ! Number.isInteger( val ) || val < 1 || val > steps ) {
-				return 'Please select a valid rating.';
+				return __( 'Please select a valid rating.', 'wp-flowforms' );
 			}
 			break;
 		}
 
 		case 'multiple_choice':
 			if ( ! Array.isArray( answer ) || answer.length === 0 ) {
-				return 'Please make a selection.';
+				return __( 'Please make a selection.', 'wp-flowforms' );
 			}
 			break;
 
 		case 'checkboxes': {
 			if ( ! Array.isArray( answer ) || answer.length === 0 ) {
-				return 'Please make a selection.';
+				return __( 'Please make a selection.', 'wp-flowforms' );
 			}
 			const minSel = settings.minSelections ?? 0;
 			const maxSel = settings.maxSelections ?? 0;
 			if ( minSel > 0 && answer.length < minSel ) {
-				return `Please select at least ${ minSel } option${ minSel > 1 ? 's' : '' }.`;
+				return sprintf( _n( 'Please select at least %s option.', 'Please select at least %s options.', minSel, 'wp-flowforms' ), minSel );
 			}
 			if ( maxSel > 0 && answer.length > maxSel ) {
-				return `Please select at most ${ maxSel } option${ maxSel > 1 ? 's' : '' }.`;
+				return sprintf( _n( 'Please select at most %s option.', 'Please select at most %s options.', maxSel, 'wp-flowforms' ), maxSel );
 			}
 			break;
 		}
 
 		case 'yes_no':
 			if ( answer !== 'yes' && answer !== 'no' ) {
-				return 'Please select yes or no.';
+				return __( 'Please select yes or no.', 'wp-flowforms' );
 			}
 			break;
 	}

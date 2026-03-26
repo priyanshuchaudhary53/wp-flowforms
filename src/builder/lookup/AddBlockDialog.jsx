@@ -10,6 +10,7 @@ import {
 import FIELDS from "../components/left-panel/fields";
 import { useFormStore } from "../store/useFormStore";
 import { useEffect } from "react";
+import { __ } from '@wordpress/i18n';
 
 export default function AddBlockDialog() {
   const addBlockDialogOpen = useFormStore((state) => state.addBlockDialogOpen);
@@ -43,10 +44,10 @@ export default function AddBlockDialog() {
   return (
     <CommandDialog open={addBlockDialogOpen} onOpenChange={handleOpenChange}>
       <Command>
-        <CommandInput placeholder="Search blocks..." />
+        <CommandInput placeholder={__( 'Search blocks...', 'wp-flowforms' )} />
         <CommandList>
-          <CommandEmpty>No blocks found.</CommandEmpty>
-          <CommandGroup heading="Blocks">
+          <CommandEmpty>{__( 'No blocks found.', 'wp-flowforms' )}</CommandEmpty>
+          <CommandGroup heading={__( 'Blocks', 'wp-flowforms' )}>
             {FIELDS.map((field) => (
               <CommandItem
                 key={field.type}

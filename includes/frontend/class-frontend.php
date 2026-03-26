@@ -152,6 +152,8 @@ class FlowForms_Frontend {
 			true
 		);
 
+		wp_set_script_translations( 'flowform-renderer', 'wp-flowforms', WP_FLOWFORMS_PATH . 'languages' );
+
 		wp_enqueue_style(
 			'flowform-renderer',
 			WP_FLOWFORMS_URL . 'build/form/style-index.css',
@@ -358,6 +360,7 @@ class FlowForms_Frontend {
 			: [ 'dependencies' => [], 'version' => WP_FLOWFORMS_VERSION ];
 
 		wp_enqueue_script( 'flowform-renderer', WP_FLOWFORMS_URL . 'build/form/index.js', $asset['dependencies'], $asset['version'], true );
+		wp_set_script_translations( 'flowform-renderer', 'wp-flowforms', WP_FLOWFORMS_PATH . 'languages' );
 		wp_enqueue_style( 'flowform-renderer', WP_FLOWFORMS_URL . 'build/form/style-index.css', [], $asset['version'] );
 
 		// Pass content and design separately — FormApp expects design at the top

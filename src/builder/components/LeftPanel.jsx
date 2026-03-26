@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useFormStore } from "../store/useFormStore";
 import BlockList from "./left-panel/BlockList";
 import ScreenButton from "./left-panel/ScreenButton";
@@ -17,7 +18,7 @@ export default function LeftPanel({ className }) {
       <div className="flex flex-col rounded-2xl px-3 pt-6 pb-4 h-full bg-white overflow-y-auto">
         {welcomeScreen && (
           <div className="shrink-0">
-            <p className="text-xs/5 text-gray-600">Welcome page</p>
+            <p className="text-xs/5 text-gray-600">{ __( 'Welcome page', 'wp-flowforms' ) }</p>
             <div className="mt-2">
               <ScreenButton
                 title={welcomeScreen.content?.title}
@@ -36,7 +37,7 @@ export default function LeftPanel({ className }) {
 
         {thankYouScreen && (
           <div className="mt-10 shrink-0">
-            <p className="text-xs/5 text-gray-600">Thank you page</p>
+            <p className="text-xs/5 text-gray-600">{ __( 'Thank you page', 'wp-flowforms' ) }</p>
             <div className="mt-2">
               <ScreenButton
                 title={thankYouScreen.content?.title}

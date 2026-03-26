@@ -37,6 +37,7 @@
  *  • Required-field error injected in-place — no re-render, no animation.
  */
 
+import { __, sprintf } from '@wordpress/i18n';
 import { renderQuestion }                       from './QuestionRenderer.js';
 import { validate }                             from './Validator.js';
 import { applyDesignTokens, resolveBackground } from './designTokens.js';
@@ -142,10 +143,10 @@ export class FormApp {
 				'<svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">' +
   				'<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />' +
 				'</svg>' +
-				'<span class="sr-only">Previous</span>' +
+				'<span class="sr-only">' + __( 'Previous', 'wp-flowforms' ) + '</span>' +
 			'</button>' +
 			'<button type="button" class="ff-btn-nav ff-btn-next">' +
-				'<span class="ff-nav-next-label sr-only">Next</span>' +
+				'<span class="ff-nav-next-label sr-only">' + __( 'Next', 'wp-flowforms' ) + '</span>' +
 				'<svg aria-hidden="true" width="16" height="16"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">' +
   				'<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />' +
 				'</svg>' +
@@ -165,7 +166,7 @@ export class FormApp {
 					'<svg class="ff-powered-by-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
 						'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' +
 					'</svg>' +
-					'Powered by WP FlowForms' +
+					__( 'Powered by WP FlowForms', 'wp-flowforms' ) +
 				'</span>';
 				// '</a>';
 			this.container.appendChild( this._poweredByEl );
@@ -429,7 +430,7 @@ export class FormApp {
 		this._nextBtn.classList.toggle( 'ff-btn-nav--disabled', isLast );
 
 		const label = this._nextBtn.querySelector( '.ff-nav-next-label' );
-		if ( label ) label.textContent = 'Next';
+		if ( label ) label.textContent = __( 'Next', 'wp-flowforms' );
 	}
 
 	// ── Powered-by badge visibility ──────────────────────────────────────────
@@ -606,7 +607,7 @@ export class FormApp {
 					this._lastDir = 'forward';
 					this._setState( {
 						currentScreen:   'submitError',
-						submitErrorMsg:  body.message || 'Something went wrong. Please try again.',
+						submitErrorMsg:  body.message || __( 'Something went wrong. Please try again.', 'wp-flowforms' ),
 						submitted:       false,
 					} );
 				}
@@ -615,7 +616,7 @@ export class FormApp {
 				this._lastDir = 'forward';
 				this._setState( {
 					currentScreen:  'submitError',
-					submitErrorMsg: body.message || 'Something went wrong. Please try again.',
+					submitErrorMsg: body.message || __( 'Something went wrong. Please try again.', 'wp-flowforms' ),
 					submitted:      false,
 				} );
 			} else {
@@ -628,7 +629,7 @@ export class FormApp {
 			this._lastDir = 'forward';
 			this._setState( {
 				currentScreen:  'submitError',
-				submitErrorMsg: 'Could not reach the server. Please check your connection and try again.',
+				submitErrorMsg: __( 'Could not reach the server. Please check your connection and try again.', 'wp-flowforms' ),
 				submitted:      false,
 			} );
 		}
@@ -820,7 +821,7 @@ export class FormApp {
 		const btn = document.createElement( 'button' );
 		btn.type        = 'button';
 		btn.className   = 'ff-btn-primary';
-		btn.textContent = c.buttonLabel || 'Start';
+		btn.textContent = c.buttonLabel || __( 'Start', 'wp-flowforms' );
 		btn.addEventListener( 'click', () => {
 			this._lastDir = 'forward';
 			if ( this._questions.length > 0 ) this._goToQuestion( 0, 'forward' );
@@ -860,9 +861,9 @@ export class FormApp {
 				'width="16" height="16" style="margin-right:6px;flex-shrink:0" aria-hidden="true">' +
 				'<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0' +
 				'l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>' +
-				'</svg>Submit';
+				'</svg>' + __( 'Submit', 'wp-flowforms' );
 		} else {
-			okBtn.textContent = q.content?.buttonLabel || 'OK';
+			okBtn.textContent = q.content?.buttonLabel || __( 'OK', 'wp-flowforms' );
 		}
 
 		okBtn.addEventListener( 'click', () => {
@@ -873,7 +874,7 @@ export class FormApp {
 
 		const hint = document.createElement( 'span' );
 		hint.className   = 'ff-hint';
-		hint.textContent = 'press Enter ↵';
+		hint.textContent = __( 'press Enter ↵', 'wp-flowforms' );
 		actions.appendChild( hint );
 
 		inner.appendChild( actions );
@@ -900,7 +901,7 @@ export class FormApp {
 
 		const h1 = document.createElement( 'h1' );
 		h1.className   = 'ff-title';
-		h1.textContent = c.title || 'Thank you!';
+		h1.textContent = c.title || __( 'Thank you!', 'wp-flowforms' );
 		inner.appendChild( h1 );
 
 		if ( c.description ) {
@@ -918,16 +919,16 @@ export class FormApp {
 			const countdownEl       = document.createElement( 'p' );
 			countdownEl.className   = 'ff-redirect-countdown';
 			let remaining           = redirectDelay;
-			countdownEl.textContent = `Redirecting in ${ remaining }…`;
+			countdownEl.textContent = sprintf( __( 'Redirecting in %s…', 'wp-flowforms' ), remaining );
 			inner.appendChild( countdownEl );
 
 			const timer = setInterval( () => {
 				remaining--;
 				if ( remaining <= 0 ) {
 					clearInterval( timer );
-					countdownEl.textContent = 'Redirecting…';
+					countdownEl.textContent = __( 'Redirecting…', 'wp-flowforms' );
 				} else {
-					countdownEl.textContent = `Redirecting in ${ remaining }…`;
+					countdownEl.textContent = sprintf( __( 'Redirecting in %s…', 'wp-flowforms' ), remaining );
 				}
 			}, 1000 );
 		}
@@ -935,14 +936,14 @@ export class FormApp {
 		// ── Social share buttons ──────────────────────────────────────────
 		if ( s.showSocialShare ) {
 			const shareUrl   = encodeURIComponent( window.location.href );
-			const shareTitle = encodeURIComponent( c.title || 'Check this out!' );
+			const shareTitle = encodeURIComponent( c.title || __( 'Check this out!', 'wp-flowforms' ) );
 
 			const shareWrap     = document.createElement( 'div' );
 			shareWrap.className = 'ff-social-share';
 
 			const shareLabel         = document.createElement( 'p' );
 			shareLabel.className     = 'ff-social-share-label';
-			shareLabel.textContent   = 'Share this form';
+			shareLabel.textContent   = __( 'Share this form', 'wp-flowforms' );
 			shareWrap.appendChild( shareLabel );
 
 			const btnsWrap     = document.createElement( 'div' );
@@ -972,7 +973,7 @@ export class FormApp {
 				btn.href      = url;
 				btn.target    = '_blank';
 				btn.rel       = 'noopener noreferrer';
-				btn.setAttribute( 'aria-label', `Share on ${ name }` );
+				btn.setAttribute( 'aria-label', sprintf( __( 'Share on %s', 'wp-flowforms' ), name ) );
 				btn.innerHTML = icon;
 				btnsWrap.appendChild( btn );
 			} );
@@ -994,7 +995,7 @@ export class FormApp {
 
 		const p = document.createElement( 'p' );
 		p.className   = 'ff-desc';
-		p.textContent = 'Submitting…';
+		p.textContent = __( 'Submitting…', 'wp-flowforms' );
 		inner.appendChild( p );
 	}
 
@@ -1014,18 +1015,18 @@ export class FormApp {
 
 		const h1 = document.createElement( 'h1' );
 		h1.className   = 'ff-title';
-		h1.textContent = 'Submission failed';
+		h1.textContent = __( 'Submission failed', 'wp-flowforms' );
 		inner.appendChild( h1 );
 
 		const p = document.createElement( 'p' );
 		p.className   = 'ff-desc';
-		p.textContent = this.state.submitErrorMsg || 'Something went wrong. Please try again.';
+		p.textContent = this.state.submitErrorMsg || __( 'Something went wrong. Please try again.', 'wp-flowforms' );
 		inner.appendChild( p );
 
 		const retryBtn = document.createElement( 'button' );
 		retryBtn.type        = 'button';
 		retryBtn.className   = 'ff-btn-primary';
-		retryBtn.textContent = 'Try again';
+		retryBtn.textContent = __( 'Try again', 'wp-flowforms' );
 		retryBtn.addEventListener( 'click', () => {
 			this._lastDir = 'back';
 			this._setState( {

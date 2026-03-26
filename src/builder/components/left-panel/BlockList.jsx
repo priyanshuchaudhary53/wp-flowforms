@@ -18,6 +18,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { GripVertical } from "lucide-react";
+import { __ } from '@wordpress/i18n';
 import { useFormStore } from "../../store/useFormStore";
 import FIELDS from "./fields";
 import BlockItemMenu from "./BlockItemMenu";
@@ -64,7 +65,7 @@ function BlockItem({ question, index }) {
         {...attributes}
         {...listeners}
         tabIndex={-1}
-        aria-label="Drag to reorder"
+        aria-label={__( 'Drag to reorder', 'wp-flowforms' )}
         className="h-full p-2 shrink-0 text-gray-400 hover:text-gray-600 cursor-grab active:cursor-grabbing touch-none focus:outline-none"
       >
         <GripVertical width={14} height={14} />
@@ -115,12 +116,12 @@ export default function BlockList({ questions, onAddClick }) {
   return (
     <div className="flex flex-col min-h-0 h-full">
       <div className="flex justify-between items-center shrink-0">
-        <p className="text-xs/5 text-gray-600">Blocks</p>
+        <p className="text-xs/5 text-gray-600">{__( 'Blocks', 'wp-flowforms' )}</p>
         <button
           onClick={onAddClick}
           className="text-gray-500 cursor-pointer hover:text-gray-600"
         >
-          <span className="sr-only">Add new block</span>
+          <span className="sr-only">{__( 'Add new block', 'wp-flowforms' )}</span>
           <PlusCircleIcon width={20} height={20} />
         </button>
       </div>
@@ -146,7 +147,7 @@ export default function BlockList({ questions, onAddClick }) {
             onClick={onAddClick}
             className="w-full text-gray-900 p-2 h-10 relative border border-dashed border-gray-400 cursor-pointer flex items-center justify-between text-xs rounded-md transition-all hover:bg-gray-50"
           >
-            <p className="ml-1 truncate">Add a block</p>
+            <p className="ml-1 truncate">{__( 'Add a block', 'wp-flowforms' )}</p>
           </button>
         )}
       </div>

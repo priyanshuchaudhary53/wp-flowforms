@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { StarIcon } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
 import { useFormStore } from "../store/useFormStore";
@@ -124,7 +125,7 @@ function WelcomePreview({ screen, design }) {
             className="font-bold leading-tight text-(--title-color)"
             style={{ fontSize: "var(--fs-title)" }}
           >
-            {c.title || "Welcome!"}
+            {c.title || __( 'Welcome!', 'wp-flowforms' )}
           </h1>
           {c.description && (
             <p
@@ -139,7 +140,7 @@ function WelcomePreview({ screen, design }) {
           className="px-6 py-2.5 text-white font-medium rounded-lg transition-colors btn-primary"
           style={{ fontSize: "var(--fs-body)" }}
         >
-          {c.buttonLabel || "Start"}
+          {c.buttonLabel || __( 'Start', 'wp-flowforms' )}
         </button>
       </div>
     </BgWrapper>
@@ -200,7 +201,7 @@ function ThankYouPreview({ screen, design }) {
             className="font-bold leading-tight text-(--title-color)"
             style={{ fontSize: "var(--fs-title)" }}
           >
-            {c.title || "Thank you!"}
+            {c.title || __( 'Thank you!', 'wp-flowforms' )}
           </h1>
           {c.description && (
             <p
@@ -223,13 +224,13 @@ function ThankYouPreview({ screen, design }) {
               className="text-(--hint-color)"
               style={{ fontSize: "var(--fs-hint)" }}
             >
-              Share this form
+              { __( 'Share this form', 'wp-flowforms' ) }
             </p>
             <div className="flex gap-2.5">
               {/* X / Twitter */}
               <div
                 className="flex items-center justify-center w-10 h-10 border-[1.5px] border-(--answer-color) text-(--answer-color) rounded-(--corner-radius)"
-                title="X / Twitter"
+                title={ __( 'X / Twitter', 'wp-flowforms' ) }
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -238,7 +239,7 @@ function ThankYouPreview({ screen, design }) {
               {/* Facebook */}
               <div
                 className="flex items-center justify-center w-10 h-10 border-[1.5px] border-(--answer-color) text-(--answer-color) rounded-(--corner-radius)"
-                title="Facebook"
+                title={ __( 'Facebook', 'wp-flowforms' ) }
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -247,7 +248,7 @@ function ThankYouPreview({ screen, design }) {
               {/* LinkedIn */}
               <div
                 className="flex items-center justify-center w-10 h-10 border-[1.5px] border-(--answer-color) text-(--answer-color) rounded-(--corner-radius)"
-                title="LinkedIn"
+                title={ __( 'LinkedIn', 'wp-flowforms' ) }
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
@@ -301,7 +302,7 @@ function QuestionPreview({ question, design }) {
             className="font-semibold leading-snug text-(--title-color)"
             style={{ fontSize: "var(--fs-subtitle)" }}
           >
-            {c.title || "Untitled question"}
+            {c.title || __( 'Untitled question', 'wp-flowforms' )}
           </h2>
           {c.description && (
             <p
@@ -320,13 +321,13 @@ function QuestionPreview({ question, design }) {
             className="px-5 py-2 font-medium text-white rounded-lg transition-colors btn-primary"
             style={{ fontSize: "var(--fs-body)" }}
           >
-            {c.buttonLabel || "OK"}
+            {c.buttonLabel || __( 'OK', 'wp-flowforms' )}
           </button>
           <span
             className="text-(--hint-color)"
             style={{ fontSize: "var(--fs-hint)" }}
           >
-            press Enter ↵
+            { __( 'press Enter ↵', 'wp-flowforms' ) }
           </span>
         </div>
       </div>
@@ -344,7 +345,7 @@ function QuestionInputMockup({ question, design }) {
     return (
       <input
         readOnly
-        placeholder={s.placeholder || "Your answer here..."}
+        placeholder={s.placeholder || __( 'Your answer here...', 'wp-flowforms' )}
         className="w-full border-b bg-transparent py-2 outline-none border-(--answer-color) placeholder:text-(--answer-color)/50"
         style={{ fontSize: "var(--fs-body)" }}
       />
@@ -355,7 +356,7 @@ function QuestionInputMockup({ question, design }) {
       <textarea
         readOnly
         rows={s.rows || 4}
-        placeholder={s.placeholder || "Your answer here..."}
+        placeholder={s.placeholder || __( 'Your answer here...', 'wp-flowforms' )}
         className="w-full border-b bg-transparent py-2 outline-none resize-none border-(--answer-color) placeholder:text-(--answer-color)/50"
         style={{ fontSize: "var(--fs-body)" }}
       />
@@ -366,7 +367,7 @@ function QuestionInputMockup({ question, design }) {
       <input
         readOnly
         type="email"
-        placeholder={s.placeholder || "name@example.com"}
+        placeholder={s.placeholder || __( 'name@example.com', 'wp-flowforms' )}
         className="w-full border-b bg-transparent py-2 outline-none border-(--answer-color) placeholder:text-(--answer-color)/50"
         style={{ fontSize: "var(--fs-body)" }}
       />
@@ -386,7 +387,7 @@ function QuestionInputMockup({ question, design }) {
         <input
           readOnly
           type="number"
-          placeholder={s.placeholder || "0"}
+          placeholder={s.placeholder || __( '0', 'wp-flowforms' )}
           className="flex-1 bg-transparent outline-none placeholder:text-(--answer-color)/50"
           style={{ fontSize: "var(--fs-body)" }}
         />
@@ -405,7 +406,7 @@ function QuestionInputMockup({ question, design }) {
     const options =
       Array.isArray(c.options) && c.options.length > 0
         ? c.options
-        : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
+        : [{ label: __( 'Option A', 'wp-flowforms' ) }, { label: __( 'Option B', 'wp-flowforms' ) }, { label: __( 'Option C', 'wp-flowforms' ) }];
 
     const layoutClass =
       s.layout === "horizontal" ? "flex flex-wrap" :
@@ -431,7 +432,7 @@ function QuestionInputMockup({ question, design }) {
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
-            {opt.label || <span className="opacity-40 italic">Untitled option</span>}
+            {opt.label || <span className="opacity-40 italic">{ __( 'Untitled option', 'wp-flowforms' ) }</span>}
           </label>
         ))}
         {s.allowOther && (
@@ -443,7 +444,7 @@ function QuestionInputMockup({ question, design }) {
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
-            <span className="italic">Other</span>
+            <span className="italic">{ __( 'Other', 'wp-flowforms' ) }</span>
           </div>
         )}
       </div>
@@ -453,7 +454,7 @@ function QuestionInputMockup({ question, design }) {
     const options =
       Array.isArray(c.options) && c.options.length > 0
         ? c.options
-        : [{ label: "Option A" }, { label: "Option B" }, { label: "Option C" }];
+        : [{ label: __( 'Option A', 'wp-flowforms' ) }, { label: __( 'Option B', 'wp-flowforms' ) }, { label: __( 'Option C', 'wp-flowforms' ) }];
 
     const layoutClass =
       s.layout === "horizontal" ? "flex flex-wrap" :
@@ -479,7 +480,7 @@ function QuestionInputMockup({ question, design }) {
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
-            {opt.label || <span className="opacity-40 italic">Untitled option</span>}
+            {opt.label || <span className="opacity-40 italic">{ __( 'Untitled option', 'wp-flowforms' ) }</span>}
           </label>
         ))}
         {s.allowOther && (
@@ -487,11 +488,11 @@ function QuestionInputMockup({ question, design }) {
             className={[
               s.layout === "vertical" ? "w-full" : "",
               "choice-item flex items-center gap-3 p-2.5 pr-4 border text-(--answer-color) border-(--answer-color) opacity-60"
-            ].filter(Boolean).join(" ")}  
+            ].filter(Boolean).join(" ")}
             style={{ fontSize: "var(--fs-body)" }}
           >
             <span className="choice-indicator w-4 h-4 border-2 shrink-0 border-(--answer-color)" />
-            <span className="italic">Other</span>
+            <span className="italic">{ __( 'Other', 'wp-flowforms' ) }</span>
           </div>
         )}
       </div>
@@ -519,13 +520,13 @@ function QuestionInputMockup({ question, design }) {
           className="choice-item flex items-center gap-2 px-5 py-2.5 border transition-[background-color] text-(--answer-color) border-(--answer-color) hover:bg-(--answer-color)/10"
           style={{ fontSize: "var(--fs-body)" }}
         >
-          {c.yesLabel || "Yes"}
+          {c.yesLabel || __( 'Yes', 'wp-flowforms' )}
         </button>
         <button
           className="choice-item flex items-center gap-2 px-5 py-2.5 border transition-[background-color] text-(--answer-color) border-(--answer-color) hover:bg-(--answer-color)/10"
           style={{ fontSize: "var(--fs-body)" }}
         >
-          {c.noLabel || "No"}
+          {c.noLabel || __( 'No', 'wp-flowforms' )}
         </button>
       </div>
     );
@@ -533,7 +534,7 @@ function QuestionInputMockup({ question, design }) {
 
   return (
     <p className="text-sm text-gray-400 italic">
-      No preview available for this block type.
+      { __( 'No preview available for this block type.', 'wp-flowforms' ) }
     </p>
   );
 }
@@ -556,7 +557,7 @@ function EmptyState() {
           d="M15 15l-6-6m0 0l6-6m-6 6h12"
         />
       </svg>
-      <p className="text-sm">Select a block on the left to preview it here</p>
+      <p className="text-sm">{ __( 'Select a block on the left to preview it here', 'wp-flowforms' ) }</p>
     </div>
   );
 }
@@ -566,7 +567,7 @@ function InsertButton({ position, onClick }) {
     <button
       onClick={onClick}
       title={
-        position === "before" ? "Insert block before" : "Insert block after"
+        position === "before" ? __( 'Insert block before', 'wp-flowforms' ) : __( 'Insert block after', 'wp-flowforms' )
       }
       className={[
         "absolute left-1/2 -translate-x-1/2 z-10",

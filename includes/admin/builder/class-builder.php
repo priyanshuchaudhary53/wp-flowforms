@@ -258,6 +258,8 @@ class FlowForms_Builder
       true
     );
 
+    wp_set_script_translations( 'wp-flowforms-builder', 'wp-flowforms', WP_FLOWFORMS_PATH . 'languages' );
+
     wp_enqueue_style(
       'wp-flowforms-builder',
       WP_FLOWFORMS_URL . 'build/builder/style-index.css',

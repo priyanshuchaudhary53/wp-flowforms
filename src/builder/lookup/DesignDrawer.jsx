@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { __ } from '@wordpress/i18n';
 import DesignField from "../components/design/DesignField";
 import DESIGN_SETTINGS from "../components/design/designSettings.jsx";
 import { Button } from "../components/ui/button";
@@ -142,9 +143,9 @@ export default function DesignDrawer() {
           onInteractOutside={(e) => { if (mediaOpenRef.current) e.preventDefault(); }}
         >
           <SheetHeader>
-            <SheetTitle>Design</SheetTitle>
+            <SheetTitle>{__( 'Design', 'wp-flowforms' )}</SheetTitle>
             <SheetDescription>
-              Customise colours, typography, and layout — or pick a theme to get started instantly
+              {__( 'Customise colours, typography, and layout — or pick a theme to get started instantly', 'wp-flowforms' )}
             </SheetDescription>
           </SheetHeader>
 
@@ -157,7 +158,7 @@ export default function DesignDrawer() {
                 className="w-full cursor-pointer flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-900 hover:bg-gray-50"
               >
                 <LayoutGridIcon width={16} height={16} className="stroke-2 shrink-0" />
-                Open theme gallery
+                {__( 'Open theme gallery', 'wp-flowforms' )}
               </button>
             </div>
 
@@ -197,7 +198,7 @@ export default function DesignDrawer() {
             className="flex flex-row items-center gap-2 justify-end"
           >
             <Button variant="outline" size="lg" onClick={handleCloseClick}>
-              Close
+              {__( 'Close', 'wp-flowforms' )}
             </Button>
             <Button
               type="button"
@@ -205,7 +206,7 @@ export default function DesignDrawer() {
               disabled={!designDirty}
               onClick={handleSaveClick}
             >
-              Save changes
+              {__( 'Save changes', 'wp-flowforms' )}
             </Button>
           </SheetFooter>
         </SheetContent>
@@ -218,10 +219,9 @@ export default function DesignDrawer() {
       >
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <DialogTitle>Save design changes?</DialogTitle>
+            <DialogTitle>{__( 'Save design changes?', 'wp-flowforms' )}</DialogTitle>
             <DialogDescription>
-              These changes will be saved directly to the published version of
-              your form and will be visible to users immediately.
+              {__( 'These changes will be saved directly to the published version of your form and will be visible to users immediately.', 'wp-flowforms' )}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -229,9 +229,9 @@ export default function DesignDrawer() {
               variant="outline"
               onClick={() => setConfirmDialog(null)}
             >
-              No, go back
+              {__( 'No, go back', 'wp-flowforms' )}
             </Button>
-            <Button onClick={handleSaveConfirm}>Yes, save</Button>
+            <Button onClick={handleSaveConfirm}>{__( 'Yes, save', 'wp-flowforms' )}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -243,10 +243,9 @@ export default function DesignDrawer() {
       >
         <DialogContent showCloseButton={false}>
           <DialogHeader>
-            <DialogTitle>Discard design changes?</DialogTitle>
+            <DialogTitle>{__( 'Discard design changes?', 'wp-flowforms' )}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to discard all unsaved design changes? The
-              canvas will revert to the last saved state.
+              {__( 'Are you sure you want to discard all unsaved design changes? The canvas will revert to the last saved state.', 'wp-flowforms' )}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -254,10 +253,10 @@ export default function DesignDrawer() {
               variant="outline"
               onClick={() => setConfirmDialog(null)}
             >
-              No, keep editing
+              {__( 'No, keep editing', 'wp-flowforms' )}
             </Button>
             <Button variant="destructive" onClick={handleDiscardConfirm}>
-              Yes, discard
+              {__( 'Yes, discard', 'wp-flowforms' )}
             </Button>
           </DialogFooter>
         </DialogContent>

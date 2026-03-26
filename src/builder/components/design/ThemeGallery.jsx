@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { __ } from '@wordpress/i18n';
 import {
   Dialog,
   DialogContent,
@@ -80,7 +81,7 @@ function ThemeCard({ theme, onApply }) {
             hovered ? "opacity-100" : "opacity-0",
           ].join(" ")}
         >
-          Apply →
+          {__( 'Apply →', 'wp-flowforms' )}
         </span>
       </div>
     </button>
@@ -101,11 +102,10 @@ export default function ThemeGallery({ open, onOpenChange, onApply }) {
         <div className="px-6 pt-6 pb-4 border-b border-gray-100">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold">
-              Theme Gallery
+              {__( 'Theme Gallery', 'wp-flowforms' )}
             </DialogTitle>
             <DialogDescription>
-              Pick a theme to instantly apply its colour palette to your form.
-              You can fine-tune individual colours afterwards.
+              {__( 'Pick a theme to instantly apply its colour palette to your form. You can fine-tune individual colours afterwards.', 'wp-flowforms' )}
             </DialogDescription>
           </DialogHeader>
         </div>

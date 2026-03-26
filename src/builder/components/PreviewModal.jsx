@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { __ } from '@wordpress/i18n';
 import { XMarkIcon, ArrowTopRightOnSquareIcon, ComputerDesktopIcon, DeviceTabletIcon, DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
 import { useFormStore } from "../store/useFormStore";
 
@@ -20,9 +21,9 @@ import { useFormStore } from "../store/useFormStore";
  */
 
 const DEVICES = [
-  { id: "desktop", label: "Desktop", width: "100%",   height: "100%",   icon: <ComputerDesktopIcon width={20} height={20} /> },
-  { id: "tablet",  label: "Tablet",  width: "768px",  height: "1024px", icon: <DeviceTabletIcon width={20} height={20} /> },
-  { id: "mobile",  label: "Mobile",  width: "390px",  height: "844px",  icon: <DevicePhoneMobileIcon width={20} height={20} /> },
+  { id: "desktop", label: __( 'Desktop', 'wp-flowforms' ), width: "100%",   height: "100%",   icon: <ComputerDesktopIcon width={20} height={20} /> },
+  { id: "tablet",  label: __( 'Tablet', 'wp-flowforms' ),  width: "768px",  height: "1024px", icon: <DeviceTabletIcon width={20} height={20} /> },
+  { id: "mobile",  label: __( 'Mobile', 'wp-flowforms' ),  width: "390px",  height: "844px",  icon: <DevicePhoneMobileIcon width={20} height={20} /> },
 ];
 
 export default function PreviewModal({ open, onClose }) {
@@ -87,7 +88,7 @@ export default function PreviewModal({ open, onClose }) {
       className="fixed inset-0 z-[9999] flex flex-col bg-white backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
-      aria-label="Form preview"
+      aria-label={ __( 'Form preview', 'wp-flowforms' ) }
     >
       {/* ── Toolbar ─────────────────────────────────────────────────────── */}
       <div className="flex-none flex items-center justify-between h-14 px-4 bg-white">
@@ -114,7 +115,7 @@ export default function PreviewModal({ open, onClose }) {
 
         {/* Centre label */}
         <span className="text-sm text-gray-600 font-medium tracking-wide uppercase">
-          Preview
+          { __( 'Preview', 'wp-flowforms' ) }
         </span>
 
         {/* Right actions */}
@@ -127,7 +128,7 @@ export default function PreviewModal({ open, onClose }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="h-8 w-8 flex items-center justify-center rounded-sm cursor-pointer text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
-                title="Open in new tab"
+                title={ __( 'Open in new tab', 'wp-flowforms' ) }
               >
                 <ArrowTopRightOnSquareIcon width={20} height={20} className="stroke-2" />
               </a>
@@ -137,7 +138,7 @@ export default function PreviewModal({ open, onClose }) {
             <button
               onClick={onClose}
               className="h-8 w-8 flex items-center justify-center rounded-sm cursor-pointer text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
-              aria-label="Close preview"
+              aria-label={ __( 'Close preview', 'wp-flowforms' ) }
             >
               <XMarkIcon width={24} height={24} className="stroke-2" />
             </button>
@@ -164,7 +165,7 @@ export default function PreviewModal({ open, onClose }) {
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-2xl">
               <div className="flex flex-col items-center gap-3 text-gray-400">
                 <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-                <span className="text-sm">Loading preview…</span>
+                <span className="text-sm">{ __( 'Loading preview…', 'wp-flowforms' ) }</span>
               </div>
             </div>
           )}
@@ -173,7 +174,7 @@ export default function PreviewModal({ open, onClose }) {
             <iframe
               ref={iframeRef}
               src={srcUrl}
-              title="Form preview"
+              title={ __( 'Form preview', 'wp-flowforms' ) }
               className="w-full h-full border-0"
               style={{ display: loaded ? "block" : "none" }}
               onLoad={() => {
@@ -187,7 +188,7 @@ export default function PreviewModal({ open, onClose }) {
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-2xl">
-              <p className="text-sm text-gray-500">Preview URL not available. Save the form first.</p>
+              <p className="text-sm text-gray-500">{ __( 'Preview URL not available. Save the form first.', 'wp-flowforms' ) }</p>
             </div>
           )}
         </div>

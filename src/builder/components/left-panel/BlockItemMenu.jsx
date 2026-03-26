@@ -1,4 +1,5 @@
 import { CopyIcon, EllipsisVerticalIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { __ } from '@wordpress/i18n';
 import { useFormStore } from "../../store/useFormStore";
 import {
   DropdownMenu,
@@ -34,7 +35,7 @@ export default function BlockItemMenu({ question }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="h-full p-2 shrink-0 text-gray-500 hover:text-gray-700 flex items-center justify-center cursor-pointer focus:outline-none">
-          <span className="sr-only">Open options</span>
+          <span className="sr-only">{__( 'Open options', 'wp-flowforms' )}</span>
           <EllipsisVerticalIcon width={14} height={14} />
         </button>
       </DropdownMenuTrigger>
@@ -42,18 +43,18 @@ export default function BlockItemMenu({ question }) {
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={handleEdit}>
             <PencilIcon />
-            Edit
+            {__( 'Edit', 'wp-flowforms' )}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={handleDuplicate}>
             <CopyIcon />
-            Duplicate
+            {__( 'Duplicate', 'wp-flowforms' )}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
             <TrashIcon />
-            Delete
+            {__( 'Delete', 'wp-flowforms' )}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

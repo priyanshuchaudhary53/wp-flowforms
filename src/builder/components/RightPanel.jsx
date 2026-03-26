@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useFormStore } from "../store/useFormStore";
 import BLOCK_SETTINGS from "./right-panel/blockSettings";
 import OptionsEditor from "./right-panel/OptionsEditor";
@@ -11,7 +12,7 @@ function SaveStatusIcon({ status }) {
         <svg className="w-4 h-4 animate-pulse text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 16v-8m0 0-3 3m3-3 3 3M6.75 19.5a4.5 4.5 0 0 1-1.455-8.766 5.25 5.25 0 0 1 10.338-1.036A3.75 3.75 0 0 1 17.25 19.5H6.75Z" />
         </svg>
-        <span className="text-gray-600 font-medium">Saving…</span>
+        <span className="text-gray-600 font-medium">{ __( 'Saving…', 'wp-flowforms' ) }</span>
       </span>
     );
   }
@@ -21,7 +22,7 @@ function SaveStatusIcon({ status }) {
         <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
         </svg>
-        <span className="text-gray-600 font-medium">Unsaved</span>
+        <span className="text-gray-600 font-medium">{ __( 'Unsaved', 'wp-flowforms' ) }</span>
       </span>
     );
   }
@@ -31,7 +32,7 @@ function SaveStatusIcon({ status }) {
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 1.332-7.257 3 3 0 0 0-3.758-3.848 5.25 5.25 0 0 0-10.233 2.33A4.502 4.502 0 0 0 2.25 15Z" />
         <path strokeLinecap="round" strokeLinejoin="round" d="m9 12.75 2 2 4-4" />
       </svg>
-      <span className="text-gray-600 font-medium">Saved</span>
+      <span className="text-gray-600 font-medium">{ __( 'Saved', 'wp-flowforms' ) }</span>
     </span>
   );
 }
@@ -145,15 +146,15 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
 
   // Dynamic label based on current layout
   const imageLabel = !image
-    ? "Background image"
+    ? __( 'Background image', 'wp-flowforms' )
     : bgLayout === "split"
-      ? "Split image"
-      : "Cover image";
+      ? __( 'Split image', 'wp-flowforms' )
+      : __( 'Cover image', 'wp-flowforms' );
 
   const openMediaFrame = () => {
     const frame = window.wp.media({
-      title: "Select Background Image",
-      button: { text: "Use this image" },
+      title: __( 'Select Background Image', 'wp-flowforms' ),
+      button: { text: __( 'Use this image', 'wp-flowforms' ) },
       multiple: false,
       library: { type: "image" },
     });
@@ -176,28 +177,28 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
     <fieldset className="rounded-lg border border-gray-200 bg-gray-50 overflow-hidden">
       {/* ── Group label ── */}
       <legend className="mx-3 px-1 text-xs font-semibold text-gray-400 uppercase tracking-wider select-none">
-        Background
+        { __( 'Background', 'wp-flowforms' ) }
       </legend>
 
       <div className="px-3 pb-4 pt-2 space-y-3">
         {/* ── Image picker ── */}
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-2">
-            Image
+            { __( 'Image', 'wp-flowforms' ) }
           </label>
 
           {image ? (
             <div className="relative rounded-md overflow-hidden border border-gray-200 group/img">
               <img
                 src={image.url}
-                alt="Background"
+                alt={ __( 'Background', 'wp-flowforms' ) }
                 className="w-full h-24 object-cover block"
               />
               <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/30 transition-colors" />
               <button
                 type="button"
                 onClick={removeImage}
-                title="Remove image"
+                title={ __( 'Remove image', 'wp-flowforms' ) }
                 className="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white hover:text-red-500 shadow"
               >
                 <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -207,10 +208,10 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
               <button
                 type="button"
                 onClick={openMediaFrame}
-                title="Replace image"
+                title={ __( 'Replace image', 'wp-flowforms' ) }
                 className="absolute bottom-1.5 right-1.5 px-2 py-0.5 text-xs font-medium rounded bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white shadow"
               >
-                Replace
+                { __( 'Replace', 'wp-flowforms' ) }
               </button>
             </div>
           ) : (
@@ -224,7 +225,7 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
                 <circle cx="7" cy="7" r="1.5" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2 13l4-4 3 3 3-4 4 5" />
               </svg>
-              <span className="text-xs font-medium">Select image</span>
+              <span className="text-xs font-medium">{ __( 'Select image', 'wp-flowforms' ) }</span>
             </button>
           )}
 
@@ -237,27 +238,27 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
         {image && (
           <div className="space-y-3 pt-3 border-t border-gray-100">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Layout</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">{ __( 'Layout', 'wp-flowforms' ) }</label>
               <select
                 value={bgLayout}
                 onChange={(e) => onSiblingChange("bgLayout", e.target.value)}
                 className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
               >
-                <option value="wallpaper">Wallpaper</option>
-                <option value="split">Split</option>
+                <option value="wallpaper">{ __( 'Wallpaper', 'wp-flowforms' ) }</option>
+                <option value="split">{ __( 'Split', 'wp-flowforms' ) }</option>
               </select>
             </div>
 
             {bgLayout === "split" && (
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Position</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">{ __( 'Position', 'wp-flowforms' ) }</label>
                 <select
                   value={bgPosition}
                   onChange={(e) => onSiblingChange("bgPosition", e.target.value)}
                   className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
                 >
-                  <option value="left">Left</option>
-                  <option value="right">Right</option>
+                  <option value="left">{ __( 'Left', 'wp-flowforms' ) }</option>
+                  <option value="right">{ __( 'Right', 'wp-flowforms' ) }</option>
                 </select>
               </div>
             )}
@@ -265,7 +266,7 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
             {bgLayout === "wallpaper" && (
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-gray-600">Brightness</label>
+                  <label className="text-xs font-medium text-gray-600">{ __( 'Brightness', 'wp-flowforms' ) }</label>
                   <span className="text-xs tabular-nums text-gray-400">
                     {bgBrightness > 0 ? `+${bgBrightness}` : bgBrightness}
                   </span>
@@ -291,8 +292,8 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
                   />
                 </div>
                 <div className="flex justify-between text-gray-400 mt-0.5" style={{ fontSize: "9px" }}>
-                  <span>Darker</span>
-                  <span>Brighter</span>
+                  <span>{ __( 'Darker', 'wp-flowforms' ) }</span>
+                  <span>{ __( 'Brighter', 'wp-flowforms' ) }</span>
                 </div>
               </div>
             )}
@@ -333,7 +334,7 @@ function BlockSettingsPanel({ blockType, blockContent, blockSettings, onFieldCha
   const schema = BLOCK_SETTINGS[blockType];
 
   if (!schema) {
-    return <p className="text-xs text-gray-400 px-4 pt-4">No settings available for this block.</p>;
+    return <p className="text-xs text-gray-400 px-4 pt-4">{ __( 'No settings available for this block.', 'wp-flowforms' ) }</p>;
   }
 
   return (
@@ -371,7 +372,7 @@ function EmptyState() {
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
           d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
       </svg>
-      <p className="text-xs leading-relaxed">Select a block to see its settings</p>
+      <p className="text-xs leading-relaxed">{ __( 'Select a block to see its settings', 'wp-flowforms' ) }</p>
     </div>
   );
 }
@@ -395,13 +396,13 @@ export default function RightPanel({ className }) {
     if (selectedBlock.type === "welcome") {
       blockId = "welcome";
       blockType = "welcome";
-      blockLabel = "Welcome screen";
+      blockLabel = __( 'Welcome screen', 'wp-flowforms' );
       blockContent  = form?.content?.welcomeScreen?.content  ?? {};
       blockSettings = form?.content?.welcomeScreen?.settings ?? {};
     } else if (selectedBlock.type === "thankYou") {
       blockId = "thankYou";
       blockType = "thankYou";
-      blockLabel = "Thank you screen";
+      blockLabel = __( 'Thank you screen', 'wp-flowforms' );
       blockContent  = form?.content?.thankYouScreen?.content  ?? {};
       blockSettings = form?.content?.thankYouScreen?.settings ?? {};
     } else if (selectedBlock.type === "question") {
@@ -427,7 +428,7 @@ export default function RightPanel({ className }) {
         {/* Header */}
         <div className="px-4 pt-4 pb-3 border-b border-gray-200 shrink-0 flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Settings</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{ __( 'Settings', 'wp-flowforms' ) }</p>
             {blockLabel && (
               <p className="text-sm font-medium text-gray-900 mt-0.5 truncate">{blockLabel}</p>
             )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { __ } from '@wordpress/i18n';
 import { PencilIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { useFormStore } from "../store/useFormStore";
 import {
@@ -56,29 +57,29 @@ export default function FormName() {
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <button className="w-6 h-6 flex text-gray-600 items-center justify-center cursor-pointer rounded-md transition-colors hover:text-gray-900 hover:bg-gray-100">
-                <span className="sr-only">Edit form name</span>
+                <span className="sr-only">{ __( 'Edit form name', 'wp-flowforms' ) }</span>
                 <PencilIcon width={14} height={14} />
               </button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Rename form</DialogTitle>
+                <DialogTitle>{ __( 'Rename form', 'wp-flowforms' ) }</DialogTitle>
               </DialogHeader>
               <Field
-                label="Rename your form"
+                label={ __( 'Rename your form', 'wp-flowforms' ) }
                 labelHidden={true}
                 id="form-name"
                 name="form-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleRename()}
-                placeholder="Enter your form name here..."
+                placeholder={ __( 'Enter your form name here...', 'wp-flowforms' ) }
               />
               {error && <Alert type="error" message={error} />}
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant="outline" size="lg">
-                    Cancel
+                    { __( 'Cancel', 'wp-flowforms' ) }
                   </Button>
                 </DialogClose>
                 <Button
@@ -86,7 +87,7 @@ export default function FormName() {
                   disabled={saving || !name.trim()}
                   size="lg"
                 >
-                  {saving ? "Saving..." : "Rename"}
+                  {saving ? __( 'Saving...', 'wp-flowforms' ) : __( 'Rename', 'wp-flowforms' )}
                 </Button>
               </DialogFooter>
             </DialogContent>

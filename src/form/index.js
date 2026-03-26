@@ -18,6 +18,7 @@
  *   { type: 'PREVIEW_TOGGLE', skipRequired: boolean } → toggle validation bypass
  */
 
+import { __ } from '@wordpress/i18n';
 import './style.css';
 import { FormApp } from './FormApp.js';
 import { applyDesignTokens } from './designTokens.js';
@@ -126,7 +127,7 @@ function showLoading( container ) {
 	container.innerHTML = `
 		<div class="ff-loading" role="status" aria-live="polite">
 			<div class="ff-loading-spinner" aria-hidden="true"></div>
-			<span class="ff-loading-text">Loading form\u2026</span>
+			<span class="ff-loading-text">${ __( 'Loading form\u2026', 'wp-flowforms' ) }</span>
 		</div>`;
 }
 
@@ -138,6 +139,6 @@ function showError( container, err ) {
 	console.error( '[FlowForms] Failed to load form:', err );
 	container.innerHTML = `
 		<div class="ff-error" role="alert">
-			<p>Sorry, this form could not be loaded. Please try again later.</p>
+			<p>${ __( 'Sorry, this form could not be loaded. Please try again later.', 'wp-flowforms' ) }</p>
 		</div>`;
 }
