@@ -107,6 +107,7 @@ final class WP_FlowForms
     // Admin/Dashboard only includes
     if (is_admin()) {
       require_once WP_FLOWFORMS_PATH . 'includes/admin/class-menu.php';
+      require_once WP_FLOWFORMS_PATH . 'includes/admin/settings/settings-api.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/class-settings.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/builder/class-builder.php';
       require_once WP_FLOWFORMS_PATH . 'includes/admin/forms/class-forms-overview.php';

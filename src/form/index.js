@@ -127,7 +127,7 @@ function showLoading( container ) {
 	container.innerHTML = `
 		<div class="ff-loading" role="status" aria-live="polite">
 			<div class="ff-loading-spinner" aria-hidden="true"></div>
-			<span class="ff-loading-text">${ __( 'Loading form\u2026', 'wp-flowforms' ) }</span>
+			<span class="ff-loading-text">${ window.flowformPublicData?.i18n?.loading ?? __( 'Loading form…', 'wp-flowforms' ) }</span>
 		</div>`;
 }
 
@@ -139,6 +139,6 @@ function showError( container, err ) {
 	console.error( '[FlowForms] Failed to load form:', err );
 	container.innerHTML = `
 		<div class="ff-error" role="alert">
-			<p>${ __( 'Sorry, this form could not be loaded. Please try again later.', 'wp-flowforms' ) }</p>
+			<p>${ window.flowformPublicData?.i18n?.loadError ?? __( 'Sorry, this form could not be loaded. Please try again later.', 'wp-flowforms' ) }</p>
 		</div>`;
 }

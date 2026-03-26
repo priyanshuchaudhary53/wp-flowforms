@@ -61,6 +61,28 @@ function wpff_decode($data)
 }
 
 /**
+ * Retrieve a value from the wpff_settings option.
+ *
+ * Uses static caching so the option is read from the database only once per request,
+ * regardless of how many times this function is called.
+ *
+ * @since 1.0.0
+ *
+ * @param string $key     Setting key (field ID).
+ * @param mixed  $default Value to return when the key does not exist.
+ * @return mixed The saved value, or $default if not set.
+ */
+function wpff_get_setting( string $key, $default = null ) {
+  static $settings = null;
+
+  if ( $settings === null ) {
+    $settings = get_option( 'wpff_settings', [] );
+  }
+
+  return array_key_exists( $key, $settings ) ? $settings[ $key ] : $default;
+}
+
+/**
  * Insert one or more key-value pairs into an array after a given key.
  *
  * @param array  $array    Source array.

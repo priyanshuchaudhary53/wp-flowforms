@@ -18,7 +18,7 @@
  * @returns {HTMLElement}
  */
 
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 // ── Shuffle cache ─────────────────────────────────────────────────────────────
 // Randomized option orders are computed once per question per page load and
@@ -91,7 +91,7 @@ function buildShortText( settings, answer, onChange ) {
 	const input = el( 'input' );
 	input.type        = 'text';
 	input.className   = 'ff-input ff-text-input';
-	input.placeholder = settings.placeholder || __( 'Your answer here…', 'wp-flowforms' );
+	input.placeholder = settings.placeholder || window.flowformPublicData?.i18n?.textPlaceholder || __( 'Your answer here…', 'wp-flowforms' );
 	input.value       = answer ?? '';
 	if ( settings.maxLength ) input.maxLength = settings.maxLength;
 	input.addEventListener( 'input', ( e ) => onChange( e.target.value ) );
@@ -101,7 +101,7 @@ function buildShortText( settings, answer, onChange ) {
 function buildLongText( settings, answer, onChange ) {
 	const textarea   = el( 'textarea' );
 	textarea.className   = 'ff-input ff-textarea-input';
-	textarea.placeholder = settings.placeholder || __( 'Your answer here…', 'wp-flowforms' );
+	textarea.placeholder = settings.placeholder || window.flowformPublicData?.i18n?.textPlaceholder || __( 'Your answer here…', 'wp-flowforms' );
 	textarea.rows        = settings.rows ?? 4;
 	textarea.value       = answer ?? '';
 	if ( settings.maxLength ) textarea.maxLength = settings.maxLength;
@@ -119,7 +119,7 @@ function buildEmail( settings, answer, onChange ) {
 		const input = el( 'input' );
 		input.type        = 'email';
 		input.className   = 'ff-input ff-email-input';
-		input.placeholder = settings.placeholder || __( 'name@example.com', 'wp-flowforms' );
+		input.placeholder = settings.placeholder || window.flowformPublicData?.i18n?.emailPlaceholder || __( 'name@example.com', 'wp-flowforms' );
 		input.value       = emailVal;
 		input.addEventListener( 'input', ( e ) => onChange( e.target.value ) );
 		return input;
@@ -131,16 +131,16 @@ function buildEmail( settings, answer, onChange ) {
 	const input1 = el( 'input' );
 	input1.type        = 'email';
 	input1.className   = 'ff-input ff-email-input';
-	input1.placeholder = settings.placeholder || __( 'name@example.com', 'wp-flowforms' );
+	input1.placeholder = settings.placeholder || window.flowformPublicData?.i18n?.emailPlaceholder || __( 'name@example.com', 'wp-flowforms' );
 	input1.value       = emailVal;
 
 	const label2 = el( 'label', 'ff-confirm-label' );
-	label2.textContent = __( 'Confirm email', 'wp-flowforms' );
+	label2.textContent = window.flowformPublicData?.i18n?.confirmEmailLabel ?? __( 'Confirm email', 'wp-flowforms' );
 
 	const input2 = el( 'input' );
 	input2.type        = 'email';
 	input2.className   = 'ff-input ff-email-input';
-	input2.placeholder = __( 'Confirm your email', 'wp-flowforms' );
+	input2.placeholder = window.flowformPublicData?.i18n?.confirmEmailPlaceholder ?? __( 'Confirm your email', 'wp-flowforms' );
 	input2.value       = confirmVal;
 
 	const emit = () => onChange( { email: input1.value, confirm: input2.value } );
@@ -314,7 +314,7 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti, q
 			pill.appendChild( indicator );
 
 			const label = el( 'span', 'ff-choice-label' );
-			label.textContent = __( 'Other', 'wp-flowforms' );
+			label.textContent = window.flowformPublicData?.i18n?.otherLabel ?? __( 'Other', 'wp-flowforms' );
 			pill.appendChild( label );
 
 			pill.addEventListener( 'click', () => {
@@ -339,14 +339,14 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti, q
 			const input = el( 'input' );
 			input.type        = 'text';
 			input.className   = 'ff-other-inline-input';
-			input.placeholder = __( 'Type your answer…', 'wp-flowforms' );
+			input.placeholder = window.flowformPublicData?.i18n?.otherPlaceholder ?? __( 'Type your answer…', 'wp-flowforms' );
 			input.value       = prefill;
 			pill.appendChild( input );
 
 			const tick = el( 'button', 'ff-other-tick' );
 			tick.type      = 'button';
 			tick.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
-			tick.setAttribute( 'aria-label', __( 'Confirm', 'wp-flowforms' ) );
+			tick.setAttribute( 'aria-label', window.flowformPublicData?.i18n?.otherConfirm ?? __( 'Confirm', 'wp-flowforms' ) );
 			pill.appendChild( tick );
 
 			// Stop label-click bubbling from the input or tick
@@ -444,7 +444,7 @@ function buildRating( settings, answer, onChange ) {
 	for ( let i = 1; i <= steps; i++ ) {
 		const btn = el( 'button', 'ff-rating-star' );
 		btn.type = 'button';
-		btn.setAttribute( 'aria-label', sprintf( /* translators: %1$s: current rating value, %2$s: maximum rating value */ __( 'Rate %1$s out of %2$s', 'wp-flowforms' ), i, steps ) );
+		btn.setAttribute( 'aria-label', ( window.flowformPublicData?.i18n?.ratingLabel ?? __( 'Rate {value} out of {max}', 'wp-flowforms' ) ).replace( '{value}', i ).replace( '{max}', steps ) );
 
 		const filled = i <= current;
 		btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${ filled ? 'currentColor' : 'none' }" stroke="currentColor" stroke-width="1.5" width="36" height="36" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>`;
@@ -476,8 +476,8 @@ function buildYesNo( content, answer, onChange ) {
 	// Keep a reference to both buttons for instant DOM toggling
 	const btns = {};
 
-	[ { val: 'yes', label: content.yesLabel || __( 'Yes', 'wp-flowforms' ) },
-	  { val: 'no',  label: content.noLabel  || __( 'No', 'wp-flowforms' ) } ].forEach( ( { val, label } ) => {
+	[ { val: 'yes', label: content.yesLabel || window.flowformPublicData?.i18n?.yes || __( 'Yes', 'wp-flowforms' ) },
+	  { val: 'no',  label: content.noLabel  || window.flowformPublicData?.i18n?.no  || __( 'No', 'wp-flowforms' ) } ].forEach( ( { val, label } ) => {
 		const btn = el( 'button', 'ff-choice-item ff-yes-no-btn' );
 		btn.type = 'button';
 		btn.textContent = label;
