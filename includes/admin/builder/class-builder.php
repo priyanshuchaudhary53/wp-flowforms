@@ -69,10 +69,12 @@ class FlowForms_Builder
       return;
     }
 
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin navigation params; no state change occurs from reading these.
     $form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : false;
 
     // Abort early if form ID is set, but the value is empty, 0 or any non-numeric value.
     if ($form_id === 0) {
+      // phpcs:enable WordPress.Security.NonceVerification.Recommended
       wp_die(esc_html__('It looks like the form you are trying to access is no longer available.', 'wp-flowforms'), 403);
     }
 
@@ -85,6 +87,7 @@ class FlowForms_Builder
       // The default view for the new form is the setup panel.
       $this->view = isset($_GET['view']) ? sanitize_key($_GET['view']) : 'setup';
     }
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     if ($this->view === 'setup' && ! current_user_can('manage_options')) {
       wp_die(esc_html__('Sorry, you are not allowed to create new forms.', 'wp-flowforms'), 403);
@@ -218,7 +221,7 @@ class FlowForms_Builder
     <div id="wpff-page-loader" aria-hidden="true">
       <div class="wpff-loader-content">
         <div class="wpff-loader-logo">
-          <img width="100" height="60" src="' . WP_FLOWFORMS_URL . 'assets/images/wpff-logo.svg" />
+          <img width="100" height="60" src="' . esc_url( WP_FLOWFORMS_URL ) . 'assets/images/wpff-logo.svg" />
         </div>
         <div class="wpff-loader-spinner" role="status">
           <span class="screen-reader-text">' . esc_html__('Loading…', 'wp-flowforms') . '</span>
@@ -272,14 +275,17 @@ class FlowForms_Builder
       'adminFormsUrl' => admin_url('admin.php?page=wpff_forms'),
       'builderUrl'    => admin_url('admin.php?page=wpff_form_builder'),
       'nonce'         => wp_create_nonce('wp_rest'),
+      // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation param; form ID is validated by absint() and checked in init().
       'formId'        => intval($_GET['form_id'] ?? 0),
       'view'          => $this->view,
+      // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Same read-only navigation param as above.
       'previewUrl'    => intval($_GET['form_id'] ?? 0)
         ? FlowForms_Frontend::get_preview_url(intval($_GET['form_id']))
         : '',
       'publicUrl'     => intval($_GET['form_id'] ?? 0)
         ? FlowForms_Frontend::get_public_url(intval($_GET['form_id']))
         : '',
+      // phpcs:enable WordPress.Security.NonceVerification.Recommended
       'templates'     => array_values(wp_flowforms()->obj('templates')->get_metadata()),
       'site'          => [
         'adminEmail' => get_option('admin_email'),

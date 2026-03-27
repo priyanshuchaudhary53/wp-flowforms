@@ -42,6 +42,7 @@ class FlowForms_Settings {
 
 		$this->save();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only tab navigation param; sanitized via sanitize_key().
 		$this->view = isset( $_GET['tab'] )
 			? sanitize_key( $_GET['tab'] )
 			: 'validation';
@@ -172,7 +173,8 @@ class FlowForms_Settings {
 				continue;
 			}
 
-			$raw         = $_POST[ $id ] ?? null;
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Unslash and sanitization are handled inside wpff_settings_sanitize_field() based on the field type.
+			$raw         	= isset( $_POST[ $id ] ) ? wp_unslash( $_POST[ $id ] ) : null;
 			$saved[ $id ] = wpff_settings_sanitize_field( $field, $raw, $saved[ $id ] ?? null );
 		}
 

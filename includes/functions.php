@@ -18,12 +18,14 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
  */
 function wpff_is_admin_page($slug)
 {
-  $page = ((array) ($_REQUEST['page'] ?? ''))[0];
+  // phpcs:disable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput -- Page routing param; read-only, no state change. Sanitized via sanitize_key() below.
+  $page = sanitize_key( (string) ( $_REQUEST['page'] ?? '' ) );
 
   if (
     strpos($page, 'wpff') === false ||
     ! is_admin()
   ) {
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
     return false;
   }
 
@@ -31,8 +33,10 @@ function wpff_is_admin_page($slug)
     (! empty($slug) && $_REQUEST['page'] !== 'wpff_' . $slug) ||
     (empty($slug) && $_REQUEST['page'] === 'wpff_form_builder')
   ) {
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
     return false;
   }
+  // phpcs:enable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
 
   return true;
 }

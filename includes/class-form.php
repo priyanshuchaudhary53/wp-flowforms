@@ -197,7 +197,7 @@ class FlowForms_Form_Handler
      *
      * @param array $args Arguments' array. Almost the same as for the `get_posts ()` function.
      */
-    $args = (array) apply_filters('wpforms_get_multiple_forms_args', $args);
+    $args = (array) apply_filters('wpff_get_multiple_forms_args', $args);
 
     $defaults = [
       'orderby'          => 'id',

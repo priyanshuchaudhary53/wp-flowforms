@@ -269,8 +269,11 @@ class FlowForms_Forms_Overview
 
     $this->list_table->prepare_items();
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only filter params for display logic; no state change.
     $is_empty = empty($this->list_table->items)
+      // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same as above.
       && empty($_GET['s'])
+      // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Same as above.
       && empty($_GET['status'])
       && $this->list_table->get_total_forms_count() === 0;
 

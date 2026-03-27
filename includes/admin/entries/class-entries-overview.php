@@ -298,7 +298,7 @@ class FlowForms_Entries_Overview
     }
 
     $entry_id  = absint($_POST['entry_id'] ?? 0);
-    $starred   = (bool) ($_POST['starred'] ?? false);
+    $starred   = (bool) sanitize_text_field( wp_unslash( $_POST['starred'] ?? '' ) );
     $entry_obj = wp_flowforms()->obj('entry');
 
     if (! $entry_id || ! $entry_obj) {
@@ -476,11 +476,11 @@ class FlowForms_Entries_Overview
 
         <h1 class="wp-heading-inline">
           <?php
-          printf(
+          echo esc_html( sprintf(
             /* translators: %d entry ID */
-            esc_html__('Entry #%d', 'wp-flowforms'),
-            $entry->id
-          );
+            __('Entry #%d', 'wp-flowforms'),
+            absint( $entry->id )
+          ) );
           ?>
         </h1>
 
@@ -539,7 +539,8 @@ class FlowForms_Entries_Overview
           ?>
             <div class="wpff-entry-field <?php echo $empty ? 'wpff-entry-field--empty' : ''; ?>">
               <dt class="wpff-entry-field__label">
-                <?php echo FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label); ?>
+                <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
+                echo FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label); ?>
               </dt>
               <dd class="wpff-entry-field__value">
                 <?php if ($empty) : ?>
@@ -554,7 +555,8 @@ class FlowForms_Entries_Overview
           <?php foreach ($entry->answers as $key => $value) : ?>
             <div class="wpff-entry-field">
               <dt class="wpff-entry-field__label">
-                <?php echo FlowForms_Field_Icons::label_with_icon('', $key); ?>
+                <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
+                echo FlowForms_Field_Icons::label_with_icon('', $key); ?>
               </dt>
               <dd class="wpff-entry-field__value">
                 <?php echo wp_kses_post($this->format_answer($value, 'short_text')); ?>

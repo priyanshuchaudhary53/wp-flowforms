@@ -44,10 +44,11 @@ class FlowForms_Entry_Handler
   {
     global $wpdb;
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Single-row lookup by PK on a custom table; caching not appropriate here.
     $row = $wpdb->get_row(
       $wpdb->prepare(
-        'SELECT * FROM %i WHERE id = %d',
-        self::table(),
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name is an internally generated trusted value from $wpdb->prefix.
+        'SELECT * FROM `' . esc_sql( self::table() ) . '` WHERE id = %d',
         $entry_id
       )
     );
@@ -146,25 +147,24 @@ class FlowForms_Entry_Handler
     $per_page = max(1, (int) $args['per_page']);
     $offset   = ($args['paged'] - 1) * $per_page;
 
-    $table = self::table();
+    $table = esc_sql( self::table() );
 
+    // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $where_sql, $orderby, $order are built from whitelisted values.
+    // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $count_sql and $rows_sql are built via $wpdb->prepare(); suppressed to allow the table name interpolation.
     $count_sql = $values
       ? $wpdb->prepare("SELECT COUNT(*) FROM `{$table}` {$where_sql}", ...$values)
       : "SELECT COUNT(*) FROM `{$table}` {$where_sql}";
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Dynamic query on a custom table with variable filters; result caching is not feasible.
     $total = (int) $wpdb->get_var($count_sql);
 
-    $rows_sql = $values
-      ? $wpdb->prepare(
-        "SELECT * FROM `{$table}` {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
-        ...array_merge($values, [$per_page, $offset])
-      )
-      : $wpdb->prepare(
-        "SELECT * FROM `{$table}` {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d",
-        $per_page,
-        $offset
-      );
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Query is built via $wpdb->prepare() inline; $table is esc_sql()'d; $where_sql, $orderby, $order are whitelisted.
+    $params   = array_merge($values, [$per_page, $offset]);
+    $sql      = "SELECT * FROM `{$table}` {$where_sql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $where_sql, $orderby, $order are whitelisted; values passed via prepare().
+    $rows_sql = $wpdb->prepare($sql, ...$params);
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- $rows_sql is the output of $wpdb->prepare() above.
     $rows = $wpdb->get_results($rows_sql);
 
     return [
@@ -184,10 +184,11 @@ class FlowForms_Entry_Handler
   public function get_counts(int $form_id = 0): array
   {
     global $wpdb;
-    $table = self::table();
+    $table = esc_sql( self::table() );
 
     $form_where  = $form_id ? $wpdb->prepare('AND form_id = %d', $form_id) : '';
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $form_where is built via $wpdb->prepare().
     $rows = $wpdb->get_results(
       "SELECT status, is_starred, is_read, COUNT(*) as cnt
              FROM `{$table}`
@@ -326,8 +327,9 @@ class FlowForms_Entry_Handler
     }
 
     $placeholders = implode(',', array_fill(0, count($ids), '%d'));
-    $table        = self::table();
+    $table        = esc_sql( self::table() );
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $placeholders are %d repeated; IDs are passed via prepare().
     return (int) $wpdb->query(
       $wpdb->prepare("DELETE FROM `{$table}` WHERE id IN ({$placeholders})", ...$ids)
     );
@@ -350,9 +352,10 @@ class FlowForms_Entry_Handler
       return 0;
     }
 
-    $table = self::table();
+    $table = esc_sql( self::table() );
 
     if ($form_id) {
+      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; values are passed via prepare().
       return (int) $wpdb->query(
         $wpdb->prepare(
           "DELETE FROM `{$table}` WHERE status = %s AND form_id = %d",
@@ -362,6 +365,7 @@ class FlowForms_Entry_Handler
       );
     }
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; value passed via prepare().
     return (int) $wpdb->query(
       $wpdb->prepare("DELETE FROM `{$table}` WHERE status = %s", $status)
     );
@@ -411,10 +415,11 @@ class FlowForms_Entry_Handler
       return;
     }
 
-    $table        = self::table();
+    $table        = esc_sql( self::table() );
     $placeholders = implode(',', array_fill(0, count($ids), '%d'));
     $format       = is_int($value) ? '%d' : '%s';
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $column is whitelisted; $format is controlled; values passed via prepare().
     $wpdb->query(
       $wpdb->prepare(
         "UPDATE `{$table}` SET `{$column}` = {$format} WHERE id IN ({$placeholders})",

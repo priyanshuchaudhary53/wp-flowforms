@@ -286,6 +286,7 @@ class FlowForms_REST_API
   {
     global $wpdb;
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update on $wpdb->posts to bypass wp_update_post() which triggers unneeded hooks; cache cleared below.
     $result = $wpdb->update(
       $wpdb->posts,
       ['post_content' => $json],
@@ -769,6 +770,7 @@ class FlowForms_REST_API
     // Layer 2: Token
     $token = sanitize_text_field($request->get_param('wpff_token') ?? '');
     if (empty($token) || ! wp_flowforms()->obj('token')->verify($token, $form_id)) {
+      // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional security event logging for token verification failures.
       error_log('[WP FlowForms] Token verification failed for form ID ' . $form_id);
       return new WP_REST_Response(['success' => false, 'message' => __('Security check failed. Please reload the page and try again.', 'wp-flowforms')], 200);
     }
@@ -884,6 +886,7 @@ class FlowForms_REST_API
     $replyto        = trim($smart_tags->resolve($notif['replyto'],        $context));
 
     if (! is_email($to)) {
+      // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery failures.
       error_log(sprintf(
         '[WP FlowForms] Email notification skipped — invalid recipient "%s" (form %d, entry %d)',
         $to, $form_id, $entry_id
@@ -905,11 +908,13 @@ class FlowForms_REST_API
     $sent = wp_mail($to, $subject, $message, $headers);
 
     if ($sent) {
+      // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery confirmation.
       error_log(sprintf(
         '[WP FlowForms] Email notification sent to %s (form %d, entry %d)',
         $to, $form_id, $entry_id
       ));
     } else {
+      // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery failures.
       error_log(sprintf(
         '[WP FlowForms] Email notification failed (form %d, entry %d)',
         $form_id, $entry_id
@@ -1248,13 +1253,14 @@ class FlowForms_REST_API
     global $wpdb;
 
     $table  = $wpdb->prefix . 'flowforms_entries';
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Direct insert on a custom plugin table; $wpdb->insert() handles all escaping.
     $result = $wpdb->insert(
       $table,
       [
         'form_id'    => $form_id,
         'answers'    => wp_json_encode($sanitized_answers, JSON_UNESCAPED_UNICODE),
         'ip_address' => $this->get_ip_address($request),
-        'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
+        'user_agent' => sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ),
         'status'     => $status,
         'created_at' => current_time('mysql'),
       ],
@@ -1280,7 +1286,8 @@ class FlowForms_REST_API
 
     foreach ($headers as $header) {
       if (! empty($_SERVER[$header])) {
-        $ip = trim(explode(',', $_SERVER[$header])[0]);
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Value is validated immediately by filter_var( FILTER_VALIDATE_IP ).
+      $ip = trim(explode(',', $_SERVER[$header])[0]);
         if (filter_var($ip, FILTER_VALIDATE_IP)) {
           return $ip;
         }

@@ -412,7 +412,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
 
     // phpcs:disable WordPress.Security.NonceVerification.Recommended
     $page    = $this->get_pagenum();
-    $order   = (isset($_GET['order']) && strtolower($_GET['order']) === 'asc') ? 'ASC' : 'DESC';
+    $order   = ( isset( $_GET['order'] ) && strtolower( sanitize_key( wp_unslash( $_GET['order'] ) ) ) === 'asc' ) ? 'ASC' : 'DESC';
     $orderby = isset($_GET['orderby']) ? sanitize_key($_GET['orderby']) : 'id';
     $search  = isset($_GET['s']) ? sanitize_text_field(wp_unslash($_GET['s'])) : '';
     $date    = isset($_GET['date']) ? sanitize_key($_GET['date']) : '';

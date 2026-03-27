@@ -40,15 +40,8 @@ class FlowForms_Frontend {
 	public function __construct() {
 		add_shortcode( 'flowform', [ $this, 'render_shortcode' ] );
 
-		// Primary: scan queried post content for form IDs before wp_head fires,
-		// then enqueue if any are found.
+		// Scan queried post content for form IDs then enqueue if any are found.
 		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_assets' ], 20 );
-
-		// Fallback: for forms rendered after wp_head (widgets, page builders, etc.)
-		// the shortcode/block will have called flag_form_id() by the time wp_footer
-		// fires. Enqueue at priority 1 so wp_print_footer_scripts() at priority 20
-		// picks up the JS bundle.
-		add_action( 'wp_footer', [ $this, 'maybe_late_enqueue_assets' ], 1 );
 
 		add_action( 'init', [ $this, 'register_rewrites' ] );
 		add_action( 'template_redirect', [ $this, 'handle_full_page_embed' ] );
@@ -120,7 +113,9 @@ class FlowForms_Frontend {
 	public function maybe_enqueue_assets(): void {
 		// Full-page embed and preview requests.
 		$query_form_id = absint( get_query_var( 'flowform_id', 0 ) );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing params; preview token is validated separately.
 		$preview_id    = absint( $_GET['id'] ?? 0 );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing param; no state change occurs from reading this.
 		$is_preview    = ! empty( $_GET['flowform_preview'] );
 
 		if ( $query_form_id ) {
@@ -140,38 +135,6 @@ class FlowForms_Frontend {
 		}
 
 		$this->enqueue_renderer_assets();
-	}
-
-	/**
-	 * Late-enqueue fallback for forms that were not found in the post content scan.
-	 *
-	 * Covers shortcodes/blocks rendered after wp_head() — e.g. in widget areas,
-	 * page builder templates, or custom theme output. By the time wp_footer fires,
-	 * every shortcode/block on the page has already called flag_form_id().
-	 *
-	 * The JS bundle is picked up by wp_print_footer_scripts() at priority 20.
-	 * The CSS cannot go through wp_head at this point, so it is injected directly.
-	 *
-	 * @since 1.0.0
-	 */
-	public function maybe_late_enqueue_assets(): void {
-		if ( $this->assets_enqueued || empty( $this->form_ids ) ) {
-			return;
-		}
-
-		$this->enqueue_renderer_assets();
-
-		// wp_head() has already fired — inject the stylesheet directly.
-		$asset_file = WP_FLOWFORMS_PATH . 'build/form/index.asset.php';
-		$version    = file_exists( $asset_file )
-			? ( require $asset_file )['version']
-			: WP_FLOWFORMS_VERSION;
-
-		printf(
-			'<link rel="stylesheet" id="flowform-renderer-css" href="%s?ver=%s" media="all">' . "\n",
-			esc_url( WP_FLOWFORMS_URL . 'build/form/style-index.css' ),
-			esc_attr( $version )
-		);
 	}
 
 	/**
@@ -239,8 +202,9 @@ class FlowForms_Frontend {
 			$asset['version']
 		);
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview flag is a read-only routing param; token is validated separately by verify_preview_token().
 		$is_preview  = ! empty( $_GET['flowform_preview'] );
-		$preview_ok  = $is_preview && $this->verify_preview_token( $_GET['token'] ?? '' );
+		$preview_ok  = $is_preview && $this->verify_preview_token( sanitize_text_field( wp_unslash( $_GET['token'] ?? '' ) ) );
 
 		$hp_labels = [ 'Name', 'Email', 'Phone', 'Website', 'Comment', 'Message' ];
 
@@ -376,9 +340,10 @@ class FlowForms_Frontend {
 
 		$this->flag_form_id( $form_id );
 		$this->enqueue_renderer_assets();
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Intentionally firing the core WP hook to trigger registered enqueue callbacks.
 		do_action( 'wp_enqueue_scripts' );
 
-		$this->render_full_page( $form_id, esc_html( $post->post_title ) );
+		$this->render_full_page( $form_id, $post->post_title );
 		exit;
 	}
 
@@ -389,11 +354,13 @@ class FlowForms_Frontend {
 	 * @since 1.0.0
 	 */
 	public function handle_preview(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview routing param; token is validated via wp_verify_nonce() in verify_preview_token().
 		if ( empty( $_GET['flowform_preview'] ) ) {
 			return;
 		}
 
-		$token = sanitize_text_field( $_GET['token'] ?? '' );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Token is sanitized and passed to wp_verify_nonce() immediately.
+		$token = sanitize_text_field( wp_unslash( $_GET['token'] ?? '' ) );
 
 		if ( ! $this->verify_preview_token( $token ) ) {
 			wp_die(
@@ -413,6 +380,7 @@ class FlowForms_Frontend {
 		}
 
 		// Template preview (no real post)
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Token is already verified above via wp_verify_nonce().
 		$transient_key = sanitize_key( $_GET['template_preview_key'] ?? '' );
 
 		if ( $transient_key ) {
@@ -431,6 +399,7 @@ class FlowForms_Frontend {
 		}
 
 		// Regular form preview
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Token is already verified above via wp_verify_nonce().
 		$form_id = absint( $_GET['id'] ?? 0 );
 
 		if ( ! $form_id ) {
@@ -455,9 +424,10 @@ class FlowForms_Frontend {
 		// reads $_GET['flowform_preview'] and verifies the token.
 		$this->flag_form_id( $form_id );
 		$this->enqueue_renderer_assets();
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Intentionally firing the core WP hook to trigger registered enqueue callbacks.
 		do_action( 'wp_enqueue_scripts' );
 
-		$this->render_full_page( $form_id, esc_html( $post->post_title ), true );
+		$this->render_full_page( $form_id, $post->post_title, true );
 		exit;
 	}
 
@@ -499,6 +469,7 @@ class FlowForms_Frontend {
 			'templateDesign'  => $design,
 		] );
 
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Intentionally firing the core WP hook to trigger registered enqueue callbacks.
 		do_action( 'wp_enqueue_scripts' );
 		?>
 <!DOCTYPE html>
@@ -510,12 +481,12 @@ class FlowForms_Frontend {
 <title><?php esc_html_e( 'Template Preview', 'wp-flowforms' ); ?></title>
 <?php wp_head(); ?>
 <style>
-html, body { margin: 0 !important; padding: 0 !important; height: 100%; overflow: hidden; background: <?php echo $bg; ?>; }
+html, body { margin: 0 !important; padding: 0 !important; height: 100%; overflow: hidden; background: <?php echo esc_attr( $bg ); ?>; }
 html { margin-top: 0 !important; }
 #flowform-full-page {
 	min-height: 100vh; display: flex; align-items: center; justify-content: center;
-	padding: 32px 16px; background-color: <?php echo $bg; ?>;
-	--btn-color: <?php echo $btn; ?>; --hint-color: <?php echo $hint; ?>;
+	padding: 32px 16px; background-color: <?php echo esc_attr( $bg ); ?>;
+	--btn-color: <?php echo esc_attr( $btn ); ?>; --hint-color: <?php echo esc_attr( $hint ); ?>;
 }
 </style>
 </head>
@@ -558,7 +529,7 @@ html { margin-top: 0 !important; }
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title><?php echo $title; ?></title>
+<title><?php echo esc_html( $title ); ?></title>
 <?php wp_head(); ?>
 <style>
 html, body {
@@ -566,7 +537,7 @@ html, body {
 	padding: 0 !important;
 	height: 100%;
 	overflow: hidden;
-	background: <?php echo $bg; ?>;
+	background: <?php echo esc_attr( $bg ); ?>;
 }
 html { margin-top: 0 !important; }
 #flowform-full-page {
@@ -577,15 +548,16 @@ html { margin-top: 0 !important; }
 	padding: 32px 16px;
 	position: relative;
 	z-index: 99999;
-	background-color: <?php echo $bg; ?>;
-	--btn-color: <?php echo $btn; ?>;
-	--hint-color: <?php echo $hint; ?>;
+	background-color: <?php echo esc_attr( $bg ); ?>;
+	--btn-color: <?php echo esc_attr( $btn ); ?>;
+	--hint-color: <?php echo esc_attr( $hint ); ?>;
 }
 </style>
 </head>
 <body>
 <div id="flowform-full-page">
-	<?php echo $this->container_html( $form_id, true ); ?>
+	<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within container_html().
+	echo $this->container_html( $form_id, true ); ?>
 </div>
 
 <?php wp_footer(); ?>
@@ -734,7 +706,7 @@ html { margin-top: 0 !important; }
 
 		$post  = get_post( $form_id );
 		/* translators: %d: form ID */
-	$label = $post ? esc_html( $post->post_title ) : sprintf( __( 'Form #%d', 'wp-flowforms' ), $form_id );
+	$label = $post ? $post->post_title : sprintf( __( 'Form #%d', 'wp-flowforms' ), $form_id );
 
 		ob_start();
 		?>
@@ -747,7 +719,7 @@ html { margin-top: 0 !important; }
 		">
 			<span style="font-size:18px;line-height:1;flex-shrink:0;">⚠️</span>
 			<span>
-				<strong><?php echo $label; ?></strong>
+				<strong><?php echo esc_html( $label ); ?></strong>
 				<?php esc_html_e( 'is in the Trash and is not visible to visitors.', 'wp-flowforms' ); ?>
 				&nbsp;<a href="<?php echo esc_url( $restore_url ); ?>"
 					style="color:#92400e;text-decoration:underline;font-weight:600;white-space:nowrap;">
@@ -778,7 +750,8 @@ html { margin-top: 0 !important; }
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title><?php esc_html_e( 'Form In Trash', 'wp-flowforms' ); ?></title>
-<?php echo $this->standalone_page_styles(); ?>
+<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded CSS string with no user input; fully trusted internal output.
+echo $this->standalone_page_styles(); ?>
 </head>
 <body>
 <div class="wpff-standalone">
@@ -863,7 +836,8 @@ html, body {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title><?php esc_html_e( 'Form Not Available', 'wp-flowforms' ); ?></title>
-<?php echo $this->standalone_page_styles(); ?>
+<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded CSS string with no user input; fully trusted internal output.
+echo $this->standalone_page_styles(); ?>
 </head>
 <body>
 <div class="wpff-standalone">
@@ -899,7 +873,8 @@ html, body {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title><?php esc_html_e( 'Form Not Published', 'wp-flowforms' ); ?></title>
-<?php echo $this->standalone_page_styles(); ?>
+<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded CSS string with no user input; fully trusted internal output.
+echo $this->standalone_page_styles(); ?>
 </head>
 <body>
 <div class="wpff-standalone">

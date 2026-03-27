@@ -131,7 +131,7 @@ final class WP_FlowForms
     $this->registry['token']      = new FlowForms_Token();
 
     /**
-     * Executes when all the WPForms stuff was loaded.
+     * Executes when all the WP FlowForms stuff was loaded.
      *
      * @since 1.0.0
      */

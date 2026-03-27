@@ -42,8 +42,8 @@ class FlowForms_Akismet
     $data = [
       'blog'         => home_url(),
       'blog_charset' => 'UTF-8',
-      'user_ip'      => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
-      'user_agent'   => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? ''),
+      'user_ip'      => sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '' ) ),
+      'user_agent'   => sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ),
       'comment_type' => 'contact-form',
     ];
 
