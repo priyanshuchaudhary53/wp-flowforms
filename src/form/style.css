@@ -1,5 +1,5 @@
 /**
- * WP FlowForms — Public Form Renderer Styles
+ * WPFlowForms — Public Form Renderer Styles
  *
  * Rendering modes:
  *   .ff-fullpage   position:fixed; inset:0  (full-page / preview route)
@@ -932,7 +932,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 
 .flowform-container .ff-draft-alert__dismiss:hover { opacity: 1; }
 
-/* Powered by WP FlowForms badge */
+/* Powered by WPFlowForms badge */
 
 .flowform-container .ff-powered-by {
   position:       absolute;

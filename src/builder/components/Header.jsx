@@ -38,9 +38,9 @@ export default function Header() {
     `${formflowData.builderUrl}&form_id=${formId}&view=${v}`;
 
   const TABS = [
-    { id: "builder",  label: __( 'Builder', 'wp-flowforms' )  },
-    { id: "settings", label: __( 'Settings', 'wp-flowforms' ) },
-    { id: "share",    label: __( 'Share', 'wp-flowforms' )    },
+    { id: "builder",  label: __( 'Builder', 'wpflowforms' )  },
+    { id: "settings", label: __( 'Settings', 'wpflowforms' ) },
+    { id: "share",    label: __( 'Share', 'wpflowforms' )    },
   ];
 
   const closeHandler = () => {
@@ -78,7 +78,7 @@ export default function Header() {
         <div className="flex items-center min-w-0 flex-1">
           <div>
             <Logo />
-            <span className="sr-only">{ __( 'WP FlowForms', 'wp-flowforms' ) }</span>
+            <span className="sr-only">{ __( 'WPFlowForms', 'wpflowforms' ) }</span>
           </div>
           {!isSetup && <FormName />}
         </div>
@@ -113,7 +113,7 @@ export default function Header() {
                 className="inline-flex items-center gap-1.5 px-3 h-8 rounded-sm text-sm font-medium bg-ff-secondary-100 text-ff-secondary-700 cursor-pointer transition-colors hover:bg-ff-secondary-200"
               >
                 <EyeIcon width={16} height={16} className="stroke-2 shrink-0" />
-                <span>{ __( 'Preview', 'wp-flowforms' ) }</span>
+                <span>{ __( 'Preview', 'wpflowforms' ) }</span>
               </button>
 
               {/* Revert — only visible when a draft exists AND a published version to go back to */}
@@ -127,7 +127,7 @@ export default function Header() {
                     height={16}
                     className="stroke-2 shrink-0"
                   />
-                  <span>{ __( 'Revert', 'wp-flowforms' ) }</span>
+                  <span>{ __( 'Revert', 'wpflowforms' ) }</span>
                 </button>
               )}
 
@@ -146,12 +146,12 @@ export default function Header() {
                         height={15}
                         className="stroke-2 shrink-0"
                       />
-                      <span>{publishing ? __( 'Publishing…', 'wp-flowforms' ) : __( 'Publish', 'wp-flowforms' )}</span>
+                      <span>{publishing ? __( 'Publishing…', 'wpflowforms' ) : __( 'Publish', 'wpflowforms' )}</span>
                     </button>
                   </TooltipTrigger>
                   {!publishing && (
                     <TooltipContent className="pointer-events-none">
-                      <p>{ __( 'Make your changes live', 'wp-flowforms' ) }</p>
+                      <p>{ __( 'Make your changes live', 'wpflowforms' ) }</p>
                     </TooltipContent>
                   )}
                 </Tooltip>
@@ -166,7 +166,7 @@ export default function Header() {
                     height={15}
                     className="stroke-2 shrink-0"
                   />
-                  <span>{ __( 'Published', 'wp-flowforms' ) }</span>
+                  <span>{ __( 'Published', 'wpflowforms' ) }</span>
                 </button>
               )}
             </>
@@ -176,7 +176,7 @@ export default function Header() {
             onClick={closeHandler}
             className="h-8 w-8 flex justify-center items-center rounded-sm text-gray-600 cursor-pointer transition-colors hover:bg-gray-100 hover:text-gray-900"
           >
-            <span className="sr-only">{ __( 'Exit', 'wp-flowforms' ) }</span>
+            <span className="sr-only">{ __( 'Exit', 'wpflowforms' ) }</span>
             <XMarkIcon className="stroke-2" width={24} height={24} />
           </button>
         </div>
@@ -200,10 +200,10 @@ export default function Header() {
         <DialogContent showCloseButton={false}>
           <DialogHeader>
             <DialogTitle className="leading-normal">
-              { __( 'Are you sure you want to revert to previous published state?', 'wp-flowforms' ) }
+              { __( 'Are you sure you want to revert to previous published state?', 'wpflowforms' ) }
             </DialogTitle>
             <DialogDescription>
-              { __( 'All your current changes (excluding design changes) will be discarded. This action is irreversible.', 'wp-flowforms' ) }
+              { __( 'All your current changes (excluding design changes) will be discarded. This action is irreversible.', 'wpflowforms' ) }
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -212,14 +212,14 @@ export default function Header() {
               onClick={() => setRevertDialogOpen(false)}
               disabled={reverting}
             >
-              { __( 'Cancel', 'wp-flowforms' ) }
+              { __( 'Cancel', 'wpflowforms' ) }
             </Button>
             <Button
               variant="destructive"
               onClick={handleRevertConfirm}
               disabled={reverting}
             >
-              {reverting ? __( 'Reverting…', 'wp-flowforms' ) : __( 'Yes, revert my form', 'wp-flowforms' )}
+              {reverting ? __( 'Reverting…', 'wpflowforms' ) : __( 'Yes, revert my form', 'wpflowforms' )}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -29,7 +29,7 @@ return [
     // Show previous / next navigation arrows.
     'navigation_arrows' => true,
 
-    // Show "Powered by WP FlowForms" badge at the bottom of the form.
+    // Show "Powered by WPFlowForms" badge at the bottom of the form.
     'powered_by'        => false,
 
   ],

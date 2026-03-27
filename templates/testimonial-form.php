@@ -7,7 +7,7 @@ return [
   'name'          => 'Testimonial Form',
   'description'   => 'Get powerful user-generated content with our testimonial form template.',
   'category'      => 'feedback',
-  'thumbnail_url' => WP_FLOWFORMS_URL . 'assets/images/templates/testimonial-form.webp',
+  'thumbnail_url' => WPFF_URL . 'assets/images/templates/testimonial-form.webp',
   'content'     => [
     'welcomeScreen' => [
       'content'  => [
@@ -17,7 +17,7 @@ return [
       ],
       'settings' => [
         'layout' => 'default',
-        'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/testimonial-welcome.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/testimonial-welcome.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],
@@ -32,7 +32,7 @@ return [
         'showSocialShare' => false,
         'redirectUrl' => '',
         'redirectDelay' => 0,
-        'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/testimonial-thanks.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/testimonial-thanks.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],

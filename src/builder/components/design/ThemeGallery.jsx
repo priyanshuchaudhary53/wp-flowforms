@@ -81,7 +81,7 @@ function ThemeCard({ theme, onApply }) {
             hovered ? "opacity-100" : "opacity-0",
           ].join(" ")}
         >
-          {__( 'Apply →', 'wp-flowforms' )}
+          {__( 'Apply →', 'wpflowforms' )}
         </span>
       </div>
     </button>
@@ -102,10 +102,10 @@ export default function ThemeGallery({ open, onOpenChange, onApply }) {
         <div className="px-6 pt-6 pb-4 border-b border-gray-100">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold">
-              {__( 'Theme Gallery', 'wp-flowforms' )}
+              {__( 'Theme Gallery', 'wpflowforms' )}
             </DialogTitle>
             <DialogDescription>
-              {__( 'Pick a theme to instantly apply its colour palette to your form. You can fine-tune individual colours afterwards.', 'wp-flowforms' )}
+              {__( 'Pick a theme to instantly apply its colour palette to your form. You can fine-tune individual colours afterwards.', 'wpflowforms' )}
             </DialogDescription>
           </DialogHeader>
         </div>

@@ -110,7 +110,7 @@ class FlowForms_Templates
   {
     $this->templates = [];
 
-    $dir   = WP_FLOWFORMS_PATH . self::TEMPLATES_DIR . '/';
+    $dir   = WPFF_PATH . self::TEMPLATES_DIR . '/';
     $files = glob($dir . '*.php') ?: [];
 
     foreach ($files as $file) {

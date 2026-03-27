@@ -1,13 +1,13 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "wp-flowforms/form",
+  "name": "wpflowforms/form",
   "title": "FlowForm",
   "category": "widgets",
   "icon": "feedback",
-  "description": "Embed a WP FlowForm on your page.",
+  "description": "Embed a WPFlowForm on your page.",
   "keywords": ["form", "flowform", "survey", "contact"],
-  "textdomain": "wp-flowforms",
+  "textdomain": "wpflowforms",
   "supports": {
     "html": false,
     "align": ["wide", "full"]

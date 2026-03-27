@@ -5,7 +5,7 @@
   "scripts": {
     "start": "wp-scripts start --webpack-src-dir=src --output-path=build",
     "build": "wp-scripts build --webpack-src-dir=src --output-path=build",
-    "zip": "cd .. && zip -r wp-flowforms/wp-flowforms.zip wp-flowforms/assets/ wp-flowforms/build/ wp-flowforms/includes/ wp-flowforms/languages/ wp-flowforms/templates/ wp-flowforms/readme.txt wp-flowforms/wp-flowforms.php",
+    "zip": "bash bin/zip.sh",
     "test": "vitest run",
     "test:watch": "vitest"
   },

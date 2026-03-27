@@ -11,8 +11,8 @@ class FlowForms_Install
    */
   public function __construct()
   {
-    register_activation_hook(WP_FLOWFORMS_FILE, [$this, 'install']);
-    register_deactivation_hook(WP_FLOWFORMS_FILE, [$this, 'deactivate']);
+    register_activation_hook(WPFF_FILE, [$this, 'install']);
+    register_deactivation_hook(WPFF_FILE, [$this, 'deactivate']);
   }
 
   /**
@@ -72,7 +72,7 @@ class FlowForms_Install
     flush_rewrite_rules();
 
     /**
-     * Fires after WP FlowForms plugin installation is performed.
+     * Fires after WPFlowForms plugin installation is performed.
      *
      * @since 1.0.0
      */

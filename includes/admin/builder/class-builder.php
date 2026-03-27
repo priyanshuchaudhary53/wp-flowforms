@@ -75,7 +75,7 @@ class FlowForms_Builder
     // Abort early if form ID is set, but the value is empty, 0 or any non-numeric value.
     if ($form_id === 0) {
       // phpcs:enable WordPress.Security.NonceVerification.Recommended
-      wp_die(esc_html__('It looks like the form you are trying to access is no longer available.', 'wp-flowforms'), 403);
+      wp_die(esc_html__('It looks like the form you are trying to access is no longer available.', 'wpflowforms'), 403);
     }
 
     if ($form_id) {
@@ -90,22 +90,22 @@ class FlowForms_Builder
     // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     if ($this->view === 'setup' && ! current_user_can('manage_options')) {
-      wp_die(esc_html__('Sorry, you are not allowed to create new forms.', 'wp-flowforms'), 403);
+      wp_die(esc_html__('Sorry, you are not allowed to create new forms.', 'wpflowforms'), 403);
     }
 
     if ($this->view === 'builder' && ! current_user_can('manage_options')) {
-      wp_die(esc_html__('Sorry, you are not allowed to edit this form.', 'wp-flowforms'), 403);
+      wp_die(esc_html__('Sorry, you are not allowed to edit this form.', 'wpflowforms'), 403);
     }
 
-    $form_obj   = wp_flowforms()->obj('form');
+    $form_obj   = wpflowforms()->obj('form');
     $this->form = $form_obj ? $form_obj->get($form_id) : null;
 
     if (! empty($form_id) && empty($this->form)) {
-      wp_die(esc_html__('It looks like the form you are trying to access is no longer available.', 'wp-flowforms'), 403);
+      wp_die(esc_html__('It looks like the form you are trying to access is no longer available.', 'wpflowforms'), 403);
     }
 
     if (! empty($this->form->post_status) && $this->form->post_status === 'trash') {
-      wp_die(esc_html__('You can\'t edit this form because it\'s in the trash.', 'wp-flowforms'), 403);
+      wp_die(esc_html__('You can\'t edit this form because it\'s in the trash.', 'wpflowforms'), 403);
     }
 
     $this->form_data = $this->form ? wpff_decode($this->form->post_content) : false;
@@ -221,10 +221,10 @@ class FlowForms_Builder
     <div id="wpff-page-loader" aria-hidden="true">
       <div class="wpff-loader-content">
         <div class="wpff-loader-logo">
-          <img width="100" height="60" src="' . esc_url( WP_FLOWFORMS_URL ) . 'assets/images/wpff-logo.svg" />
+          <img width="100" height="60" src="' . esc_url( WPFF_URL ) . 'assets/images/wpff-logo.svg" />
         </div>
         <div class="wpff-loader-spinner" role="status">
-          <span class="screen-reader-text">' . esc_html__('Loading…', 'wp-flowforms') . '</span>
+          <span class="screen-reader-text">' . esc_html__('Loading…', 'wpflowforms') . '</span>
         </div>
       </div>
     </div>';
@@ -248,29 +248,29 @@ class FlowForms_Builder
   {
     wp_enqueue_media();
 
-    $asset_file = WP_FLOWFORMS_PATH . 'build/builder/index.asset.php';
+    $asset_file = WPFF_PATH . 'build/builder/index.asset.php';
     $asset = file_exists($asset_file)
       ? include $asset_file
-      : ['dependencies' => [], 'version' => WP_FLOWFORMS_VERSION];
+      : ['dependencies' => [], 'version' => WPFF_VERSION];
 
     wp_enqueue_script(
-      'wp-flowforms-builder',
-      WP_FLOWFORMS_URL . 'build/builder/index.js',
+      'wpflowforms-builder',
+      WPFF_URL . 'build/builder/index.js',
       $asset['dependencies'],
       $asset['version'],
       true
     );
 
-    wp_set_script_translations( 'wp-flowforms-builder', 'wp-flowforms', WP_FLOWFORMS_PATH . 'languages' );
+    wp_set_script_translations( 'wpflowforms-builder', 'wpflowforms', WPFF_PATH . 'languages' );
 
     wp_enqueue_style(
-      'wp-flowforms-builder',
-      WP_FLOWFORMS_URL . 'build/builder/style-index.css',
+      'wpflowforms-builder',
+      WPFF_URL . 'build/builder/style-index.css',
       [],
       $asset['version']
     );
 
-    wp_localize_script('wp-flowforms-builder', 'formflowData', [
+    wp_localize_script('wpflowforms-builder', 'formflowData', [
       'apiUrl'        => rest_url('formflow/v1'),
       'adminFormsUrl' => admin_url('admin.php?page=wpff_forms'),
       'builderUrl'    => admin_url('admin.php?page=wpff_form_builder'),
@@ -286,7 +286,7 @@ class FlowForms_Builder
         ? FlowForms_Frontend::get_public_url(intval($_GET['form_id']))
         : '',
       // phpcs:enable WordPress.Security.NonceVerification.Recommended
-      'templates'     => array_values(wp_flowforms()->obj('templates')->get_metadata()),
+      'templates'     => array_values(wpflowforms()->obj('templates')->get_metadata()),
       'site'          => [
         'adminEmail' => get_option('admin_email'),
         'siteName'   => get_bloginfo('name'),

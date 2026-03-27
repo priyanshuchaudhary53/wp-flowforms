@@ -17,24 +17,24 @@ class FlowForms_Admin_Menu
   }
 
   /**
-   * Registers all WP FlowForms admin menu and submenu pages.
+   * Registers all WPFlowForms admin menu and submenu pages.
    *
    * @since 1.0.0
    */
   public function add_admin_pages()
   {
-    $title = wp_flowforms()->name;
+    $title = wpflowforms()->name;
     $title_suffix = ' &lsaquo; ' . $title;
 
     add_menu_page(
-      __('All Forms', 'wp-flowforms') . $title_suffix,
+      __('All Forms', 'wpflowforms') . $title_suffix,
       $title,
       'manage_options',
       'wpff_forms',
       [$this, 'admin_page'],
       'dashicons-feedback', // plugins_url('myplugin/images/icon.png'), // change later
       /**
-       * Filters WP FlowForms menu position.
+       * Filters WPFlowForms menu position.
        *
        * @since 1.0.0
        *
@@ -44,12 +44,12 @@ class FlowForms_Admin_Menu
     );
 
     add_submenu_page('wpff_forms', $title, 'All Forms', 'manage_options', 'wpff_forms', [$this, 'admin_page'], 0);
-    add_submenu_page('wpff_forms', $title . ' ' . __('Builder', 'wp-flowforms'), __('Add New Form', 'wp-flowforms'), 'manage_options', 'wpff_form_builder', [$this, 'admin_page']);
-    add_submenu_page('wpff_forms', __('Entries', 'wp-flowforms') . $title_suffix, __('Entries', 'wp-flowforms'), 'manage_options', 'wpff_entries', [$this, 'admin_page']);
-    add_submenu_page('wpff_forms', __('Settings', 'wp-flowforms') . $title_suffix, __('Settings', 'wp-flowforms'), 'manage_options', 'wpff_settings', [$this, 'admin_page']);
+    add_submenu_page('wpff_forms', $title . ' ' . __('Builder', 'wpflowforms'), __('Add New Form', 'wpflowforms'), 'manage_options', 'wpff_form_builder', [$this, 'admin_page']);
+    add_submenu_page('wpff_forms', __('Entries', 'wpflowforms') . $title_suffix, __('Entries', 'wpflowforms'), 'manage_options', 'wpff_entries', [$this, 'admin_page']);
+    add_submenu_page('wpff_forms', __('Settings', 'wpflowforms') . $title_suffix, __('Settings', 'wpflowforms'), 'manage_options', 'wpff_settings', [$this, 'admin_page']);
 
     /**
-     * Fires after constructing the WP FlowForms admin menu.
+     * Fires after constructing the WPFlowForms admin menu.
      *
      * @since 1.0.0
      */
@@ -64,7 +64,7 @@ class FlowForms_Admin_Menu
   public function admin_page()
   {
     /**
-     * Fires to show the WP FlowForms admin page.
+     * Fires to show the WPFlowForms admin page.
      *
      * @since 1.0.0
      */

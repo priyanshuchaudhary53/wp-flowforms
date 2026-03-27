@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * FlowForms_Settings
  *
- * Page controller for the WP FlowForms settings screen.
+ * Page controller for the WPFlowForms settings screen.
  * Handles tab routing, save, and HTML output.
  *
  * @since 1.0.0
@@ -74,12 +74,12 @@ class FlowForms_Settings {
 	public function get_tabs(): array {
 		$tabs = [
 			'messages' => [
-				'label'  => __( 'Messages', 'wp-flowforms' ),
+				'label'  => __( 'Messages', 'wpflowforms' ),
 				'form'   => true,
-				'submit' => __( 'Save Settings', 'wp-flowforms' ),
+				'submit' => __( 'Save Settings', 'wpflowforms' ),
 			],
 			// Future tabs:
-			// 'general'   => [ 'label' => __( 'General',   'wp-flowforms' ), 'form' => true, 'submit' => __( 'Save Settings', 'wp-flowforms' ) ],
+			// 'general'   => [ 'label' => __( 'General',   'wpflowforms' ), 'form' => true, 'submit' => __( 'Save Settings', 'wpflowforms' ) ],
 		];
 
 		/**
@@ -108,7 +108,7 @@ class FlowForms_Settings {
 		$all = [];
 
 		foreach ( array_keys( $this->get_tabs() ) as $slug ) {
-			$file = WP_FLOWFORMS_PATH . "includes/admin/settings/tabs/{$slug}.php";
+			$file = WPFF_PATH . "includes/admin/settings/tabs/{$slug}.php";
 			if ( file_exists( $file ) ) {
 				$all[ $slug ] = require $file;
 			}
@@ -182,7 +182,7 @@ class FlowForms_Settings {
 
 		add_action( 'wpff_admin_page', function () {
 			echo '<div class="notice notice-success is-dismissible"><p>'
-				. esc_html__( 'Settings saved.', 'wp-flowforms' )
+				. esc_html__( 'Settings saved.', 'wpflowforms' )
 				. '</p></div>';
 		}, 1 );
 	}
@@ -199,7 +199,7 @@ class FlowForms_Settings {
 		?>
 		<div class="wrap wpff-admin-wrap wpff-settings-wrap">
 
-			<h1><?php esc_html_e( 'Settings', 'wp-flowforms' ); ?></h1>
+			<h1><?php esc_html_e( 'Settings', 'wpflowforms' ); ?></h1>
 
 			<!-- Tab nav -->
 			<nav class="nav-tab-wrapper wpff-settings-tabs">

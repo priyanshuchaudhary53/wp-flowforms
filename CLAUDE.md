@@ -1,4 +1,4 @@
-# WP FlowForms — CLAUDE.md
+# WPFlowForms — CLAUDE.md
 
 A conversational step-by-step form builder for WordPress. Typeform-style forms with a React builder, a vanilla JS renderer, and a Gutenberg block.
 
@@ -21,9 +21,9 @@ After any change to `src/` you must rebuild — PHP enqueues the compiled files 
 
 ### PHP layer (`includes/`)
 
-**Entry point:** `wp-flowforms.php` → `includes/WP_FlowForms.php`
+**Entry point:** `wpflowforms.php` → `includes/WPFlowForms.php`
 
-`WP_FlowForms` is a singleton container. All shared objects are registered in `objects()` on `plugins_loaded` and retrieved via `wp_flowforms()->obj('key')`:
+`WPFlowForms` is a singleton container. All shared objects are registered in `objects()` on `plugins_loaded` and retrieved via `wpflowforms()->obj('key')`:
 
 | Key | Class | Role |
 |---|---|---|
@@ -217,7 +217,7 @@ flowformPublicData.honeypot        // { field_name: 'wpff_hp', label: string } �
 
 **Embed methods:**
 - **Shortcode:** `[flowform id="123"]` — renders a container div; assets enqueued only on pages with a form
-- **Gutenberg block:** `wp-flowforms/form` — server-side rendered via `includes/admin/block/render.php`
+- **Gutenberg block:** `wpflowforms/form` — server-side rendered via `includes/admin/block/render.php`
 - **Full-page URL:** `/flowform/{id}` (pretty permalinks) or `/?flowform_id={id}` — bare HTML page, no theme
 
 ---
@@ -257,10 +257,10 @@ return [
 ];
 ```
 
-**Background images in templates** are bundled with the plugin in `assets/images/templates/bg/`. Reference them using `WP_FLOWFORMS_URL . 'assets/images/templates/bg/filename.jpg'` with `id => null`. Never hardcode WordPress media library IDs or upload URLs — they are specific to the install where the template was created.
+**Background images in templates** are bundled with the plugin in `assets/images/templates/bg/`. Reference them using `WPFF_URL . 'assets/images/templates/bg/filename.jpg'` with `id => null`. Never hardcode WordPress media library IDs or upload URLs — they are specific to the install where the template was created.
 
 ```php
-'backgroundImage' => ['id' => null, 'url' => WP_FLOWFORMS_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
+'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
 ```
 
 `FlowForms_Templates` auto-scans the directory — drop a file in, no registration needed.
@@ -332,7 +332,7 @@ Three layers run in order inside `handle_submission()` in `class-rest-api.php`, 
 A hidden `<input name="wpff_hp">` is injected into the form container by `FormApp.boot()` using metadata from `flowformPublicData.honeypot`. The label is chosen randomly from Name/Email/Phone/Website/Comment/Message so it looks real to bots. The field is hidden via inline CSS (`position:absolute;left:-9999px`), not a class. It uses `autocomplete="new-password"` (the one value all browsers are spec-required to never autofill). `FormApp._submit()` includes the field value as `wpff_hp` in the POST body. If the value is non-empty on the server, the submission returns `{ success: false }` with HTTP 200 — no log entry.
 
 ### Layer 2 — Token (`includes/class-token.php`)
-`FlowForms_Token` generates a daily-rotating MD5 token tied to the form ID and a server-side secret stored in `wp_options` as `wpff_token_secret`. The token is appended to the `/public` endpoint response and stored in `FormApp._token`. `FormApp._submit()` sends it as `wpff_token`. Verification accepts tokens from the past **5 years** (cached pages) plus 45 minutes into the future (midnight edge cases). Token failures are logged with `error_log()` and a `[WP FlowForms]` prefix — they signal direct POST attacks.
+`FlowForms_Token` generates a daily-rotating MD5 token tied to the form ID and a server-side secret stored in `wp_options` as `wpff_token_secret`. The token is appended to the `/public` endpoint response and stored in `FormApp._token`. `FormApp._submit()` sends it as `wpff_token`. Verification accepts tokens from the past **5 years** (cached pages) plus 45 minutes into the future (midnight edge cases). Token failures are logged with `error_log()` and a `[WPFlowForms]` prefix — they signal direct POST attacks.
 
 ### Layer 3 — Akismet (`includes/class-akismet.php`)
 `FlowForms_Akismet::is_available()` checks that Akismet is installed, active, and has an API key. When available, `check()` sends `short_text`, `long_text`, and `email` field values to the Akismet `comment-check` API. If flagged as spam the entry is saved with `status='spam'` (reviewable by admins) and the user sees a normal success response — spam detection is never revealed.

@@ -80,7 +80,7 @@ class FlowForms_Entries_Overview
 
     $this->process_actions();
 
-    add_action('load-wp-flowforms_page_wpff_entries', [$this, 'register_screen_options']);
+    add_action('load-wpflowforms_page_wpff_entries', [$this, 'register_screen_options']);
     add_action('current_screen', [$this, 'init_list_table']);
     add_action('admin_enqueue_scripts', [$this, 'enqueues']);
     add_action('wpff_admin_page', [$this, 'output']);
@@ -98,7 +98,7 @@ class FlowForms_Entries_Overview
     }
 
     add_screen_option('per_page', [
-      'label'   => __('Number of entries per page', 'wp-flowforms'),
+      'label'   => __('Number of entries per page', 'wpflowforms'),
       'default' => self::PER_PAGE_DEFAULT,
       'option'  => 'wpff_entries_per_page',
     ]);
@@ -129,7 +129,7 @@ class FlowForms_Entries_Overview
       return;
     }
 
-    require_once WP_FLOWFORMS_PATH . 'includes/admin/entries/class-entries-list-table.php';
+    require_once WPFF_PATH . 'includes/admin/entries/class-entries-list-table.php';
     $this->list_table = new FlowForms_Entries_List_Table($this->form_id, $this->status);
   }
 
@@ -141,25 +141,25 @@ class FlowForms_Entries_Overview
   public function enqueues()
   {
     wp_enqueue_style(
-      'wp-flowforms-entries',
-      WP_FLOWFORMS_URL . 'assets/css/admin-entries.css',
+      'wpflowforms-entries',
+      WPFF_URL . 'assets/css/admin-entries.css',
       [],
-      WP_FLOWFORMS_VERSION
+      WPFF_VERSION
     );
 
     wp_enqueue_script(
-      'wp-flowforms-entries',
-      WP_FLOWFORMS_URL . 'assets/js/admin-entries.js',
+      'wpflowforms-entries',
+      WPFF_URL . 'assets/js/admin-entries.js',
       ['jquery'],
-      WP_FLOWFORMS_VERSION,
+      WPFF_VERSION,
       true
     );
 
-    wp_localize_script('wp-flowforms-entries', 'wpffEntries', [
+    wp_localize_script('wpflowforms-entries', 'wpffEntries', [
       'nonce'       => wp_create_nonce('wpff_entries_nonce'),
       'ajaxUrl'     => admin_url('admin-ajax.php'),
-      'starLabel'   => __('Star', 'wp-flowforms'),
-      'unstarLabel' => __('Unstar', 'wp-flowforms'),
+      'starLabel'   => __('Star', 'wpflowforms'),
+      'unstarLabel' => __('Unstar', 'wpflowforms'),
     ]);
   }
 
@@ -188,14 +188,14 @@ class FlowForms_Entries_Overview
       ! wp_verify_nonce($nonce, 'bulk-entries') &&
       ! wp_verify_nonce($nonce, 'wpff_entry_' . $action)
     ) {
-      wp_die(esc_html__('Security check failed.', 'wp-flowforms'), 403);
+      wp_die(esc_html__('Security check failed.', 'wpflowforms'), 403);
     }
 
     if (! current_user_can('manage_options')) {
-      wp_die(esc_html__('You do not have permission to manage entries.', 'wp-flowforms'), 403);
+      wp_die(esc_html__('You do not have permission to manage entries.', 'wpflowforms'), 403);
     }
 
-    $entry  = wp_flowforms()->obj('entry');
+    $entry  = wpflowforms()->obj('entry');
     $ids    = isset($_REQUEST['entry_id']) ? array_map('absint', (array) $_REQUEST['entry_id']) : []; // phpcs:ignore
     $ids    = array_filter($ids);
     $count  = count($ids);
@@ -299,7 +299,7 @@ class FlowForms_Entries_Overview
 
     $entry_id  = absint($_POST['entry_id'] ?? 0);
     $starred   = (bool) sanitize_text_field( wp_unslash( $_POST['starred'] ?? '' ) );
-    $entry_obj = wp_flowforms()->obj('entry');
+    $entry_obj = wpflowforms()->obj('entry');
 
     if (! $entry_id || ! $entry_obj) {
       wp_send_json_error('Invalid entry.', 400);
@@ -335,14 +335,14 @@ class FlowForms_Entries_Overview
 
     $this->list_table->prepare_items();
 
-    $counts      = wp_flowforms()->obj('entry')->get_counts($this->form_id);
+    $counts      = wpflowforms()->obj('entry')->get_counts($this->form_id);
     $total_forms = $this->get_form_options();
     $is_empty = $counts['active'] === 0 && $counts['spam'] === 0 && $counts['trash'] === 0 && $counts['starred'] === 0;
 
 ?>
     <div class="wrap wpff-admin-wrap wpff-entries-wrap">
 
-      <h1 class="wp-heading-inline"><?php esc_html_e('Entries', 'wp-flowforms'); ?></h1>
+      <h1 class="wp-heading-inline"><?php esc_html_e('Entries', 'wpflowforms'); ?></h1>
 
       <hr class="wp-header-end">
 
@@ -359,11 +359,11 @@ class FlowForms_Entries_Overview
               <?php
               printf(
                 /* translators: %s form name */
-                esc_html__('Viewing: %s', 'wp-flowforms'),
+                esc_html__('Viewing: %s', 'wpflowforms'),
                 '<strong>' . esc_html($form_post->post_title) . '</strong>'
               );
               ?>
-              &nbsp;<a href="<?php echo esc_url(remove_query_arg('form_id')); ?>" class="wpff-clear-filter">&#x2715; <?php esc_html_e('Clear', 'wp-flowforms'); ?></a>
+              &nbsp;<a href="<?php echo esc_url(remove_query_arg('form_id')); ?>" class="wpff-clear-filter">&#x2715; <?php esc_html_e('Clear', 'wpflowforms'); ?></a>
             </div>
           <?php endif; ?>
         <?php endif; ?>
@@ -378,7 +378,7 @@ class FlowForms_Entries_Overview
           <?php endif; ?>
 
           <?php
-          $this->list_table->search_box(esc_html__('Search Entries', 'wp-flowforms'), 'wpff-entries-search');
+          $this->list_table->search_box(esc_html__('Search Entries', 'wpflowforms'), 'wpff-entries-search');
           $this->list_table->views();
           $this->list_table->display();
           ?>
@@ -406,7 +406,7 @@ class FlowForms_Entries_Overview
       return;
     }
 
-    $entry_obj = wp_flowforms()->obj('entry');
+    $entry_obj = wpflowforms()->obj('entry');
     $entry     = $entry_obj->get($entry_id);
 
     if (! $entry) {
@@ -471,14 +471,14 @@ class FlowForms_Entries_Overview
 
       <div class="wpff-entry-single__header">
         <a href="<?php echo esc_url($back_url); ?>" class="wpff-entry-back">
-          &larr; <?php esc_html_e('Back to Entries', 'wp-flowforms'); ?>
+          &larr; <?php esc_html_e('Back to Entries', 'wpflowforms'); ?>
         </a>
 
         <h1 class="wp-heading-inline">
           <?php
           echo esc_html( sprintf(
             /* translators: %d entry ID */
-            __('Entry #%d', 'wp-flowforms'),
+            __('Entry #%d', 'wpflowforms'),
             absint( $entry->id )
           ) );
           ?>
@@ -487,20 +487,20 @@ class FlowForms_Entries_Overview
         <div class="wpff-entry-single__actions">
           <a href="<?php echo esc_url($star_url); ?>"
             class="button wpff-star-btn <?php echo $entry->is_starred ? 'wpff-starred' : ''; ?>"
-            title="<?php echo $entry->is_starred ? esc_attr__('Unstar', 'wp-flowforms') : esc_attr__('Star', 'wp-flowforms'); ?>">
+            title="<?php echo $entry->is_starred ? esc_attr__('Unstar', 'wpflowforms') : esc_attr__('Star', 'wpflowforms'); ?>">
             <?php echo $entry->is_starred ? '&#9733;' : '&#9734;'; ?>
-            <?php echo $entry->is_starred ? esc_html__('Starred', 'wp-flowforms') : esc_html__('Star', 'wp-flowforms'); ?>
+            <?php echo $entry->is_starred ? esc_html__('Starred', 'wpflowforms') : esc_html__('Star', 'wpflowforms'); ?>
           </a>
           <?php if ($entry->status === 'spam') : ?>
             <a href="<?php echo esc_url($unspam_url); ?>" class="button">
-              <?php esc_html_e('Not Spam', 'wp-flowforms'); ?>
+              <?php esc_html_e('Not Spam', 'wpflowforms'); ?>
             </a>
           <?php elseif ($entry->status !== 'trash') : ?>
             <a href="<?php echo esc_url($spam_url); ?>" class="button wpff-spam-btn">
-              <?php esc_html_e('Mark as Spam', 'wp-flowforms'); ?>
+              <?php esc_html_e('Mark as Spam', 'wpflowforms'); ?>
             </a>
             <a href="<?php echo esc_url($trash_url); ?>" class="button wpff-trash-btn">
-              <?php esc_html_e('Move to Trash', 'wp-flowforms'); ?>
+              <?php esc_html_e('Move to Trash', 'wpflowforms'); ?>
             </a>
           <?php endif; ?>
         </div>
@@ -510,12 +510,12 @@ class FlowForms_Entries_Overview
 
       <div class="wpff-entry-single__meta">
         <span>
-          <strong><?php esc_html_e('Submitted:', 'wp-flowforms'); ?></strong>
+          <strong><?php esc_html_e('Submitted:', 'wpflowforms'); ?></strong>
           <?php echo esc_html(wp_date(get_option('date_format') . ' ' . get_option('time_format'), strtotime($entry->created_at))); ?>
         </span>
         <?php if ($form_post) : ?>
           <span>
-            <strong><?php esc_html_e('Form:', 'wp-flowforms'); ?></strong>
+            <strong><?php esc_html_e('Form:', 'wpflowforms'); ?></strong>
             <a href="<?php echo esc_url(add_query_arg(['page' => 'wpff_entries', 'form_id' => $form_post->ID], admin_url('admin.php'))); ?>">
               <?php echo esc_html($form_post->post_title); ?>
             </a>
@@ -523,7 +523,7 @@ class FlowForms_Entries_Overview
         <?php endif; ?>
         <?php if (! empty($entry->ip_address)) : ?>
           <span>
-            <strong><?php esc_html_e('IP:', 'wp-flowforms'); ?></strong>
+            <strong><?php esc_html_e('IP:', 'wpflowforms'); ?></strong>
             <?php echo esc_html($entry->ip_address); ?>
           </span>
         <?php endif; ?>
@@ -544,7 +544,7 @@ class FlowForms_Entries_Overview
               </dt>
               <dd class="wpff-entry-field__value">
                 <?php if ($empty) : ?>
-                  <span class="wpff-no-answer"><?php esc_html_e('—', 'wp-flowforms'); ?></span>
+                  <span class="wpff-no-answer"><?php esc_html_e('—', 'wpflowforms'); ?></span>
                 <?php else : ?>
                   <?php echo wp_kses_post($this->format_answer($answer, $q['type'] ?? 'short_text')); ?>
                 <?php endif; ?>
@@ -568,15 +568,15 @@ class FlowForms_Entries_Overview
 
       <div class="wpff-entry-single__nav">
         <?php if ($prev_url) : ?>
-          <a href="<?php echo esc_url($prev_url); ?>" class="button">&larr; <?php esc_html_e('Previous', 'wp-flowforms'); ?></a>
+          <a href="<?php echo esc_url($prev_url); ?>" class="button">&larr; <?php esc_html_e('Previous', 'wpflowforms'); ?></a>
         <?php else : ?>
-          <button class="button" disabled>&larr; <?php esc_html_e('Previous', 'wp-flowforms'); ?></button>
+          <button class="button" disabled>&larr; <?php esc_html_e('Previous', 'wpflowforms'); ?></button>
         <?php endif; ?>
 
         <?php if ($next_url) : ?>
-          <a href="<?php echo esc_url($next_url); ?>" class="button"><?php esc_html_e('Next', 'wp-flowforms'); ?> &rarr;</a>
+          <a href="<?php echo esc_url($next_url); ?>" class="button"><?php esc_html_e('Next', 'wpflowforms'); ?> &rarr;</a>
         <?php else : ?>
-          <button class="button" disabled><?php esc_html_e('Next', 'wp-flowforms'); ?> &rarr;</button>
+          <button class="button" disabled><?php esc_html_e('Next', 'wpflowforms'); ?> &rarr;</button>
         <?php endif; ?>
       </div>
 
@@ -620,12 +620,12 @@ class FlowForms_Entries_Overview
     $current_s    = isset($_GET['s']) ? sanitize_text_field(wp_unslash($_GET['s'])) : ''; // phpcs:ignore
 
     $date_options = [
-      ''          => __('Any date', 'wp-flowforms'),
-      'today'     => __('Today', 'wp-flowforms'),
-      'yesterday' => __('Yesterday', 'wp-flowforms'),
-      '7days'     => __('Last 7 days', 'wp-flowforms'),
-      '30days'    => __('Last 30 days', 'wp-flowforms'),
-      'month'     => __('This month', 'wp-flowforms'),
+      ''          => __('Any date', 'wpflowforms'),
+      'today'     => __('Today', 'wpflowforms'),
+      'yesterday' => __('Yesterday', 'wpflowforms'),
+      '7days'     => __('Last 7 days', 'wpflowforms'),
+      '30days'    => __('Last 30 days', 'wpflowforms'),
+      'month'     => __('This month', 'wpflowforms'),
     ];
 
   ?>
@@ -641,10 +641,10 @@ class FlowForms_Entries_Overview
       <div class="wpff-filter-bar">
         <div class="wpff-filter-bar__group">
           <label for="wpff-form-filter" class="screen-reader-text">
-            <?php esc_html_e('Filter by form', 'wp-flowforms'); ?>
+            <?php esc_html_e('Filter by form', 'wpflowforms'); ?>
           </label>
           <select id="wpff-form-filter" name="form_id" onchange="this.form.submit()">
-            <option value=""><?php esc_html_e('All Forms', 'wp-flowforms'); ?></option>
+            <option value=""><?php esc_html_e('All Forms', 'wpflowforms'); ?></option>
             <?php foreach ($form_options as $opt) : ?>
               <option value="<?php echo esc_attr($opt['value']); ?>"
                 <?php selected($this->form_id, $opt['value']); ?>>
@@ -656,7 +656,7 @@ class FlowForms_Entries_Overview
 
         <div class="wpff-filter-bar__group">
           <label for="wpff-date-filter" class="screen-reader-text">
-            <?php esc_html_e('Filter by date', 'wp-flowforms'); ?>
+            <?php esc_html_e('Filter by date', 'wpflowforms'); ?>
           </label>
           <select id="wpff-date-filter" name="date" onchange="this.form.submit()">
             <?php foreach ($date_options as $val => $label) : ?>
@@ -682,23 +682,23 @@ class FlowForms_Entries_Overview
     // phpcs:disable WordPress.Security.NonceVerification.Recommended
     $messages = [
       /* translators: %d: number of entries */
-      'trashed'      => __('%d entry moved to Trash.', 'wp-flowforms'),
+      'trashed'      => __('%d entry moved to Trash.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'restored'     => __('%d entry restored.', 'wp-flowforms'),
+      'restored'     => __('%d entry restored.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'deleted'      => __('%d entry permanently deleted.', 'wp-flowforms'),
+      'deleted'      => __('%d entry permanently deleted.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'spammed'      => __('%d entry marked as spam.', 'wp-flowforms'),
+      'spammed'      => __('%d entry marked as spam.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'unspammed'    => __('%d entry restored from spam.', 'wp-flowforms'),
+      'unspammed'    => __('%d entry restored from spam.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'marked_read'  => __('%d entry marked as read.', 'wp-flowforms'),
+      'marked_read'  => __('%d entry marked as read.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'marked_unread' => __('%d entry marked as unread.', 'wp-flowforms'),
+      'marked_unread' => __('%d entry marked as unread.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'starred'      => __('%d entry starred.', 'wp-flowforms'),
+      'starred'      => __('%d entry starred.', 'wpflowforms'),
       /* translators: %d: number of entries */
-      'unstarred'    => __('%d entry unstarred.', 'wp-flowforms'),
+      'unstarred'    => __('%d entry unstarred.', 'wpflowforms'),
     ];
 
     foreach ($messages as $key => $template) {
@@ -728,15 +728,15 @@ class FlowForms_Entries_Overview
         <span class="dashicons dashicons-feedback"></span>
       </div>
       <h2 class="wpff-empty-state__title">
-        <?php esc_html_e('No entries yet.', 'wp-flowforms'); ?>
+        <?php esc_html_e('No entries yet.', 'wpflowforms'); ?>
       </h2>
       <p class="wpff-empty-state__desc">
-        <?php esc_html_e('Share your form to start collecting responses.', 'wp-flowforms'); ?>
+        <?php esc_html_e('Share your form to start collecting responses.', 'wpflowforms'); ?>
       </p>
       <?php if ($form_post) : ?>
         <a href="<?php echo esc_url(add_query_arg(['page' => 'wpff_form_builder', 'form_id' => $form_post->ID, 'view' => 'share'], admin_url('admin.php'))); ?>"
           class="button button-primary">
-          <?php esc_html_e('Share Form', 'wp-flowforms'); ?>
+          <?php esc_html_e('Share Form', 'wpflowforms'); ?>
         </a>
       <?php endif; ?>
     </div>
@@ -752,9 +752,9 @@ class FlowForms_Entries_Overview
   {
   ?>
     <div class="wrap wpff-admin-wrap">
-      <p><?php esc_html_e('Entry not found.', 'wp-flowforms'); ?>
+      <p><?php esc_html_e('Entry not found.', 'wpflowforms'); ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=wpff_entries')); ?>">
-          &larr; <?php esc_html_e('Back to Entries', 'wp-flowforms'); ?>
+          &larr; <?php esc_html_e('Back to Entries', 'wpflowforms'); ?>
         </a>
       </p>
     </div>

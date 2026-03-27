@@ -35,7 +35,7 @@ export default function BlockItemMenu({ question }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="h-full p-2 shrink-0 text-gray-500 hover:text-gray-700 flex items-center justify-center cursor-pointer focus:outline-none">
-          <span className="sr-only">{__( 'Open options', 'wp-flowforms' )}</span>
+          <span className="sr-only">{__( 'Open options', 'wpflowforms' )}</span>
           <EllipsisVerticalIcon width={14} height={14} />
         </button>
       </DropdownMenuTrigger>
@@ -43,18 +43,18 @@ export default function BlockItemMenu({ question }) {
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={handleEdit}>
             <PencilIcon />
-            {__( 'Edit', 'wp-flowforms' )}
+            {__( 'Edit', 'wpflowforms' )}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={handleDuplicate}>
             <CopyIcon />
-            {__( 'Duplicate', 'wp-flowforms' )}
+            {__( 'Duplicate', 'wpflowforms' )}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
             <TrashIcon />
-            {__( 'Delete', 'wp-flowforms' )}
+            {__( 'Delete', 'wpflowforms' )}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

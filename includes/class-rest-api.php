@@ -226,7 +226,7 @@ class FlowForms_REST_API
    */
   private function default_design(): array
   {
-    $file = WP_FLOWFORMS_PATH . 'includes/defaults/form-design.php';
+    $file = WPFF_PATH . 'includes/defaults/form-design.php';
 
     if (! file_exists($file)) {
       return [];
@@ -255,7 +255,7 @@ class FlowForms_REST_API
    */
   private function default_settings(): array
   {
-    $file = WP_FLOWFORMS_PATH . 'includes/defaults/form-settings.php';
+    $file = WPFF_PATH . 'includes/defaults/form-settings.php';
 
     if (! file_exists($file)) {
       return [];
@@ -335,13 +335,13 @@ class FlowForms_REST_API
     $form_id = absint($request['id']);
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $slots     = $this->decode_slots($post->post_content);
@@ -379,7 +379,7 @@ class FlowForms_REST_API
     $form_data = $request->get_param('form_data');
 
     if (empty($form_name)) {
-      $form_name = __('Untitled form', 'wp-flowforms');
+      $form_name = __('Untitled form', 'wpflowforms');
     }
 
     if (is_string($form_data)) {
@@ -390,7 +390,7 @@ class FlowForms_REST_API
     }
 
     if (empty($form_data)) {
-      $form_data = require WP_FLOWFORMS_PATH . 'includes/defaults/form-data.php';
+      $form_data = require WPFF_PATH . 'includes/defaults/form-data.php';
     }
 
     $post_id = wp_insert_post([
@@ -438,13 +438,13 @@ class FlowForms_REST_API
     $form_data = $request->get_param('form_data');
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $has_update = false;
@@ -485,7 +485,7 @@ class FlowForms_REST_API
     }
 
     if (! $has_update) {
-      return new WP_Error('no_update_data', __('No data provided to update.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('no_update_data', __('No data provided to update.', 'wpflowforms'), ['status' => 400]);
     }
 
     return new WP_REST_Response([
@@ -506,17 +506,17 @@ class FlowForms_REST_API
     $design  = $request->get_param('design');
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     if (empty($design) || ! is_array($design)) {
-      return new WP_Error('invalid_design', __('No design data provided.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_design', __('No design data provided.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $slots = $this->decode_slots($post->post_content);
@@ -547,17 +547,17 @@ class FlowForms_REST_API
     $settings = $request->get_param('settings');
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     if (empty($settings) || ! is_array($settings)) {
-      return new WP_Error('invalid_settings', __('No settings data provided.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_settings', __('No settings data provided.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $slots = $this->decode_slots($post->post_content);
@@ -591,19 +591,19 @@ class FlowForms_REST_API
     $form_id = absint($request['id']);
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $slots = $this->decode_slots($post->post_content);
 
     if (is_null($slots['content']['draft'])) {
-      return new WP_Error('no_draft', __('No draft to publish.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('no_draft', __('No draft to publish.', 'wpflowforms'), ['status' => 400]);
     }
 
     // Promote draft → published, clear draft. Design is untouched (top-level).
@@ -631,13 +631,13 @@ class FlowForms_REST_API
     $form_id = absint($request['id']);
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $slots = $this->decode_slots($post->post_content);
@@ -668,20 +668,20 @@ class FlowForms_REST_API
     $form_id = absint($request['id']);
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $slots   = $this->decode_slots($post->post_content);
     $content = $slots['content']['published'];
 
     if (empty($content)) {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $response = [
@@ -690,7 +690,7 @@ class FlowForms_REST_API
       'content'  => $content,
       'design'   => $slots['design'],
       'settings' => $slots['settings'],
-      'token'    => wp_flowforms()->obj('token')->generate($form_id),
+      'token'    => wpflowforms()->obj('token')->generate($form_id),
     ];
 
     if ( current_user_can( 'edit_posts' ) && ! empty( $slots['content']['draft'] ) ) {
@@ -711,20 +711,20 @@ class FlowForms_REST_API
     $form_id = absint($request['id']);
 
     if (! $form_id) {
-      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('invalid_form_id', __('Invalid form ID.', 'wpflowforms'), ['status' => 400]);
     }
 
     $post = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     $slots   = $this->decode_slots($post->post_content);
     $content = $slots['content']['draft'] ?? $slots['content']['published'];
 
     if (empty($content)) {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     return rest_ensure_response([
@@ -743,14 +743,14 @@ class FlowForms_REST_API
   {
     $nonce = $request->get_header('X-WP-Nonce');
     if (! wp_verify_nonce($nonce, 'wp_rest')) {
-      return new WP_Error('invalid_nonce', __('Security check failed.', 'wp-flowforms'), ['status' => 403]);
+      return new WP_Error('invalid_nonce', __('Security check failed.', 'wpflowforms'), ['status' => 403]);
     }
 
     $form_id = absint($request['id']);
     $post    = get_post($form_id);
 
     if (! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish') {
-      return new WP_Error('form_not_found', __('Form not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('form_not_found', __('Form not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     // Submissions always validate against the PUBLISHED slot.
@@ -758,21 +758,21 @@ class FlowForms_REST_API
     $form_content = $slots['content']['published'];
 
     if (empty($form_content)) {
-      return new WP_Error('invalid_form', __('Form content could not be read.', 'wp-flowforms'), ['status' => 500]);
+      return new WP_Error('invalid_form', __('Form content could not be read.', 'wpflowforms'), ['status' => 500]);
     }
 
     // Layer 1: Honeypot
     $honeypot = sanitize_text_field($request->get_param('wpff_hp') ?? '');
     if (! empty($honeypot)) {
-      return new WP_REST_Response(['success' => false, 'message' => __('Something went wrong. Please try again.', 'wp-flowforms')], 200);
+      return new WP_REST_Response(['success' => false, 'message' => __('Something went wrong. Please try again.', 'wpflowforms')], 200);
     }
 
     // Layer 2: Token
     $token = sanitize_text_field($request->get_param('wpff_token') ?? '');
-    if (empty($token) || ! wp_flowforms()->obj('token')->verify($token, $form_id)) {
+    if (empty($token) || ! wpflowforms()->obj('token')->verify($token, $form_id)) {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional security event logging for token verification failures.
-      error_log('[WP FlowForms] Token verification failed for form ID ' . $form_id);
-      return new WP_REST_Response(['success' => false, 'message' => __('Security check failed. Please reload the page and try again.', 'wp-flowforms')], 200);
+      error_log('[WPFlowForms] Token verification failed for form ID ' . $form_id);
+      return new WP_REST_Response(['success' => false, 'message' => __('Security check failed. Please reload the page and try again.', 'wpflowforms')], 200);
     }
 
     $raw_answers = $request->get_param('answers');
@@ -788,7 +788,7 @@ class FlowForms_REST_API
       $answer   = $answers[$q_id]       ?? null;
 
       if (! empty($settings['required']) && $this->is_empty_answer($answer, $type)) {
-        $errors[$q_id] = __('This field is required.', 'wp-flowforms');
+        $errors[$q_id] = __('This field is required.', 'wpflowforms');
         continue;
       }
 
@@ -818,7 +818,7 @@ class FlowForms_REST_API
     $entry_id  = $this->save_entry($form_id, $sanitized, $request);
 
     if (! $entry_id) {
-      return new WP_REST_Response(['message' => __('Failed to save submission.', 'wp-flowforms')], 500);
+      return new WP_REST_Response(['message' => __('Failed to save submission.', 'wpflowforms')], 500);
     }
 
     do_action('wpff_form_submitted', $entry_id, $form_id, $sanitized, $form_content);
@@ -869,7 +869,7 @@ class FlowForms_REST_API
 
     $notif = array_merge($defaults, array_filter($notif, fn($v) => $v !== ''));
 
-    $smart_tags = wp_flowforms()->obj('smart_tags');
+    $smart_tags = wpflowforms()->obj('smart_tags');
     $context    = [
       'form_id'   => $form_id,
       'form_name' => $post->post_title,
@@ -888,7 +888,7 @@ class FlowForms_REST_API
     if (! is_email($to)) {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery failures.
       error_log(sprintf(
-        '[WP FlowForms] Email notification skipped — invalid recipient "%s" (form %d, entry %d)',
+        '[WPFlowForms] Email notification skipped — invalid recipient "%s" (form %d, entry %d)',
         $to, $form_id, $entry_id
       ));
       return;
@@ -910,13 +910,13 @@ class FlowForms_REST_API
     if ($sent) {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery confirmation.
       error_log(sprintf(
-        '[WP FlowForms] Email notification sent to %s (form %d, entry %d)',
+        '[WPFlowForms] Email notification sent to %s (form %d, entry %d)',
         $to, $form_id, $entry_id
       ));
     } else {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery failures.
       error_log(sprintf(
-        '[WP FlowForms] Email notification failed (form %d, entry %d)',
+        '[WPFlowForms] Email notification failed (form %d, entry %d)',
         $form_id, $entry_id
       ));
     }
@@ -949,13 +949,13 @@ class FlowForms_REST_API
     $form_name = sanitize_text_field($request->get_param('form_name') ?? '');
 
     if (empty($slug)) {
-      return new WP_Error('missing_slug', __('Template slug is required.', 'wp-flowforms'), ['status' => 400]);
+      return new WP_Error('missing_slug', __('Template slug is required.', 'wpflowforms'), ['status' => 400]);
     }
 
-    $template = wp_flowforms()->obj('templates')->get($slug);
+    $template = wpflowforms()->obj('templates')->get($slug);
 
     if (! $template) {
-      return new WP_Error('template_not_found', __('Template not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('template_not_found', __('Template not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     if (empty($form_name)) {
@@ -970,7 +970,7 @@ class FlowForms_REST_API
     ]);
 
     if (is_wp_error($post_id)) {
-      return new WP_REST_Response(['message' => __('Failed to create form.', 'wp-flowforms')], 500);
+      return new WP_REST_Response(['message' => __('Failed to create form.', 'wpflowforms')], 500);
     }
 
     // Store template content in the draft slot — user must publish before it goes live.
@@ -981,7 +981,7 @@ class FlowForms_REST_API
     $saved         = $this->save_post_content($post_id, $json);
 
     if (! $saved) {
-      return new WP_REST_Response(['message' => __('Failed to save form content.', 'wp-flowforms')], 500);
+      return new WP_REST_Response(['message' => __('Failed to save form content.', 'wpflowforms')], 500);
     }
 
     return new WP_REST_Response([
@@ -1001,10 +1001,10 @@ class FlowForms_REST_API
   public function get_template_preview_url(WP_REST_Request $request)
   {
     $slug     = sanitize_key($request['slug']);
-    $template = wp_flowforms()->obj('templates')->get($slug);
+    $template = wpflowforms()->obj('templates')->get($slug);
 
     if (! $template) {
-      return new WP_Error('template_not_found', __('Template not found.', 'wp-flowforms'), ['status' => 404]);
+      return new WP_Error('template_not_found', __('Template not found.', 'wpflowforms'), ['status' => 404]);
     }
 
     // Store template content in a transient keyed by slug + nonce.
@@ -1039,23 +1039,23 @@ class FlowForms_REST_API
 
       case 'email':
         if (! is_email((string) $answer)) {
-          return __('Please enter a valid email address.', 'wp-flowforms');
+          return __('Please enter a valid email address.', 'wpflowforms');
         }
         break;
 
       case 'number':
         if (! is_numeric($answer)) {
-          return __('Please enter a valid number.', 'wp-flowforms');
+          return __('Please enter a valid number.', 'wpflowforms');
         }
         $num = (float) $answer;
         // Only apply min/max when explicitly set (non-empty string or numeric)
         if (isset($settings['min']) && $settings['min'] !== '' && $num < (float) $settings['min']) {
           /* translators: %s: minimum allowed value */
-          return sprintf(__('Value must be at least %s.', 'wp-flowforms'), $settings['min']);
+          return sprintf(__('Value must be at least %s.', 'wpflowforms'), $settings['min']);
         }
         if (isset($settings['max']) && $settings['max'] !== '' && $num > (float) $settings['max']) {
           /* translators: %s: maximum allowed value */
-          return sprintf(__('Value must be at most %s.', 'wp-flowforms'), $settings['max']);
+          return sprintf(__('Value must be at most %s.', 'wpflowforms'), $settings['max']);
         }
         break;
 
@@ -1065,7 +1065,7 @@ class FlowForms_REST_API
         if ($max_length > 0 && mb_strlen((string) $answer, 'UTF-8') > $max_length) {
           return sprintf(
             /* translators: %d: maximum character limit */
-            __('Please keep your answer under %d characters.', 'wp-flowforms'),
+            __('Please keep your answer under %d characters.', 'wpflowforms'),
             $max_length
           );
         }
@@ -1075,16 +1075,16 @@ class FlowForms_REST_API
         $steps = absint($settings['steps'] ?? 5);
         $val   = (int) $answer;
         if ($val < 1 || $val > $steps) {
-          return __('Please select a valid rating.', 'wp-flowforms');
+          return __('Please select a valid rating.', 'wpflowforms');
         }
         break;
 
       case 'multiple_choice':
         if (! is_array($answer) || count($answer) === 0) {
-          return __('Please make a selection.', 'wp-flowforms');
+          return __('Please make a selection.', 'wpflowforms');
         }
         if (count($answer) > 1) {
-          return __('Please select only one option.', 'wp-flowforms');
+          return __('Please select only one option.', 'wpflowforms');
         }
         // Validate each value is either a known option or an "Other" entry
         $valid_values = array_map(
@@ -1093,13 +1093,13 @@ class FlowForms_REST_API
         );
         foreach ($answer as $val) {
           if ($this->is_valid_choice_value($val, $valid_values, $settings)) continue;
-          return __('Invalid selection.', 'wp-flowforms');
+          return __('Invalid selection.', 'wpflowforms');
         }
         break;
 
       case 'checkboxes':
         if (! is_array($answer)) {
-          return __('Invalid selection.', 'wp-flowforms');
+          return __('Invalid selection.', 'wpflowforms');
         }
         $min_sel = absint($settings['minSelections'] ?? 0);
         $max_sel = absint($settings['maxSelections'] ?? 0);
@@ -1110,7 +1110,7 @@ class FlowForms_REST_API
               'Please select at least %d option.',
               'Please select at least %d options.',
               $min_sel,
-              'wp-flowforms'
+              'wpflowforms'
             ),
             $min_sel
           );
@@ -1122,7 +1122,7 @@ class FlowForms_REST_API
               'Please select at most %d option.',
               'Please select at most %d options.',
               $max_sel,
-              'wp-flowforms'
+              'wpflowforms'
             ),
             $max_sel
           );
@@ -1134,13 +1134,13 @@ class FlowForms_REST_API
         );
         foreach ($answer as $val) {
           if ($this->is_valid_choice_value($val, $valid_values, $settings)) continue;
-          return __('Invalid selection.', 'wp-flowforms');
+          return __('Invalid selection.', 'wpflowforms');
         }
         break;
 
       case 'yes_no':
         if (! in_array($answer, ['yes', 'no'], true)) {
-          return __('Please select yes or no.', 'wp-flowforms');
+          return __('Please select yes or no.', 'wpflowforms');
         }
         break;
     }

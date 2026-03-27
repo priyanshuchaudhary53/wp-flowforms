@@ -68,7 +68,7 @@ html, body {
   overflow: auto;
 }
 
-.wp-flowforms_page_wpff_form_builder #wpadminbar {
+.wpflowforms_page_wpff_form_builder #wpadminbar {
   display: none;
 }
 

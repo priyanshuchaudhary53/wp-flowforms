@@ -1,6 +1,6 @@
 <?php
 /**
- * Server-side render for the wp-flowforms/form block.
+ * Server-side render for the wpflowforms/form block.
  *
  * Available variables:
  *   $attributes  — block attributes array (formId, height, borderRadius)
@@ -27,7 +27,7 @@ if ( ! $post || $post->post_type !== 'wpff_forms' ) {
 }
 
 if ( $post->post_status !== 'publish' ) {
-	$wpff_frontend = wp_flowforms()->obj( 'frontend' );
+	$wpff_frontend = wpflowforms()->obj( 'frontend' );
 	if ( $wpff_frontend ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
 		echo $wpff_frontend->trashed_form_notice( $wpff_form_id );
@@ -35,7 +35,7 @@ if ( $post->post_status !== 'publish' ) {
 	return;
 }
 
-$wpff_frontend = wp_flowforms()->obj( 'frontend' );
+$wpff_frontend = wpflowforms()->obj( 'frontend' );
 
 if ( ! $wpff_frontend ) {
 	echo '<!-- FlowForms block: frontend not available -->';

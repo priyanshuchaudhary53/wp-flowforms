@@ -48,7 +48,7 @@ function Edit( { attributes, setAttributes } ) {
   const selectedForm = isTrashed ? null : ( forms.find( ( f ) => f.id === formId ) ?? null );
 
   const formOptions = [
-    { label: __( '— Select a form —', 'wp-flowforms' ), value: 0 },
+    { label: __( '— Select a form —', 'wpflowforms' ), value: 0 },
     ...forms.map( ( f ) => ( { label: f.title?.rendered ?? `Form ${ f.id }`, value: f.id } ) ),
   ];
 
@@ -56,12 +56,12 @@ function Edit( { attributes, setAttributes } ) {
     <>
       { /* ── Inspector sidebar ───────────────────────────────────────── */ }
       <InspectorControls>
-        <PanelBody title={ __( 'Form', 'wp-flowforms' ) } initialOpen={ true }>
+        <PanelBody title={ __( 'Form', 'wpflowforms' ) } initialOpen={ true }>
           { isLoading ? (
             <Spinner />
           ) : (
             <SelectControl
-              label={ __( 'Select form', 'wp-flowforms' ) }
+              label={ __( 'Select form', 'wpflowforms' ) }
               value={ formId }
               options={ formOptions }
               onChange={ ( val ) => setAttributes( { formId: Number( val ) } ) }
@@ -69,17 +69,17 @@ function Edit( { attributes, setAttributes } ) {
           ) }
         </PanelBody>
 
-        <PanelBody title={ __( 'Dimensions', 'wp-flowforms' ) } initialOpen={ true }>
+        <PanelBody title={ __( 'Dimensions', 'wpflowforms' ) } initialOpen={ true }>
           <TextControl
-            label={ __( 'Height', 'wp-flowforms' ) }
-            help={ __( 'Any valid CSS value — px, vh, em, etc.', 'wp-flowforms' ) }
+            label={ __( 'Height', 'wpflowforms' ) }
+            help={ __( 'Any valid CSS value — px, vh, em, etc.', 'wpflowforms' ) }
             value={ height }
             onChange={ ( val ) => setAttributes( { height: val } ) }
             placeholder="520px"
           />
           <TextControl
-            label={ __( 'Border radius', 'wp-flowforms' ) }
-            help={ __( 'Any valid CSS value — px, %, em, etc.', 'wp-flowforms' ) }
+            label={ __( 'Border radius', 'wpflowforms' ) }
+            help={ __( 'Any valid CSS value — px, %, em, etc.', 'wpflowforms' ) }
             value={ borderRadius }
             onChange={ ( val ) => setAttributes( { borderRadius: val } ) }
             placeholder="16px"
@@ -92,8 +92,8 @@ function Edit( { attributes, setAttributes } ) {
         { ! formId ? (
           <Placeholder
             icon="feedback"
-            label={ __( 'FlowForm', 'wp-flowforms' ) }
-            instructions={ __( 'Select a form from the sidebar to embed it here.', 'wp-flowforms' ) }
+            label={ __( 'FlowForm', 'wpflowforms' ) }
+            instructions={ __( 'Select a form from the sidebar to embed it here.', 'wpflowforms' ) }
           />
         ) : isTrashed ? (
           <TrashedFormWarning
@@ -113,7 +113,7 @@ function Edit( { attributes, setAttributes } ) {
 }
 
 function FormPlaceholder( { form, height, borderRadius } ) {
-  const title = form?.title?.rendered ?? __( 'Loading…', 'wp-flowforms' );
+  const title = form?.title?.rendered ?? __( 'Loading…', 'wpflowforms' );
 
   return (
     <div
@@ -143,7 +143,7 @@ function FormPlaceholder( { form, height, borderRadius } ) {
           color:         '#a09890',
         } }
       >
-        WP FlowForms
+        WPFlowForms
       </span>
 
       { /* Form title */ }
@@ -164,7 +164,7 @@ function FormPlaceholder( { form, height, borderRadius } ) {
           color:    '#a09890',
         } }
       >
-        { __( 'Rendered on the frontend', 'wp-flowforms' ) }
+        { __( 'Rendered on the frontend', 'wpflowforms' ) }
       </span>
     </div>
   );
@@ -178,10 +178,10 @@ function TrashedFormWarning( { formId, formTitle } ) {
     <Notice status="warning" isDismissible={ false }>
       <strong>{ label }</strong>
       { ' ' }
-      { __( 'is in the Trash and will not be visible to visitors.', 'wp-flowforms' ) }
+      { __( 'is in the Trash and will not be visible to visitors.', 'wpflowforms' ) }
       { ' ' }
       <a href={ restoreUrl } target="_blank" rel="noopener noreferrer">
-        { __( 'Go to Trash to restore it →', 'wp-flowforms' ) }
+        { __( 'Go to Trash to restore it →', 'wpflowforms' ) }
       </a>
     </Notice>
   );

@@ -3,10 +3,10 @@
 if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 /**
- * Smart tag resolver for WP FlowForms.
+ * Smart tag resolver for WPFlowForms.
  *
  * Usage:
- *   wp_flowforms()->obj('smart_tags')->resolve($template, $context);
+ *   wpflowforms()->obj('smart_tags')->resolve($template, $context);
  *
  * Supported tags:
  *   {admin_email}      Site administrator email address

@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-3.0-only.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP FlowForms 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-flowforms\n"
+"Project-Id-Version: WPFlowForms 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpflowforms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,33 +12,7 @@ msgstr ""
 "POT-Creation-Date: 2026-03-26T21:10:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
-"X-Domain: wp-flowforms\n"
-
-#. Plugin Name of the plugin
-#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
-#: build/builder/index.js:1
-msgid "WP FlowForms"
-msgstr ""
-
-#. Plugin URI of the plugin
-#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
-msgid "https://wpflowforms.com/"
-msgstr ""
-
-#. Description of the plugin
-#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
-msgid "WP FlowForms lets you create beautiful step-by-step forms in WordPress. A modern conversational form builder and Typeform alternative for WordPress."
-msgstr ""
-
-#. Author of the plugin
-#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
-msgid "Priyanshu"
-msgstr ""
-
-#. Author URI of the plugin
-#: C:\Users\priya\Local Sites\template-2\app\public\wp-content\plugins\wp-flowforms\wp-flowforms.php
-msgid "https://priyanshuc.dev/"
-msgstr ""
+"X-Domain: wpflowforms\n"
 
 #: includes/admin/builder/class-builder.php:76
 #: includes/admin/builder/class-builder.php:101
@@ -1943,11 +1917,11 @@ msgid "Display previous and next arrow buttons to let respondents move between q
 msgstr ""
 
 #: build/builder/index.js:1
-msgid "Show \"Powered by WP FlowForms\""
+msgid "Show \"Powered by WPFlowForms\""
 msgstr ""
 
 #: build/builder/index.js:1
-msgid "Loved WP FlowForms? Spread the word to others about this awesome plugin by showing a small badge at the bottom of your form."
+msgid "Loved WPFlowForms? Spread the word to others about this awesome plugin by showing a small badge at the bottom of your form."
 msgstr ""
 
 #: build/builder/index.js:1
@@ -2174,7 +2148,7 @@ msgid "Publish or update the page — the form is live."
 msgstr ""
 
 #: build/form/index.js:1
-msgid "Powered by WP FlowForms"
+msgid "Powered by WPFlowForms"
 msgstr ""
 
 #: build/form/index.js:1
@@ -2204,7 +2178,7 @@ msgstr ""
 
 #: build/block/block.json
 msgctxt "block description"
-msgid "Embed a WP FlowForm on your page."
+msgid "Embed a WPFlowForm on your page."
 msgstr ""
 
 #: build/block/block.json

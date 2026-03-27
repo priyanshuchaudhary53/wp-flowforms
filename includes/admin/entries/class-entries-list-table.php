@@ -50,17 +50,17 @@ class FlowForms_Entries_List_Table extends WP_List_Table
   {
     $cols = [
       'cb'        => '<input type="checkbox">',
-      'id'        => __('ID', 'wp-flowforms'),
+      'id'        => __('ID', 'wpflowforms'),
       'star'      => '',
-      'status'    => __('Status', 'wp-flowforms'),
-      'summary'   => __('Summary', 'wp-flowforms'),
-      'submitted' => __('Submitted', 'wp-flowforms'),
-      'actions'   => __('Actions', 'wp-flowforms'),
+      'status'    => __('Status', 'wpflowforms'),
+      'summary'   => __('Summary', 'wpflowforms'),
+      'submitted' => __('Submitted', 'wpflowforms'),
+      'actions'   => __('Actions', 'wpflowforms'),
     ];
 
     // Only show Form column when not filtered to a single form.
     if (! $this->form_id) {
-      $cols = wpff_array_insert($cols, ['form' => __('Form', 'wp-flowforms')], 'summary');
+      $cols = wpff_array_insert($cols, ['form' => __('Form', 'wpflowforms')], 'summary');
     }
 
     return $cols;
@@ -118,7 +118,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       esc_attr($cls),
       $entry->id,
       (int) $entry->is_starred,
-      $entry->is_starred ? esc_attr__('Unstar', 'wp-flowforms') : esc_attr__('Star', 'wp-flowforms')
+      $entry->is_starred ? esc_attr__('Unstar', 'wpflowforms') : esc_attr__('Star', 'wpflowforms')
     );
   }
 
@@ -176,7 +176,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
   public function column_submitted($entry): string
   {
     $ts        = strtotime($entry->created_at);
-    $relative  = human_time_diff($ts, current_time('timestamp')) . ' ' . __('ago', 'wp-flowforms');
+    $relative  = human_time_diff($ts, current_time('timestamp')) . ' ' . __('ago', 'wpflowforms');
     $absolute  = wp_date(get_option('date_format') . ' ' . get_option('time_format'), $ts);
 
     return sprintf('<span title="%s">%s</span>', esc_attr($absolute), esc_html($relative));
@@ -202,13 +202,13 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         'restore' => sprintf(
           '<a href="%s">%s</a>',
           esc_url(wp_nonce_url(add_query_arg(['action' => 'restore', 'entry_id' => $entry->id], $base), 'wpff_entry_restore')),
-          esc_html__('Restore', 'wp-flowforms')
+          esc_html__('Restore', 'wpflowforms')
         ),
         'delete' => sprintf(
           '<a href="%s" class="submitdelete" onclick="return confirm(\'%s\')">%s</a>',
           esc_url(wp_nonce_url(add_query_arg(['action' => 'delete', 'entry_id' => $entry->id], $base), 'wpff_entry_delete')),
-          esc_js(__('Permanently delete this entry?', 'wp-flowforms')),
-          esc_html__('Delete Permanently', 'wp-flowforms')
+          esc_js(__('Permanently delete this entry?', 'wpflowforms')),
+          esc_html__('Delete Permanently', 'wpflowforms')
         ),
       ];
     } elseif ($this->status === 'spam') {
@@ -216,12 +216,12 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         'unspam' => sprintf(
           '<a href="%s">%s</a>',
           esc_url(wp_nonce_url(add_query_arg(['action' => 'unspam', 'entry_id' => $entry->id], $base), 'wpff_entry_unspam')),
-          esc_html__('Not Spam', 'wp-flowforms')
+          esc_html__('Not Spam', 'wpflowforms')
         ),
         'trash' => sprintf(
           '<a href="%s" class="submitdelete">%s</a>',
           esc_url(wp_nonce_url(add_query_arg(['action' => 'trash', 'entry_id' => $entry->id], $base), 'wpff_entry_trash')),
-          esc_html__('Trash', 'wp-flowforms')
+          esc_html__('Trash', 'wpflowforms')
         ),
       ];
     } else {
@@ -229,17 +229,17 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         'view' => sprintf(
           '<a href="%s">%s</a>',
           esc_url($view_url),
-          esc_html__('View', 'wp-flowforms')
+          esc_html__('View', 'wpflowforms')
         ),
         'spam' => sprintf(
           '<a href="%s">%s</a>',
           esc_url(wp_nonce_url(add_query_arg(['action' => 'spam', 'entry_id' => $entry->id], $base), 'wpff_entry_spam')),
-          esc_html__('Spam', 'wp-flowforms')
+          esc_html__('Spam', 'wpflowforms')
         ),
         'trash' => sprintf(
           '<a href="%s" class="submitdelete">%s</a>',
           esc_url(wp_nonce_url(add_query_arg(['action' => 'trash', 'entry_id' => $entry->id], $base), 'wpff_entry_trash')),
-          esc_html__('Trash', 'wp-flowforms')
+          esc_html__('Trash', 'wpflowforms')
         ),
       ];
     }
@@ -262,10 +262,10 @@ class FlowForms_Entries_List_Table extends WP_List_Table
   public function column_status($entry): string
   {
     if ($entry->is_read) {
-      return '<span class="wpff-status wpff-status--read">' . esc_html__('Read', 'wp-flowforms') . '</span>';
+      return '<span class="wpff-status wpff-status--read">' . esc_html__('Read', 'wpflowforms') . '</span>';
     }
 
-    return '<span class="wpff-status wpff-status--unread">' . esc_html__('Unread', 'wp-flowforms') . '</span>';
+    return '<span class="wpff-status wpff-status--unread">' . esc_html__('Unread', 'wpflowforms') . '</span>';
   }
 
   /**
@@ -287,24 +287,24 @@ class FlowForms_Entries_List_Table extends WP_List_Table
   {
     if ($this->status === 'trash') {
       return [
-        'restore' => __('Restore', 'wp-flowforms'),
-        'delete'  => __('Delete Permanently', 'wp-flowforms'),
+        'restore' => __('Restore', 'wpflowforms'),
+        'delete'  => __('Delete Permanently', 'wpflowforms'),
       ];
     }
 
     if ($this->status === 'spam') {
       return [
-        'unspam' => __('Not Spam', 'wp-flowforms'),
-        'delete' => __('Delete Permanently', 'wp-flowforms'),
+        'unspam' => __('Not Spam', 'wpflowforms'),
+        'delete' => __('Delete Permanently', 'wpflowforms'),
       ];
     }
 
     return [
-      'mark_read'   => __('Mark as Read', 'wp-flowforms'),
-      'mark_unread' => __('Mark as Unread', 'wp-flowforms'),
-      'star'        => __('Star', 'wp-flowforms'),
-      'trash'       => __('Move to Trash', 'wp-flowforms'),
-      'spam'        => __('Mark as Spam', 'wp-flowforms'),
+      'mark_read'   => __('Mark as Read', 'wpflowforms'),
+      'mark_unread' => __('Mark as Unread', 'wpflowforms'),
+      'star'        => __('Star', 'wpflowforms'),
+      'trash'       => __('Move to Trash', 'wpflowforms'),
+      'spam'        => __('Mark as Spam', 'wpflowforms'),
     ];
   }
 
@@ -331,7 +331,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       '<a href="%s"%s>%s%s <span class="count">(%d)</span></a>',
       esc_url($base),
       $this->status === 'active' ? ' class="current"' : '',
-      esc_html__('All', 'wp-flowforms'),
+      esc_html__('All', 'wpflowforms'),
       $unread_badge,
       $counts['active']
     );
@@ -341,7 +341,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
         esc_url(add_query_arg('status', 'starred', $base)),
         $this->status === 'starred' ? ' class="current"' : '',
-        esc_html__('Starred', 'wp-flowforms'),
+        esc_html__('Starred', 'wpflowforms'),
         $counts['starred']
       );
     }
@@ -351,7 +351,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
         esc_url(add_query_arg('status', 'spam', $base)),
         $this->status === 'spam' ? ' class="current"' : '',
-        esc_html__('Spam', 'wp-flowforms'),
+        esc_html__('Spam', 'wpflowforms'),
         $counts['spam']
       );
     }
@@ -361,7 +361,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
         esc_url(add_query_arg('status', 'trash', $base)),
         $this->status === 'trash' ? ' class="current"' : '',
-        esc_html__('Trash', 'wp-flowforms'),
+        esc_html__('Trash', 'wpflowforms'),
         $counts['trash']
       );
     }
@@ -387,16 +387,16 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       printf(
         '<a href="%s" class="button wpff-empty-btn" onclick="return confirm(\'%s\')">%s</a>',
         esc_url($url),
-        esc_js(__('Permanently delete all trashed entries?', 'wp-flowforms')),
-        esc_html__('Empty Trash', 'wp-flowforms')
+        esc_js(__('Permanently delete all trashed entries?', 'wpflowforms')),
+        esc_html__('Empty Trash', 'wpflowforms')
       );
     } elseif ($this->status === 'spam') {
       $url = wp_nonce_url(add_query_arg('action', 'empty_spam', $base), 'wpff_entry_empty_spam');
       printf(
         '<a href="%s" class="button wpff-empty-btn" onclick="return confirm(\'%s\')">%s</a>',
         esc_url($url),
-        esc_js(__('Permanently delete all spam entries?', 'wp-flowforms')),
-        esc_html__('Empty Spam', 'wp-flowforms')
+        esc_js(__('Permanently delete all spam entries?', 'wpflowforms')),
+        esc_html__('Empty Spam', 'wpflowforms')
       );
     }
   }
@@ -429,7 +429,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       $is_starred = true;
     }
 
-    $entry_obj = wp_flowforms()->obj('entry');
+    $entry_obj = wpflowforms()->obj('entry');
     $result    = $entry_obj->get_multiple([
       'form_id'     => $this->form_id,
       'status'      => $status,
@@ -461,11 +461,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
   public function no_items()
   {
     if ($this->status === 'trash') {
-      esc_html_e('Trash is empty.', 'wp-flowforms');
+      esc_html_e('Trash is empty.', 'wpflowforms');
     } elseif ($this->status === 'spam') {
-      esc_html_e('No spam entries.', 'wp-flowforms');
+      esc_html_e('No spam entries.', 'wpflowforms');
     } else {
-      esc_html_e('No entries found. Try adjusting your filters.', 'wp-flowforms');
+      esc_html_e('No entries found. Try adjusting your filters.', 'wpflowforms');
     }
   }
 

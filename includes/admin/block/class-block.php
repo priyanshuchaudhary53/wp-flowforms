@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * FlowForms_Block
  *
- * Registers the wp-flowforms/form Gutenberg block.
+ * Registers the wpflowforms/form Gutenberg block.
  * REST routes live in class-rest-api.php.
  */
 class FlowForms_Block {
@@ -30,7 +30,7 @@ class FlowForms_Block {
 			return;
 		}
 
-		register_block_type( WP_FLOWFORMS_PATH . 'build/block/block.json' );
+		register_block_type( WPFF_PATH . 'build/block/block.json' );
 
 		add_action( 'enqueue_block_editor_assets', [ $this, 'localize_block_data' ] );
 	}

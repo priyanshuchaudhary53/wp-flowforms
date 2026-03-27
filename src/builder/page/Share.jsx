@@ -35,7 +35,7 @@ function CopyInputRow({ label, value }) {
       <InputGroup className="bg-gray-50!">
         <InputGroupInput readOnly value={value} className="font-mono text-xs text-muted-foreground" />
         <InputGroupAddon align="inline-end">
-          <InputGroupButton onClick={() => copy(value)} aria-label={ sprintf( /* translators: %s: field label (e.g. "Embed Code") */ __( "Copy %s", "wp-flowforms" ), label ) }>
+          <InputGroupButton onClick={() => copy(value)} aria-label={ sprintf( /* translators: %s: field label (e.g. "Embed Code") */ __( "Copy %s", "wpflowforms" ), label ) }>
             {copied ? <Check className="text-green-500" /> : <Copy />}
           </InputGroupButton>
         </InputGroupAddon>
@@ -68,15 +68,15 @@ export default function Share({ className }) {
         {/* ── Direct link ──────────────────────────────────────────── */}
         <section className="space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-foreground">{ __( "Direct link", "wp-flowforms" ) }</h2>
+            <h2 className="text-base font-semibold text-foreground">{ __( "Direct link", "wpflowforms" ) }</h2>
             <p className="text-sm text-muted-foreground mt-0.5">
-              { __( "Share this URL so anyone can fill in your form directly.", "wp-flowforms" ) }
+              { __( "Share this URL so anyone can fill in your form directly.", "wpflowforms" ) }
             </p>
           </div>
 
           <div className="flex items-end gap-2">
             <div className="flex-1">
-              <CopyInputRow label={ __( "Form URL", "wp-flowforms" ) } value={publicUrl} />
+              <CopyInputRow label={ __( "Form URL", "wpflowforms" ) } value={publicUrl} />
             </div>
             <Button
               variant="outline"
@@ -86,7 +86,7 @@ export default function Share({ className }) {
             >
               <a href={publicUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink />
-                { __( "Open", "wp-flowforms" ) }
+                { __( "Open", "wpflowforms" ) }
               </a>
             </Button>
           </div>
@@ -97,25 +97,25 @@ export default function Share({ className }) {
         {/* ── Shortcode ─────────────────────────────────────────────── */}
         <section className="space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-foreground">{ __( "Shortcode", "wp-flowforms" ) }</h2>
+            <h2 className="text-base font-semibold text-foreground">{ __( "Shortcode", "wpflowforms" ) }</h2>
             <p className="text-sm text-muted-foreground mt-0.5">
-              { __( "Paste this shortcode into any WordPress page or post to embed the form.", "wp-flowforms" ) }
+              { __( "Paste this shortcode into any WordPress page or post to embed the form.", "wpflowforms" ) }
             </p>
           </div>
 
           {/* Live preview + copy */}
-          <CopyInputRow label={ __( "Shortcode", "wp-flowforms" ) } value={shortcode} />
+          <CopyInputRow label={ __( "Shortcode", "wpflowforms" ) } value={shortcode} />
 
           {/* Attribute customisation */}
           <div className="rounded-lg border border-border bg-gray-50 p-4 space-y-4">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              { __( "Customize embed", "wp-flowforms" ) }
+              { __( "Customize embed", "wpflowforms" ) }
             </p>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="sc-height" className="text-sm font-medium text-foreground">
-                  { __( "Height", "wp-flowforms" ) }
+                  { __( "Height", "wpflowforms" ) }
                 </label>
                 <Input
                   id="sc-height"
@@ -125,13 +125,13 @@ export default function Share({ className }) {
                   placeholder={DEFAULT_HEIGHT}
                 />
                 <p className="text-xs text-muted-foreground">
-                  { __( "e.g.", "wp-flowforms" ) } <code>520px</code>, <code>80vh</code>
+                  { __( "e.g.", "wpflowforms" ) } <code>520px</code>, <code>80vh</code>
                 </p>
               </div>
 
               <div className="space-y-1.5">
                 <label htmlFor="sc-radius" className="text-sm font-medium text-foreground">
-                  { __( "Border radius", "wp-flowforms" ) }
+                  { __( "Border radius", "wpflowforms" ) }
                 </label>
                 <Input
                   id="sc-radius"
@@ -141,7 +141,7 @@ export default function Share({ className }) {
                   placeholder={DEFAULT_BORDER_RADIUS}
                 />
                 <p className="text-xs text-muted-foreground">
-                  { __( "e.g.", "wp-flowforms" ) } <code>16px</code>, <code>0</code>, <code>1rem</code>
+                  { __( "e.g.", "wpflowforms" ) } <code>16px</code>, <code>0</code>, <code>1rem</code>
                 </p>
               </div>
             </div>
@@ -153,19 +153,19 @@ export default function Share({ className }) {
         {/* ── Gutenberg block ───────────────────────────────────────── */}
         <section className="space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-foreground">{ __( "Gutenberg block", "wp-flowforms" ) }</h2>
+            <h2 className="text-base font-semibold text-foreground">{ __( "Gutenberg block", "wpflowforms" ) }</h2>
             <p className="text-sm text-muted-foreground mt-0.5">
-              { __( "The", "wp-flowforms" ) } <strong className="text-foreground font-medium">FlowForm</strong> { __( "block is available in the WordPress block editor — no shortcode needed.", "wp-flowforms" ) }
+              { __( "The", "wpflowforms" ) } <strong className="text-foreground font-medium">FlowForm</strong> { __( "block is available in the WordPress block editor — no shortcode needed.", "wpflowforms" ) }
             </p>
           </div>
 
           <ol className="space-y-3 text-sm text-muted-foreground list-none">
             {[
-              <>{ __( "Open the page or post where you want to embed the form in the", "wp-flowforms" ) } <strong className="text-foreground font-medium">{ __( "Block Editor", "wp-flowforms" ) }</strong>.</>,
-              <>{ __( "Click the", "wp-flowforms" ) } <strong className="text-foreground font-medium">+</strong> { __( "inserter and search for", "wp-flowforms" ) } <strong className="text-foreground font-medium">FlowForm</strong>, { __( "then select the block.", "wp-flowforms" ) }</>,
-              <>{ __( "Choose this form from the dropdown in the block toolbar or sidebar.", "wp-flowforms" ) }</>,
-              <>{ __( "In the block sidebar, set", "wp-flowforms" ) } <strong className="text-foreground font-medium">{ __( "Height", "wp-flowforms" ) }</strong> { __( "and", "wp-flowforms" ) } <strong className="text-foreground font-medium">{ __( "Border Radius", "wp-flowforms" ) }</strong> { __( "to match your design.", "wp-flowforms" ) }</>,
-              <>{ __( "Publish or update the page — the form is live.", "wp-flowforms" ) }</>,
+              <>{ __( "Open the page or post where you want to embed the form in the", "wpflowforms" ) } <strong className="text-foreground font-medium">{ __( "Block Editor", "wpflowforms" ) }</strong>.</>,
+              <>{ __( "Click the", "wpflowforms" ) } <strong className="text-foreground font-medium">+</strong> { __( "inserter and search for", "wpflowforms" ) } <strong className="text-foreground font-medium">FlowForm</strong>, { __( "then select the block.", "wpflowforms" ) }</>,
+              <>{ __( "Choose this form from the dropdown in the block toolbar or sidebar.", "wpflowforms" ) }</>,
+              <>{ __( "In the block sidebar, set", "wpflowforms" ) } <strong className="text-foreground font-medium">{ __( "Height", "wpflowforms" ) }</strong> { __( "and", "wpflowforms" ) } <strong className="text-foreground font-medium">{ __( "Border Radius", "wpflowforms" ) }</strong> { __( "to match your design.", "wpflowforms" ) }</>,
+              <>{ __( "Publish or update the page — the form is live.", "wpflowforms" ) }</>,
             ].map((step, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-ff-secondary-100 text-ff-secondary-700 text-xs font-semibold mt-0.5">

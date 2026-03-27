@@ -5,8 +5,8 @@ import { useFormStore } from "../store/useFormStore";
 // ── Tab definitions ───────────────────────────────────────────────────────────
 
 const TABS = [
-  { id: "general", label: __( "General", "wp-flowforms" ) },
-  { id: "email",   label: __( "Email Notifications", "wp-flowforms" ) },
+  { id: "general", label: __( "General", "wpflowforms" ) },
+  { id: "email",   label: __( "Email Notifications", "wpflowforms" ) },
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -29,10 +29,10 @@ const SITE = formflowData.site ?? {};
 // ── Smart Tags ────────────────────────────────────────────────────────────────
 
 const SMART_TAGS = [
-  { tag: "{admin_email}", label: __( "Admin Email", "wp-flowforms" ),  description: SITE.adminEmail ?? __( "The site administrator's email", "wp-flowforms" ) },
-  { tag: "{site_name}",   label: __( "Site Name", "wp-flowforms" ),    description: SITE.siteName   ?? __( "The name of your website", "wp-flowforms" ) },
-  { tag: "{form_name}",   label: __( "Form Name", "wp-flowforms" ),    description: __( "The name of this form", "wp-flowforms" ) },
-  { tag: "{all_fields}",  label: __( "All Fields", "wp-flowforms" ),   description: __( "All submitted field values", "wp-flowforms" ) },
+  { tag: "{admin_email}", label: __( "Admin Email", "wpflowforms" ),  description: SITE.adminEmail ?? __( "The site administrator's email", "wpflowforms" ) },
+  { tag: "{site_name}",   label: __( "Site Name", "wpflowforms" ),    description: SITE.siteName   ?? __( "The name of your website", "wpflowforms" ) },
+  { tag: "{form_name}",   label: __( "Form Name", "wpflowforms" ),    description: __( "The name of this form", "wpflowforms" ) },
+  { tag: "{all_fields}",  label: __( "All Fields", "wpflowforms" ),   description: __( "All submitted field values", "wpflowforms" ) },
 ];
 
 // Smart tags available in single-line fields (subject, sender name) — {all_fields} excluded
@@ -323,11 +323,11 @@ function SmartTagInput({ value, placeholder, onChange, tags, multiline = false }
 
       {/* Hint text */}
       <p className="mt-1.5 text-xs text-muted-foreground">
-        { __( "Start typing", "wp-flowforms" ) }{" "}
+        { __( "Start typing", "wpflowforms" ) }{" "}
         <kbd className="font-mono bg-muted px-1 py-0.5 rounded text-[10px] border border-border">
           @
         </kbd>{" "}
-        { __( "to see all available smart tags", "wp-flowforms" ) }
+        { __( "to see all available smart tags", "wpflowforms" ) }
       </p>
     </div>
   );
@@ -355,14 +355,14 @@ function SaveStatusBadge({ status }) {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          { __( "Saving…", "wp-flowforms" ) }
+          { __( "Saving…", "wpflowforms" ) }
         </>
       ) : (
         <>
           <svg className="h-3 w-3 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
           </svg>
-          { __( "Save failed", "wp-flowforms" ) }
+          { __( "Save failed", "wpflowforms" ) }
         </>
       )}
     </div>
@@ -432,20 +432,20 @@ const GENERAL_FIELDS = [
   {
     key: "progress_bar",
     type: "toggle",
-    label: __( "Progress bar", "wp-flowforms" ),
-    description: __( "Show a progress indicator at the top of the form so respondents know how far along they are.", "wp-flowforms" ),
+    label: __( "Progress bar", "wpflowforms" ),
+    description: __( "Show a progress indicator at the top of the form so respondents know how far along they are.", "wpflowforms" ),
   },
   {
     key: "navigation_arrows",
     type: "toggle",
-    label: __( "Navigation arrows", "wp-flowforms" ),
-    description: __( "Display previous and next arrow buttons to let respondents move between questions freely.", "wp-flowforms" ),
+    label: __( "Navigation arrows", "wpflowforms" ),
+    description: __( "Display previous and next arrow buttons to let respondents move between questions freely.", "wpflowforms" ),
   },
   {
     key: "powered_by",
     type: "toggle",
-    label: __( 'Show "Powered by WP FlowForms"', "wp-flowforms" ),
-    description: __( "Loved WP FlowForms? Spread the word to others about this awesome plugin by showing a small badge at the bottom of your form.", "wp-flowforms" ),
+    label: __( 'Show "Powered by WPFlowForms"', "wpflowforms" ),
+    description: __( "Loved WPFlowForms? Spread the word to others about this awesome plugin by showing a small badge at the bottom of your form.", "wpflowforms" ),
   },
 ];
 
@@ -459,9 +459,9 @@ function GeneralTab() {
   return (
     <section>
       <div className="px-10 pt-10 pb-6 border-b">
-        <h2 className="text-base font-semibold text-foreground">{ __( "General", "wp-flowforms" ) }</h2>
+        <h2 className="text-base font-semibold text-foreground">{ __( "General", "wpflowforms" ) }</h2>
         <p className="text-sm text-muted-foreground mt-0.5">
-          { __( "Control how your form looks and behaves for respondents.", "wp-flowforms" ) }
+          { __( "Control how your form looks and behaves for respondents.", "wpflowforms" ) }
         </p>
       </div>
 
@@ -484,13 +484,13 @@ function GeneralTab() {
 
 // Default values for the first (and only, in free) notification item.
 const NOTIF_DEFAULTS = {
-  name:           __( "Admin Notification", "wp-flowforms" ),
+  name:           __( "Admin Notification", "wpflowforms" ),
   email:          "{admin_email}",
-  subject:        __( "New submission: {form_name}", "wp-flowforms" ),
+  subject:        __( "New submission: {form_name}", "wpflowforms" ),
   sender_name:    "{site_name}",
   sender_address: "{admin_email}",
   replyto:        "",
-  message:        __( "Hi,\n\nYour form {form_name} just received a new submission.\n\nHere are the details:\n\n{all_fields}\n\nThanks,\n{site_name}", "wp-flowforms" ),
+  message:        __( "Hi,\n\nYour form {form_name} just received a new submission.\n\nHere are the details:\n\n{all_fields}\n\nThanks,\n{site_name}", "wpflowforms" ),
 };
 
 // Sentinel used in the <select> to represent the custom-email option.
@@ -525,9 +525,9 @@ function EmailTab() {
   return (
     <section>
       <div className="pt-10 px-10 pb-6 border-b">
-        <h2 className="text-base font-semibold text-foreground">{ __( "Email Notifications", "wp-flowforms" ) }</h2>
+        <h2 className="text-base font-semibold text-foreground">{ __( "Email Notifications", "wpflowforms" ) }</h2>
         <p className="text-sm text-muted-foreground mt-0.5">
-          { __( "Configure automated emails sent when a form is submitted.", "wp-flowforms" ) }
+          { __( "Configure automated emails sent when a form is submitted.", "wpflowforms" ) }
         </p>
       </div>
 
@@ -535,8 +535,8 @@ function EmailTab() {
 
         {/* ── Enable toggle ── */}
         <ToggleRow
-          label={ __( "Enable email notifications", "wp-flowforms" ) }
-          description={ __( "Send an email notification whenever a new form submission is received.", "wp-flowforms" ) }
+          label={ __( "Enable email notifications", "wpflowforms" ) }
+          description={ __( "Send an email notification whenever a new form submission is received.", "wpflowforms" ) }
           checked={enabled}
           onChange={(val) => updateSetting("email", "enabled", val)}
         />
@@ -546,26 +546,26 @@ function EmailTab() {
           <>
             {/* Send to */}
             <EmailRecipientRow
-              label={ __( "Send to", "wp-flowforms" ) }
-              description={ __( "Who receives this notification email.", "wp-flowforms" ) }
+              label={ __( "Send to", "wpflowforms" ) }
+              description={ __( "Who receives this notification email.", "wpflowforms" ) }
               value={notif.email}
               onChange={(val) => updateNotif("email", val)}
             />
 
             {/* Subject */}
             <InputRow
-              label={ __( "Subject", "wp-flowforms" ) }
-              description={ __( "The subject line of the notification email.", "wp-flowforms" ) }
+              label={ __( "Subject", "wpflowforms" ) }
+              description={ __( "The subject line of the notification email.", "wpflowforms" ) }
               value={notif.subject}
-              placeholder={ __( "New submission: {form_name}", "wp-flowforms" ) }
+              placeholder={ __( "New submission: {form_name}", "wpflowforms" ) }
               onChange={(val) => updateNotif("subject", val)}
               smartTags={SMART_TAGS_INLINE}
             />
 
             {/* From name */}
             <InputRow
-              label={ __( "From name", "wp-flowforms" ) }
-              description={ __( "The sender name shown in the recipient's email client.", "wp-flowforms" ) }
+              label={ __( "From name", "wpflowforms" ) }
+              description={ __( "The sender name shown in the recipient's email client.", "wpflowforms" ) }
               value={notif.sender_name}
               placeholder="{site_name}"
               onChange={(val) => updateNotif("sender_name", val)}
@@ -574,15 +574,15 @@ function EmailTab() {
 
             {/* From email */}
             <SelectRow
-              label={ __( "From email", "wp-flowforms" ) }
-              description={ __( "The sender address shown in the recipient's email client.", "wp-flowforms" ) }
+              label={ __( "From email", "wpflowforms" ) }
+              description={ __( "The sender address shown in the recipient's email client.", "wpflowforms" ) }
               options={[{
                 value: "{admin_email}",
-                label: `${__( "Admin email", "wp-flowforms" )}${SITE.adminEmail ? ` (${SITE.adminEmail})` : ""}`,
+                label: `${__( "Admin email", "wpflowforms" )}${SITE.adminEmail ? ` (${SITE.adminEmail})` : ""}`,
               }]}
               value={notif.sender_address}
               onChange={(val) => updateNotif("sender_address", val)}
-              warningText={ __( "These sender settings may be overridden by an SMTP plugin (e.g. WP Mail SMTP, Postman SMTP) installed on your site.", "wp-flowforms" ) }
+              warningText={ __( "These sender settings may be overridden by an SMTP plugin (e.g. WP Mail SMTP, Postman SMTP) installed on your site.", "wpflowforms" ) }
             />
 
             {/* Reply-To */}
@@ -594,8 +594,8 @@ function EmailTab() {
 
             {/* Email body */}
             <InputRow
-              label={ __( "Email body", "wp-flowforms" ) }
-              description={ __( "The body of the notification email. Use {all_fields} to include all submitted values.", "wp-flowforms" ) }
+              label={ __( "Email body", "wpflowforms" ) }
+              description={ __( "The body of the notification email. Use {all_fields} to include all submitted values.", "wpflowforms" ) }
               value={notif.message}
               placeholder="{all_fields}"
               onChange={(val) => updateNotif("message", val)}
@@ -686,7 +686,7 @@ function InputRow({ label, description, value, placeholder, resolvedHint, onChan
           />
           {showHint && (
             <p className="mt-1.5 text-xs text-muted-foreground">
-              <span className="font-medium">{ __( "Resolves to:", "wp-flowforms" ) }</span> {resolvedHint}
+              <span className="font-medium">{ __( "Resolves to:", "wpflowforms" ) }</span> {resolvedHint}
             </p>
           )}
         </>
@@ -706,9 +706,9 @@ function ReplyToRow({ value, onChange, emailQuestions }) {
   return (
     <div className="py-4 first:pt-0 last:pb-0">
       <div className="flex flex-col gap-1 mb-2">
-        <span className="text-sm font-medium text-foreground">{ __( "Reply-To", "wp-flowforms" ) }</span>
+        <span className="text-sm font-medium text-foreground">{ __( "Reply-To", "wpflowforms" ) }</span>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          { __( "Replies from the recipient will go to the email entered in the selected form field. Leave unset to reply to the From address.", "wp-flowforms" ) }
+          { __( "Replies from the recipient will go to the email entered in the selected form field. Leave unset to reply to the From address.", "wpflowforms" ) }
         </p>
       </div>
 
@@ -717,12 +717,12 @@ function ReplyToRow({ value, onChange, emailQuestions }) {
         onChange={(e) => onChange(e.target.value)}
         className="w-1/2 rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
       >
-        <option value="">{ __( "— None (use From address) —", "wp-flowforms" ) }</option>
+        <option value="">{ __( "— None (use From address) —", "wpflowforms" ) }</option>
         {emailQuestions.length > 0 && (
-          <optgroup label={ __( "Email blocks in this form", "wp-flowforms" ) }>
+          <optgroup label={ __( "Email blocks in this form", "wpflowforms" ) }>
             {emailQuestions.map((q) => (
               <option key={q.id} value={`{field:${q.id}}`}>
-                {q.content?.title?.trim() || __( "(Untitled email field)", "wp-flowforms" )}
+                {q.content?.title?.trim() || __( "(Untitled email field)", "wpflowforms" )}
               </option>
             ))}
           </optgroup>
@@ -731,14 +731,14 @@ function ReplyToRow({ value, onChange, emailQuestions }) {
 
       {emailQuestions.length === 0 && (
         <p className="mt-1.5 text-xs text-muted-foreground">
-          { __( "No email fields found in your form. Add an Email block to enable this option.", "wp-flowforms" ) }
+          { __( "No email fields found in your form. Add an Email block to enable this option.", "wpflowforms" ) }
         </p>
       )}
 
       {selected && (
         <p className="mt-1.5 text-xs text-muted-foreground">
-          { __( "Replies will go to the email entered in the", "wp-flowforms" ) }{" "}
-          <span className="font-medium text-foreground">{selected.content?.title}</span> { __( "field.", "wp-flowforms" ) }
+          { __( "Replies will go to the email entered in the", "wpflowforms" ) }{" "}
+          <span className="font-medium text-foreground">{selected.content?.title}</span> { __( "field.", "wpflowforms" ) }
         </p>
       )}
     </div>
@@ -766,7 +766,7 @@ function EmailRecipientRow({ label, description, value, onChange }) {
     if (custom) setCustomEmail(value);
   }, [value]);
 
-  const adminLabel = `${__( "Admin email", "wp-flowforms" )}${SITE.adminEmail ? ` (${SITE.adminEmail})` : ""}`;
+  const adminLabel = `${__( "Admin email", "wpflowforms" )}${SITE.adminEmail ? ` (${SITE.adminEmail})` : ""}`;
   const selectValue = showCustom ? CUSTOM_EMAIL_SENTINEL : "{admin_email}";
 
   const handleSelectChange = (e) => {
@@ -802,14 +802,14 @@ function EmailRecipientRow({ label, description, value, onChange }) {
           className="rounded-lg min-h-9.5 border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
         >
           <option value="{admin_email}">{adminLabel}</option>
-          <option value={CUSTOM_EMAIL_SENTINEL}>{ __( "Custom email address…", "wp-flowforms" ) }</option>
+          <option value={CUSTOM_EMAIL_SENTINEL}>{ __( "Custom email address…", "wpflowforms" ) }</option>
         </select>
 
         {showCustom && (
           <input
             type="email"
             value={customEmail}
-            placeholder={ __( "Enter email address", "wp-flowforms" ) }
+            placeholder={ __( "Enter email address", "wpflowforms" ) }
             onChange={handleCustomChange}
             className="gw-full rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
           />
@@ -846,7 +846,7 @@ function SelectRow({ label, description, options, value, onChange, warningText }
 
       {warningText && (
         <p className="text-xs text-amber-500 mt-1.5">
-          <strong>{ __( "Note:", "wp-flowforms" ) }</strong> {warningText}
+          <strong>{ __( "Note:", "wpflowforms" ) }</strong> {warningText}
         </p>
       )}
     </div>

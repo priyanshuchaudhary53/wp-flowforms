@@ -9,7 +9,7 @@
 if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 /**
- * Check whether the current request is for a specific WP FlowForms admin page.
+ * Check whether the current request is for a specific WPFlowForms admin page.
  *
  * @since 1.0.0
  *

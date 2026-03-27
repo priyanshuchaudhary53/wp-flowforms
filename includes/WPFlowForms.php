@@ -2,14 +2,14 @@
 
 if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
-final class WP_FlowForms
+final class WPFlowForms
 {
   /**
-   * WP_FlowForms instance.
+   * WPFlowForms instance.
    *
    * @since 1.0.0
    *
-   * @var WP_FlowForms
+   * @var WPFlowForms
    */
   private static $instance;
 
@@ -41,11 +41,11 @@ final class WP_FlowForms
   private $registry = [];
 
   /**
-   * Main WP_FlowForms Instance.
+   * Main WPFlowForms Instance.
    *
    * @since 1.0.0
    *
-   * @return WP_FlowForms
+   * @return WPFlowForms
    */
   public static function instance()
   {
@@ -80,8 +80,8 @@ final class WP_FlowForms
    */
   private function constants()
   {
-    $this->version = WP_FLOWFORMS_VERSION;
-    $this->name = WP_FLOWFORMS_NAME;
+    $this->version = WPFF_VERSION;
+    $this->name = WPFF_NAME;
   }
 
   /**
@@ -91,28 +91,28 @@ final class WP_FlowForms
    */
   private function includes()
   {
-    require_once WP_FLOWFORMS_PATH . 'includes/class-install.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-database.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/functions.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-form.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-entry.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-templates.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-smart-tags.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-token.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-akismet.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/class-rest-api.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/frontend/class-frontend.php';
-    require_once WP_FLOWFORMS_PATH . 'includes/admin/block/class-block.php';
+    require_once WPFF_PATH . 'includes/class-install.php';
+    require_once WPFF_PATH . 'includes/class-database.php';
+    require_once WPFF_PATH . 'includes/functions.php';
+    require_once WPFF_PATH . 'includes/class-form.php';
+    require_once WPFF_PATH . 'includes/class-entry.php';
+    require_once WPFF_PATH . 'includes/class-templates.php';
+    require_once WPFF_PATH . 'includes/class-smart-tags.php';
+    require_once WPFF_PATH . 'includes/class-token.php';
+    require_once WPFF_PATH . 'includes/class-akismet.php';
+    require_once WPFF_PATH . 'includes/class-rest-api.php';
+    require_once WPFF_PATH . 'includes/frontend/class-frontend.php';
+    require_once WPFF_PATH . 'includes/admin/block/class-block.php';
 
     // Admin/Dashboard only includes
     if (is_admin()) {
-      require_once WP_FLOWFORMS_PATH . 'includes/admin/class-menu.php';
-      require_once WP_FLOWFORMS_PATH . 'includes/admin/settings/settings-api.php';
-      require_once WP_FLOWFORMS_PATH . 'includes/admin/class-settings.php';
-      require_once WP_FLOWFORMS_PATH . 'includes/admin/builder/class-builder.php';
-      require_once WP_FLOWFORMS_PATH . 'includes/admin/forms/class-forms-overview.php';
-      require_once WP_FLOWFORMS_PATH . 'includes/admin/entries/class-entries-overview.php';
-      require_once WP_FLOWFORMS_PATH . 'includes/admin/entries/class-field-icons.php';
+      require_once WPFF_PATH . 'includes/admin/class-menu.php';
+      require_once WPFF_PATH . 'includes/admin/settings/settings-api.php';
+      require_once WPFF_PATH . 'includes/admin/class-settings.php';
+      require_once WPFF_PATH . 'includes/admin/builder/class-builder.php';
+      require_once WPFF_PATH . 'includes/admin/forms/class-forms-overview.php';
+      require_once WPFF_PATH . 'includes/admin/entries/class-entries-overview.php';
+      require_once WPFF_PATH . 'includes/admin/entries/class-field-icons.php';
     }
   }
 
@@ -131,7 +131,7 @@ final class WP_FlowForms
     $this->registry['token']      = new FlowForms_Token();
 
     /**
-     * Executes when all the WP FlowForms stuff was loaded.
+     * Executes when all the WPFlowForms stuff was loaded.
      *
      * @since 1.0.0
      */
@@ -154,13 +154,13 @@ final class WP_FlowForms
 }
 
 /**
- * The function which returns the one WP_FlowForms instance.
+ * The function which returns the one WPFlowForms instance.
  *
  * @since 1.0.0
  *
- * @return WP_FlowForms
+ * @return WPFlowForms
  */
-function wp_flowforms()
+function wpflowforms()
 {
-  return WP_FlowForms::instance();
+  return WPFlowForms::instance();
 }
