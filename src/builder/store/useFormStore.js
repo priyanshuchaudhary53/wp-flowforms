@@ -6,6 +6,18 @@ import BLOCK_SETTINGS from "../components/right-panel/blockSettings";
 let saveTimer     = null;   // form content + design
 let settingsTimer = null;   // settings only
 
+// ── UUID helper — crypto.randomUUID() requires a secure context (HTTPS).
+//    Fall back to a manual v4 UUID for plain-HTTP environments.
+function generateUUID() {
+  if ( typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ) {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, ( c ) => {
+    const r = ( Math.random() * 16 ) | 0;
+    return ( c === 'x' ? r : ( r & 0x3 ) | 0x8 ).toString( 16 );
+  } );
+}
+
 // ── Build default content/settings from blockSettings schema ───────────────
 function buildDefaultQuestion(fieldType) {
   const schema = BLOCK_SETTINGS[fieldType];
@@ -29,7 +41,7 @@ function buildDefaultQuestion(fieldType) {
   content.title = "";
 
   return {
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     type: fieldType,
     content,
     settings,
@@ -301,7 +313,7 @@ export const useFormStore = create((set, get) => ({
       const source = questions[index];
       const duplicate = {
         ...structuredClone(source),
-        id: crypto.randomUUID(),
+        id: generateUUID(),
       };
 
       const next = [...questions];
