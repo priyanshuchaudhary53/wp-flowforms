@@ -27,7 +27,7 @@ A conversational, step-by-step form builder for WordPress. Create Typeform-style
 
 ## Installation
 
-1. Download the latest ZIP from the [releases page](https://github.com/priyanshuchaudhary/wp-flowforms/releases)
+1. Download the latest ZIP from the [releases page](https://github.com/priyanshuchaudhary53/wp-flowforms/releases)
 2. In WordPress admin go to **Plugins → Add New → Upload Plugin**
 3. Activate the plugin
 
