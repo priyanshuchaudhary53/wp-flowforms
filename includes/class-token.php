@@ -53,27 +53,47 @@ class FlowForms_Token
    */
   public function verify(string $token, int $form_id): bool
   {
-    $current = time();
-    $valid   = [];
-
-    for ($i = 1; $i <= 5 * 365; $i++) {
-      $valid[] = $this->generate_at($current - ($i * DAY_IN_SECONDS), $form_id);
+    if (empty($token)) {
+      return false;
     }
 
-    $valid[] = $this->generate_at($current, $form_id);
-    $valid[] = $this->generate_at($current + (45 * MINUTE_IN_SECONDS), $form_id);
+    $current = time();
+    $secret  = $this->get_secret_key();
 
-    return in_array($token, $valid, true);
+    // Check today and 45 minutes into the future first (most common case).
+    if (hash_equals($this->generate_at($current, $form_id, $secret), $token)) {
+      return true;
+    }
+    if (hash_equals($this->generate_at($current + (45 * MINUTE_IN_SECONDS), $form_id, $secret), $token)) {
+      return true;
+    }
+
+    // Walk backwards one day at a time up to 5 years (cached pages).
+    // Break early on match instead of generating all 1,825 tokens upfront.
+    for ($i = 1; $i <= 5 * 365; $i++) {
+      if (hash_equals($this->generate_at($current - ($i * DAY_IN_SECONDS), $form_id, $secret), $token)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
    * Generate a token for a specific Unix timestamp.
    *
    * @since 1.0.0
+   *
+   * @param int    $timestamp Unix timestamp.
+   * @param int    $form_id   Form post ID.
+   * @param string $secret    Server-side secret key (pass to avoid repeated DB lookups).
    */
-  private function generate_at(int $timestamp, int $form_id): string
+  private function generate_at(int $timestamp, int $form_id, string $secret = ''): string
   {
+    if (empty($secret)) {
+      $secret = $this->get_secret_key();
+    }
     $date_string = gmdate('dmYzW', $timestamp);
-    return md5($date_string . '::' . $form_id . $this->get_secret_key());
+    return md5($date_string . '::' . $form_id . $secret);
   }
 }

@@ -885,6 +885,12 @@ class FlowForms_REST_API
     $sender_address = trim($smart_tags->resolve($notif['sender_address'], $context));
     $replyto        = trim($smart_tags->resolve($notif['replyto'],        $context));
 
+    // Strip CR/LF to prevent email header injection.
+    $subject        = str_replace(["\r", "\n"], '', $subject);
+    $sender_name    = str_replace(["\r", "\n"], '', $sender_name);
+    $sender_address = str_replace(["\r", "\n"], '', $sender_address);
+    $replyto        = str_replace(["\r", "\n"], '', $replyto);
+
     if (! is_email($to)) {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery failures.
       error_log(sprintf(
@@ -892,6 +898,11 @@ class FlowForms_REST_API
         $to, $form_id, $entry_id
       ));
       return;
+    }
+
+    // Fall back to site admin email when sender address is missing or invalid.
+    if (! is_email($sender_address)) {
+      $sender_address = get_option('admin_email');
     }
 
     $headers = [
