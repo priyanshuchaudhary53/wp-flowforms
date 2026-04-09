@@ -343,7 +343,7 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(`${formflowData.apiUrl}/forms/${formId}`, {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-WP-Nonce": formflowData.nonce,
@@ -377,7 +377,7 @@ export const useFormStore = create((set, get) => ({
       const res = await fetch(
         `${formflowData.apiUrl}/forms/${formId}/design`,
         {
-          method: "PATCH",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-WP-Nonce": formflowData.nonce,
@@ -426,7 +426,7 @@ export const useFormStore = create((set, get) => ({
       const res = await fetch(
         `${formflowData.apiUrl}/forms/${formId}/settings`,
         {
-          method: "PATCH",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-WP-Nonce": formflowData.nonce,
@@ -518,7 +518,7 @@ export const useFormStore = create((set, get) => ({
   renameForm: async (newName) => {
     const { formId } = get();
     const res = await fetch(`${formflowData.apiUrl}/forms/${formId}`, {
-      method: "PATCH",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-WP-Nonce": formflowData.nonce,
