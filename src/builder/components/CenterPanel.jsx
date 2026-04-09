@@ -21,7 +21,7 @@ export default function CenterPanel({ className }) {
               className="flex items-center gap-1 rounded-md cursor-pointer bg-ff-primary-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-ff-primary-600"
             >
               <PlusIcon className="stroke-2 -ml-0.5" width={16} height={16} />
-              <span>{ __( 'Add block', 'wpflowforms' ) }</span>
+              <span>{ __( 'Add block', 'flowforms' ) }</span>
             </button>
           </div>
           <div className="pl-4 ml-4 border-l border-gray-300">
@@ -30,7 +30,7 @@ export default function CenterPanel({ className }) {
               className="flex items-center text-sm gap-1.5 text-gray-500 cursor-pointer hover:text-gray-600"
             >
               <SwatchIcon className="stroke-1.5" width={16} height={16} />
-              <span>{ __( 'Design', 'wpflowforms' ) }</span>
+              <span>{ __( 'Design', 'flowforms' ) }</span>
             </button>
           </div>
         </div>

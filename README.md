@@ -1,8 +1,8 @@
-# WPFlowForms
+# FlowForms
 
 A conversational, step-by-step form builder for WordPress. Create Typeform-style forms without a monthly subscription.
 
-![WPFlowForms in action](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExenh1NmFjYTY2dWJkaHl3cTVjZWtnOGZuZzN3d2lzYXJwN2ZuMGlzeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/u4HBzehKnJsgYba0Sd/giphy.gif)
+![FlowForms in action](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExenh1NmFjYTY2dWJkaHl3cTVjZWtnOGZuZzN3d2lzYXJwN2ZuMGlzeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/u4HBzehKnJsgYba0Sd/giphy.gif)
 
 ## Features
 
@@ -31,7 +31,7 @@ A conversational, step-by-step form builder for WordPress. Create Typeform-style
 2. In WordPress admin go to **Plugins → Add New → Upload Plugin**
 3. Activate the plugin
 
-Or install directly from the [WordPress Plugin Directory](https://wordpress.org/plugins/wpflowforms/) (pending approval).
+Or install directly from the [WordPress Plugin Directory](https://wordpress.org/plugins/flowforms/) (pending approval).
 
 ## Development
 

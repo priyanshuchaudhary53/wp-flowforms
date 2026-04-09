@@ -1,5 +1,5 @@
 /**
- * WPFlowForms — Design Tokens
+ * FlowForms — Design Tokens
  *
  * Injects a <style> tag with CSS custom properties scoped to a specific form
  * container by its unique data-flowform-id attribute.  Mirrors the inline

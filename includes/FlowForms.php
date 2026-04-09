@@ -2,14 +2,14 @@
 
 if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
-final class WPFlowForms
+final class FlowForms
 {
   /**
-   * WPFlowForms instance.
+   * FlowForms instance.
    *
    * @since 1.0.0
    *
-   * @var WPFlowForms
+   * @var FlowForms
    */
   private static $instance;
 
@@ -41,11 +41,11 @@ final class WPFlowForms
   private $registry = [];
 
   /**
-   * Main WPFlowForms Instance.
+   * Main FlowForms Instance.
    *
    * @since 1.0.0
    *
-   * @return WPFlowForms
+   * @return FlowForms
    */
   public static function instance()
   {
@@ -131,7 +131,7 @@ final class WPFlowForms
     $this->registry['token']      = new FlowForms_Token();
 
     /**
-     * Executes when all the WPFlowForms stuff was loaded.
+     * Executes when all the FlowForms stuff was loaded.
      *
      * @since 1.0.0
      */
@@ -154,13 +154,13 @@ final class WPFlowForms
 }
 
 /**
- * The function which returns the one WPFlowForms instance.
+ * The function which returns the one FlowForms instance.
  *
  * @since 1.0.0
  *
- * @return WPFlowForms
+ * @return FlowForms
  */
-function wpflowforms()
+function flowforms()
 {
-  return WPFlowForms::instance();
+  return FlowForms::instance();
 }

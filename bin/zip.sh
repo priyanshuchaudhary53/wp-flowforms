@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PLUGIN_SLUG="wpflowforms"
+PLUGIN_SLUG="flowforms"
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TMP_DIR="$(mktemp -d)"
 OUT_FILE="$PLUGIN_ROOT/$PLUGIN_SLUG.zip"
@@ -17,7 +17,7 @@ cp -r \
   "$PLUGIN_ROOT/languages" \
   "$PLUGIN_ROOT/templates" \
   "$PLUGIN_ROOT/readme.txt" \
-  "$PLUGIN_ROOT/wpflowforms.php" \
+  "$PLUGIN_ROOT/flowforms.php" \
   "$TMP_DIR/$PLUGIN_SLUG/"
 
 # Create the zip

@@ -1,6 +1,6 @@
 <?php
 /**
- * Server-side render for the wpflowforms/form block.
+ * Server-side render for the flowforms/form block.
  *
  * Available variables:
  *   $attributes  — block attributes array (formId, height, borderRadius)
@@ -27,7 +27,7 @@ if ( ! $post || $post->post_type !== 'wpff_forms' ) {
 }
 
 if ( $post->post_status !== 'publish' ) {
-	$wpff_frontend = wpflowforms()->obj( 'frontend' );
+	$wpff_frontend = flowforms()->obj( 'frontend' );
 	if ( $wpff_frontend ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
 		echo $wpff_frontend->trashed_form_notice( $wpff_form_id );
@@ -35,7 +35,7 @@ if ( $post->post_status !== 'publish' ) {
 	return;
 }
 
-$wpff_frontend = wpflowforms()->obj( 'frontend' );
+$wpff_frontend = flowforms()->obj( 'frontend' );
 
 if ( ! $wpff_frontend ) {
 	echo '<!-- FlowForms block: frontend not available -->';
@@ -45,7 +45,6 @@ if ( ! $wpff_frontend ) {
 // Flag so renderer assets are enqueued on this page.
 $wpff_frontend->flag_form_id( $wpff_form_id );
 
-// Delegate to container_html() so the design <style> tag is included,
-// matching shortcode output exactly.
+// Delegate to container_html() — output matches shortcode exactly.
 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
 echo $wpff_frontend->container_html( $wpff_form_id, false, $wpff_height, $wpff_border_radius );

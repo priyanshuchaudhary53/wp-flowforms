@@ -11,11 +11,11 @@ import {
 import Alert from "../components/ui/alert";
 
 const CATEGORY_LABELS = {
-  contact:  __( "Contact",  "wpflowforms" ),
-  feedback: __( "Feedback", "wpflowforms" ),
-  "lead-gen": __( "Lead Gen", "wpflowforms" ),
-  survey:   __( "Survey",   "wpflowforms" ),
-  general:  __( "General",  "wpflowforms" ),
+  contact:  __( "Contact",  "flowforms" ),
+  feedback: __( "Feedback", "flowforms" ),
+  "lead-gen": __( "Lead Gen", "flowforms" ),
+  survey:   __( "Survey",   "flowforms" ),
+  general:  __( "General",  "flowforms" ),
 };
 
 export default function Setup({ className }) {
@@ -63,7 +63,7 @@ export default function Setup({ className }) {
       });
       const data = await res.json();
       if (!res.ok || !data.success)
-        throw new Error(data.message || __( "Something went wrong.", "wpflowforms" ));
+        throw new Error(data.message || __( "Something went wrong.", "flowforms" ));
       window.location.href = `${formflowData.builderUrl}&form_id=${data.post_id}`;
     } catch (err) {
       setError(err.message);
@@ -90,7 +90,7 @@ export default function Setup({ className }) {
       });
       const data = await res.json();
       if (!res.ok || !data.success)
-        throw new Error(data.message || __( "Something went wrong.", "wpflowforms" ));
+        throw new Error(data.message || __( "Something went wrong.", "flowforms" ));
       window.location.href = `${formflowData.builderUrl}&form_id=${data.post_id}`;
     } catch (err) {
       setError(err.message);
@@ -110,7 +110,7 @@ export default function Setup({ className }) {
       );
       const data = await res.json();
       if (!res.ok || !data.preview_url)
-        throw new Error(data.message || __( "Could not load preview.", "wpflowforms" ));
+        throw new Error(data.message || __( "Could not load preview.", "flowforms" ));
       setPreviewUrl(data.preview_url);
     } catch (err) {
       setError(err.message);
@@ -130,24 +130,24 @@ export default function Setup({ className }) {
               htmlFor="form-name"
               className="block text-xl tracking-tight font-semibold text-gray-900 mb-2 sm:mb-0 sm:min-w-48 sm:shrink-0"
             >
-              { __( "Name your form", "wpflowforms" ) }
+              { __( "Name your form", "flowforms" ) }
             </label>
             <input
               id="form-name"
               type="text"
               value={formName}
               onChange={(e) => setFormName(e.target.value)}
-              placeholder={ __( "Enter your form name here...", "wpflowforms" ) }
+              placeholder={ __( "Enter your form name here...", "flowforms" ) }
               className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 sm:grow"
             />
           </div>
 
           <div className="mb-6 pb-6 border-b border-gray-200">
             <h1 className="text-xl font-semibold text-gray-900 tracking-tight">
-              { __( "Select a template", "wpflowforms" ) }
+              { __( "Select a template", "flowforms" ) }
             </h1>
             <p className="mt-2 text-sm text-gray-500">
-              { __( "Start from a template or build from scratch.", "wpflowforms" ) }
+              { __( "Start from a template or build from scratch.", "flowforms" ) }
             </p>
           </div>
 
@@ -158,7 +158,7 @@ export default function Setup({ className }) {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder={ __( "Search templates…", "wpflowforms" ) }
+                placeholder={ __( "Search templates…", "flowforms" ) }
                 className="w-full rounded-lg border border-gray-200 bg-gray-50 pl-9 pr-8 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
               />
               {search && (
@@ -173,7 +173,7 @@ export default function Setup({ className }) {
 
             <div className="flex items-center gap-1 flex-wrap">
               <CategoryTab
-                label={ __( "All", "wpflowforms" ) }
+                label={ __( "All", "flowforms" ) }
                 active={activeCategory === "all"}
                 onClick={() => setActiveCategory("all")}
               />
@@ -190,13 +190,13 @@ export default function Setup({ className }) {
 
           {filtered.length === 0 && search ? (
             <div className="text-center py-16 text-sm text-gray-500">
-              { __( "No templates match", "wpflowforms" ) } <strong>"{search}"</strong>
+              { __( "No templates match", "flowforms" ) } <strong>"{search}"</strong>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <BlankCard
-                name={ __( "Blank form", "wpflowforms" ) }
-                description={ __( "Start from scratch with an empty form", "wpflowforms" ) }
+                name={ __( "Blank form", "flowforms" ) }
+                description={ __( "Start from scratch with an empty form", "flowforms" ) }
                 loading={loadingSlug === "blank"}
                 disabled={loading}
                 onUse={createBlank}
@@ -281,10 +281,10 @@ function BlankCard({ name, description, loading, disabled, onUse }) {
           {loading ? (
             <>
               <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              { __( "Creating…", "wpflowforms" ) }
+              { __( "Creating…", "flowforms" ) }
             </>
           ) : (
-            __( "Start from scratch", "wpflowforms" )
+            __( "Start from scratch", "flowforms" )
           )}
         </button>
       </div>
@@ -311,7 +311,7 @@ function TemplateCard({
         {thumbnailUrl ? (
           <img
             src={thumbnailUrl}
-            alt={ sprintf( /* translators: %s: template name */ __( "%s template screenshot", "wpflowforms" ), name ) }
+            alt={ sprintf( /* translators: %s: template name */ __( "%s template screenshot", "flowforms" ), name ) }
             className="w-full h-full object-cover"
           />
         ) : (
@@ -346,10 +346,10 @@ function TemplateCard({
           {loading ? (
             <>
               <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              { __( "Creating…", "wpflowforms" ) }
+              { __( "Creating…", "flowforms" ) }
             </>
           ) : (
-            __( "Use template", "wpflowforms" )
+            __( "Use template", "flowforms" )
           )}
         </button>
         <button
@@ -362,7 +362,7 @@ function TemplateCard({
           ) : (
             <>
               <EyeIcon width={16} height={16} className="stroke-2" />
-              <span>{ __( "Preview", "wpflowforms" ) }</span>
+              <span>{ __( "Preview", "flowforms" ) }</span>
             </>
           )}
         </button>
@@ -376,14 +376,14 @@ function TemplateCard({
 const DEVICES = [
   {
     id: "desktop",
-    label: __( "Desktop", "wpflowforms" ),
+    label: __( "Desktop", "flowforms" ),
     icon: <ComputerDesktopIcon width={18} height={18} />,
     width: "100%",
     height: "100%",
   },
   {
     id: "mobile",
-    label: __( "Mobile", "wpflowforms" ),
+    label: __( "Mobile", "flowforms" ),
     icon: <DevicePhoneMobileIcon width={18} height={18} />,
     width: "390px",
     height: "844px",
@@ -412,7 +412,7 @@ function TemplatePreviewModal({ url, onClose }) {
       className="fixed inset-0 z-[9999] flex flex-col bg-white"
       role="dialog"
       aria-modal="true"
-      aria-label={ __( "Template preview", "wpflowforms" ) }
+      aria-label={ __( "Template preview", "flowforms" ) }
     >
       {/* Toolbar */}
       <div className="flex-none flex items-center justify-between h-14 px-4 border-b border-gray-200 bg-white">
@@ -436,13 +436,13 @@ function TemplatePreviewModal({ url, onClose }) {
         </div>
 
         <span className="text-sm text-gray-500 font-medium tracking-wide uppercase">
-          { __( "Template Preview", "wpflowforms" ) }
+          { __( "Template Preview", "flowforms" ) }
         </span>
 
         <button
           onClick={onClose}
           className="w-8 h-8 flex items-center justify-center rounded text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
-          aria-label={ __( "Close preview", "wpflowforms" ) }
+          aria-label={ __( "Close preview", "flowforms" ) }
         >
           <XMarkIcon width={20} height={20} />
         </button>
@@ -469,14 +469,14 @@ function TemplatePreviewModal({ url, onClose }) {
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-2xl">
               <div className="flex flex-col items-center gap-3 text-gray-400">
                 <div className="w-7 h-7 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-                <span className="text-sm">{ __( "Loading preview…", "wpflowforms" ) }</span>
+                <span className="text-sm">{ __( "Loading preview…", "flowforms" ) }</span>
               </div>
             </div>
           )}
           <iframe
             ref={iframeRef}
             src={url}
-            title={ __( "Template preview", "wpflowforms" ) }
+            title={ __( "Template preview", "flowforms" ) }
             className="w-full h-full border-0"
             style={{ display: loaded ? "block" : "none" }}
             onLoad={() => setLoaded(true)}

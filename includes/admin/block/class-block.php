@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * FlowForms_Block
  *
- * Registers the wpflowforms/form Gutenberg block.
+ * Registers the flowforms/form Gutenberg block.
  * REST routes live in class-rest-api.php.
  */
 class FlowForms_Block {

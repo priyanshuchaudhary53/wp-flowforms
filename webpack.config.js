@@ -1,5 +1,5 @@
 /**
- * Webpack config for WPFlowForms.
+ * Webpack config for FlowForms.
  *
  * Extends the default @wordpress/scripts config to build three separate bundles:
  *

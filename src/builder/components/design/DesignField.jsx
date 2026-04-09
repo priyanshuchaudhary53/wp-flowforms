@@ -261,7 +261,7 @@ function GoogleFontField({ field, value, onChange }) {
             id={id.current}
             type="text"
             value={query}
-            placeholder={__( 'Default (system font)', 'wpflowforms' )}
+            placeholder={__( 'Default (system font)', 'flowforms' )}
             autoComplete="off"
             onChange={(e) => {
               setQuery(e.target.value);
@@ -279,7 +279,7 @@ function GoogleFontField({ field, value, onChange }) {
               type="button"
               onClick={handleClear}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              aria-label={__( 'Clear font', 'wpflowforms' )}
+              aria-label={__( 'Clear font', 'flowforms' )}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -349,8 +349,8 @@ function MediaImageField({ field, value, onChange, onMediaOpen, onMediaClose }) 
 
   const openMediaFrame = () => {
     const frame = window.wp.media({
-      title: __( 'Select Background Image', 'wpflowforms' ),
-      button: { text: __( 'Use this image', 'wpflowforms' ) },
+      title: __( 'Select Background Image', 'flowforms' ),
+      button: { text: __( 'Use this image', 'flowforms' ) },
       multiple: false,
       library: { type: "image" },
     });
@@ -378,14 +378,14 @@ function MediaImageField({ field, value, onChange, onMediaOpen, onMediaClose }) 
         <div className="relative rounded-lg overflow-hidden border border-gray-200 group/img">
           <img
             src={image.url}
-            alt={__( 'Background', 'wpflowforms' )}
+            alt={__( 'Background', 'flowforms' )}
             className="w-full h-24 object-cover block"
           />
           <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/30 transition-colors" />
           <button
             type="button"
             onClick={() => onChange(null)}
-            title={__( 'Remove image', 'wpflowforms' )}
+            title={__( 'Remove image', 'flowforms' )}
             className="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white hover:text-red-500 shadow"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -395,10 +395,10 @@ function MediaImageField({ field, value, onChange, onMediaOpen, onMediaClose }) 
           <button
             type="button"
             onClick={openMediaFrame}
-            title={__( 'Replace image', 'wpflowforms' )}
+            title={__( 'Replace image', 'flowforms' )}
             className="absolute bottom-1.5 right-1.5 px-2 py-0.5 text-xs font-medium rounded bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white shadow"
           >
-            {__( 'Replace', 'wpflowforms' )}
+            {__( 'Replace', 'flowforms' )}
           </button>
         </div>
       ) : (
@@ -412,7 +412,7 @@ function MediaImageField({ field, value, onChange, onMediaOpen, onMediaClose }) 
             <circle cx="7" cy="7" r="1.5" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M2 13l4-4 3 3 3-4 4 5" />
           </svg>
-          <span className="text-xs font-medium">{__( 'Select image', 'wpflowforms' )}</span>
+          <span className="text-xs font-medium">{__( 'Select image', 'flowforms' )}</span>
         </button>
       )}
     </div>
@@ -455,8 +455,8 @@ function BrightnessSliderField({ field, value, onChange }) {
         />
       </div>
       <div className="flex justify-between mt-1" style={{ fontSize: "9px", color: "#d1d5db" }}>
-        <span>{__( 'Darker', 'wpflowforms' )}</span>
-        <span>{__( 'Brighter', 'wpflowforms' )}</span>
+        <span>{__( 'Darker', 'flowforms' )}</span>
+        <span>{__( 'Brighter', 'flowforms' )}</span>
       </div>
     </div>
   );

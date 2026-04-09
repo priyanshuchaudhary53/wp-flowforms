@@ -43,7 +43,7 @@ class FlowForms_Form_Handler
     $args = apply_filters(
       'wpff_forms_post_type_args',
       [
-        'label'               => 'WPFlowForms',
+        'label'               => 'FlowForms',
         'public'              => false,
         'exclude_from_search' => true,
         'show_ui'             => false,
@@ -80,7 +80,7 @@ class FlowForms_Form_Handler
       return;
     }
 
-    $entry = wpflowforms()->obj('entry');
+    $entry = flowforms()->obj('entry');
 
     if (! $entry) {
       return;

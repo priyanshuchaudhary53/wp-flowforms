@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * FlowForms_Settings
  *
- * Page controller for the WPFlowForms settings screen.
+ * Page controller for the FlowForms settings screen.
  * Handles tab routing, save, and HTML output.
  *
  * @since 1.0.0
@@ -74,12 +74,12 @@ class FlowForms_Settings {
 	public function get_tabs(): array {
 		$tabs = [
 			'messages' => [
-				'label'  => __( 'Messages', 'wpflowforms' ),
+				'label'  => __( 'Messages', 'flowforms' ),
 				'form'   => true,
-				'submit' => __( 'Save Settings', 'wpflowforms' ),
+				'submit' => __( 'Save Settings', 'flowforms' ),
 			],
 			// Future tabs:
-			// 'general'   => [ 'label' => __( 'General',   'wpflowforms' ), 'form' => true, 'submit' => __( 'Save Settings', 'wpflowforms' ) ],
+			// 'general'   => [ 'label' => __( 'General',   'flowforms' ), 'form' => true, 'submit' => __( 'Save Settings', 'flowforms' ) ],
 		];
 
 		/**
@@ -182,7 +182,7 @@ class FlowForms_Settings {
 
 		add_action( 'wpff_admin_page', function () {
 			echo '<div class="notice notice-success is-dismissible"><p>'
-				. esc_html__( 'Settings saved.', 'wpflowforms' )
+				. esc_html__( 'Settings saved.', 'flowforms' )
 				. '</p></div>';
 		}, 1 );
 	}
@@ -199,7 +199,7 @@ class FlowForms_Settings {
 		?>
 		<div class="wrap wpff-admin-wrap wpff-settings-wrap">
 
-			<h1><?php esc_html_e( 'Settings', 'wpflowforms' ); ?></h1>
+			<h1><?php esc_html_e( 'Settings', 'flowforms' ); ?></h1>
 
 			<!-- Tab nav -->
 			<nav class="nav-tab-wrapper wpff-settings-tabs">

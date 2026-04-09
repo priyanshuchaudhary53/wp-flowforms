@@ -44,10 +44,10 @@ export default function AddBlockDialog() {
   return (
     <CommandDialog open={addBlockDialogOpen} onOpenChange={handleOpenChange}>
       <Command>
-        <CommandInput placeholder={__( 'Search blocks...', 'wpflowforms' )} />
+        <CommandInput placeholder={__( 'Search blocks...', 'flowforms' )} />
         <CommandList>
-          <CommandEmpty>{__( 'No blocks found.', 'wpflowforms' )}</CommandEmpty>
-          <CommandGroup heading={__( 'Blocks', 'wpflowforms' )}>
+          <CommandEmpty>{__( 'No blocks found.', 'flowforms' )}</CommandEmpty>
+          <CommandGroup heading={__( 'Blocks', 'flowforms' )}>
             {FIELDS.map((field) => (
               <CommandItem
                 key={field.type}

@@ -3,7 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * WPFlowForms Settings API
+ * FlowForms Settings API
  *
  * Field rendering functions and sanitizer for the settings page.
  * Every public function is a standalone global named wpff_settings_{type}_field().

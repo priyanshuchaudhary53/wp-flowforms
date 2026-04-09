@@ -57,29 +57,29 @@ export default function FormName() {
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <button className="w-6 h-6 flex text-gray-600 items-center justify-center cursor-pointer rounded-md transition-colors hover:text-gray-900 hover:bg-gray-100">
-                <span className="sr-only">{ __( 'Edit form name', 'wpflowforms' ) }</span>
+                <span className="sr-only">{ __( 'Edit form name', 'flowforms' ) }</span>
                 <PencilIcon width={14} height={14} />
               </button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{ __( 'Rename form', 'wpflowforms' ) }</DialogTitle>
+                <DialogTitle>{ __( 'Rename form', 'flowforms' ) }</DialogTitle>
               </DialogHeader>
               <Field
-                label={ __( 'Rename your form', 'wpflowforms' ) }
+                label={ __( 'Rename your form', 'flowforms' ) }
                 labelHidden={true}
                 id="form-name"
                 name="form-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleRename()}
-                placeholder={ __( 'Enter your form name here...', 'wpflowforms' ) }
+                placeholder={ __( 'Enter your form name here...', 'flowforms' ) }
               />
               {error && <Alert type="error" message={error} />}
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant="outline" size="lg">
-                    { __( 'Cancel', 'wpflowforms' ) }
+                    { __( 'Cancel', 'flowforms' ) }
                   </Button>
                 </DialogClose>
                 <Button
@@ -87,7 +87,7 @@ export default function FormName() {
                   disabled={saving || !name.trim()}
                   size="lg"
                 >
-                  {saving ? __( 'Saving...', 'wpflowforms' ) : __( 'Rename', 'wpflowforms' )}
+                  {saving ? __( 'Saving...', 'flowforms' ) : __( 'Rename', 'flowforms' )}
                 </Button>
               </DialogFooter>
             </DialogContent>

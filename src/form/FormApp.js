@@ -1,5 +1,5 @@
 /**
- * WPFlowForms — FormApp
+ * FlowForms — FormApp
  *
  * Rendering modes
  * ───────────────
@@ -143,10 +143,10 @@ export class FormApp {
 				'<svg aria-hidden="true" width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">' +
   				'<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />' +
 				'</svg>' +
-				'<span class="sr-only">' + ( window.flowformPublicData?.i18n?.previous ?? __( 'Previous', 'wpflowforms' ) ) + '</span>' +
+				'<span class="sr-only">' + ( window.flowformPublicData?.i18n?.previous ?? __( 'Previous', 'flowforms' ) ) + '</span>' +
 			'</button>' +
 			'<button type="button" class="ff-btn-nav ff-btn-next">' +
-				'<span class="ff-nav-next-label sr-only">' + ( window.flowformPublicData?.i18n?.next ?? __( 'Next', 'wpflowforms' ) ) + '</span>' +
+				'<span class="ff-nav-next-label sr-only">' + ( window.flowformPublicData?.i18n?.next ?? __( 'Next', 'flowforms' ) ) + '</span>' +
 				'<svg aria-hidden="true" width="16" height="16"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">' +
   				'<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />' +
 				'</svg>' +
@@ -156,7 +156,7 @@ export class FormApp {
 		}
 		this.container.appendChild( this._navEl );
 
-		// 5. "Powered by WPFlowForms" badge (only when setting is enabled)
+		// 5. "Powered by FlowForms" badge (only when setting is enabled)
 		if ( this._showPoweredBy ) {
 			this._poweredByEl = document.createElement( 'div' );
 			this._poweredByEl.className = 'ff-powered-by';
@@ -166,7 +166,7 @@ export class FormApp {
 					'<svg class="ff-powered-by-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
 						'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' +
 					'</svg>' +
-					__( 'Powered by WPFlowForms', 'wpflowforms' ) +
+					__( 'Powered by FlowForms', 'flowforms' ) +
 				'</span>';
 				// '</a>';
 			this.container.appendChild( this._poweredByEl );
@@ -431,7 +431,7 @@ export class FormApp {
 		this._nextBtn.classList.toggle( 'ff-btn-nav--disabled', isLast );
 
 		const label = this._nextBtn.querySelector( '.ff-nav-next-label' );
-		if ( label ) label.textContent = window.flowformPublicData?.i18n?.next ?? __( 'Next', 'wpflowforms' );
+		if ( label ) label.textContent = window.flowformPublicData?.i18n?.next ?? __( 'Next', 'flowforms' );
 	}
 
 	// ── Powered-by badge visibility ──────────────────────────────────────────
@@ -479,14 +479,14 @@ export class FormApp {
 		msg.className = 'ff-draft-alert__msg';
 
 		const text = document.createTextNode(
-			__( 'This form has unpublished changes.', 'wpflowforms' ) + ' '
+			__( 'This form has unpublished changes.', 'flowforms' ) + ' '
 		);
 		msg.appendChild( text );
 
 		if ( this.formData.builder_url ) {
 			const link = document.createElement( 'a' );
 			link.href        = this.formData.builder_url;
-			link.textContent = __( 'Publish from builder', 'wpflowforms' );
+			link.textContent = __( 'Publish from builder', 'flowforms' );
 			link.className   = 'ff-draft-alert__link';
 			msg.appendChild( link );
 		}
@@ -494,7 +494,7 @@ export class FormApp {
 		const dismiss = document.createElement( 'button' );
 		dismiss.type        = 'button';
 		dismiss.className   = 'ff-draft-alert__dismiss';
-		dismiss.setAttribute( 'aria-label', __( 'Dismiss', 'wpflowforms' ) );
+		dismiss.setAttribute( 'aria-label', __( 'Dismiss', 'flowforms' ) );
 		dismiss.innerHTML   = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
 		dismiss.addEventListener( 'click', () => alert.remove() );
 
@@ -645,7 +645,7 @@ export class FormApp {
 					this._lastDir = 'forward';
 					this._setState( {
 						currentScreen:   'submitError',
-						submitErrorMsg:  body.message || window.flowformPublicData?.i18n?.error || __( 'Something went wrong. Please try again.', 'wpflowforms' ),
+						submitErrorMsg:  body.message || window.flowformPublicData?.i18n?.error || __( 'Something went wrong. Please try again.', 'flowforms' ),
 						submitted:       false,
 					} );
 				}
@@ -654,7 +654,7 @@ export class FormApp {
 				this._lastDir = 'forward';
 				this._setState( {
 					currentScreen:  'submitError',
-					submitErrorMsg: body.message || window.flowformPublicData?.i18n?.spam || __( 'Your submission could not be processed. Please reload the page and try again.', 'wpflowforms' ),
+					submitErrorMsg: body.message || window.flowformPublicData?.i18n?.spam || __( 'Your submission could not be processed. Please reload the page and try again.', 'flowforms' ),
 					submitted:      false,
 				} );
 			} else {
@@ -667,7 +667,7 @@ export class FormApp {
 			this._lastDir = 'forward';
 			this._setState( {
 				currentScreen:  'submitError',
-				submitErrorMsg: window.flowformPublicData?.i18n?.error || __( 'Something went wrong. Please try again.', 'wpflowforms' ),
+				submitErrorMsg: window.flowformPublicData?.i18n?.error || __( 'Something went wrong. Please try again.', 'flowforms' ),
 				submitted:      false,
 			} );
 		}
@@ -868,7 +868,7 @@ export class FormApp {
 		const btn = document.createElement( 'button' );
 		btn.type        = 'button';
 		btn.className   = 'ff-btn-primary';
-		btn.textContent = c.buttonLabel || window.flowformPublicData?.i18n?.start || __( 'Start', 'wpflowforms' );
+		btn.textContent = c.buttonLabel || window.flowformPublicData?.i18n?.start || __( 'Start', 'flowforms' );
 		btn.addEventListener( 'click', () => {
 			this._lastDir = 'forward';
 			if ( this._questions.length > 0 ) this._goToQuestion( 0, 'forward' );
@@ -898,7 +898,7 @@ export class FormApp {
 		if ( q.type === 'long_text' ) {
 			const lineBreakHint = document.createElement( 'p' );
 			lineBreakHint.className   = 'ff-textarea-hint';
-			lineBreakHint.textContent = window.flowformPublicData?.i18n?.shiftEnterHint ?? __( 'Shift ⇧ + Enter ↵ to make a line break', 'wpflowforms' );
+			lineBreakHint.textContent = window.flowformPublicData?.i18n?.shiftEnterHint ?? __( 'Shift ⇧ + Enter ↵ to make a line break', 'flowforms' );
 			questionEl.querySelector( '.ff-question-input' )?.appendChild( lineBreakHint );
 		}
 
@@ -915,9 +915,9 @@ export class FormApp {
 				'width="16" height="16" style="margin-right:6px;flex-shrink:0" aria-hidden="true">' +
 				'<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0' +
 				'l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>' +
-				'</svg>' + ( window.flowformPublicData?.i18n?.submit ?? __( 'Submit', 'wpflowforms' ) );
+				'</svg>' + ( window.flowformPublicData?.i18n?.submit ?? __( 'Submit', 'flowforms' ) );
 		} else {
-			okBtn.textContent = q.content?.buttonLabel || window.flowformPublicData?.i18n?.ok || __( 'OK', 'wpflowforms' );
+			okBtn.textContent = q.content?.buttonLabel || window.flowformPublicData?.i18n?.ok || __( 'OK', 'flowforms' );
 		}
 
 		okBtn.addEventListener( 'click', () => {
@@ -928,7 +928,7 @@ export class FormApp {
 
 		const hint = document.createElement( 'span' );
 		hint.className   = 'ff-hint';
-		hint.textContent = window.flowformPublicData?.i18n?.enterHint ?? __( 'press Enter ↵', 'wpflowforms' );
+		hint.textContent = window.flowformPublicData?.i18n?.enterHint ?? __( 'press Enter ↵', 'flowforms' );
 		actions.appendChild( hint );
 
 		inner.appendChild( actions );
@@ -955,7 +955,7 @@ export class FormApp {
 
 		const h1 = document.createElement( 'h1' );
 		h1.className   = 'ff-title';
-		h1.textContent = c.title || window.flowformPublicData?.i18n?.thankYou || __( 'Thank you!', 'wpflowforms' );
+		h1.textContent = c.title || window.flowformPublicData?.i18n?.thankYou || __( 'Thank you!', 'flowforms' );
 		inner.appendChild( h1 );
 
 		if ( c.description ) {
@@ -973,16 +973,16 @@ export class FormApp {
 			const countdownEl       = document.createElement( 'p' );
 			countdownEl.className   = 'ff-redirect-countdown';
 			let remaining           = redirectDelay;
-			countdownEl.textContent = ( window.flowformPublicData?.i18n?.redirectingIn ?? __( 'Redirecting in {seconds}…', 'wpflowforms' ) ).replace( '{seconds}', remaining );
+			countdownEl.textContent = ( window.flowformPublicData?.i18n?.redirectingIn ?? __( 'Redirecting in {seconds}…', 'flowforms' ) ).replace( '{seconds}', remaining );
 			inner.appendChild( countdownEl );
 
 			const timer = setInterval( () => {
 				remaining--;
 				if ( remaining <= 0 ) {
 					clearInterval( timer );
-					countdownEl.textContent = window.flowformPublicData?.i18n?.redirecting ?? __( 'Redirecting…', 'wpflowforms' );
+					countdownEl.textContent = window.flowformPublicData?.i18n?.redirecting ?? __( 'Redirecting…', 'flowforms' );
 				} else {
-					countdownEl.textContent = ( window.flowformPublicData?.i18n?.redirectingIn ?? __( 'Redirecting in {seconds}…', 'wpflowforms' ) ).replace( '{seconds}', remaining );
+					countdownEl.textContent = ( window.flowformPublicData?.i18n?.redirectingIn ?? __( 'Redirecting in {seconds}…', 'flowforms' ) ).replace( '{seconds}', remaining );
 				}
 			}, 1000 );
 		}
@@ -990,14 +990,14 @@ export class FormApp {
 		// ── Social share buttons ──────────────────────────────────────────
 		if ( s.showSocialShare ) {
 			const shareUrl   = encodeURIComponent( window.location.href );
-			const shareTitle = encodeURIComponent( c.title || window.flowformPublicData?.i18n?.shareTitle || __( 'Check this out!', 'wpflowforms' ) );
+			const shareTitle = encodeURIComponent( c.title || window.flowformPublicData?.i18n?.shareTitle || __( 'Check this out!', 'flowforms' ) );
 
 			const shareWrap     = document.createElement( 'div' );
 			shareWrap.className = 'ff-social-share';
 
 			const shareLabel         = document.createElement( 'p' );
 			shareLabel.className     = 'ff-social-share-label';
-			shareLabel.textContent   = window.flowformPublicData?.i18n?.shareLabel ?? __( 'Share this form', 'wpflowforms' );
+			shareLabel.textContent   = window.flowformPublicData?.i18n?.shareLabel ?? __( 'Share this form', 'flowforms' );
 			shareWrap.appendChild( shareLabel );
 
 			const btnsWrap     = document.createElement( 'div' );
@@ -1027,7 +1027,7 @@ export class FormApp {
 				btn.href      = url;
 				btn.target    = '_blank';
 				btn.rel       = 'noopener noreferrer';
-				btn.setAttribute( 'aria-label', ( window.flowformPublicData?.i18n?.shareOn ?? __( 'Share on {network}', 'wpflowforms' ) ).replace( '{network}', name ) );
+				btn.setAttribute( 'aria-label', ( window.flowformPublicData?.i18n?.shareOn ?? __( 'Share on {network}', 'flowforms' ) ).replace( '{network}', name ) );
 				btn.innerHTML = icon;
 				btnsWrap.appendChild( btn );
 			} );
@@ -1049,7 +1049,7 @@ export class FormApp {
 
 		const p = document.createElement( 'p' );
 		p.className   = 'ff-desc';
-		p.textContent = window.flowformPublicData?.i18n?.submitting ?? __( 'Submitting…', 'wpflowforms' );
+		p.textContent = window.flowformPublicData?.i18n?.submitting ?? __( 'Submitting…', 'flowforms' );
 		inner.appendChild( p );
 	}
 
@@ -1069,18 +1069,18 @@ export class FormApp {
 
 		const h1 = document.createElement( 'h1' );
 		h1.className   = 'ff-title';
-		h1.textContent = window.flowformPublicData?.i18n?.submissionFailed ?? __( 'Submission failed', 'wpflowforms' );
+		h1.textContent = window.flowformPublicData?.i18n?.submissionFailed ?? __( 'Submission failed', 'flowforms' );
 		inner.appendChild( h1 );
 
 		const p = document.createElement( 'p' );
 		p.className   = 'ff-desc';
-		p.textContent = this.state.submitErrorMsg || window.flowformPublicData?.i18n?.error || __( 'Something went wrong. Please try again.', 'wpflowforms' );
+		p.textContent = this.state.submitErrorMsg || window.flowformPublicData?.i18n?.error || __( 'Something went wrong. Please try again.', 'flowforms' );
 		inner.appendChild( p );
 
 		const retryBtn = document.createElement( 'button' );
 		retryBtn.type        = 'button';
 		retryBtn.className   = 'ff-btn-primary';
-		retryBtn.textContent = window.flowformPublicData?.i18n?.tryAgain ?? __( 'Try again', 'wpflowforms' );
+		retryBtn.textContent = window.flowformPublicData?.i18n?.tryAgain ?? __( 'Try again', 'flowforms' );
 		retryBtn.addEventListener( 'click', () => {
 			this._lastDir = 'back';
 			this._setState( {

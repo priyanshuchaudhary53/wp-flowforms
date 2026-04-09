@@ -67,7 +67,7 @@ class FlowForms_Forms_Overview
   public function register_screen_options()
   {
     add_screen_option('per_page', [
-      'label'   => __('Number of forms per page', 'wpflowforms'),
+      'label'   => __('Number of forms per page', 'flowforms'),
       'default' => self::PER_PAGE_DEFAULT,
       'option'  => 'wpff_forms_per_page',
     ]);
@@ -113,7 +113,7 @@ class FlowForms_Forms_Overview
   public function enqueues()
   {
     wp_enqueue_style(
-      'wpflowforms-overview',
+      'flowforms-overview',
       WPFF_URL . 'assets/css/admin-forms-overview.css',
       [],
       WPFF_VERSION
@@ -156,7 +156,7 @@ class FlowForms_Forms_Overview
       ! wp_verify_nonce($nonce, 'bulk-forms') &&
       ! wp_verify_nonce($nonce, 'wpff_' . $action . '_form_nonce')
     ) {
-      wp_die(esc_html__('Security check failed.', 'wpflowforms'), 403);
+      wp_die(esc_html__('Security check failed.', 'flowforms'), 403);
     }
 
     $count  = 0;
@@ -248,7 +248,7 @@ class FlowForms_Forms_Overview
     }
 
     $new_id = wp_insert_post([
-      'post_title'   => $post->post_title . ' ' . __('(Copy)', 'wpflowforms'),
+      'post_title'   => $post->post_title . ' ' . __('(Copy)', 'flowforms'),
       'post_content' => $post->post_content,
       'post_status'  => 'publish',
       'post_type'    => 'wpff_forms',
@@ -281,13 +281,13 @@ class FlowForms_Forms_Overview
     <div class="wrap wpff-admin-wrap">
 
       <h1 class="wp-heading-inline">
-        <?php esc_html_e('All Forms', 'wpflowforms'); ?>
+        <?php esc_html_e('All Forms', 'flowforms'); ?>
       </h1>
 
       <?php if (current_user_can('manage_options')) : ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=wpff_form_builder')); ?>"
           class="page-title-action wpff-add-new-btn">
-          <?php esc_html_e('Add New Form', 'wpflowforms'); ?>
+          <?php esc_html_e('Add New Form', 'flowforms'); ?>
         </a>
       <?php endif; ?>
 
@@ -306,7 +306,7 @@ class FlowForms_Forms_Overview
             <input type="hidden" name="page" value="wpff_forms">
 
             <?php
-            $this->list_table->search_box(esc_html__('Search Forms', 'wpflowforms'), 'wpff-search');
+            $this->list_table->search_box(esc_html__('Search Forms', 'flowforms'), 'wpff-search');
             $this->list_table->views();
             $this->list_table->display();
             ?>
@@ -330,24 +330,24 @@ class FlowForms_Forms_Overview
     // phpcs:disable WordPress.Security.NonceVerification.Recommended
     $messages = [
       'trashed'    => [
-        'singular' => __('Form moved to Trash.', 'wpflowforms'),
+        'singular' => __('Form moved to Trash.', 'flowforms'),
         /* translators: %d: number of forms */
-        'plural'   => __('%d forms moved to Trash.', 'wpflowforms'),
+        'plural'   => __('%d forms moved to Trash.', 'flowforms'),
       ],
       'restored'   => [
-        'singular' => __('Form restored from Trash.', 'wpflowforms'),
+        'singular' => __('Form restored from Trash.', 'flowforms'),
         /* translators: %d: number of forms */
-        'plural'   => __('%d forms restored from Trash.', 'wpflowforms'),
+        'plural'   => __('%d forms restored from Trash.', 'flowforms'),
       ],
       'deleted'    => [
-        'singular' => __('Form permanently deleted.', 'wpflowforms'),
+        'singular' => __('Form permanently deleted.', 'flowforms'),
         /* translators: %d: number of forms */
-        'plural'   => __('%d forms permanently deleted.', 'wpflowforms'),
+        'plural'   => __('%d forms permanently deleted.', 'flowforms'),
       ],
       'duplicated' => [
-        'singular' => __('Form duplicated.', 'wpflowforms'),
+        'singular' => __('Form duplicated.', 'flowforms'),
         /* translators: %d: number of forms */
-        'plural'   => __('%d forms duplicated.', 'wpflowforms'),
+        'plural'   => __('%d forms duplicated.', 'flowforms'),
       ],
     ];
 
@@ -380,15 +380,15 @@ class FlowForms_Forms_Overview
         <span class="dashicons dashicons-feedback"></span>
       </div>
       <h2 class="wpff-empty-state__title">
-        <?php esc_html_e("You haven't created any forms yet.", 'wpflowforms'); ?>
+        <?php esc_html_e("You haven't created any forms yet.", 'flowforms'); ?>
       </h2>
       <p class="wpff-empty-state__desc">
-        <?php esc_html_e('Create your first form to start collecting responses.', 'wpflowforms'); ?>
+        <?php esc_html_e('Create your first form to start collecting responses.', 'flowforms'); ?>
       </p>
       <?php if (current_user_can('manage_options')) : ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=wpff_form_builder')); ?>"
           class="button button-primary button-hero wpff-add-new-btn">
-          <?php esc_html_e('Create Your First Form', 'wpflowforms'); ?>
+          <?php esc_html_e('Create Your First Form', 'flowforms'); ?>
         </a>
       <?php endif; ?>
     </div>

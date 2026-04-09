@@ -48,7 +48,7 @@ function Edit( { attributes, setAttributes } ) {
   const selectedForm = isTrashed ? null : ( forms.find( ( f ) => f.id === formId ) ?? null );
 
   const formOptions = [
-    { label: __( '— Select a form —', 'wpflowforms' ), value: 0 },
+    { label: __( '— Select a form —', 'flowforms' ), value: 0 },
     ...forms.map( ( f ) => ( { label: f.title?.rendered ?? `Form ${ f.id }`, value: f.id } ) ),
   ];
 
@@ -56,12 +56,12 @@ function Edit( { attributes, setAttributes } ) {
     <>
       { /* ── Inspector sidebar ───────────────────────────────────────── */ }
       <InspectorControls>
-        <PanelBody title={ __( 'Form', 'wpflowforms' ) } initialOpen={ true }>
+        <PanelBody title={ __( 'Form', 'flowforms' ) } initialOpen={ true }>
           { isLoading ? (
             <Spinner />
           ) : (
             <SelectControl
-              label={ __( 'Select form', 'wpflowforms' ) }
+              label={ __( 'Select form', 'flowforms' ) }
               value={ formId }
               options={ formOptions }
               onChange={ ( val ) => setAttributes( { formId: Number( val ) } ) }
@@ -69,17 +69,17 @@ function Edit( { attributes, setAttributes } ) {
           ) }
         </PanelBody>
 
-        <PanelBody title={ __( 'Dimensions', 'wpflowforms' ) } initialOpen={ true }>
+        <PanelBody title={ __( 'Dimensions', 'flowforms' ) } initialOpen={ true }>
           <TextControl
-            label={ __( 'Height', 'wpflowforms' ) }
-            help={ __( 'Any valid CSS value — px, vh, em, etc.', 'wpflowforms' ) }
+            label={ __( 'Height', 'flowforms' ) }
+            help={ __( 'Any valid CSS value — px, vh, em, etc.', 'flowforms' ) }
             value={ height }
             onChange={ ( val ) => setAttributes( { height: val } ) }
             placeholder="520px"
           />
           <TextControl
-            label={ __( 'Border radius', 'wpflowforms' ) }
-            help={ __( 'Any valid CSS value — px, %, em, etc.', 'wpflowforms' ) }
+            label={ __( 'Border radius', 'flowforms' ) }
+            help={ __( 'Any valid CSS value — px, %, em, etc.', 'flowforms' ) }
             value={ borderRadius }
             onChange={ ( val ) => setAttributes( { borderRadius: val } ) }
             placeholder="16px"
@@ -92,8 +92,8 @@ function Edit( { attributes, setAttributes } ) {
         { ! formId ? (
           <Placeholder
             icon="feedback"
-            label={ __( 'FlowForm', 'wpflowforms' ) }
-            instructions={ __( 'Select a form from the sidebar to embed it here.', 'wpflowforms' ) }
+            label={ __( 'FlowForm', 'flowforms' ) }
+            instructions={ __( 'Select a form from the sidebar to embed it here.', 'flowforms' ) }
           />
         ) : isTrashed ? (
           <TrashedFormWarning
@@ -113,7 +113,7 @@ function Edit( { attributes, setAttributes } ) {
 }
 
 function FormPlaceholder( { form, height, borderRadius } ) {
-  const title = form?.title?.rendered ?? __( 'Loading…', 'wpflowforms' );
+  const title = form?.title?.rendered ?? __( 'Loading…', 'flowforms' );
 
   return (
     <div
@@ -143,7 +143,7 @@ function FormPlaceholder( { form, height, borderRadius } ) {
           color:         '#a09890',
         } }
       >
-        WPFlowForms
+        FlowForms
       </span>
 
       { /* Form title */ }
@@ -164,7 +164,7 @@ function FormPlaceholder( { form, height, borderRadius } ) {
           color:    '#a09890',
         } }
       >
-        { __( 'Rendered on the frontend', 'wpflowforms' ) }
+        { __( 'Rendered on the frontend', 'flowforms' ) }
       </span>
     </div>
   );
@@ -178,10 +178,10 @@ function TrashedFormWarning( { formId, formTitle } ) {
     <Notice status="warning" isDismissible={ false }>
       <strong>{ label }</strong>
       { ' ' }
-      { __( 'is in the Trash and will not be visible to visitors.', 'wpflowforms' ) }
+      { __( 'is in the Trash and will not be visible to visitors.', 'flowforms' ) }
       { ' ' }
       <a href={ restoreUrl } target="_blank" rel="noopener noreferrer">
-        { __( 'Go to Trash to restore it →', 'wpflowforms' ) }
+        { __( 'Go to Trash to restore it →', 'flowforms' ) }
       </a>
     </Notice>
   );

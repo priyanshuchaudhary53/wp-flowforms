@@ -72,7 +72,7 @@ class FlowForms_Install
     flush_rewrite_rules();
 
     /**
-     * Fires after WPFlowForms plugin installation is performed.
+     * Fires after FlowForms plugin installation is performed.
      *
      * @since 1.0.0
      */

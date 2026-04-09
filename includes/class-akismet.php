@@ -3,7 +3,7 @@
 if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 /**
- * Akismet integration for WPFlowForms.
+ * Akismet integration for FlowForms.
  *
  * Optional layer — only active when Akismet is installed, activated,
  * and configured with a valid API key. Silently skipped otherwise.

@@ -139,7 +139,7 @@ class FlowForms_Frontend {
 
 	/**
 	 * Scan the current queried post's stored content for [flowform] shortcodes
-	 * and wp:wpflowforms/form block comments, and flag any form IDs found.
+	 * and wp:flowforms/form block comments, and flag any form IDs found.
 	 *
 	 * This runs before the content loop so that wp_enqueue_scripts can enqueue
 	 * assets even when shortcodes have not yet been processed.
@@ -160,8 +160,8 @@ class FlowForms_Frontend {
 			}
 		}
 
-		// <!-- wp:wpflowforms/form {"formId":123} -->
-		if ( preg_match_all( '/<!--\s*wp:wpflowforms\/form\s*(\{[^}]+\})/i', $post->post_content, $matches ) ) {
+		// <!-- wp:flowforms/form {"formId":123} -->
+		if ( preg_match_all( '/<!--\s*wp:flowforms\/form\s*(\{[^}]+\})/i', $post->post_content, $matches ) ) {
 			foreach ( $matches[1] as $attrs_json ) {
 				$attrs = json_decode( $attrs_json, true );
 				if ( ! empty( $attrs['formId'] ) ) {
@@ -193,7 +193,7 @@ class FlowForms_Frontend {
 			true
 		);
 
-		wp_set_script_translations( 'flowform-renderer', 'wpflowforms', WPFF_PATH . 'languages' );
+		wp_set_script_translations( 'flowform-renderer', 'flowforms', WPFF_PATH . 'languages' );
 
 		wp_enqueue_style(
 			'flowform-renderer',
@@ -201,6 +201,24 @@ class FlowForms_Frontend {
 			[],
 			$asset['version']
 		);
+
+		// Register per-form design tokens as inline CSS on the renderer stylesheet,
+		// so they arrive in <head> before content renders (avoids raw <style> in body).
+		foreach ( $this->form_ids as $form_id ) {
+			if ( ! $form_id ) {
+				continue;
+			}
+			$design   = $this->get_form_design( $form_id );
+			$selector = sprintf( '[data-flowform-id="%d"]', $form_id );
+			$css      = sprintf(
+				'%s{background-color:%s;--btn-color:%s;--hint-color:%s;}',
+				$selector,
+				esc_attr( $design['bg_color']     ?? '#ffffff' ),
+				esc_attr( $design['button_color'] ?? '#111827' ),
+				esc_attr( $design['hint_color']   ?? '#9ca3af' )
+			);
+			wp_add_inline_style( 'flowform-renderer', $css );
+		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview flag is a read-only routing param; token is validated separately by verify_preview_token().
 		$is_preview  = ! empty( $_GET['flowform_preview'] );
@@ -219,49 +237,49 @@ class FlowForms_Frontend {
 			],
 			'i18n'        => [
 				// Error and Validation Messages
-				'required'          => wpff_get_setting( 'validation-required',           __( 'This field is required.', 'wpflowforms' ) ),
-				'email'             => wpff_get_setting( 'validation-email',              __( 'Please enter a valid email address.', 'wpflowforms' ) ),
-				'emailMismatch'     => wpff_get_setting( 'validation-email-mismatch',     __( 'Email addresses do not match.', 'wpflowforms' ) ),
-				'number'            => wpff_get_setting( 'validation-number',             __( 'Please enter a valid number.', 'wpflowforms' ) ),
-				'numberMin'         => wpff_get_setting( 'validation-number-min',         __( 'Value must be at least {min}.', 'wpflowforms' ) ),
-				'numberMax'         => wpff_get_setting( 'validation-number-max',         __( 'Value must be at most {max}.', 'wpflowforms' ) ),
-				'maxlength'         => wpff_get_setting( 'validation-maxlength',          __( 'Please enter no more than {limit} characters.', 'wpflowforms' ) ),
-				'rating'            => wpff_get_setting( 'validation-rating',             __( 'Please select a valid rating.', 'wpflowforms' ) ),
-				'selection'         => wpff_get_setting( 'validation-selection',          __( 'Please make a selection.', 'wpflowforms' ) ),
-				'checkboxesMin'     => wpff_get_setting( 'validation-checkboxes-min',     __( 'Please select at least {count} options.', 'wpflowforms' ) ),
-				'checkboxesMax'     => wpff_get_setting( 'validation-checkboxes-max',     __( 'Please select at most {count} options.', 'wpflowforms' ) ),
-				'yesNo'             => wpff_get_setting( 'validation-yesno',              __( 'Please select yes or no.', 'wpflowforms' ) ),
-				'submissionFailed'  => wpff_get_setting( 'form-submission-failed',        __( 'Submission failed', 'wpflowforms' ) ),
-				'error'             => wpff_get_setting( 'form-error-message',            __( 'Something went wrong. Please try again.', 'wpflowforms' ) ),
-				'spam'              => wpff_get_setting( 'form-spam-message',             __( 'Your submission could not be processed. Please reload the page and try again.', 'wpflowforms' ) ),
-				'loadError'         => wpff_get_setting( 'form-load-error',               __( 'Sorry, this form could not be loaded. Please try again later.', 'wpflowforms' ) ),
+				'required'          => wpff_get_setting( 'validation-required',           __( 'This field is required.', 'flowforms' ) ),
+				'email'             => wpff_get_setting( 'validation-email',              __( 'Please enter a valid email address.', 'flowforms' ) ),
+				'emailMismatch'     => wpff_get_setting( 'validation-email-mismatch',     __( 'Email addresses do not match.', 'flowforms' ) ),
+				'number'            => wpff_get_setting( 'validation-number',             __( 'Please enter a valid number.', 'flowforms' ) ),
+				'numberMin'         => wpff_get_setting( 'validation-number-min',         __( 'Value must be at least {min}.', 'flowforms' ) ),
+				'numberMax'         => wpff_get_setting( 'validation-number-max',         __( 'Value must be at most {max}.', 'flowforms' ) ),
+				'maxlength'         => wpff_get_setting( 'validation-maxlength',          __( 'Please enter no more than {limit} characters.', 'flowforms' ) ),
+				'rating'            => wpff_get_setting( 'validation-rating',             __( 'Please select a valid rating.', 'flowforms' ) ),
+				'selection'         => wpff_get_setting( 'validation-selection',          __( 'Please make a selection.', 'flowforms' ) ),
+				'checkboxesMin'     => wpff_get_setting( 'validation-checkboxes-min',     __( 'Please select at least {count} options.', 'flowforms' ) ),
+				'checkboxesMax'     => wpff_get_setting( 'validation-checkboxes-max',     __( 'Please select at most {count} options.', 'flowforms' ) ),
+				'yesNo'             => wpff_get_setting( 'validation-yesno',              __( 'Please select yes or no.', 'flowforms' ) ),
+				'submissionFailed'  => wpff_get_setting( 'form-submission-failed',        __( 'Submission failed', 'flowforms' ) ),
+				'error'             => wpff_get_setting( 'form-error-message',            __( 'Something went wrong. Please try again.', 'flowforms' ) ),
+				'spam'              => wpff_get_setting( 'form-spam-message',             __( 'Your submission could not be processed. Please reload the page and try again.', 'flowforms' ) ),
+				'loadError'         => wpff_get_setting( 'form-load-error',               __( 'Sorry, this form could not be loaded. Please try again later.', 'flowforms' ) ),
 				// Buttons, Labels and Hints
-				'submit'            => wpff_get_setting( 'form-submit-label',             __( 'Submit', 'wpflowforms' ) ),
-				'submitting'        => wpff_get_setting( 'form-submitting-label',         __( 'Submitting...', 'wpflowforms' ) ),
-				'start'             => wpff_get_setting( 'form-start-label',              __( 'Start', 'wpflowforms' ) ),
-				'ok'                => wpff_get_setting( 'form-ok-label',                 __( 'OK', 'wpflowforms' ) ),
-				'tryAgain'          => wpff_get_setting( 'form-try-again-label',          __( 'Try again', 'wpflowforms' ) ),
-				'enterHint'         => wpff_get_setting( 'form-enter-hint',               __( 'press Enter ↵', 'wpflowforms' ) ),
-				'shiftEnterHint'    => wpff_get_setting( 'form-shift-enter-hint',        	__( 'Shift ⇧ + Enter ↵ to make a line break', 'wpflowforms' ) ),
-				'previous'          => wpff_get_setting( 'nav-previous-label',            __( 'Previous', 'wpflowforms' ) ),
-				'next'              => wpff_get_setting( 'nav-next-label',                __( 'Next', 'wpflowforms' ) ),
-				'thankYou'          => wpff_get_setting( 'form-thankyou-title',           __( 'Thank you!', 'wpflowforms' ) ),
-				'loading'           => wpff_get_setting( 'form-loading',                  __( 'Loading form…', 'wpflowforms' ) ),
-				'redirectingIn'     => wpff_get_setting( 'form-redirecting-in',           __( 'Redirecting in {seconds}…', 'wpflowforms' ) ),
-				'redirecting'       => wpff_get_setting( 'form-redirecting',              __( 'Redirecting…', 'wpflowforms' ) ),
-				'textPlaceholder'   => wpff_get_setting( 'input-text-placeholder',        __( 'Your answer here…', 'wpflowforms' ) ),
-				'emailPlaceholder'  => wpff_get_setting( 'input-email-placeholder',       __( 'name@example.com', 'wpflowforms' ) ),
-				'confirmEmailLabel' => wpff_get_setting( 'input-confirm-email-label',     __( 'Confirm email', 'wpflowforms' ) ),
-				'confirmEmailPlaceholder' => wpff_get_setting( 'input-confirm-email-placeholder', __( 'Confirm your email', 'wpflowforms' ) ),
-				'otherLabel'        => wpff_get_setting( 'input-other-label',             __( 'Other', 'wpflowforms' ) ),
-				'otherPlaceholder'  => wpff_get_setting( 'input-other-placeholder',       __( 'Type your answer…', 'wpflowforms' ) ),
-				'otherConfirm'      => wpff_get_setting( 'input-other-confirm',           __( 'Confirm', 'wpflowforms' ) ),
-				'ratingLabel'       => wpff_get_setting( 'input-rating-label',            __( 'Rate {value} out of {max}', 'wpflowforms' ) ),
-				'yes'               => wpff_get_setting( 'input-yes-label',               __( 'Yes', 'wpflowforms' ) ),
-				'no'                => wpff_get_setting( 'input-no-label',                __( 'No', 'wpflowforms' ) ),
-				'shareLabel'        => wpff_get_setting( 'form-share-label',              __( 'Share this form', 'wpflowforms' ) ),
-				'shareOn'           => wpff_get_setting( 'form-share-on',                 __( 'Share on {network}', 'wpflowforms' ) ),
-				'shareTitle'        => wpff_get_setting( 'form-share-title',              __( 'Check this out!', 'wpflowforms' ) ),
+				'submit'            => wpff_get_setting( 'form-submit-label',             __( 'Submit', 'flowforms' ) ),
+				'submitting'        => wpff_get_setting( 'form-submitting-label',         __( 'Submitting...', 'flowforms' ) ),
+				'start'             => wpff_get_setting( 'form-start-label',              __( 'Start', 'flowforms' ) ),
+				'ok'                => wpff_get_setting( 'form-ok-label',                 __( 'OK', 'flowforms' ) ),
+				'tryAgain'          => wpff_get_setting( 'form-try-again-label',          __( 'Try again', 'flowforms' ) ),
+				'enterHint'         => wpff_get_setting( 'form-enter-hint',               __( 'press Enter ↵', 'flowforms' ) ),
+				'shiftEnterHint'    => wpff_get_setting( 'form-shift-enter-hint',        	__( 'Shift ⇧ + Enter ↵ to make a line break', 'flowforms' ) ),
+				'previous'          => wpff_get_setting( 'nav-previous-label',            __( 'Previous', 'flowforms' ) ),
+				'next'              => wpff_get_setting( 'nav-next-label',                __( 'Next', 'flowforms' ) ),
+				'thankYou'          => wpff_get_setting( 'form-thankyou-title',           __( 'Thank you!', 'flowforms' ) ),
+				'loading'           => wpff_get_setting( 'form-loading',                  __( 'Loading form…', 'flowforms' ) ),
+				'redirectingIn'     => wpff_get_setting( 'form-redirecting-in',           __( 'Redirecting in {seconds}…', 'flowforms' ) ),
+				'redirecting'       => wpff_get_setting( 'form-redirecting',              __( 'Redirecting…', 'flowforms' ) ),
+				'textPlaceholder'   => wpff_get_setting( 'input-text-placeholder',        __( 'Your answer here…', 'flowforms' ) ),
+				'emailPlaceholder'  => wpff_get_setting( 'input-email-placeholder',       __( 'name@example.com', 'flowforms' ) ),
+				'confirmEmailLabel' => wpff_get_setting( 'input-confirm-email-label',     __( 'Confirm email', 'flowforms' ) ),
+				'confirmEmailPlaceholder' => wpff_get_setting( 'input-confirm-email-placeholder', __( 'Confirm your email', 'flowforms' ) ),
+				'otherLabel'        => wpff_get_setting( 'input-other-label',             __( 'Other', 'flowforms' ) ),
+				'otherPlaceholder'  => wpff_get_setting( 'input-other-placeholder',       __( 'Type your answer…', 'flowforms' ) ),
+				'otherConfirm'      => wpff_get_setting( 'input-other-confirm',           __( 'Confirm', 'flowforms' ) ),
+				'ratingLabel'       => wpff_get_setting( 'input-rating-label',            __( 'Rate {value} out of {max}', 'flowforms' ) ),
+				'yes'               => wpff_get_setting( 'input-yes-label',               __( 'Yes', 'flowforms' ) ),
+				'no'                => wpff_get_setting( 'input-no-label',                __( 'No', 'flowforms' ) ),
+				'shareLabel'        => wpff_get_setting( 'form-share-label',              __( 'Share this form', 'flowforms' ) ),
+				'shareOn'           => wpff_get_setting( 'form-share-on',                 __( 'Share on {network}', 'flowforms' ) ),
+				'shareTitle'        => wpff_get_setting( 'form-share-title',              __( 'Check this out!', 'flowforms' ) ),
 			],
 		] );
 
@@ -364,8 +382,8 @@ class FlowForms_Frontend {
 
 		if ( ! $this->verify_preview_token( $token ) ) {
 			wp_die(
-				esc_html__( 'Preview link is invalid or has expired.', 'wpflowforms' ),
-				esc_html__( 'Invalid Preview', 'wpflowforms' ),
+				esc_html__( 'Preview link is invalid or has expired.', 'flowforms' ),
+				esc_html__( 'Invalid Preview', 'flowforms' ),
 				[ 'response' => 403 ]
 			);
 		}
@@ -373,8 +391,8 @@ class FlowForms_Frontend {
 		// Must be logged in to preview.
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			wp_die(
-				esc_html__( 'You do not have permission to preview forms.', 'wpflowforms' ),
-				esc_html__( 'Permission Denied', 'wpflowforms' ),
+				esc_html__( 'You do not have permission to preview forms.', 'flowforms' ),
+				esc_html__( 'Permission Denied', 'flowforms' ),
 				[ 'response' => 403 ]
 			);
 		}
@@ -388,8 +406,8 @@ class FlowForms_Frontend {
 
 			if ( ! $template || ! is_array( $template ) ) {
 				wp_die(
-					esc_html__( 'Template preview has expired. Please try again.', 'wpflowforms' ),
-					esc_html__( 'Preview Expired', 'wpflowforms' ),
+					esc_html__( 'Template preview has expired. Please try again.', 'flowforms' ),
+					esc_html__( 'Preview Expired', 'flowforms' ),
 					[ 'response' => 410 ]
 				);
 			}
@@ -404,8 +422,8 @@ class FlowForms_Frontend {
 
 		if ( ! $form_id ) {
 			wp_die(
-				esc_html__( 'Preview link is invalid or has expired.', 'wpflowforms' ),
-				esc_html__( 'Invalid Preview', 'wpflowforms' ),
+				esc_html__( 'Preview link is invalid or has expired.', 'flowforms' ),
+				esc_html__( 'Invalid Preview', 'flowforms' ),
 				[ 'response' => 403 ]
 			);
 		}
@@ -414,8 +432,8 @@ class FlowForms_Frontend {
 
 		if ( ! $post || $post->post_type !== 'wpff_forms' ) {
 			wp_die(
-				esc_html__( 'Form not found.', 'wpflowforms' ),
-				esc_html__( 'Form Not Found', 'wpflowforms' ),
+				esc_html__( 'Form not found.', 'flowforms' ),
+				esc_html__( 'Form Not Found', 'flowforms' ),
 				[ 'response' => 404 ]
 			);
 		}
@@ -454,7 +472,7 @@ class FlowForms_Frontend {
 			: [ 'dependencies' => [], 'version' => WPFF_VERSION ];
 
 		wp_enqueue_script( 'flowform-renderer', WPFF_URL . 'build/form/index.js', $asset['dependencies'], $asset['version'], true );
-		wp_set_script_translations( 'flowform-renderer', 'wpflowforms', WPFF_PATH . 'languages' );
+		wp_set_script_translations( 'flowform-renderer', 'flowforms', WPFF_PATH . 'languages' );
 		wp_enqueue_style( 'flowform-renderer', WPFF_URL . 'build/form/style-index.css', [], $asset['version'] );
 
 		// Pass content and design separately — FormApp expects design at the top
@@ -469,6 +487,13 @@ class FlowForms_Frontend {
 			'templateDesign'  => $design,
 		] );
 
+		wp_add_inline_style( 'flowform-renderer', sprintf(
+			'html,body{margin:0 !important;padding:0 !important;height:100%%;overflow:hidden;background:%1$s;}html{margin-top:0 !important;}#flowform-full-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background-color:%1$s;--btn-color:%2$s;--hint-color:%3$s;}',
+			$bg,
+			$btn,
+			$hint
+		) );
+
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Intentionally firing the core WP hook to trigger registered enqueue callbacks.
 		do_action( 'wp_enqueue_scripts' );
 		?>
@@ -478,17 +503,8 @@ class FlowForms_Frontend {
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title><?php esc_html_e( 'Template Preview', 'wpflowforms' ); ?></title>
+<title><?php esc_html_e( 'Template Preview', 'flowforms' ); ?></title>
 <?php wp_head(); ?>
-<style>
-html, body { margin: 0 !important; padding: 0 !important; height: 100%; overflow: hidden; background: <?php echo esc_attr( $bg ); ?>; }
-html { margin-top: 0 !important; }
-#flowform-full-page {
-	min-height: 100vh; display: flex; align-items: center; justify-content: center;
-	padding: 32px 16px; background-color: <?php echo esc_attr( $bg ); ?>;
-	--btn-color: <?php echo esc_attr( $btn ); ?>; --hint-color: <?php echo esc_attr( $hint ); ?>;
-}
-</style>
 </head>
 <body>
 <div id="flowform-full-page">
@@ -522,6 +538,13 @@ html { margin-top: 0 !important; }
 		$bg     = esc_attr( $design['bg_color']     ?? '#ffffff' );
 		$btn    = esc_attr( $design['button_color'] ?? '#111827' );
 		$hint   = esc_attr( $design['hint_color']   ?? '#9ca3af' );
+
+		wp_add_inline_style( 'flowform-renderer', sprintf(
+			'html,body{margin:0 !important;padding:0 !important;height:100%%;overflow:hidden;background:%1$s;}html{margin-top:0 !important;}#flowform-full-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;position:relative;z-index:99999;background-color:%1$s;--btn-color:%2$s;--hint-color:%3$s;}',
+			$bg,
+			$btn,
+			$hint
+		) );
 		?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -531,28 +554,6 @@ html { margin-top: 0 !important; }
 <meta name="robots" content="noindex, nofollow">
 <title><?php echo esc_html( $title ); ?></title>
 <?php wp_head(); ?>
-<style>
-html, body {
-	margin: 0 !important;
-	padding: 0 !important;
-	height: 100%;
-	overflow: hidden;
-	background: <?php echo esc_attr( $bg ); ?>;
-}
-html { margin-top: 0 !important; }
-#flowform-full-page {
-	min-height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 32px 16px;
-	position: relative;
-	z-index: 99999;
-	background-color: <?php echo esc_attr( $bg ); ?>;
-	--btn-color: <?php echo esc_attr( $btn ); ?>;
-	--hint-color: <?php echo esc_attr( $hint ); ?>;
-}
-</style>
 </head>
 <body>
 <div id="flowform-full-page">
@@ -615,32 +616,6 @@ html { margin-top: 0 !important; }
 	}
 
 	/**
-	 * Build a <style> block that pre-applies the form's key design tokens to
-	 * a given CSS selector before the JS renderer runs.
-	 *
-	 * This eliminates the flash of unstyled background / spinner colours that
-	 * occurs between page load and the JS injecting its own token <style>.
-	 *
-	 * @param  string $selector  CSS selector to scope the rules to.
-	 * @param  array  $design    Design array from get_form_design().
-	 * @since 1.0.0
-	 * @return string
-	 */
-	private function design_vars_css( string $selector, array $design ): string {
-		$bg    = esc_attr( $design['bg_color']     ?? '#ffffff' );
-		$btn   = esc_attr( $design['button_color'] ?? '#111827' );
-		$hint  = esc_attr( $design['hint_color']   ?? '#9ca3af' );
-
-		return sprintf(
-			'<style>%s{background-color:%s;--btn-color:%s;--hint-color:%s;}</style>',
-			$selector,
-			$bg,
-			$btn,
-			$hint
-		);
-	}
-
-	/**
 	 * Return the container div HTML used by every embed method.
 	 *
 	 * @param int    $form_id
@@ -657,12 +632,8 @@ html { margin-top: 0 !important; }
 		string $height        = '520px',
 		string $border_radius = '16px'
 	): string {
-		$design     = $this->get_form_design( $form_id );
-		$selector   = sprintf( '[data-flowform-id="%d"]', $form_id );
-		$style_tag  = $this->design_vars_css( $selector, $design );
-
 		if ( $fullpage ) {
-			return $style_tag . sprintf(
+			return sprintf(
 				'<div class="flowform-container" data-flowform-id="%d" data-ff-mode="fullpage"></div>',
 				$form_id
 			);
@@ -674,7 +645,7 @@ html { margin-top: 0 !important; }
 			esc_attr( $border_radius )
 		);
 
-		return $style_tag . sprintf(
+		return sprintf(
 			'<div class="flowform-container" data-flowform-id="%d" style="%s"></div>',
 			$form_id,
 			$inline_style
@@ -706,7 +677,7 @@ html { margin-top: 0 !important; }
 
 		$post  = get_post( $form_id );
 		/* translators: %d: form ID */
-	$label = $post ? $post->post_title : sprintf( __( 'Form #%d', 'wpflowforms' ), $form_id );
+	$label = $post ? $post->post_title : sprintf( __( 'Form #%d', 'flowforms' ), $form_id );
 
 		ob_start();
 		?>
@@ -720,10 +691,10 @@ html { margin-top: 0 !important; }
 			<span style="font-size:18px;line-height:1;flex-shrink:0;">⚠️</span>
 			<span>
 				<strong><?php echo esc_html( $label ); ?></strong>
-				<?php esc_html_e( 'is in the Trash and is not visible to visitors.', 'wpflowforms' ); ?>
+				<?php esc_html_e( 'is in the Trash and is not visible to visitors.', 'flowforms' ); ?>
 				&nbsp;<a href="<?php echo esc_url( $restore_url ); ?>"
 					style="color:#92400e;text-decoration:underline;font-weight:600;white-space:nowrap;">
-					<?php esc_html_e( 'Restore form', 'wpflowforms' ); ?>
+					<?php esc_html_e( 'Restore form', 'flowforms' ); ?>
 				</a>
 			</span>
 		</div>
@@ -749,21 +720,20 @@ html { margin-top: 0 !important; }
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title><?php esc_html_e( 'Form In Trash', 'wpflowforms' ); ?></title>
-<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded CSS string with no user input; fully trusted internal output.
-echo $this->standalone_page_styles(); ?>
+<title><?php esc_html_e( 'Form In Trash', 'flowforms' ); ?></title>
+<?php $this->print_standalone_page_styles(); ?>
 </head>
 <body>
 <div class="wpff-standalone">
 	<div class="wpff-standalone__icon wpff-standalone__icon--amber">🗑️</div>
 	<h1 class="wpff-standalone__title">
-		<?php esc_html_e( 'This form is in the trash.', 'wpflowforms' ); ?>
+		<?php esc_html_e( 'This form is in the trash.', 'flowforms' ); ?>
 	</h1>
 	<p class="wpff-standalone__desc">
 		<?php
 			printf(
 				/* translators: %s: form name */
-				esc_html__( '"%s" has been moved to the trash and is not visible to visitors. Restore it to make it available again.', 'wpflowforms' ),
+				esc_html__( '"%s" has been moved to the trash and is not visible to visitors. Restore it to make it available again.', 'flowforms' ),
 				esc_html( $form_title )
 			);
 		?>
@@ -772,7 +742,7 @@ echo $this->standalone_page_styles(); ?>
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
 			<path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
 		</svg>
-		<?php esc_html_e( 'Restore Form', 'wpflowforms' ); ?>
+		<?php esc_html_e( 'Restore Form', 'flowforms' ); ?>
 	</a>
 </div>
 </body>
@@ -781,43 +751,16 @@ echo $this->standalone_page_styles(); ?>
 	}
 
 	/**
-	 * Shared inline styles for the standalone unavailable/not-published pages.
+	 * Print the stylesheet for standalone unavailable/not-published pages via the WP enqueue API.
+	 *
+	 * Registers a static CSS file and prints it immediately (these pages do not
+	 * call wp_head(), so we invoke wp_print_styles() directly).
 	 *
 	 * @since 1.0.0
 	 */
-	private function standalone_page_styles(): string {
-		return '
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-	height: 100%; background: #fafafa;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-	color: #1f2937;
-}
-.wpff-standalone {
-	min-height: 100vh; display: flex; flex-direction: column;
-	align-items: center; justify-content: center;
-	padding: 40px 24px; text-align: center; gap: 16px;
-}
-.wpff-standalone__icon {
-	width: 64px; height: 64px; border-radius: 50%;
-	display: flex; align-items: center;
-	justify-content: center; font-size: 28px; flex-shrink: 0;
-}
-.wpff-standalone__icon--grey { background: #f3f4f6; }
-.wpff-standalone__icon--amber { background: #fef3c7; }
-.wpff-standalone__title { font-size: 22px; font-weight: 600; color: #111827; }
-.wpff-standalone__desc { font-size: 15px; color: #6b7280; max-width: 380px; line-height: 1.6; }
-.wpff-standalone__btn {
-	display: inline-flex; align-items: center; gap: 8px;
-	padding: 10px 22px; border-radius: 8px; border: none;
-	background: #111827; color: #fff; font-size: 15px;
-	font-family: inherit; font-weight: 500; text-decoration: none;
-	cursor: pointer; transition: background 0.15s;
-}
-.wpff-standalone__btn:hover { background: #374151; }
-.wpff-standalone__btn svg { flex-shrink: 0; }
-</style>';
+	private function print_standalone_page_styles(): void {
+		wp_register_style( 'wpff-standalone', WPFF_URL . 'assets/css/wpff-standalone.css', [], WPFF_VERSION );
+		wp_print_styles( array( 'wpff-standalone' ) );
 	}
 
 	/**
@@ -835,18 +778,17 @@ html, body {
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title><?php esc_html_e( 'Form Not Available', 'wpflowforms' ); ?></title>
-<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded CSS string with no user input; fully trusted internal output.
-echo $this->standalone_page_styles(); ?>
+<title><?php esc_html_e( 'Form Not Available', 'flowforms' ); ?></title>
+<?php $this->print_standalone_page_styles(); ?>
 </head>
 <body>
 <div class="wpff-standalone">
 	<div class="wpff-standalone__icon wpff-standalone__icon--grey">📋</div>
 	<h1 class="wpff-standalone__title">
-		<?php esc_html_e( 'This form is no longer available.', 'wpflowforms' ); ?>
+		<?php esc_html_e( 'This form is no longer available.', 'flowforms' ); ?>
 	</h1>
 	<p class="wpff-standalone__desc">
-		<?php esc_html_e( 'The form you are looking for has been removed or is currently unavailable.', 'wpflowforms' ); ?>
+		<?php esc_html_e( 'The form you are looking for has been removed or is currently unavailable.', 'flowforms' ); ?>
 	</p>
 </div>
 </body>
@@ -872,21 +814,20 @@ echo $this->standalone_page_styles(); ?>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title><?php esc_html_e( 'Form Not Published', 'wpflowforms' ); ?></title>
-<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Hardcoded CSS string with no user input; fully trusted internal output.
-echo $this->standalone_page_styles(); ?>
+<title><?php esc_html_e( 'Form Not Published', 'flowforms' ); ?></title>
+<?php $this->print_standalone_page_styles(); ?>
 </head>
 <body>
 <div class="wpff-standalone">
 	<div class="wpff-standalone__icon wpff-standalone__icon--amber">🚧</div>
 	<h1 class="wpff-standalone__title">
-		<?php esc_html_e( 'This form hasn\'t been published yet.', 'wpflowforms' ); ?>
+		<?php esc_html_e( 'This form hasn\'t been published yet.', 'flowforms' ); ?>
 	</h1>
 	<p class="wpff-standalone__desc">
 		<?php
 			printf(
 				/* translators: %s: form name */
-				esc_html__( '"%s" is not live yet. Publish it from the builder so visitors can fill it out.', 'wpflowforms' ),
+				esc_html__( '"%s" is not live yet. Publish it from the builder so visitors can fill it out.', 'flowforms' ),
 				esc_html( $form_title )
 			);
 		?>
@@ -895,7 +836,7 @@ echo $this->standalone_page_styles(); ?>
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
 			<path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
 		</svg>
-		<?php esc_html_e( 'Open in Builder', 'wpflowforms' ); ?>
+		<?php esc_html_e( 'Open in Builder', 'flowforms' ); ?>
 	</a>
 </div>
 </body>

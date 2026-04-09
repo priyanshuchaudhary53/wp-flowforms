@@ -70,10 +70,10 @@ class FlowForms_Forms_List_Table extends WP_List_Table
   {
     return [
       'cb'        => '<input type="checkbox">',
-      'name'      => __('Name', 'wpflowforms'),
-      'shortcode' => __('Shortcode', 'wpflowforms'),
-      'author'    => __('Author', 'wpflowforms'),
-      'created'   => __('Date', 'wpflowforms'),
+      'name'      => __('Name', 'flowforms'),
+      'shortcode' => __('Shortcode', 'flowforms'),
+      'author'    => __('Author', 'flowforms'),
+      'created'   => __('Date', 'flowforms'),
     ];
   }
 
@@ -120,7 +120,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
    */
   public function column_name($form): string
   {
-    $title = ! empty($form->post_title) ? $form->post_title : __('(no title)', 'wpflowforms');
+    $title = ! empty($form->post_title) ? $form->post_title : __('(no title)', 'flowforms');
 
     if ($this->current_view === 'trash') {
       $name_html = '<strong>' . esc_html($title) . '</strong>';
@@ -146,7 +146,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
             add_query_arg(['action' => 'restore', 'form_id' => $form->ID], $base_url),
             'wpff_restore_form_nonce'
           )),
-          esc_html__('Restore', 'wpflowforms')
+          esc_html__('Restore', 'flowforms')
         ),
         'delete'  => sprintf(
           '<a href="%s" class="submitdelete" onclick="return confirm(\'%s\')">%s</a>',
@@ -154,8 +154,8 @@ class FlowForms_Forms_List_Table extends WP_List_Table
             add_query_arg(['action' => 'delete', 'form_id' => $form->ID], $base_url),
             'wpff_delete_form_nonce'
           )),
-          esc_js(__('Are you sure you want to permanently delete this form?', 'wpflowforms')),
-          esc_html__('Delete Permanently', 'wpflowforms')
+          esc_js(__('Are you sure you want to permanently delete this form?', 'flowforms')),
+          esc_html__('Delete Permanently', 'flowforms')
         ),
       ];
     } else {
@@ -169,7 +169,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
         $actions['edit'] = sprintf(
           '<a href="%s">%s</a>',
           esc_url($edit_url),
-          esc_html__('Edit', 'wpflowforms')
+          esc_html__('Edit', 'flowforms')
         );
 
         $actions['duplicate'] = sprintf(
@@ -178,13 +178,13 @@ class FlowForms_Forms_List_Table extends WP_List_Table
             add_query_arg(['action' => 'duplicate', 'form_id' => $form->ID], $base_url),
             'wpff_duplicate_form_nonce'
           )),
-          esc_html__('Duplicate', 'wpflowforms')
+          esc_html__('Duplicate', 'flowforms')
         );
 
         $actions['preview'] = sprintf(
           '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
           esc_url(FlowForms_Frontend::get_preview_url($form->ID)),
-          esc_html__('Preview', 'wpflowforms')
+          esc_html__('Preview', 'flowforms')
         );
 
         $actions['trash'] = sprintf(
@@ -193,7 +193,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
             add_query_arg(['action' => 'trash', 'form_id' => $form->ID], $base_url),
             'wpff_trash_form_nonce'
           )),
-          esc_html__('Trash', 'wpflowforms')
+          esc_html__('Trash', 'flowforms')
         );
       }
     }
@@ -270,14 +270,14 @@ class FlowForms_Forms_List_Table extends WP_List_Table
     if (gmdate('Ymd', $created) === gmdate('Ymd', $modified)) {
       return sprintf(
         '<span class="wpff-date-label">%s</span><br>%s',
-        esc_html__('Created', 'wpflowforms'),
+        esc_html__('Created', 'flowforms'),
         esc_html(get_the_date(get_option('date_format'), $form))
       );
     }
 
     return sprintf(
       '<span class="wpff-date-label">%s</span><br>%s',
-      esc_html__('Modified', 'wpflowforms'),
+      esc_html__('Modified', 'flowforms'),
       esc_html(get_the_modified_date(get_option('date_format'), $form))
     );
   }
@@ -317,14 +317,14 @@ class FlowForms_Forms_List_Table extends WP_List_Table
   {
     if ($this->current_view === 'trash') {
       return [
-        'restore' => __('Restore', 'wpflowforms'),
-        'delete'  => __('Delete Permanently', 'wpflowforms'),
+        'restore' => __('Restore', 'flowforms'),
+        'delete'  => __('Delete Permanently', 'flowforms'),
       ];
     }
 
     return [
-      'trash'     => __('Move to Trash', 'wpflowforms'),
-      'duplicate' => __('Duplicate', 'wpflowforms'),
+      'trash'     => __('Move to Trash', 'flowforms'),
+      'duplicate' => __('Duplicate', 'flowforms'),
     ];
   }
 
@@ -348,7 +348,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
       '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
       esc_url($base_url),
       $this->current_view === 'all' ? ' class="current"' : '',
-      esc_html__('All', 'wpflowforms'),
+      esc_html__('All', 'flowforms'),
       $all_count
     );
 
@@ -357,7 +357,7 @@ class FlowForms_Forms_List_Table extends WP_List_Table
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
         esc_url(add_query_arg('status', 'trash', $base_url)),
         $this->current_view === 'trash' ? ' class="current"' : '',
-        esc_html__('Trash', 'wpflowforms'),
+        esc_html__('Trash', 'flowforms'),
         $trash_count
       );
     }
@@ -481,9 +481,9 @@ class FlowForms_Forms_List_Table extends WP_List_Table
   public function no_items()
   {
     if ($this->current_view === 'trash') {
-      esc_html_e('No forms found in Trash.', 'wpflowforms');
+      esc_html_e('No forms found in Trash.', 'flowforms');
     } else {
-      esc_html_e('No forms found.', 'wpflowforms');
+      esc_html_e('No forms found.', 'flowforms');
     }
   }
 
@@ -514,8 +514,8 @@ class FlowForms_Forms_List_Table extends WP_List_Table
     printf(
       '<a href="%s" class="button wpff-empty-trash" onclick="return confirm(\'%s\')">%s</a>',
       esc_url($url),
-      esc_js(__('Are you sure you want to permanently delete all forms in Trash?', 'wpflowforms')),
-      esc_html__('Empty Trash', 'wpflowforms')
+      esc_js(__('Are you sure you want to permanently delete all forms in Trash?', 'flowforms')),
+      esc_html__('Empty Trash', 'flowforms')
     );
   }
 }

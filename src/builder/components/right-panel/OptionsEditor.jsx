@@ -48,7 +48,7 @@ function OptionRow({ option, onChange, onDelete, canDelete }) {
         {...attributes}
         {...listeners}
         tabIndex={-1}
-        aria-label={__( 'Drag to reorder', 'wpflowforms' )}
+        aria-label={__( 'Drag to reorder', 'flowforms' )}
         className="shrink-0 text-gray-300 hover:text-gray-500 cursor-grab active:cursor-grabbing touch-none focus:outline-none"
       >
         <GripVertical width={14} height={14} />
@@ -59,7 +59,7 @@ function OptionRow({ option, onChange, onDelete, canDelete }) {
         type="text"
         value={option.label}
         onChange={(e) => onChange(option.id, e.target.value)}
-        placeholder={__( 'Option label', 'wpflowforms' )}
+        placeholder={__( 'Option label', 'flowforms' )}
         className="flex-1 min-w-0 text-sm/6 border border-gray-200 rounded-md px-2 py-1 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 placeholder:text-gray-300"
       />
 
@@ -68,7 +68,7 @@ function OptionRow({ option, onChange, onDelete, canDelete }) {
         type="button"
         onClick={() => onDelete(option.id)}
         disabled={!canDelete}
-        aria-label={__( 'Remove option', 'wpflowforms' )}
+        aria-label={__( 'Remove option', 'flowforms' )}
         className="shrink-0 text-gray-300 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none transition-colors"
       >
         <XIcon width={14} height={14} />
@@ -159,7 +159,7 @@ export default function OptionsEditor({ field, value, onChange }) {
         className="mt-2 flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer focus:outline-none"
       >
         <PlusIcon width={13} height={13} />
-        {__( 'Add option', 'wpflowforms' )}
+        {__( 'Add option', 'flowforms' )}
       </button>
 
       {field.hint && (

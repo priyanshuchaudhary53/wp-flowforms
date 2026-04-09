@@ -1,4 +1,4 @@
-=== WPFlowForms ===
+=== FlowForms ===
 Contributors: priyanshuchaudhary
 Tags: forms, contact form, conversational form, typeform, form builder
 Requires at least: 5.9
@@ -12,9 +12,9 @@ A Typeform-style conversational form builder for WordPress. Beautiful step-by-st
 
 == Description ==
 
-WPFlowForms brings the conversational form experience to WordPress — one question at a time, with smooth animations and a clean UI that keeps respondents engaged.
+FlowForms brings the conversational form experience to WordPress — one question at a time, with smooth animations and a clean UI that keeps respondents engaged.
 
-Unlike traditional form plugins that show every field at once, WPFlowForms guides users through your form step by step — just like Typeform — but with all responses stored directly in your WordPress database. No third-party services. No monthly SaaS fees.
+Unlike traditional form plugins that show every field at once, FlowForms guides users through your form step by step — just like Typeform — but with all responses stored directly in your WordPress database. No third-party services. No monthly SaaS fees.
 
 **Key Features:**
 
@@ -53,16 +53,16 @@ All form submissions are stored in your own WordPress database. Nothing is sent 
 
 == Installation ==
 
-1. Upload the `wpflowforms` folder to `/wp-content/plugins/`
+1. Upload the \`flowforms\` folder to `/wp-content/plugins/`
 2. Activate the plugin through the **Plugins** menu in WordPress
-3. Go to **WPFlowForms** in the admin sidebar to create your first form
+3. Go to **FlowForms** in the admin sidebar to create your first form
 4. Embed using the Gutenberg block, shortcode `[flowform id="123"]`, or share the full-page URL
 
 == Frequently Asked Questions ==
 
 = Is this a Typeform replacement? =
 
-Yes — for WordPress users. WPFlowForms gives you the same conversational, one-question-at-a-time experience as Typeform, but self-hosted inside your WordPress site with no monthly fee.
+Yes — for WordPress users. FlowForms gives you the same conversational, one-question-at-a-time experience as Typeform, but self-hosted inside your WordPress site with no monthly fee.
 
 = Where are form submissions stored? =
 
@@ -70,7 +70,7 @@ All entries are stored in your WordPress database in the `wp_flowforms_entries` 
 
 = Does it work with the block editor (Gutenberg)? =
 
-Yes. WPFlowForms includes a native Gutenberg block. You can also use the `[flowform id="123"]` shortcode in classic editor or anywhere shortcodes are supported.
+Yes. FlowForms includes a native Gutenberg block. You can also use the `[flowform id="123"]` shortcode in classic editor or anywhere shortcodes are supported.
 
 = Does it work with page builders? =
 
@@ -78,7 +78,7 @@ Any page builder that supports shortcodes will work with the `[flowform id="123"
 
 = Is Akismet required for anti-spam? =
 
-No. Akismet is optional. WPFlowForms includes modern spam protection out of the box. Akismet adds an extra layer if you have it installed and configured.
+No. Akismet is optional. FlowForms includes modern spam protection out of the box. Akismet adds an extra layer if you have it installed and configured.
 
 = Can I customise the form design? =
 
@@ -99,6 +99,14 @@ Changes you make in the builder are auto-saved to a draft. Your live form is onl
 3. The entries manager — view and manage all submissions
 4. Form design customisation panel
 5. Email notification settings with smart tag support
+
+== Source Code ==
+
+The full source code, including all JavaScript source files and build configuration, is publicly available on GitHub:
+
+https://github.com/priyanshuchaudhary53/wp-flowforms
+
+To rebuild the compiled assets from source, run `npm install` followed by `npm run build`.
 
 == Changelog ==
 

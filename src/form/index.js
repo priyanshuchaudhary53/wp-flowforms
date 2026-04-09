@@ -1,5 +1,5 @@
 /**
- * WPFlowForms — Public Form Renderer
+ * FlowForms — Public Form Renderer
  *
  * Entry point. Runs on DOMContentLoaded, finds every [data-flowform-id]
  * container, fetches the form JSON from the REST API, and boots a FormApp
@@ -127,7 +127,7 @@ function showLoading( container ) {
 	container.innerHTML = `
 		<div class="ff-loading" role="status" aria-live="polite">
 			<div class="ff-loading-spinner" aria-hidden="true"></div>
-			<span class="ff-loading-text">${ window.flowformPublicData?.i18n?.loading ?? __( 'Loading form…', 'wpflowforms' ) }</span>
+			<span class="ff-loading-text">${ window.flowformPublicData?.i18n?.loading ?? __( 'Loading form…', 'flowforms' ) }</span>
 		</div>`;
 }
 
@@ -139,6 +139,6 @@ function showError( container, err ) {
 	console.error( '[FlowForms] Failed to load form:', err );
 	container.innerHTML = `
 		<div class="ff-error" role="alert">
-			<p>${ window.flowformPublicData?.i18n?.loadError ?? __( 'Sorry, this form could not be loaded. Please try again later.', 'wpflowforms' ) }</p>
+			<p>${ window.flowformPublicData?.i18n?.loadError ?? __( 'Sorry, this form could not be loaded. Please try again later.', 'flowforms' ) }</p>
 		</div>`;
 }
