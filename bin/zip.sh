@@ -14,7 +14,6 @@ cp -r \
   "$PLUGIN_ROOT/assets" \
   "$PLUGIN_ROOT/build" \
   "$PLUGIN_ROOT/includes" \
-  "$PLUGIN_ROOT/languages" \
   "$PLUGIN_ROOT/templates" \
   "$PLUGIN_ROOT/readme.txt" \
   "$PLUGIN_ROOT/flowforms.php" \
