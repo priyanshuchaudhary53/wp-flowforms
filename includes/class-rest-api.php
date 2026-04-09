@@ -180,6 +180,41 @@ class FlowForms_REST_API
   }
 
   /**
+   * Get a parameter from a REST request, with a raw-body fallback.
+   *
+   * WordPress Playground (PHP-wasm) does not expose php://input for PATCH
+   * requests, so WP_REST_Request::get_param() returns null even when the
+   * client sends a valid JSON body. Reading get_body() directly works around
+   * this. Normal WordPress environments hit the fast path via get_param().
+   *
+   * @param  WP_REST_Request $request
+   * @param  string          $key
+   * @since 1.0.0
+   * @return mixed
+   */
+  private function get_request_param($request, string $key)
+  {
+    $value = $request->get_param($key);
+
+    if (! is_null($value)) {
+      return $value;
+    }
+
+    // Fallback: parse raw body once and cache it on the request object.
+    $body = $request->get_body();
+    if (empty($body)) {
+      return null;
+    }
+
+    $parsed = json_decode(wp_unslash($body), true);
+    if (json_last_error() !== JSON_ERROR_NONE || ! is_array($parsed)) {
+      return null;
+    }
+
+    return $parsed[$key] ?? null;
+  }
+
+  /**
    * Encode a single form-data array to JSON, preserving emoji.
    *
    * @param  array $data
@@ -434,8 +469,8 @@ class FlowForms_REST_API
   public function update_form($request)
   {
     $form_id   = absint($request['id']);
-    $form_name = $request->get_param('form_name');
-    $form_data = $request->get_param('form_data');
+    $form_name = $this->get_request_param($request, 'form_name');
+    $form_data = $this->get_request_param($request, 'form_data');
 
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'flowforms'), ['status' => 400]);
@@ -503,7 +538,7 @@ class FlowForms_REST_API
   public function update_design($request)
   {
     $form_id = absint($request['id']);
-    $design  = $request->get_param('design');
+    $design  = $this->get_request_param($request, 'design');
 
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'flowforms'), ['status' => 400]);
@@ -544,7 +579,7 @@ class FlowForms_REST_API
   public function update_settings($request)
   {
     $form_id  = absint($request['id']);
-    $settings = $request->get_param('settings');
+    $settings = $this->get_request_param($request, 'settings');
 
     if (! $form_id) {
       return new WP_Error('invalid_form_id', __('Invalid form ID.', 'flowforms'), ['status' => 400]);
