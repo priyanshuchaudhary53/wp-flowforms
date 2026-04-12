@@ -71,7 +71,11 @@ class FlowForms_Entries_Overview
       return;
     }
 
-    // phpcs:disable WordPress.Security.NonceVerification.Recommended
+    if (! current_user_can('manage_options')) {
+      return;
+    }
+
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin navigation params used only for routing; capability is checked above, values are sanitized and validated against allowlists.
     $this->view    = isset($_GET['view']) && $_GET['view'] === 'single' ? 'single' : 'list';
     $this->form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : 0;
     $status        = isset($_GET['status']) ? sanitize_key($_GET['status']) : 'active';
@@ -539,8 +543,7 @@ class FlowForms_Entries_Overview
           ?>
             <div class="wpff-entry-field <?php echo $empty ? 'wpff-entry-field--empty' : ''; ?>">
               <dt class="wpff-entry-field__label">
-                <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
-                echo FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label); ?>
+                <?php echo wp_kses( FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label), wpff_kses_field_icon() ); ?>
               </dt>
               <dd class="wpff-entry-field__value">
                 <?php if ($empty) : ?>
@@ -555,8 +558,7 @@ class FlowForms_Entries_Overview
           <?php foreach ($entry->answers as $key => $value) : ?>
             <div class="wpff-entry-field">
               <dt class="wpff-entry-field__label">
-                <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
-                echo FlowForms_Field_Icons::label_with_icon('', $key); ?>
+                <?php echo wp_kses( FlowForms_Field_Icons::label_with_icon('', $key), wpff_kses_field_icon() ); ?>
               </dt>
               <dd class="wpff-entry-field__value">
                 <?php echo wp_kses_post($this->format_answer($value, 'short_text')); ?>

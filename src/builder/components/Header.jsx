@@ -31,11 +31,11 @@ export default function Header() {
   const [reverting, setReverting]               = useState(false);
 
   const isSetup      = Number(formId) === 0;
-  const currentView  = formflowData.view ?? "builder";
+  const currentView  = wpffBuilderData.view ?? "builder";
 
   // Build a URL for a given view, preserving form_id
   const viewUrl = (v) =>
-    `${formflowData.builderUrl}&form_id=${formId}&view=${v}`;
+    `${wpffBuilderData.builderUrl}&form_id=${formId}&view=${v}`;
 
   const TABS = [
     { id: "builder",  label: __( 'Builder', 'flowforms' )  },
@@ -44,7 +44,7 @@ export default function Header() {
   ];
 
   const closeHandler = () => {
-    window.location.href = formflowData.adminFormsUrl;
+    window.location.href = wpffBuilderData.adminFormsUrl;
   };
 
   const handlePublish = async () => {

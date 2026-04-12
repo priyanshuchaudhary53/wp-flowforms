@@ -49,7 +49,7 @@ function buildDefaultQuestion(fieldType) {
 }
 
 export const useFormStore = create((set, get) => ({
-  formId: Number(formflowData.formId) || 0,
+  formId: Number(wpffBuilderData.formId) || 0,
   form: null,
   loading: false,
   error: null,
@@ -342,11 +342,11 @@ export const useFormStore = create((set, get) => ({
     set({ saveStatus: "saving" });
 
     try {
-      const res = await fetch(`${formflowData.apiUrl}/forms/${formId}`, {
+      const res = await fetch(`${wpffBuilderData.apiUrl}/forms/${formId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-WP-Nonce": formflowData.nonce,
+          "X-WP-Nonce": wpffBuilderData.nonce,
         },
         body: JSON.stringify({ form_data: form.content }),
       });
@@ -375,12 +375,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${formflowData.apiUrl}/forms/${formId}/design`,
+        `${wpffBuilderData.apiUrl}/forms/${formId}/design`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": formflowData.nonce,
+            "X-WP-Nonce": wpffBuilderData.nonce,
           },
           body: JSON.stringify({ design }),
         },
@@ -424,12 +424,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${formflowData.apiUrl}/forms/${formId}/settings`,
+        `${wpffBuilderData.apiUrl}/forms/${formId}/settings`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": formflowData.nonce,
+            "X-WP-Nonce": wpffBuilderData.nonce,
           },
           body: JSON.stringify({ settings }),
         },
@@ -454,12 +454,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${formflowData.apiUrl}/forms/${formId}/publish`,
+        `${wpffBuilderData.apiUrl}/forms/${formId}/publish`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": formflowData.nonce,
+            "X-WP-Nonce": wpffBuilderData.nonce,
           },
         },
       );
@@ -484,12 +484,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${formflowData.apiUrl}/forms/${formId}/revert`,
+        `${wpffBuilderData.apiUrl}/forms/${formId}/revert`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": formflowData.nonce,
+            "X-WP-Nonce": wpffBuilderData.nonce,
           },
         },
       );
@@ -517,11 +517,11 @@ export const useFormStore = create((set, get) => ({
   // ── Rename form ───────────────────────────────────────────────────────────
   renameForm: async (newName) => {
     const { formId } = get();
-    const res = await fetch(`${formflowData.apiUrl}/forms/${formId}`, {
+    const res = await fetch(`${wpffBuilderData.apiUrl}/forms/${formId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-WP-Nonce": formflowData.nonce,
+        "X-WP-Nonce": wpffBuilderData.nonce,
       },
       body: JSON.stringify({ form_name: newName }),
     });
@@ -541,11 +541,11 @@ export const useFormStore = create((set, get) => ({
     }
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`${formflowData.apiUrl}/forms/${formId}`, {
+      const res = await fetch(`${wpffBuilderData.apiUrl}/forms/${formId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "X-WP-Nonce": formflowData.nonce,
+          "X-WP-Nonce": wpffBuilderData.nonce,
         },
       });
       if (!res.ok) throw new Error(`API Error: ${res.status}`);

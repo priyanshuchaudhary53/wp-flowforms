@@ -19,7 +19,7 @@ const CATEGORY_LABELS = {
 };
 
 export default function Setup({ className }) {
-  const templates = formflowData.templates ?? [];
+  const templates = wpffBuilderData.templates ?? [];
 
   const [formName, setFormName] = useState("");
   const [search, setSearch] = useState("");
@@ -53,18 +53,18 @@ export default function Setup({ className }) {
     setLoading(true);
     setLoadingSlug("blank");
     try {
-      const res = await fetch(formflowData.apiUrl + "/forms", {
+      const res = await fetch(wpffBuilderData.apiUrl + "/forms", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-WP-Nonce": formflowData.nonce,
+          "X-WP-Nonce": wpffBuilderData.nonce,
         },
         body: JSON.stringify({ form_name: formName || "Untitled form" }),
       });
       const data = await res.json();
       if (!res.ok || !data.success)
         throw new Error(data.message || __( "Something went wrong.", "flowforms" ));
-      window.location.href = `${formflowData.builderUrl}&form_id=${data.post_id}`;
+      window.location.href = `${wpffBuilderData.builderUrl}&form_id=${data.post_id}`;
     } catch (err) {
       setError(err.message);
       setLoading(false);
@@ -77,11 +77,11 @@ export default function Setup({ className }) {
     setLoading(true);
     setLoadingSlug(slug);
     try {
-      const res = await fetch(formflowData.apiUrl + "/forms/from-template", {
+      const res = await fetch(wpffBuilderData.apiUrl + "/forms/from-template", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-WP-Nonce": formflowData.nonce,
+          "X-WP-Nonce": wpffBuilderData.nonce,
         },
         body: JSON.stringify({
           template_slug: slug,
@@ -91,7 +91,7 @@ export default function Setup({ className }) {
       const data = await res.json();
       if (!res.ok || !data.success)
         throw new Error(data.message || __( "Something went wrong.", "flowforms" ));
-      window.location.href = `${formflowData.builderUrl}&form_id=${data.post_id}`;
+      window.location.href = `${wpffBuilderData.builderUrl}&form_id=${data.post_id}`;
     } catch (err) {
       setError(err.message);
       setLoading(false);
@@ -103,9 +103,9 @@ export default function Setup({ className }) {
     setPreviewLoading(slug);
     try {
       const res = await fetch(
-        `${formflowData.apiUrl}/templates/${slug}/preview-url`,
+        `${wpffBuilderData.apiUrl}/templates/${slug}/preview-url`,
         {
-          headers: { "X-WP-Nonce": formflowData.nonce },
+          headers: { "X-WP-Nonce": wpffBuilderData.nonce },
         },
       );
       const data = await res.json();

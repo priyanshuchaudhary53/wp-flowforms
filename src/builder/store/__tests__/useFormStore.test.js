@@ -557,7 +557,7 @@ describe("_persistForm", () => {
     const { result } = renderHook(() => useFormStore());
     await act(async () => result.current._persistForm());
     expect(fetch).toHaveBeenCalledWith(
-      "http://localhost/wp-json/formflow/v1/forms/1",
+      "http://localhost/wp-json/wpff/v1/forms/1",
       expect.objectContaining({ method: "PATCH" })
     );
   });

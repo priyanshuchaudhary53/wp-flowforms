@@ -54,8 +54,8 @@ class FlowForms_Forms_List_Table extends WP_List_Table
       'ajax'     => false,
     ]);
 
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    $status             = isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only admin navigation param; capability is checked by the parent page controller, value is sanitized and validated.
+    $status             = current_user_can( 'manage_options' ) && isset($_GET['status']) ? sanitize_key($_GET['status']) : '';
     $this->current_view = ($status === 'trash') ? 'trash' : 'all';
   }
 

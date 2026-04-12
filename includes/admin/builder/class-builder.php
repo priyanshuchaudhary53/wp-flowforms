@@ -69,7 +69,11 @@ class FlowForms_Builder
       return;
     }
 
-    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin navigation params; no state change occurs from reading these.
+    if (! current_user_can('edit_posts')) {
+      return;
+    }
+
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin navigation params used only for routing; capability is checked above, values are sanitized with absint()/sanitize_key() and validated against allowlists below.
     $form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : false;
 
     // Abort early if form ID is set, but the value is empty, 0 or any non-numeric value.
@@ -173,7 +177,7 @@ class FlowForms_Builder
     echo '<div id="wpff-page-loader" aria-hidden="true">
       <div class="wpff-loader-content">
         <div class="wpff-loader-logo">
-          <img width="100" height="60" src="' . esc_url( WPFF_URL ) . 'assets/images/wpff-logo.svg" />
+          <img width="36" height="36" src="' . esc_url( WPFF_URL ) . 'assets/images/flowforms-logo.svg" />
         </div>
         <div class="wpff-loader-spinner" role="status">
           <span class="screen-reader-text">' . esc_html__('Loading…', 'flowforms') . '</span>
@@ -192,7 +196,7 @@ class FlowForms_Builder
   }
 
   /**
-   * Enqueues the builder script and stylesheet and localises formflowData.
+   * Enqueues the builder script and stylesheet and localises wpffBuilderData.
    *
    * @since 1.0.0
    */
@@ -258,7 +262,7 @@ class FlowForms_Builder
 
       #wpff-page-loader .wpff-loader-logo img {
         width: auto;
-        height: 60px;
+        height: 48px;
       }
 
       #wpff-page-loader .wpff-loader-spinner {
@@ -271,8 +275,8 @@ class FlowForms_Builder
       }
     ' );
 
-    wp_localize_script('flowforms-builder', 'formflowData', [
-      'apiUrl'        => rest_url('formflow/v1'),
+    wp_localize_script('flowforms-builder', 'wpffBuilderData', [
+      'apiUrl'        => rest_url('wpff/v1'),
       'adminFormsUrl' => admin_url('admin.php?page=wpff_forms'),
       'builderUrl'    => admin_url('admin.php?page=wpff_form_builder'),
       'nonce'         => wp_create_nonce('wp_rest'),

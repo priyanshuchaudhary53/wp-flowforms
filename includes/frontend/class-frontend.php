@@ -209,7 +209,7 @@ class FlowForms_Frontend {
 				continue;
 			}
 			$design   = $this->get_form_design( $form_id );
-			$selector = sprintf( '[data-flowform-id="%d"]', $form_id );
+			$selector = sprintf( '[data-flowform-id="%d"]', absint( $form_id ) );
 			$css      = sprintf(
 				'%s{background-color:%s;--btn-color:%s;--hint-color:%s;}',
 				$selector,
@@ -227,7 +227,7 @@ class FlowForms_Frontend {
 		$hp_labels = [ 'Name', 'Email', 'Phone', 'Website', 'Comment', 'Message' ];
 
 		wp_localize_script( 'flowform-renderer', 'flowformPublicData', [
-			'apiUrl'      => rest_url( 'formflow/v1' ),
+			'apiUrl'      => rest_url( 'wpff/v1' ),
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
 			'previewMode' => $preview_ok,
 			'formIds'     => $this->form_ids,
@@ -372,15 +372,13 @@ class FlowForms_Frontend {
 	 * @since 1.0.0
 	 */
 	public function handle_preview(): void {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preview routing param; token is validated via wp_verify_nonce() in verify_preview_token().
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Routing check only; nonce is verified on the next line via wp_verify_nonce().
 		if ( empty( $_GET['flowform_preview'] ) ) {
 			return;
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Token is sanitized and passed to wp_verify_nonce() immediately.
-		$token = sanitize_text_field( wp_unslash( $_GET['token'] ?? '' ) );
-
-		if ( ! $this->verify_preview_token( $token ) ) {
+		// Verify the preview nonce token — this protects all subsequent $_GET reads.
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['token'] ?? '' ) ), 'flowform_preview' ) ) {
 			wp_die(
 				esc_html__( 'Preview link is invalid or has expired.', 'flowforms' ),
 				esc_html__( 'Invalid Preview', 'flowforms' ),
@@ -397,8 +395,7 @@ class FlowForms_Frontend {
 			);
 		}
 
-		// Template preview (no real post)
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Token is already verified above via wp_verify_nonce().
+		// Nonce verified above — read remaining params.
 		$transient_key = sanitize_key( $_GET['template_preview_key'] ?? '' );
 
 		if ( $transient_key ) {
@@ -416,8 +413,7 @@ class FlowForms_Frontend {
 			exit;
 		}
 
-		// Regular form preview
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Token is already verified above via wp_verify_nonce().
+		// Regular form preview — nonce verified above.
 		$form_id = absint( $_GET['id'] ?? 0 );
 
 		if ( ! $form_id ) {
@@ -478,7 +474,7 @@ class FlowForms_Frontend {
 		// Pass content and design separately — FormApp expects design at the top
 		// level of formData, not nested inside content.
 		wp_localize_script( 'flowform-renderer', 'flowformPublicData', [
-			'apiUrl'          => rest_url( 'formflow/v1' ),
+			'apiUrl'          => rest_url( 'wpff/v1' ),
 			'nonce'           => wp_create_nonce( 'wp_rest' ),
 			'previewMode'     => true,
 			'formIds'         => [],
@@ -557,8 +553,7 @@ class FlowForms_Frontend {
 </head>
 <body>
 <div id="flowform-full-page">
-	<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within container_html().
-	echo $this->container_html( $form_id, true ); ?>
+	<?php echo wp_kses( $this->container_html( $form_id, true ), wpff_kses_form_container() ); ?>
 </div>
 
 <?php wp_footer(); ?>

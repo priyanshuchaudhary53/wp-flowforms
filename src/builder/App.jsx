@@ -16,7 +16,7 @@ export default function App() {
   const fetchForm = useFormStore((state) => state.fetchForm);
 
   const isSetup = Number(formId) === 0;
-  const view    = formflowData.view ?? "builder";
+  const view    = wpffBuilderData.view ?? "builder";
 
   // Fetch the form once at app level so all views — Builder, Settings, Share —
   // have access to form data and the header can show the correct publish state.

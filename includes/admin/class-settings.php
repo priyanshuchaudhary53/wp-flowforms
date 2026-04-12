@@ -225,7 +225,7 @@ class FlowForms_Settings {
 					<table class="form-table" role="presentation">
 						<?php foreach ( $fields as $id => $args ) :
 							$args['id'] = $id;
-							echo wpff_settings_render_field( $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo wp_kses( wpff_settings_render_field( $args ), wpff_kses_settings_field() );
 						endforeach; ?>
 					</table>
 

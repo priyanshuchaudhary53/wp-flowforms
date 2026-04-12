@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom";
 
-// ── Mock formflowData (WordPress-injected global) ─────────────────────────────
-globalThis.formflowData = {
-  apiUrl: "http://localhost/wp-json/formflow/v1",
+// ── Mock wpffBuilderData (WordPress-injected global) ─────────────────────────────
+globalThis.wpffBuilderData = {
+  apiUrl: "http://localhost/wp-json/wpff/v1",
   adminFormsUrl: "http://localhost/wp-admin/admin.php?page=wpff_forms",
   nonce: "test-nonce",
   formId: "1",

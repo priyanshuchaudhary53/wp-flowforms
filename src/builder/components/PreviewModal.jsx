@@ -38,10 +38,10 @@ export default function PreviewModal({ open, onClose }) {
 
   // Build the preview URL from the PHP-localised data. A fresh token is
   // generated server-side each time the modal opens (via the initial URL
-  // already baked into formflowData.previewUrl).
+  // already baked into wpffBuilderData.previewUrl).
   useEffect(() => {
     if (open && formId) {
-      setSrcUrl(formflowData.previewUrl || "");
+      setSrcUrl(wpffBuilderData.previewUrl || "");
       setLoaded(false);
     }
   }, [open, formId]);

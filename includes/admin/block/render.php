@@ -29,8 +29,7 @@ if ( ! $post || $post->post_type !== 'wpff_forms' ) {
 if ( $post->post_status !== 'publish' ) {
 	$wpff_frontend = flowforms()->obj( 'frontend' );
 	if ( $wpff_frontend ) {
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
-		echo $wpff_frontend->trashed_form_notice( $wpff_form_id );
+		echo wp_kses( $wpff_frontend->trashed_form_notice( $wpff_form_id ), wpff_kses_form_container() );
 	}
 	return;
 }
@@ -46,5 +45,4 @@ if ( ! $wpff_frontend ) {
 $wpff_frontend->flag_form_id( $wpff_form_id );
 
 // Delegate to container_html() — output matches shortcode exactly.
-// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted HTML from internal method; all dynamic values are escaped within the method.
-echo $wpff_frontend->container_html( $wpff_form_id, false, $wpff_height, $wpff_border_radius );
+echo wp_kses( $wpff_frontend->container_html( $wpff_form_id, false, $wpff_height, $wpff_border_radius ), wpff_kses_form_container() );

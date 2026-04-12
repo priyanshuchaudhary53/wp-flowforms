@@ -108,3 +108,74 @@ function wpff_array_insert(array $array, array $insert, string $after): array
     array_slice($array, $pos + 1, null, true)
   );
 }
+
+/**
+ * Allowed HTML for field icon labels (SVG icon + text label).
+ *
+ * @since 1.0.0
+ *
+ * @return array
+ */
+function wpff_kses_field_icon(): array {
+  return [
+    'div'  => [ 'class' => [] ],
+    'span' => [ 'class' => [], 'style' => [], 'aria-hidden' => [] ],
+    'svg'  => [
+      'xmlns'          => [],
+      'viewbox'        => [],
+      'fill'           => [],
+      'stroke'         => [],
+      'stroke-width'   => [],
+      'stroke-linecap' => [],
+      'stroke-linejoin' => [],
+      'width'          => [],
+      'height'         => [],
+    ],
+    'path'    => [ 'd' => [], 'fill' => [], 'stroke' => [] ],
+    'circle'  => [ 'cx' => [], 'cy' => [], 'r' => [], 'fill' => [], 'stroke' => [] ],
+    'rect'    => [ 'x' => [], 'y' => [], 'width' => [], 'height' => [], 'rx' => [], 'fill' => [], 'stroke' => [] ],
+    'line'    => [ 'x1' => [], 'y1' => [], 'x2' => [], 'y2' => [] ],
+    'polyline' => [ 'points' => [] ],
+    'polygon'  => [ 'points' => [] ],
+  ];
+}
+
+/**
+ * Allowed HTML for settings form fields (inputs, selects, textareas, etc.).
+ *
+ * @since 1.0.0
+ *
+ * @return array
+ */
+function wpff_kses_settings_field(): array {
+  return [
+    'tr'       => [],
+    'td'       => [ 'colspan' => [] ],
+    'th'       => [ 'scope' => [] ],
+    'label'    => [ 'for' => [], 'class' => [] ],
+    'input'    => [ 'type' => [], 'id' => [], 'name' => [], 'value' => [], 'placeholder' => [], 'class' => [], 'checked' => [] ],
+    'textarea' => [ 'id' => [], 'name' => [], 'rows' => [], 'class' => [] ],
+    'select'   => [ 'id' => [], 'name' => [] ],
+    'option'   => [ 'value' => [], 'selected' => [] ],
+    'h2'       => [ 'class' => [] ],
+    'p'        => [ 'class' => [] ],
+    'span'     => [ 'class' => [] ],
+    'a'        => [ 'href' => [], 'class' => [], 'target' => [], 'rel' => [] ],
+  ];
+}
+
+/**
+ * Allowed HTML for form container output (container div, trashed notice).
+ *
+ * @since 1.0.0
+ *
+ * @return array
+ */
+function wpff_kses_form_container(): array {
+  return [
+    'div'    => [ 'class' => [], 'style' => [], 'data-flowform-id' => [], 'data-ff-mode' => [] ],
+    'span'   => [ 'style' => [] ],
+    'strong' => [],
+    'a'      => [ 'href' => [], 'style' => [] ],
+  ];
+}

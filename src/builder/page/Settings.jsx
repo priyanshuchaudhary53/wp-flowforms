@@ -24,7 +24,7 @@ function tabUrl(tabId) {
 }
 
 // Site metadata from PHP.
-const SITE = formflowData.site ?? {};
+const SITE = wpffBuilderData.site ?? {};
 
 // ── Smart Tags ────────────────────────────────────────────────────────────────
 

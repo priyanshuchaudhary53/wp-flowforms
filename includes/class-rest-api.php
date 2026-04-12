@@ -15,13 +15,13 @@ class FlowForms_REST_API
   }
 
   /**
-   * Register all formflow/v1 REST API routes.
+   * Register all wpff/v1 REST API routes.
    *
    * @since 1.0.0
    */
   public function register_routes()
   {
-    $ns = 'formflow/v1';
+    $ns = 'wpff/v1';
 
     register_rest_route($ns, '/forms', [
       'methods'             => 'GET',
@@ -1297,8 +1297,7 @@ class FlowForms_REST_API
 
     foreach ($headers as $header) {
       if (! empty($_SERVER[$header])) {
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Value is validated immediately by filter_var( FILTER_VALIDATE_IP ).
-      $ip = trim(explode(',', $_SERVER[$header])[0]);
+        $ip = trim( explode( ',', sanitize_text_field( wp_unslash( $_SERVER[$header] ) ) )[0] );
         if (filter_var($ip, FILTER_VALIDATE_IP)) {
           return $ip;
         }

@@ -1,4 +1,4 @@
-# WPFlowForms — CLAUDE.md
+# FlowForms — CLAUDE.md
 
 A conversational step-by-step form builder for WordPress. Typeform-style forms with a React builder, a vanilla JS renderer, and a Gutenberg block.
 
@@ -21,9 +21,9 @@ After any change to `src/` you must rebuild — PHP enqueues the compiled files 
 
 ### PHP layer (`includes/`)
 
-**Entry point:** `wpflowforms.php` → `includes/WPFlowForms.php`
+**Entry point:** `flowforms.php` → `includes/FlowForms.php`
 
-`WPFlowForms` is a singleton container. All shared objects are registered in `objects()` on `plugins_loaded` and retrieved via `wpflowforms()->obj('key')`:
+`FlowForms` is a singleton container. All shared objects are registered in `objects()` on `plugins_loaded` and retrieved via `flowforms()->obj('key')`:
 
 | Key | Class | Role |
 |---|---|---|
@@ -98,16 +98,16 @@ Forms are stored as a single JSON blob in `wpff_forms` post `post_content`. The 
 
 ## REST API
 
-Base namespace: `formflow/v1`. All authenticated routes require `edit_posts`.
+Base namespace: `wpff/v1`. All authenticated routes require `edit_posts`.
 
 | Method | Route | Auth | Description |
 |---|---|---|---|
 | GET | `/forms` | ✓ | List all published forms |
 | POST | `/forms` | ✓ | Create blank form |
 | GET | `/forms/{id}` | ✓ | Load form for builder (draft-first) |
-| PATCH | `/forms/{id}` | ✓ | Auto-save to draft slot |
-| PATCH | `/forms/{id}/design` | ✓ | Update design (writes to published + draft) |
-| PATCH | `/forms/{id}/settings` | ✓ | Update settings |
+| POST/PUT/PATCH | `/forms/{id}` | ✓ | Auto-save to draft slot |
+| POST/PUT/PATCH | `/forms/{id}/design` | ✓ | Update design (writes to published + draft) |
+| POST/PUT/PATCH | `/forms/{id}/settings` | ✓ | Update settings |
 | POST | `/forms/{id}/publish` | ✓ | Promote draft → published |
 | POST | `/forms/{id}/revert` | ✓ | Discard draft, restore published |
 | GET | `/forms/{id}/public` | ✗ | Public renderer endpoint (published only) — includes `token` field |
@@ -173,25 +173,25 @@ Table: `{prefix}flowforms_entries`
 - `Share.jsx` — public URL and embed code
 
 **Data flow through builder:**
-1. PHP localises `formflowData` into the page (see `class-builder.php`)
-2. `App.jsx` reads `formflowData.formId` — if 0, shows Setup; otherwise fetches form
+1. PHP localises `wpffBuilderData` into the page (see `class-builder.php`)
+2. `App.jsx` reads `wpffBuilderData.formId` — if 0, shows Setup; otherwise fetches form
 3. Builder edits go into the Zustand store and auto-save to the `draft` slot
 4. Design changes go directly to the `design` key (not versioned)
 5. Settings changes go directly to the `settings` key (not versioned)
 6. Publish promotes `draft` → `published` and clears `draft`
 
-**`formflowData` object** (available in all builder JS):
+**`wpffBuilderData` object** (available in all builder JS):
 ```js
-formflowData.apiUrl        // REST base URL
-formflowData.nonce         // WP nonce for REST requests
-formflowData.formId        // Current form ID (0 on setup page)
-formflowData.view          // 'setup' | 'builder' | 'settings' | 'share'
-formflowData.builderUrl    // Admin URL for the builder page
-formflowData.adminFormsUrl // Admin URL for All Forms page
-formflowData.previewUrl    // Signed preview URL for current form
-formflowData.publicUrl     // Public embed URL for current form
-formflowData.templates     // Array of template metadata (no content)
-formflowData.site          // { adminEmail, siteName }
+wpffBuilderData.apiUrl        // REST base URL
+wpffBuilderData.nonce         // WP nonce for REST requests
+wpffBuilderData.formId        // Current form ID (0 on setup page)
+wpffBuilderData.view          // 'setup' | 'builder' | 'settings' | 'share'
+wpffBuilderData.builderUrl    // Admin URL for the builder page
+wpffBuilderData.adminFormsUrl // Admin URL for All Forms page
+wpffBuilderData.previewUrl    // Signed preview URL for current form
+wpffBuilderData.publicUrl     // Public embed URL for current form
+wpffBuilderData.templates     // Array of template metadata (no content)
+wpffBuilderData.site          // { adminEmail, siteName }
 ```
 
 ---
@@ -217,7 +217,7 @@ flowformPublicData.honeypot        // { field_name: 'wpff_hp', label: string } �
 
 **Embed methods:**
 - **Shortcode:** `[flowform id="123"]` — renders a container div; assets enqueued only on pages with a form
-- **Gutenberg block:** `wpflowforms/form` — server-side rendered via `includes/admin/block/render.php`
+- **Gutenberg block:** `flowforms/form` — server-side rendered via `includes/admin/block/render.php`
 - **Full-page URL:** `/flowform/{id}` (pretty permalinks) or `/?flowform_id={id}` — bare HTML page, no theme
 
 ---
@@ -273,7 +273,7 @@ add_filter('wpff_templates', function($templates) {
 });
 ```
 
-Only metadata (no `content`) is passed to JS via `formflowData.templates`. Content is fetched server-side only when "Use template" is clicked — the browser never sees template form JSON directly.
+Only metadata (no `content`) is passed to JS via `wpffBuilderData.templates`. Content is fetched server-side only when "Use template" is clicked — the browser never sees template form JSON directly.
 
 ---
 
@@ -332,7 +332,7 @@ Three layers run in order inside `handle_submission()` in `class-rest-api.php`, 
 A hidden `<input name="wpff_hp">` is injected into the form container by `FormApp.boot()` using metadata from `flowformPublicData.honeypot`. The label is chosen randomly from Name/Email/Phone/Website/Comment/Message so it looks real to bots. The field is hidden via inline CSS (`position:absolute;left:-9999px`), not a class. It uses `autocomplete="new-password"` (the one value all browsers are spec-required to never autofill). `FormApp._submit()` includes the field value as `wpff_hp` in the POST body. If the value is non-empty on the server, the submission returns `{ success: false }` with HTTP 200 — no log entry.
 
 ### Layer 2 — Token (`includes/class-token.php`)
-`FlowForms_Token` generates a daily-rotating MD5 token tied to the form ID and a server-side secret stored in `wp_options` as `wpff_token_secret`. The token is appended to the `/public` endpoint response and stored in `FormApp._token`. `FormApp._submit()` sends it as `wpff_token`. Verification accepts tokens from the past **5 years** (cached pages) plus 45 minutes into the future (midnight edge cases). Token failures are logged with `error_log()` and a `[WPFlowForms]` prefix — they signal direct POST attacks.
+`FlowForms_Token` generates a daily-rotating MD5 token tied to the form ID and a server-side secret stored in `wp_options` as `wpff_token_secret`. The token is appended to the `/public` endpoint response and stored in `FormApp._token`. `FormApp._submit()` sends it as `wpff_token`. Verification accepts tokens from the past **5 years** (cached pages) plus 45 minutes into the future (midnight edge cases). Token failures are logged with `error_log()` and a `[FlowForms]` prefix — they signal direct POST attacks.
 
 ### Layer 3 — Akismet (`includes/class-akismet.php`)
 `FlowForms_Akismet::is_available()` checks that Akismet is installed, active, and has an API key. When available, `check()` sends `short_text`, `long_text`, and `email` field values to the Akismet `comment-check` API. If flagged as spam the entry is saved with `status='spam'` (reviewable by admins) and the user sees a normal success response — spam detection is never revealed.
@@ -361,7 +361,7 @@ A hidden `<input name="wpff_hp">` is injected into the form container by `FormAp
 - Builder state lives exclusively in `useFormStore` — don't maintain local state for anything that needs to persist
 - Design and settings save immediately on change (debounced 800ms) — they bypass the draft/publish cycle
 - Form content auto-saves to `draft` only — never directly to `published`
-- `formflowData` is the PHP→JS bridge in the builder; `flowformPublicData` is the bridge in the renderer
+- `wpffBuilderData` is the PHP→JS bridge in the builder; `flowformPublicData` is the bridge in the renderer
 
 **CSS**
 - Builder uses Tailwind v4 with shadcn/ui components

@@ -7,7 +7,7 @@
  *
  * Plugin Name: FlowForms
  * Description: FlowForms lets you create beautiful step-by-step forms in WordPress. A modern conversational form builder and Typeform alternative for WordPress.
- * Plugin URI:  https://wpflowforms.com/
+ * Plugin URI:  https://flowforms.priyanshuc.dev/
  * Version:     1.0.0
  * Author:      Priyanshu
  * Author URI:  https://priyanshuc.dev/
