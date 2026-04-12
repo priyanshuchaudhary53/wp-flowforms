@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) exit;
 /**
  * All Forms overview page.
  *
- * Renders the list table at wp-admin/admin.php?page=wpff_forms.
+ * Renders the list table at wp-admin/admin.php?page=flowforms_forms.
  *
  * @since 1.0.0
  */
@@ -44,19 +44,19 @@ class FlowForms_Forms_Overview
    */
   public function init()
   {
-    if (! wpff_is_admin_page('forms')) {
+    if (! flowforms_is_admin_page('forms')) {
       return;
     }
 
     // Register the "Number of forms per page" screen option.
-    add_action('load-toplevel_page_wpff_forms', [$this, 'register_screen_options']);
+    add_action('load-toplevel_page_flowforms_forms', [$this, 'register_screen_options']);
 
     // Process bulk / single-row actions before any output.
     $this->process_actions();
 
     add_action('current_screen',        [$this, 'init_list_table']);
     add_action('admin_enqueue_scripts', [$this, 'enqueues']);
-    add_action('wpff_admin_page',        [$this, 'output']);
+    add_action('flowforms_admin_page',        [$this, 'output']);
   }
 
   /**
@@ -69,11 +69,11 @@ class FlowForms_Forms_Overview
     add_screen_option('per_page', [
       'label'   => __('Number of forms per page', 'flowforms'),
       'default' => self::PER_PAGE_DEFAULT,
-      'option'  => 'wpff_forms_per_page',
+      'option'  => 'flowforms_forms_per_page',
     ]);
 
     // Allow WP to save our custom screen option key.
-    add_filter('set_screen_option_wpff_forms_per_page', [$this, 'save_screen_option'], 10, 3);
+    add_filter('set_screen_option_flowforms_forms_per_page', [$this, 'save_screen_option'], 10, 3);
   }
 
   /**
@@ -101,7 +101,7 @@ class FlowForms_Forms_Overview
    */
   public function init_list_table()
   {
-    require_once WPFF_PATH . 'includes/admin/forms/class-forms-list-table.php';
+    require_once FLOWFORMS_PATH . 'includes/admin/forms/class-forms-list-table.php';
     $this->list_table = new FlowForms_Forms_List_Table();
   }
 
@@ -114,9 +114,9 @@ class FlowForms_Forms_Overview
   {
     wp_enqueue_style(
       'flowforms-overview',
-      WPFF_URL . 'assets/css/admin-forms-overview.css',
+      FLOWFORMS_URL . 'assets/css/admin-forms-overview.css',
       [],
-      WPFF_VERSION
+      FLOWFORMS_VERSION
     );
   }
 
@@ -154,7 +154,7 @@ class FlowForms_Forms_Overview
     $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_key($_REQUEST['_wpnonce']) : ''; // phpcs:ignore
     if (
       ! wp_verify_nonce($nonce, 'bulk-forms') &&
-      ! wp_verify_nonce($nonce, 'wpff_' . $action . '_form_nonce')
+      ! wp_verify_nonce($nonce, 'flowforms_' . $action . '_form_nonce')
     ) {
       wp_die(esc_html__('Security check failed.', 'flowforms'), 403);
     }
@@ -205,9 +205,9 @@ class FlowForms_Forms_Overview
     }
 
     // WP 5.6+ changed wp_untrash_post() to restore to 'draft' by default.
-    // Force wpff_forms back to 'publish' regardless of the stored pre-trash status.
+    // Force flowforms_forms back to 'publish' regardless of the stored pre-trash status.
     add_filter('wp_untrash_post_status', function ($status, $post_id, $previous_status) use ($id) {
-      if ((int) $post_id === $id && get_post_type($post_id) === 'wpff_forms') {
+      if ((int) $post_id === $id && get_post_type($post_id) === 'flowforms_forms') {
         return 'publish';
       }
       return $status;
@@ -243,7 +243,7 @@ class FlowForms_Forms_Overview
 
     $post = get_post($id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return false;
     }
 
@@ -251,7 +251,7 @@ class FlowForms_Forms_Overview
       'post_title'   => $post->post_title . ' ' . __('(Copy)', 'flowforms'),
       'post_content' => $post->post_content,
       'post_status'  => 'publish',
-      'post_type'    => 'wpff_forms',
+      'post_type'    => 'flowforms_forms',
       'post_author'  => get_current_user_id(),
     ]);
 
@@ -285,7 +285,7 @@ class FlowForms_Forms_Overview
       </h1>
 
       <?php if (current_user_can('manage_options')) : ?>
-        <a href="<?php echo esc_url(admin_url('admin.php?page=wpff_form_builder')); ?>"
+        <a href="<?php echo esc_url( wp_nonce_url( admin_url('admin.php?page=flowforms_form_builder'), 'flowforms_builder_nav' ) ); ?>"
           class="page-title-action wpff-add-new-btn">
           <?php esc_html_e('Add New Form', 'flowforms'); ?>
         </a>
@@ -301,9 +301,9 @@ class FlowForms_Forms_Overview
 
         <div class="wpff-overview-content">
           <form id="wpff-forms-table" method="get"
-            action="<?php echo esc_url(admin_url('admin.php?page=wpff_forms')); ?>">
+            action="<?php echo esc_url(admin_url('admin.php?page=flowforms_forms')); ?>">
 
-            <input type="hidden" name="page" value="wpff_forms">
+            <input type="hidden" name="page" value="flowforms_forms">
 
             <?php
             $this->list_table->search_box(esc_html__('Search Forms', 'flowforms'), 'wpff-search');
@@ -386,7 +386,7 @@ class FlowForms_Forms_Overview
         <?php esc_html_e('Create your first form to start collecting responses.', 'flowforms'); ?>
       </p>
       <?php if (current_user_can('manage_options')) : ?>
-        <a href="<?php echo esc_url(admin_url('admin.php?page=wpff_form_builder')); ?>"
+        <a href="<?php echo esc_url( wp_nonce_url( admin_url('admin.php?page=flowforms_form_builder'), 'flowforms_builder_nav' ) ); ?>"
           class="button button-primary button-hero wpff-add-new-btn">
           <?php esc_html_e('Create Your First Form', 'flowforms'); ?>
         </a>

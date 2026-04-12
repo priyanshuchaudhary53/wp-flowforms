@@ -7,7 +7,7 @@ return [
   'name'          => 'Lead Generation Survey',
   'description'   => 'Find out how your business is generating leads and which marketing channels are most successful.',
   'category'      => 'survey',
-  'thumbnail_url' => WPFF_URL . 'assets/images/templates/lead-generation-survey.webp',
+  'thumbnail_url' => FLOWFORMS_URL . 'assets/images/templates/lead-generation-survey.webp',
   'content'     => [
     'welcomeScreen' => [
       'content'  => [
@@ -17,7 +17,7 @@ return [
       ],
       'settings' => [
         'layout'          => 'default',
-        'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/lead-generation-welcome.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => FLOWFORMS_URL . 'assets/images/templates/bg/lead-generation-welcome.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],
@@ -99,7 +99,7 @@ return [
           'allowOther' => true,
           'randomize' => false,
           'layout' => 'vertical',
-          'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/lead-generation-question.jpg'],
+          'backgroundImage' => ['id' => null, 'url' => FLOWFORMS_URL . 'assets/images/templates/bg/lead-generation-question.jpg'],
           'bgBrightness' => 0,
           'bgLayout' => 'split',
           'bgPosition' => 'right',
@@ -165,6 +165,6 @@ return [
     'font_size' => 'large',
     'answer_color' => '#2e2c2c',
     'hint_color' => '#ABABAB',
-    'bg_image' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/lead-generation-bg.webp'],
+    'bg_image' => ['id' => null, 'url' => FLOWFORMS_URL . 'assets/images/templates/bg/lead-generation-bg.webp'],
   ],
 ];

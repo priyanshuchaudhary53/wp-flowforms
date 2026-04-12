@@ -36,7 +36,7 @@ class FlowForms_Settings {
 	 * @since 1.0.0
 	 */
 	public function init(): void {
-		if ( ! wpff_is_admin_page( 'settings' ) ) {
+		if ( ! flowforms_is_admin_page( 'settings' ) ) {
 			return;
 		}
 
@@ -53,10 +53,10 @@ class FlowForms_Settings {
 			$this->view = array_key_first( $tabs );
 		}
 
-		add_action( 'wpff_admin_page', [ $this, 'output' ] );
+		add_action( 'flowforms_admin_page', [ $this, 'output' ] );
 
 		// Hook for add-ons.
-		do_action( 'wpff_settings_init', $this );
+		do_action( 'flowforms_settings_init', $this );
 	}
 
 	/**
@@ -89,7 +89,7 @@ class FlowForms_Settings {
 		 *
 		 * @param array $tabs Tab definitions keyed by slug.
 		 */
-		return apply_filters( 'wpff_settings_tabs', $tabs );
+		return apply_filters( 'flowforms_settings_tabs', $tabs );
 	}
 
 	/**
@@ -108,7 +108,7 @@ class FlowForms_Settings {
 		$all = [];
 
 		foreach ( array_keys( $this->get_tabs() ) as $slug ) {
-			$file = WPFF_PATH . "includes/admin/settings/tabs/{$slug}.php";
+			$file = FLOWFORMS_PATH . "includes/admin/settings/tabs/{$slug}.php";
 			if ( file_exists( $file ) ) {
 				$all[ $slug ] = require $file;
 			}
@@ -123,7 +123,7 @@ class FlowForms_Settings {
 		 *
 		 * @param array $all Field definitions grouped by tab slug.
 		 */
-		$all = apply_filters( 'wpff_settings_fields', $all );
+		$all = apply_filters( 'flowforms_settings_fields', $all );
 
 		if ( empty( $tab ) ) {
 			return $all;
@@ -136,28 +136,28 @@ class FlowForms_Settings {
 	 * Process a settings form submission.
 	 *
 	 * Verifies nonce, capability, and the active tab before sanitizing and
-	 * persisting each field value to the wpff_settings option.
+	 * persisting each field value to the flowforms_settings option.
 	 *
 	 * @since 1.0.0
 	 */
 	public function save(): void {
 		if (
-			empty( $_POST['wpff_settings_submit'] ) ||
+			empty( $_POST['flowforms_settings_submit'] ) ||
 			empty( $_POST['_wpnonce'] ) ||
-			! wp_verify_nonce( sanitize_key( $_POST['_wpnonce'] ), 'wpff_settings_save' ) ||
+			! wp_verify_nonce( sanitize_key( $_POST['_wpnonce'] ), 'flowforms_settings_save' ) ||
 			! current_user_can( 'manage_options' )
 		) {
 			return;
 		}
 
-		$tab    = sanitize_key( $_POST['wpff_settings_tab'] ?? '' );
+		$tab    = sanitize_key( $_POST['flowforms_settings_tab'] ?? '' );
 		$fields = $this->get_registered_fields( $tab );
 
 		if ( empty( $fields ) ) {
 			return;
 		}
 
-		$saved = get_option( 'wpff_settings', [] );
+		$saved = get_option( 'flowforms_settings', [] );
 
 		/**
 		 * Filters field types that should be skipped during save (display-only types).
@@ -166,21 +166,21 @@ class FlowForms_Settings {
 		 *
 		 * @param string[] $skip_types Array of type strings to skip.
 		 */
-		$skip_types = apply_filters( 'wpff_settings_skip_types', [ 'content', 'heading' ] );
+		$skip_types = apply_filters( 'flowforms_settings_skip_types', [ 'content', 'heading' ] );
 
 		foreach ( $fields as $id => $field ) {
 			if ( in_array( $field['type'] ?? '', $skip_types, true ) ) {
 				continue;
 			}
 
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Unslash and sanitization are handled inside wpff_settings_sanitize_field() based on the field type.
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Unslash and sanitization are handled inside flowforms_settings_sanitize_field() based on the field type.
 			$raw         	= isset( $_POST[ $id ] ) ? wp_unslash( $_POST[ $id ] ) : null;
-			$saved[ $id ] = wpff_settings_sanitize_field( $field, $raw, $saved[ $id ] ?? null );
+			$saved[ $id ] = flowforms_settings_sanitize_field( $field, $raw, $saved[ $id ] ?? null );
 		}
 
-		update_option( 'wpff_settings', $saved );
+		update_option( 'flowforms_settings', $saved );
 
-		add_action( 'wpff_admin_page', function () {
+		add_action( 'flowforms_admin_page', function () {
 			echo '<div class="notice notice-success is-dismissible"><p>'
 				. esc_html__( 'Settings saved.', 'flowforms' )
 				. '</p></div>';
@@ -204,7 +204,7 @@ class FlowForms_Settings {
 			<!-- Tab nav -->
 			<nav class="nav-tab-wrapper wpff-settings-tabs">
 				<?php foreach ( $tabs as $slug => $def ) :
-					$url    = add_query_arg( [ 'page' => 'wpff_settings', 'tab' => $slug ], admin_url( 'admin.php' ) );
+					$url    = add_query_arg( [ 'page' => 'flowforms_settings', 'tab' => $slug ], admin_url( 'admin.php' ) );
 					$active = $slug === $this->view ? 'nav-tab-active' : '';
 				?>
 					<a href="<?php echo esc_url( $url ); ?>"
@@ -218,20 +218,20 @@ class FlowForms_Settings {
 
 				<?php if ( ! empty( $tab['form'] ) ) : ?>
 				<form method="post" action="">
-					<?php wp_nonce_field( 'wpff_settings_save' ); ?>
-					<input type="hidden" name="wpff_settings_tab" value="<?php echo esc_attr( $this->view ); ?>">
+					<?php wp_nonce_field( 'flowforms_settings_save' ); ?>
+					<input type="hidden" name="flowforms_settings_tab" value="<?php echo esc_attr( $this->view ); ?>">
 				<?php endif; ?>
 
 					<table class="form-table" role="presentation">
 						<?php foreach ( $fields as $id => $args ) :
 							$args['id'] = $id;
-							echo wp_kses( wpff_settings_render_field( $args ), wpff_kses_settings_field() );
+							echo wp_kses( flowforms_settings_render_field( $args ), flowforms_kses_settings_field() );
 						endforeach; ?>
 					</table>
 
 					<?php if ( ! empty( $tab['submit'] ) ) : ?>
 					<p class="submit">
-						<button type="submit" name="wpff_settings_submit" value="1" class="button button-primary">
+						<button type="submit" name="flowforms_settings_submit" value="1" class="button button-primary">
 							<?php echo esc_html( $tab['submit'] ); ?>
 						</button>
 					</p>

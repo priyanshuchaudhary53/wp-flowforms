@@ -30,7 +30,7 @@ class FlowForms_Block {
 			return;
 		}
 
-		register_block_type( WPFF_PATH . 'build/block/block.json' );
+		register_block_type( FLOWFORMS_PATH . 'build/block/block.json' );
 
 		add_action( 'enqueue_block_editor_assets', [ $this, 'localize_block_data' ] );
 	}
@@ -44,7 +44,14 @@ class FlowForms_Block {
 	public function localize_block_data(): void {
 		wp_add_inline_script(
 			'wp-blocks',
-			'window.wpff = ' . wp_json_encode( [ 'adminUrl' => admin_url() ] ) . ';',
+			'window.flowforms = ' . wp_json_encode( [
+				'adminUrl' => admin_url(),
+				'trashUrl' => add_query_arg(
+					'_wpnonce',
+					wp_create_nonce( 'flowforms_forms_nav' ),
+					admin_url( 'admin.php?page=flowforms_forms&status=trash' )
+				),
+			] ) . ';',
 			'before'
 		);
 	}

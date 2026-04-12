@@ -11,8 +11,8 @@ class FlowForms_Install
    */
   public function __construct()
   {
-    register_activation_hook(WPFF_FILE, [$this, 'install']);
-    register_deactivation_hook(WPFF_FILE, [$this, 'deactivate']);
+    register_activation_hook(FLOWFORMS_FILE, [$this, 'install']);
+    register_deactivation_hook(FLOWFORMS_FILE, [$this, 'deactivate']);
   }
 
   /**
@@ -62,21 +62,22 @@ class FlowForms_Install
    */
   protected function run()
   {
+    ob_start();
+
     $this->maybe_create_tables();
 
-    // Register our rewrite rules NOW (before flushing) so they are
-    // included in the ruleset that gets written to the database.
-    // We cannot rely on the init hook here because the activation hook
-    // fires before init, so the rules would not exist yet when we flush.
+    // Register our rewrite rules NOW (before flushing)
     $this->register_rewrite_rules();
     flush_rewrite_rules();
+
+    ob_end_clean();
 
     /**
      * Fires after FlowForms plugin installation is performed.
      *
      * @since 1.0.0
      */
-    do_action('wpff_install', $this);
+    do_action('flowforms_install', $this);
   }
 
   /**

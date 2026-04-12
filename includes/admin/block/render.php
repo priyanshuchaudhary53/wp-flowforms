@@ -10,39 +10,39 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-$wpff_form_id       = absint( $attributes['formId']       ?? 0 );
-$wpff_height        = sanitize_text_field( $attributes['height']        ?? '520px' );
-$wpff_border_radius = sanitize_text_field( $attributes['borderRadius']  ?? '16px' );
+$flowforms_form_id       = absint( $attributes['formId']       ?? 0 );
+$flowforms_height        = sanitize_text_field( $attributes['height']        ?? '520px' );
+$flowforms_border_radius = sanitize_text_field( $attributes['borderRadius']  ?? '16px' );
 
-if ( ! $wpff_form_id ) {
+if ( ! $flowforms_form_id ) {
 	echo '<!-- FlowForms block: no form selected -->';
 	return;
 }
 
-$post = get_post( $wpff_form_id );
+$post = get_post( $flowforms_form_id );
 
-if ( ! $post || $post->post_type !== 'wpff_forms' ) {
+if ( ! $post || $post->post_type !== 'flowforms_forms' ) {
 	echo '<!-- FlowForms block: form not found -->';
 	return;
 }
 
 if ( $post->post_status !== 'publish' ) {
-	$wpff_frontend = flowforms()->obj( 'frontend' );
-	if ( $wpff_frontend ) {
-		echo wp_kses( $wpff_frontend->trashed_form_notice( $wpff_form_id ), wpff_kses_form_container() );
+	$flowforms_frontend = flowforms()->obj( 'frontend' );
+	if ( $flowforms_frontend ) {
+		echo wp_kses( $flowforms_frontend->trashed_form_notice( $flowforms_form_id ), flowforms_kses_form_container() );
 	}
 	return;
 }
 
-$wpff_frontend = flowforms()->obj( 'frontend' );
+$flowforms_frontend = flowforms()->obj( 'frontend' );
 
-if ( ! $wpff_frontend ) {
+if ( ! $flowforms_frontend ) {
 	echo '<!-- FlowForms block: frontend not available -->';
 	return;
 }
 
 // Flag so renderer assets are enqueued on this page.
-$wpff_frontend->flag_form_id( $wpff_form_id );
+$flowforms_frontend->flag_form_id( $flowforms_form_id );
 
 // Delegate to container_html() — output matches shortcode exactly.
-echo wp_kses( $wpff_frontend->container_html( $wpff_form_id, false, $wpff_height, $wpff_border_radius ), wpff_kses_form_container() );
+echo wp_kses( $flowforms_frontend->container_html( $flowforms_form_id, false, $flowforms_height, $flowforms_border_radius ), flowforms_kses_form_container() );

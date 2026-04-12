@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom";
 
-// ── Mock wpffBuilderData (WordPress-injected global) ─────────────────────────────
-globalThis.wpffBuilderData = {
-  apiUrl: "http://localhost/wp-json/wpff/v1",
-  adminFormsUrl: "http://localhost/wp-admin/admin.php?page=wpff_forms",
+// ── Mock flowformsBuilderData (WordPress-injected global) ─────────────────────────────
+globalThis.flowformsBuilderData = {
+  apiUrl: "http://localhost/wp-json/flowforms/v1",
+  adminFormsUrl: "http://localhost/wp-admin/admin.php?page=flowforms_forms",
   nonce: "test-nonce",
   formId: "1",
 };

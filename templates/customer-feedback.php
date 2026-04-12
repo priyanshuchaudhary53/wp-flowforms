@@ -7,7 +7,7 @@ return [
   'name'          => 'Customer Feedback',
   'description'   => 'Beautiful, fun, easy to complete. Comes with useful rating questions.',
   'category'      => 'feedback',
-  'thumbnail_url' => WPFF_URL . 'assets/images/templates/customer-feedback.webp',
+  'thumbnail_url' => FLOWFORMS_URL . 'assets/images/templates/customer-feedback.webp',
   'content'     => [
     'welcomeScreen' => [
       'content'  => [
@@ -74,7 +74,7 @@ return [
         'settings' => [
           'required' => true,
           'steps' => 5,
-          'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/customer-feedback-rating.jpg'],
+          'backgroundImage' => ['id' => null, 'url' => FLOWFORMS_URL . 'assets/images/templates/bg/customer-feedback-rating.jpg'],
           'bgLayout' => 'split',
           'bgPosition' => 'right'
         ]

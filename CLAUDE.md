@@ -27,7 +27,7 @@ After any change to `src/` you must rebuild — PHP enqueues the compiled files 
 
 | Key | Class | Role |
 |---|---|---|
-| `form` | `FlowForms_Form_Handler` | CPT registration + CRUD for `wpff_forms` posts |
+| `form` | `FlowForms_Form_Handler` | CPT registration + CRUD for `flowforms_forms` posts |
 | `entry` | `FlowForms_Entry_Handler` | All DB operations on `flowforms_entries` |
 | `frontend` | `FlowForms_Frontend` | Shortcode, public renderer assets, preview URLs |
 | `templates` | `FlowForms_Templates` | Free template registry |
@@ -53,7 +53,7 @@ Three independent bundles, each compiled to `build/`:
 
 ## Form data structure
 
-Forms are stored as a single JSON blob in `wpff_forms` post `post_content`. The top-level structure is:
+Forms are stored as a single JSON blob in `flowforms_forms` post `post_content`. The top-level structure is:
 
 ```json
 {
@@ -98,7 +98,7 @@ Forms are stored as a single JSON blob in `wpff_forms` post `post_content`. The 
 
 ## REST API
 
-Base namespace: `wpff/v1`. All authenticated routes require `edit_posts`.
+Base namespace: `flowforms/v1`. All authenticated routes require `edit_posts`.
 
 | Method | Route | Auth | Description |
 |---|---|---|---|
@@ -127,7 +127,7 @@ Table: `{prefix}flowforms_entries`
 | Column | Type | Notes |
 |---|---|---|
 | `id` | bigint | Auto-increment primary key |
-| `form_id` | bigint | References `wpff_forms` post ID |
+| `form_id` | bigint | References `flowforms_forms` post ID |
 | `answers` | longtext | JSON object keyed by question UUID |
 | `ip_address` | varchar(45) | IPv4 or IPv6 |
 | `user_agent` | text | |
@@ -144,12 +144,12 @@ Table: `{prefix}flowforms_entries`
 
 | URL | Page slug | Controller |
 |---|---|---|
-| `admin.php?page=wpff_forms` | `wpff_forms` | `FlowForms_Forms_Overview` |
-| `admin.php?page=wpff_form_builder` | `wpff_form_builder` | `FlowForms_Builder` |
-| `admin.php?page=wpff_entries` | `wpff_entries` | `FlowForms_Entries_Overview` |
-| `admin.php?page=wpff_settings` | `wpff_settings` | `FlowForms_Settings` |
+| `admin.php?page=flowforms_forms` | `flowforms_forms` | `FlowForms_Forms_Overview` |
+| `admin.php?page=flowforms_form_builder` | `flowforms_form_builder` | `FlowForms_Builder` |
+| `admin.php?page=flowforms_entries` | `flowforms_entries` | `FlowForms_Entries_Overview` |
+| `admin.php?page=flowforms_settings` | `flowforms_settings` | `FlowForms_Settings` |
 
-`wpff_is_admin_page($slug)` checks `$_REQUEST['page'] === 'wpff_' . $slug` and `is_admin()`. Use it to gate admin-only code.
+`flowforms_is_admin_page($slug)` checks `$_REQUEST['page'] === 'flowforms_' . $slug` and `is_admin()`. Use it to gate admin-only code.
 
 ---
 
@@ -173,25 +173,25 @@ Table: `{prefix}flowforms_entries`
 - `Share.jsx` — public URL and embed code
 
 **Data flow through builder:**
-1. PHP localises `wpffBuilderData` into the page (see `class-builder.php`)
-2. `App.jsx` reads `wpffBuilderData.formId` — if 0, shows Setup; otherwise fetches form
+1. PHP localises `flowformsBuilderData` into the page (see `class-builder.php`)
+2. `App.jsx` reads `flowformsBuilderData.formId` — if 0, shows Setup; otherwise fetches form
 3. Builder edits go into the Zustand store and auto-save to the `draft` slot
 4. Design changes go directly to the `design` key (not versioned)
 5. Settings changes go directly to the `settings` key (not versioned)
 6. Publish promotes `draft` → `published` and clears `draft`
 
-**`wpffBuilderData` object** (available in all builder JS):
+**`flowformsBuilderData` object** (available in all builder JS):
 ```js
-wpffBuilderData.apiUrl        // REST base URL
-wpffBuilderData.nonce         // WP nonce for REST requests
-wpffBuilderData.formId        // Current form ID (0 on setup page)
-wpffBuilderData.view          // 'setup' | 'builder' | 'settings' | 'share'
-wpffBuilderData.builderUrl    // Admin URL for the builder page
-wpffBuilderData.adminFormsUrl // Admin URL for All Forms page
-wpffBuilderData.previewUrl    // Signed preview URL for current form
-wpffBuilderData.publicUrl     // Public embed URL for current form
-wpffBuilderData.templates     // Array of template metadata (no content)
-wpffBuilderData.site          // { adminEmail, siteName }
+flowformsBuilderData.apiUrl        // REST base URL
+flowformsBuilderData.nonce         // WP nonce for REST requests
+flowformsBuilderData.formId        // Current form ID (0 on setup page)
+flowformsBuilderData.view          // 'setup' | 'builder' | 'settings' | 'share'
+flowformsBuilderData.builderUrl    // Admin URL for the builder page
+flowformsBuilderData.adminFormsUrl // Admin URL for All Forms page
+flowformsBuilderData.previewUrl    // Signed preview URL for current form
+flowformsBuilderData.publicUrl     // Public embed URL for current form
+flowformsBuilderData.templates     // Array of template metadata (no content)
+flowformsBuilderData.site          // { adminEmail, siteName }
 ```
 
 ---
@@ -210,7 +210,7 @@ flowformPublicData.previewMode     // bool — skips validation
 flowformPublicData.formIds         // array of form IDs on this page
 flowformPublicData.templatePreview // bool — true for template preview pages
 flowformPublicData.templateContent // form content when templatePreview is true
-flowformPublicData.honeypot        // { field_name: 'wpff_hp', label: string } — anti-spam
+flowformPublicData.honeypot        // { field_name: 'flowforms_hp', label: string } — anti-spam
 ```
 
 **Template preview** (no real form post): when `templatePreview: true`, `index.js` boots `FormApp` directly from `templateContent` instead of fetching from the API.
@@ -257,35 +257,35 @@ return [
 ];
 ```
 
-**Background images in templates** are bundled with the plugin in `assets/images/templates/bg/`. Reference them using `WPFF_URL . 'assets/images/templates/bg/filename.jpg'` with `id => null`. Never hardcode WordPress media library IDs or upload URLs — they are specific to the install where the template was created.
+**Background images in templates** are bundled with the plugin in `assets/images/templates/bg/`. Reference them using `FLOWFORMS_URL . 'assets/images/templates/bg/filename.jpg'` with `id => null`. Never hardcode WordPress media library IDs or upload URLs — they are specific to the install where the template was created.
 
 ```php
-'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
+'backgroundImage' => ['id' => null, 'url' => FLOWFORMS_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
 ```
 
 `FlowForms_Templates` auto-scans the directory — drop a file in, no registration needed.
 
 **Pro templates** hook in via:
 ```php
-add_filter('wpff_templates', function($templates) {
+add_filter('flowforms_templates', function($templates) {
     $templates['pro-slug'] = require __DIR__ . '/templates/pro-slug.php';
     return $templates;
 });
 ```
 
-Only metadata (no `content`) is passed to JS via `wpffBuilderData.templates`. Content is fetched server-side only when "Use template" is clicked — the browser never sees template form JSON directly.
+Only metadata (no `content`) is passed to JS via `flowformsBuilderData.templates`. Content is fetched server-side only when "Use template" is clicked — the browser never sees template form JSON directly.
 
 ---
 
 ## Entries admin
 
-**All Entries:** `admin.php?page=wpff_entries`
+**All Entries:** `admin.php?page=flowforms_entries`
 
 - `?view=single&entry_id={id}` opens the single entry detail page
 - `?status=trash` shows trash, `?status=spam` shows spam, `?status=starred` shows starred
 - **Status is read from the DB entry, not the URL** — never rely on the URL `status` param to determine button state on the single entry page
-- AJAX star toggle: `wp_ajax_wpff_toggle_star` — registered in constructor, not gated by page check
-- Bulk actions: nonce verified against `bulk-entries` or `wpff_entry_{action}`
+- AJAX star toggle: `wp_ajax_flowforms_toggle_star` — registered in constructor, not gated by page check
+- Bulk actions: nonce verified against `bulk-entries` or `flowforms_entry_{action}`
 
 **`FlowForms_Entry_Handler`** — all DB operations. Key methods: `get()`, `get_multiple()`, `get_counts()`, `get_adjacent_ids()`, `mark_read()`, `star()`, `update_status()`, `delete()`, `delete_by_status()`.
 
@@ -329,10 +329,10 @@ Stored in `form.settings.email`:
 Three layers run in order inside `handle_submission()` in `class-rest-api.php`, before any entry is saved. All checks must pass or the submission is rejected.
 
 ### Layer 1 — Honeypot (`includes/class-rest-api.php`)
-A hidden `<input name="wpff_hp">` is injected into the form container by `FormApp.boot()` using metadata from `flowformPublicData.honeypot`. The label is chosen randomly from Name/Email/Phone/Website/Comment/Message so it looks real to bots. The field is hidden via inline CSS (`position:absolute;left:-9999px`), not a class. It uses `autocomplete="new-password"` (the one value all browsers are spec-required to never autofill). `FormApp._submit()` includes the field value as `wpff_hp` in the POST body. If the value is non-empty on the server, the submission returns `{ success: false }` with HTTP 200 — no log entry.
+A hidden `<input name="flowforms_hp">` is injected into the form container by `FormApp.boot()` using metadata from `flowformPublicData.honeypot`. The label is chosen randomly from Name/Email/Phone/Website/Comment/Message so it looks real to bots. The field is hidden via inline CSS (`position:absolute;left:-9999px`), not a class. It uses `autocomplete="new-password"` (the one value all browsers are spec-required to never autofill). `FormApp._submit()` includes the field value as `flowforms_hp` in the POST body. If the value is non-empty on the server, the submission returns `{ success: false }` with HTTP 200 — no log entry.
 
 ### Layer 2 — Token (`includes/class-token.php`)
-`FlowForms_Token` generates a daily-rotating MD5 token tied to the form ID and a server-side secret stored in `wp_options` as `wpff_token_secret`. The token is appended to the `/public` endpoint response and stored in `FormApp._token`. `FormApp._submit()` sends it as `wpff_token`. Verification accepts tokens from the past **5 years** (cached pages) plus 45 minutes into the future (midnight edge cases). Token failures are logged with `error_log()` and a `[FlowForms]` prefix — they signal direct POST attacks.
+`FlowForms_Token` generates a daily-rotating MD5 token tied to the form ID and a server-side secret stored in `wp_options` as `flowforms_token_secret`. The token is appended to the `/public` endpoint response and stored in `FormApp._token`. `FormApp._submit()` sends it as `flowforms_token`. Verification accepts tokens from the past **5 years** (cached pages) plus 45 minutes into the future (midnight edge cases). Token failures are logged with `error_log()` and a `[FlowForms]` prefix — they signal direct POST attacks.
 
 ### Layer 3 — Akismet (`includes/class-akismet.php`)
 `FlowForms_Akismet::is_available()` checks that Akismet is installed, active, and has an API key. When available, `check()` sends `short_text`, `long_text`, and `email` field values to the Akismet `comment-check` API. If flagged as spam the entry is saved with `status='spam'` (reviewable by admins) and the user sees a normal success response — spam detection is never revealed.
@@ -349,19 +349,19 @@ A hidden `<input name="wpff_hp">` is injected into the form container by `FormAp
 ## Key conventions
 
 **PHP**
-- All plugin functions/classes prefixed `wpff_` / `FlowForms_`
-- All WordPress hooks prefixed `wpff_`
-- `wpff_decode($json)` — safe JSON decode with `wp_unslash`
-- `wpff_is_admin_page($slug)` — page check helper
-- `wpff_array_insert($array, $insert, $after)` — insert into associative array after a key
-- Admin page classes guard in `init()` with `wpff_is_admin_page()` before hooking anything
+- All plugin functions/classes prefixed `flowforms_` / `FlowForms_`
+- All WordPress hooks prefixed `flowforms_`
+- `flowforms_decode($json)` — safe JSON decode with `wp_unslash`
+- `flowforms_is_admin_page($slug)` — page check helper
+- `flowforms_array_insert($array, $insert, $after)` — insert into associative array after a key
+- Admin page classes guard in `init()` with `flowforms_is_admin_page()` before hooking anything
 - AJAX handlers that need to work on `admin-ajax.php` must be registered in the constructor, not in `init()` — the page guard will block them otherwise
 
 **JavaScript**
 - Builder state lives exclusively in `useFormStore` — don't maintain local state for anything that needs to persist
 - Design and settings save immediately on change (debounced 800ms) — they bypass the draft/publish cycle
 - Form content auto-saves to `draft` only — never directly to `published`
-- `wpffBuilderData` is the PHP→JS bridge in the builder; `flowformPublicData` is the bridge in the renderer
+- `flowformsBuilderData` is the PHP→JS bridge in the builder; `flowformPublicData` is the bridge in the renderer
 
 **CSS**
 - Builder uses Tailwind v4 with shadcn/ui components

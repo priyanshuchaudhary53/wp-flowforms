@@ -21,10 +21,10 @@ class FlowForms_Token
    */
   private function get_secret_key(): string
   {
-    $key = get_option('wpff_token_secret');
+    $key = get_option('flowforms_token_secret');
     if (! $key) {
       $key = wp_generate_password(32, false);
-      update_option('wpff_token_secret', $key, false);
+      update_option('flowforms_token_secret', $key, false);
     }
     return $key;
   }

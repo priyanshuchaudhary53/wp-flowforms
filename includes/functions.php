@@ -13,16 +13,16 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
  *
  * @since 1.0.0
  *
- * @param string $slug Page slug suffix (without the `wpff_` prefix).
+ * @param string $slug Page slug suffix (without the `flowforms_` prefix).
  * @return bool
  */
-function wpff_is_admin_page($slug)
+function flowforms_is_admin_page($slug)
 {
   // phpcs:disable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput -- Page routing param; read-only, no state change. Sanitized via sanitize_key() below.
   $page = sanitize_key( (string) ( $_REQUEST['page'] ?? '' ) );
 
   if (
-    strpos($page, 'wpff') === false ||
+    strpos($page, 'flowforms') === false ||
     ! is_admin()
   ) {
     // phpcs:enable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
@@ -30,8 +30,8 @@ function wpff_is_admin_page($slug)
   }
 
   if (
-    (! empty($slug) && $_REQUEST['page'] !== 'wpff_' . $slug) ||
-    (empty($slug) && $_REQUEST['page'] === 'wpff_form_builder')
+    (! empty($slug) && $_REQUEST['page'] !== 'flowforms_' . $slug) ||
+    (empty($slug) && $_REQUEST['page'] === 'flowforms_form_builder')
   ) {
     // phpcs:enable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput
     return false;
@@ -49,7 +49,7 @@ function wpff_is_admin_page($slug)
  * @param string $data JSON-encoded string.
  * @return array|false Decoded array on success, false if input is empty, empty array on JSON error.
  */
-function wpff_decode($data)
+function flowforms_decode($data)
 {
   if (empty($data)) {
     return false;
@@ -65,7 +65,7 @@ function wpff_decode($data)
 }
 
 /**
- * Retrieve a value from the wpff_settings option.
+ * Retrieve a value from the flowforms_settings option.
  *
  * Uses static caching so the option is read from the database only once per request,
  * regardless of how many times this function is called.
@@ -76,11 +76,11 @@ function wpff_decode($data)
  * @param mixed  $default Value to return when the key does not exist.
  * @return mixed The saved value, or $default if not set.
  */
-function wpff_get_setting( string $key, $default = null ) {
+function flowforms_get_setting( string $key, $default = null ) {
   static $settings = null;
 
   if ( $settings === null ) {
-    $settings = get_option( 'wpff_settings', [] );
+    $settings = get_option( 'flowforms_settings', [] );
   }
 
   return array_key_exists( $key, $settings ) ? $settings[ $key ] : $default;
@@ -94,7 +94,7 @@ function wpff_get_setting( string $key, $default = null ) {
  * @param string $after    Key to insert after.
  * @return array
  */
-function wpff_array_insert(array $array, array $insert, string $after): array
+function flowforms_array_insert(array $array, array $insert, string $after): array
 {
   $pos = array_search($after, array_keys($array), true);
 
@@ -116,7 +116,7 @@ function wpff_array_insert(array $array, array $insert, string $after): array
  *
  * @return array
  */
-function wpff_kses_field_icon(): array {
+function flowforms_kses_field_icon(): array {
   return [
     'div'  => [ 'class' => [] ],
     'span' => [ 'class' => [], 'style' => [], 'aria-hidden' => [] ],
@@ -147,7 +147,7 @@ function wpff_kses_field_icon(): array {
  *
  * @return array
  */
-function wpff_kses_settings_field(): array {
+function flowforms_kses_settings_field(): array {
   return [
     'tr'       => [],
     'td'       => [ 'colspan' => [] ],
@@ -171,7 +171,7 @@ function wpff_kses_settings_field(): array {
  *
  * @return array
  */
-function wpff_kses_form_container(): array {
+function flowforms_kses_form_container(): array {
   return [
     'div'    => [ 'class' => [], 'style' => [], 'data-flowform-id' => [], 'data-ff-mode' => [] ],
     'span'   => [ 'style' => [] ],

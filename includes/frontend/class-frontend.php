@@ -75,7 +75,7 @@ class FlowForms_Frontend {
 
 		$post = get_post( $form_id );
 
-		if ( ! $post || $post->post_type !== 'wpff_forms' ) {
+		if ( ! $post || $post->post_type !== 'flowforms_forms' ) {
 			return '<!-- FlowForms: form not found -->';
 		}
 
@@ -180,24 +180,24 @@ class FlowForms_Frontend {
 			return;
 		}
 
-		$asset_file = WPFF_PATH . 'build/form/index.asset.php';
+		$asset_file = FLOWFORMS_PATH . 'build/form/index.asset.php';
 		$asset      = file_exists( $asset_file )
 			? require $asset_file
-			: [ 'dependencies' => [], 'version' => WPFF_VERSION ];
+			: [ 'dependencies' => [], 'version' => FLOWFORMS_VERSION ];
 
 		wp_enqueue_script(
 			'flowform-renderer',
-			WPFF_URL . 'build/form/index.js',
+			FLOWFORMS_URL . 'build/form/index.js',
 			$asset['dependencies'],
 			$asset['version'],
 			true
 		);
 
-		wp_set_script_translations( 'flowform-renderer', 'flowforms', WPFF_PATH . 'languages' );
+		wp_set_script_translations( 'flowform-renderer', 'flowforms', FLOWFORMS_PATH . 'languages' );
 
 		wp_enqueue_style(
 			'flowform-renderer',
-			WPFF_URL . 'build/form/style-index.css',
+			FLOWFORMS_URL . 'build/form/style-index.css',
 			[],
 			$asset['version']
 		);
@@ -227,59 +227,59 @@ class FlowForms_Frontend {
 		$hp_labels = [ 'Name', 'Email', 'Phone', 'Website', 'Comment', 'Message' ];
 
 		wp_localize_script( 'flowform-renderer', 'flowformPublicData', [
-			'apiUrl'      => rest_url( 'wpff/v1' ),
+			'apiUrl'      => rest_url( 'flowforms/v1' ),
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
 			'previewMode' => $preview_ok,
 			'formIds'     => $this->form_ids,
 			'honeypot'    => [
-				'field_name' => 'wpff_hp',
+				'field_name' => 'flowforms_hp',
 				'label'      => $hp_labels[ array_rand( $hp_labels ) ],
 			],
 			'i18n'        => [
 				// Error and Validation Messages
-				'required'          => wpff_get_setting( 'validation-required',           __( 'This field is required.', 'flowforms' ) ),
-				'email'             => wpff_get_setting( 'validation-email',              __( 'Please enter a valid email address.', 'flowforms' ) ),
-				'emailMismatch'     => wpff_get_setting( 'validation-email-mismatch',     __( 'Email addresses do not match.', 'flowforms' ) ),
-				'number'            => wpff_get_setting( 'validation-number',             __( 'Please enter a valid number.', 'flowforms' ) ),
-				'numberMin'         => wpff_get_setting( 'validation-number-min',         __( 'Value must be at least {min}.', 'flowforms' ) ),
-				'numberMax'         => wpff_get_setting( 'validation-number-max',         __( 'Value must be at most {max}.', 'flowforms' ) ),
-				'maxlength'         => wpff_get_setting( 'validation-maxlength',          __( 'Please enter no more than {limit} characters.', 'flowforms' ) ),
-				'rating'            => wpff_get_setting( 'validation-rating',             __( 'Please select a valid rating.', 'flowforms' ) ),
-				'selection'         => wpff_get_setting( 'validation-selection',          __( 'Please make a selection.', 'flowforms' ) ),
-				'checkboxesMin'     => wpff_get_setting( 'validation-checkboxes-min',     __( 'Please select at least {count} options.', 'flowforms' ) ),
-				'checkboxesMax'     => wpff_get_setting( 'validation-checkboxes-max',     __( 'Please select at most {count} options.', 'flowforms' ) ),
-				'yesNo'             => wpff_get_setting( 'validation-yesno',              __( 'Please select yes or no.', 'flowforms' ) ),
-				'submissionFailed'  => wpff_get_setting( 'form-submission-failed',        __( 'Submission failed', 'flowforms' ) ),
-				'error'             => wpff_get_setting( 'form-error-message',            __( 'Something went wrong. Please try again.', 'flowforms' ) ),
-				'spam'              => wpff_get_setting( 'form-spam-message',             __( 'Your submission could not be processed. Please reload the page and try again.', 'flowforms' ) ),
-				'loadError'         => wpff_get_setting( 'form-load-error',               __( 'Sorry, this form could not be loaded. Please try again later.', 'flowforms' ) ),
+				'required'          => flowforms_get_setting( 'validation-required',           __( 'This field is required.', 'flowforms' ) ),
+				'email'             => flowforms_get_setting( 'validation-email',              __( 'Please enter a valid email address.', 'flowforms' ) ),
+				'emailMismatch'     => flowforms_get_setting( 'validation-email-mismatch',     __( 'Email addresses do not match.', 'flowforms' ) ),
+				'number'            => flowforms_get_setting( 'validation-number',             __( 'Please enter a valid number.', 'flowforms' ) ),
+				'numberMin'         => flowforms_get_setting( 'validation-number-min',         __( 'Value must be at least {min}.', 'flowforms' ) ),
+				'numberMax'         => flowforms_get_setting( 'validation-number-max',         __( 'Value must be at most {max}.', 'flowforms' ) ),
+				'maxlength'         => flowforms_get_setting( 'validation-maxlength',          __( 'Please enter no more than {limit} characters.', 'flowforms' ) ),
+				'rating'            => flowforms_get_setting( 'validation-rating',             __( 'Please select a valid rating.', 'flowforms' ) ),
+				'selection'         => flowforms_get_setting( 'validation-selection',          __( 'Please make a selection.', 'flowforms' ) ),
+				'checkboxesMin'     => flowforms_get_setting( 'validation-checkboxes-min',     __( 'Please select at least {count} options.', 'flowforms' ) ),
+				'checkboxesMax'     => flowforms_get_setting( 'validation-checkboxes-max',     __( 'Please select at most {count} options.', 'flowforms' ) ),
+				'yesNo'             => flowforms_get_setting( 'validation-yesno',              __( 'Please select yes or no.', 'flowforms' ) ),
+				'submissionFailed'  => flowforms_get_setting( 'form-submission-failed',        __( 'Submission failed', 'flowforms' ) ),
+				'error'             => flowforms_get_setting( 'form-error-message',            __( 'Something went wrong. Please try again.', 'flowforms' ) ),
+				'spam'              => flowforms_get_setting( 'form-spam-message',             __( 'Your submission could not be processed. Please reload the page and try again.', 'flowforms' ) ),
+				'loadError'         => flowforms_get_setting( 'form-load-error',               __( 'Sorry, this form could not be loaded. Please try again later.', 'flowforms' ) ),
 				// Buttons, Labels and Hints
-				'submit'            => wpff_get_setting( 'form-submit-label',             __( 'Submit', 'flowforms' ) ),
-				'submitting'        => wpff_get_setting( 'form-submitting-label',         __( 'Submitting...', 'flowforms' ) ),
-				'start'             => wpff_get_setting( 'form-start-label',              __( 'Start', 'flowforms' ) ),
-				'ok'                => wpff_get_setting( 'form-ok-label',                 __( 'OK', 'flowforms' ) ),
-				'tryAgain'          => wpff_get_setting( 'form-try-again-label',          __( 'Try again', 'flowforms' ) ),
-				'enterHint'         => wpff_get_setting( 'form-enter-hint',               __( 'press Enter ↵', 'flowforms' ) ),
-				'shiftEnterHint'    => wpff_get_setting( 'form-shift-enter-hint',        	__( 'Shift ⇧ + Enter ↵ to make a line break', 'flowforms' ) ),
-				'previous'          => wpff_get_setting( 'nav-previous-label',            __( 'Previous', 'flowforms' ) ),
-				'next'              => wpff_get_setting( 'nav-next-label',                __( 'Next', 'flowforms' ) ),
-				'thankYou'          => wpff_get_setting( 'form-thankyou-title',           __( 'Thank you!', 'flowforms' ) ),
-				'loading'           => wpff_get_setting( 'form-loading',                  __( 'Loading form…', 'flowforms' ) ),
-				'redirectingIn'     => wpff_get_setting( 'form-redirecting-in',           __( 'Redirecting in {seconds}…', 'flowforms' ) ),
-				'redirecting'       => wpff_get_setting( 'form-redirecting',              __( 'Redirecting…', 'flowforms' ) ),
-				'textPlaceholder'   => wpff_get_setting( 'input-text-placeholder',        __( 'Your answer here…', 'flowforms' ) ),
-				'emailPlaceholder'  => wpff_get_setting( 'input-email-placeholder',       __( 'name@example.com', 'flowforms' ) ),
-				'confirmEmailLabel' => wpff_get_setting( 'input-confirm-email-label',     __( 'Confirm email', 'flowforms' ) ),
-				'confirmEmailPlaceholder' => wpff_get_setting( 'input-confirm-email-placeholder', __( 'Confirm your email', 'flowforms' ) ),
-				'otherLabel'        => wpff_get_setting( 'input-other-label',             __( 'Other', 'flowforms' ) ),
-				'otherPlaceholder'  => wpff_get_setting( 'input-other-placeholder',       __( 'Type your answer…', 'flowforms' ) ),
-				'otherConfirm'      => wpff_get_setting( 'input-other-confirm',           __( 'Confirm', 'flowforms' ) ),
-				'ratingLabel'       => wpff_get_setting( 'input-rating-label',            __( 'Rate {value} out of {max}', 'flowforms' ) ),
-				'yes'               => wpff_get_setting( 'input-yes-label',               __( 'Yes', 'flowforms' ) ),
-				'no'                => wpff_get_setting( 'input-no-label',                __( 'No', 'flowforms' ) ),
-				'shareLabel'        => wpff_get_setting( 'form-share-label',              __( 'Share this form', 'flowforms' ) ),
-				'shareOn'           => wpff_get_setting( 'form-share-on',                 __( 'Share on {network}', 'flowforms' ) ),
-				'shareTitle'        => wpff_get_setting( 'form-share-title',              __( 'Check this out!', 'flowforms' ) ),
+				'submit'            => flowforms_get_setting( 'form-submit-label',             __( 'Submit', 'flowforms' ) ),
+				'submitting'        => flowforms_get_setting( 'form-submitting-label',         __( 'Submitting...', 'flowforms' ) ),
+				'start'             => flowforms_get_setting( 'form-start-label',              __( 'Start', 'flowforms' ) ),
+				'ok'                => flowforms_get_setting( 'form-ok-label',                 __( 'OK', 'flowforms' ) ),
+				'tryAgain'          => flowforms_get_setting( 'form-try-again-label',          __( 'Try again', 'flowforms' ) ),
+				'enterHint'         => flowforms_get_setting( 'form-enter-hint',               __( 'press Enter ↵', 'flowforms' ) ),
+				'shiftEnterHint'    => flowforms_get_setting( 'form-shift-enter-hint',        	__( 'Shift ⇧ + Enter ↵ to make a line break', 'flowforms' ) ),
+				'previous'          => flowforms_get_setting( 'nav-previous-label',            __( 'Previous', 'flowforms' ) ),
+				'next'              => flowforms_get_setting( 'nav-next-label',                __( 'Next', 'flowforms' ) ),
+				'thankYou'          => flowforms_get_setting( 'form-thankyou-title',           __( 'Thank you!', 'flowforms' ) ),
+				'loading'           => flowforms_get_setting( 'form-loading',                  __( 'Loading form…', 'flowforms' ) ),
+				'redirectingIn'     => flowforms_get_setting( 'form-redirecting-in',           __( 'Redirecting in {seconds}…', 'flowforms' ) ),
+				'redirecting'       => flowforms_get_setting( 'form-redirecting',              __( 'Redirecting…', 'flowforms' ) ),
+				'textPlaceholder'   => flowforms_get_setting( 'input-text-placeholder',        __( 'Your answer here…', 'flowforms' ) ),
+				'emailPlaceholder'  => flowforms_get_setting( 'input-email-placeholder',       __( 'name@example.com', 'flowforms' ) ),
+				'confirmEmailLabel' => flowforms_get_setting( 'input-confirm-email-label',     __( 'Confirm email', 'flowforms' ) ),
+				'confirmEmailPlaceholder' => flowforms_get_setting( 'input-confirm-email-placeholder', __( 'Confirm your email', 'flowforms' ) ),
+				'otherLabel'        => flowforms_get_setting( 'input-other-label',             __( 'Other', 'flowforms' ) ),
+				'otherPlaceholder'  => flowforms_get_setting( 'input-other-placeholder',       __( 'Type your answer…', 'flowforms' ) ),
+				'otherConfirm'      => flowforms_get_setting( 'input-other-confirm',           __( 'Confirm', 'flowforms' ) ),
+				'ratingLabel'       => flowforms_get_setting( 'input-rating-label',            __( 'Rate {value} out of {max}', 'flowforms' ) ),
+				'yes'               => flowforms_get_setting( 'input-yes-label',               __( 'Yes', 'flowforms' ) ),
+				'no'                => flowforms_get_setting( 'input-no-label',                __( 'No', 'flowforms' ) ),
+				'shareLabel'        => flowforms_get_setting( 'form-share-label',              __( 'Share this form', 'flowforms' ) ),
+				'shareOn'           => flowforms_get_setting( 'form-share-on',                 __( 'Share on {network}', 'flowforms' ) ),
+				'shareTitle'        => flowforms_get_setting( 'form-share-title',              __( 'Check this out!', 'flowforms' ) ),
 			],
 		] );
 
@@ -318,7 +318,7 @@ class FlowForms_Frontend {
 		$post = get_post( $form_id );
 
 		// Form doesn't exist at all — generic 404 for everyone.
-		if ( ! $post || $post->post_type !== 'wpff_forms' ) {
+		if ( ! $post || $post->post_type !== 'flowforms_forms' ) {
 			$this->render_form_unavailable_page();
 			exit;
 		}
@@ -328,10 +328,10 @@ class FlowForms_Frontend {
 			if ( current_user_can( 'edit_posts' ) ) {
 				$restore_url = wp_nonce_url(
 					add_query_arg(
-						[ 'page' => 'wpff_forms', 'action' => 'restore', 'form_id' => $form_id, 'status' => 'trash' ],
+						[ 'page' => 'flowforms_forms', 'action' => 'restore', 'form_id' => $form_id, 'status' => 'trash' ],
 						admin_url( 'admin.php' )
 					),
-					'wpff_restore_form_nonce'
+					'flowforms_restore_form_nonce'
 				);
 				$this->render_form_trashed_page( $post->post_title, $restore_url );
 			} else {
@@ -341,14 +341,14 @@ class FlowForms_Frontend {
 		}
 
 		// Form exists but has never been published — content.published slot is null.
-		$decoded   = wpff_decode( $post->post_content );
+		$decoded   = flowforms_decode( $post->post_content );
 		$published = is_array( $decoded ) && isset( $decoded['content']['published'] )
 			? $decoded['content']['published']
 			: null;
 
 		if ( empty( $published ) ) {
 			if ( current_user_can( 'edit_posts' ) ) {
-				$builder_url = admin_url( 'admin.php?page=wpff_form_builder&form_id=' . $form_id );
+				$builder_url = wp_nonce_url( admin_url( 'admin.php?page=flowforms_form_builder&form_id=' . $form_id ), 'flowforms_builder_nav' );
 				$this->render_form_not_published_page( $post->post_title, $builder_url );
 			} else {
 				$this->render_form_unavailable_page();
@@ -426,7 +426,7 @@ class FlowForms_Frontend {
 
 		$post = get_post( $form_id );
 
-		if ( ! $post || $post->post_type !== 'wpff_forms' ) {
+		if ( ! $post || $post->post_type !== 'flowforms_forms' ) {
 			wp_die(
 				esc_html__( 'Form not found.', 'flowforms' ),
 				esc_html__( 'Form Not Found', 'flowforms' ),
@@ -462,19 +462,19 @@ class FlowForms_Frontend {
 		$btn  = esc_attr( $design['button_color'] ?? '#111827' );
 		$hint = esc_attr( $design['hint_color']   ?? '#9ca3af' );
 
-		$asset_file = WPFF_PATH . 'build/form/index.asset.php';
+		$asset_file = FLOWFORMS_PATH . 'build/form/index.asset.php';
 		$asset      = file_exists( $asset_file )
 			? require $asset_file
-			: [ 'dependencies' => [], 'version' => WPFF_VERSION ];
+			: [ 'dependencies' => [], 'version' => FLOWFORMS_VERSION ];
 
-		wp_enqueue_script( 'flowform-renderer', WPFF_URL . 'build/form/index.js', $asset['dependencies'], $asset['version'], true );
-		wp_set_script_translations( 'flowform-renderer', 'flowforms', WPFF_PATH . 'languages' );
-		wp_enqueue_style( 'flowform-renderer', WPFF_URL . 'build/form/style-index.css', [], $asset['version'] );
+		wp_enqueue_script( 'flowform-renderer', FLOWFORMS_URL . 'build/form/index.js', $asset['dependencies'], $asset['version'], true );
+		wp_set_script_translations( 'flowform-renderer', 'flowforms', FLOWFORMS_PATH . 'languages' );
+		wp_enqueue_style( 'flowform-renderer', FLOWFORMS_URL . 'build/form/style-index.css', [], $asset['version'] );
 
 		// Pass content and design separately — FormApp expects design at the top
 		// level of formData, not nested inside content.
 		wp_localize_script( 'flowform-renderer', 'flowformPublicData', [
-			'apiUrl'          => rest_url( 'wpff/v1' ),
+			'apiUrl'          => rest_url( 'flowforms/v1' ),
 			'nonce'           => wp_create_nonce( 'wp_rest' ),
 			'previewMode'     => true,
 			'formIds'         => [],
@@ -553,7 +553,7 @@ class FlowForms_Frontend {
 </head>
 <body>
 <div id="flowform-full-page">
-	<?php echo wp_kses( $this->container_html( $form_id, true ), wpff_kses_form_container() ); ?>
+	<?php echo wp_kses( $this->container_html( $form_id, true ), flowforms_kses_form_container() ); ?>
 </div>
 
 <?php wp_footer(); ?>
@@ -602,7 +602,7 @@ class FlowForms_Frontend {
 		$post = get_post( $form_id );
 		if ( ! $post ) return $defaults;
 
-		$decoded = wpff_decode( $post->post_content );
+		$decoded = flowforms_decode( $post->post_content );
 		if ( ! is_array( $decoded ) ) return $defaults;
 
 		$design = $decoded['design'] ?? [];
@@ -664,10 +664,10 @@ class FlowForms_Frontend {
 
 		$restore_url = wp_nonce_url(
 			add_query_arg(
-				[ 'page' => 'wpff_forms', 'action' => 'restore', 'form_id' => $form_id, 'status' => 'trash' ],
+				[ 'page' => 'flowforms_forms', 'action' => 'restore', 'form_id' => $form_id, 'status' => 'trash' ],
 				admin_url( 'admin.php' )
 			),
-			'wpff_restore_form_nonce'
+			'flowforms_restore_form_nonce'
 		);
 
 		$post  = get_post( $form_id );
@@ -754,7 +754,7 @@ class FlowForms_Frontend {
 	 * @since 1.0.0
 	 */
 	private function print_standalone_page_styles(): void {
-		wp_register_style( 'wpff-standalone', WPFF_URL . 'assets/css/wpff-standalone.css', [], WPFF_VERSION );
+		wp_register_style( 'wpff-standalone', FLOWFORMS_URL . 'assets/css/wpff-standalone.css', [], FLOWFORMS_VERSION );
 		wp_print_styles( array( 'wpff-standalone' ) );
 	}
 

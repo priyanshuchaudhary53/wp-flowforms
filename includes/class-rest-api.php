@@ -15,13 +15,13 @@ class FlowForms_REST_API
   }
 
   /**
-   * Register all wpff/v1 REST API routes.
+   * Register all flowforms/v1 REST API routes.
    *
    * @since 1.0.0
    */
   public function register_routes()
   {
-    $ns = 'wpff/v1';
+    $ns = 'flowforms/v1';
 
     register_rest_route($ns, '/forms', [
       'methods'             => 'GET',
@@ -141,7 +141,7 @@ class FlowForms_REST_API
       return $empty;
     }
 
-    $decoded = wpff_decode($raw);
+    $decoded = flowforms_decode($raw);
 
     if (! is_array($decoded)) {
       return $empty;
@@ -226,7 +226,7 @@ class FlowForms_REST_API
    */
   private function default_design(): array
   {
-    $file = WPFF_PATH . 'includes/defaults/form-design.php';
+    $file = FLOWFORMS_PATH . 'includes/defaults/form-design.php';
 
     if (! file_exists($file)) {
       return [];
@@ -241,7 +241,7 @@ class FlowForms_REST_API
      *
      * @param array $design Default design array.
      */
-    return (array) apply_filters('wpff_default_form_design', $design);
+    return (array) apply_filters('flowforms_default_form_design', $design);
   }
 
   /**
@@ -255,7 +255,7 @@ class FlowForms_REST_API
    */
   private function default_settings(): array
   {
-    $file = WPFF_PATH . 'includes/defaults/form-settings.php';
+    $file = FLOWFORMS_PATH . 'includes/defaults/form-settings.php';
 
     if (! file_exists($file)) {
       return [];
@@ -270,7 +270,7 @@ class FlowForms_REST_API
      *
      * @param array $settings Default settings array.
      */
-    return (array) apply_filters('wpff_default_form_settings', $settings);
+    return (array) apply_filters('flowforms_default_form_settings', $settings);
   }
 
   /**
@@ -310,7 +310,7 @@ class FlowForms_REST_API
   public function get_forms($request)
   {
     $posts = get_posts([
-      'post_type'      => 'wpff_forms',
+      'post_type'      => 'flowforms_forms',
       'post_status'    => 'publish',
       'posts_per_page' => -1,
       'orderby'        => 'title',
@@ -340,7 +340,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -390,14 +390,14 @@ class FlowForms_REST_API
     }
 
     if (empty($form_data)) {
-      $form_data = require WPFF_PATH . 'includes/defaults/form-data.php';
+      $form_data = require FLOWFORMS_PATH . 'includes/defaults/form-data.php';
     }
 
     $post_id = wp_insert_post([
       'post_title'   => $form_name,
       'post_content' => '',
       'post_status'  => 'publish',
-      'post_type'    => 'wpff_forms',
+      'post_type'    => 'flowforms_forms',
     ]);
 
     if (is_wp_error($post_id)) {
@@ -443,7 +443,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -515,7 +515,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -556,7 +556,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -596,7 +596,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -636,7 +636,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -673,7 +673,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish') {
+    if (! $post || $post->post_type !== 'flowforms_forms' || $post->post_status !== 'publish') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -695,7 +695,7 @@ class FlowForms_REST_API
 
     if ( current_user_can( 'edit_posts' ) && ! empty( $slots['content']['draft'] ) ) {
       $response['has_draft']   = true;
-      $response['builder_url'] = admin_url( 'admin.php?page=wpff_form_builder&form_id=' . $form_id );
+      $response['builder_url'] = wp_nonce_url( admin_url( 'admin.php?page=flowforms_form_builder&form_id=' . $form_id ), 'flowforms_builder_nav' );
     }
 
     return rest_ensure_response( $response );
@@ -716,7 +716,7 @@ class FlowForms_REST_API
 
     $post = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms') {
+    if (! $post || $post->post_type !== 'flowforms_forms') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -749,7 +749,7 @@ class FlowForms_REST_API
     $form_id = absint($request['id']);
     $post    = get_post($form_id);
 
-    if (! $post || $post->post_type !== 'wpff_forms' || $post->post_status !== 'publish') {
+    if (! $post || $post->post_type !== 'flowforms_forms' || $post->post_status !== 'publish') {
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
@@ -762,13 +762,13 @@ class FlowForms_REST_API
     }
 
     // Layer 1: Honeypot
-    $honeypot = sanitize_text_field($request->get_param('wpff_hp') ?? '');
+    $honeypot = sanitize_text_field($request->get_param('flowforms_hp') ?? '');
     if (! empty($honeypot)) {
       return new WP_REST_Response(['success' => false, 'message' => __('Something went wrong. Please try again.', 'flowforms')], 200);
     }
 
     // Layer 2: Token
-    $token = sanitize_text_field($request->get_param('wpff_token') ?? '');
+    $token = sanitize_text_field($request->get_param('flowforms_token') ?? '');
     if (empty($token) || ! flowforms()->obj('token')->verify($token, $form_id)) {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional security event logging for token verification failures.
       error_log('[FlowForms] Token verification failed for form ID ' . $form_id);
@@ -821,7 +821,7 @@ class FlowForms_REST_API
       return new WP_REST_Response(['message' => __('Failed to save submission.', 'flowforms')], 500);
     }
 
-    do_action('wpff_form_submitted', $entry_id, $form_id, $sanitized, $form_content);
+    do_action('flowforms_form_submitted', $entry_id, $form_id, $sanitized, $form_content);
 
     $this->send_notifications($entry_id, $form_id, $sanitized, $form_content);
 
@@ -977,7 +977,7 @@ class FlowForms_REST_API
       'post_title'  => $form_name,
       'post_content' => '',
       'post_status' => 'publish',
-      'post_type'   => 'wpff_forms',
+      'post_type'   => 'flowforms_forms',
     ]);
 
     if (is_wp_error($post_id)) {
@@ -1021,7 +1021,7 @@ class FlowForms_REST_API
     // Store template content in a transient keyed by slug + nonce.
     // TTL matches WP nonce lifetime (10 minutes is plenty for a preview session).
     $token           = wp_create_nonce('flowform_preview');
-    $transient_key   = 'wpff_tpl_preview_' . md5($slug . $token);
+    $transient_key   = 'flowforms_tpl_preview_' . md5($slug . $token);
     set_transient($transient_key, [
       'content' => $template['content'],
       'design'  => $template['design'] ?? [],

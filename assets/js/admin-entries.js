@@ -1,4 +1,4 @@
-/* global wpffEntries, jQuery */
+/* global flowformsEntries, jQuery */
 (function ($) {
   "use strict";
 
@@ -26,12 +26,12 @@
         .toggleClass("wpff-star--on", newVal === 1)
         .attr(
           "title",
-          newVal === 1 ? wpffEntries.unstarLabel : wpffEntries.starLabel,
+          newVal === 1 ? flowformsEntries.unstarLabel : flowformsEntries.starLabel,
         );
 
-      $.post(wpffEntries.ajaxUrl, {
-        action: "wpff_toggle_star",
-        nonce: wpffEntries.nonce,
+      $.post(flowformsEntries.ajaxUrl, {
+        action: "flowforms_toggle_star",
+        nonce: flowformsEntries.nonce,
         entry_id: entryId,
         starred: newVal,
       }).fail(function () {
@@ -41,7 +41,7 @@
           .toggleClass("wpff-star--on", starred)
           .attr(
             "title",
-            starred ? wpffEntries.unstarLabel : wpffEntries.starLabel,
+            starred ? flowformsEntries.unstarLabel : flowformsEntries.starLabel,
           );
       });
     });

@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *  2. Error and Validation Messages
  *
  * Every user-facing string from the public form renderer lives here.
- * Field IDs are the option keys stored in wpff_settings.
+ * Field IDs are the option keys stored in flowforms_settings.
  * Placeholder tokens like {min}, {limit}, {count} are replaced in JS at runtime.
  *
  * @since 1.0.0

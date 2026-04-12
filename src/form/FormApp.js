@@ -183,7 +183,7 @@ export class FormApp {
 			label.textContent   = hpData.label ?? 'Name';
 			const hp = document.createElement( 'input' );
 			hp.type = 'text';
-			hp.name = hpData.field_name ?? 'wpff_hp';
+			hp.name = hpData.field_name ?? 'flowforms_hp';
 			hp.setAttribute( 'autocomplete', 'new-password' );
 			hp.setAttribute( 'tabindex', '-1' );
 			hp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;';
@@ -621,8 +621,8 @@ export class FormApp {
 				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
 				body:    JSON.stringify( {
 					answers,
-					wpff_hp:    this._hpField?.value ?? '',
-					wpff_token: this._token ?? '',
+					flowforms_hp:    this._hpField?.value ?? '',
+					flowforms_token: this._token ?? '',
 				} ),
 			} );
 

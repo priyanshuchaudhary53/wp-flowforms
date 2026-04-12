@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * FlowForms Settings API
  *
  * Field rendering functions and sanitizer for the settings page.
- * Every public function is a standalone global named wpff_settings_{type}_field().
+ * Every public function is a standalone global named flowforms_settings_{type}_field().
  *
  * @since 1.0.0
  */
@@ -19,12 +19,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @param array $args Field definition array. Must include 'id' and 'type'.
  * @return string HTML output.
  */
-function wpff_settings_render_field( array $args ): string {
+function flowforms_settings_render_field( array $args ): string {
 	$type     = $args['type'] ?? 'text';
-	$callback = "wpff_settings_{$type}_field";
+	$callback = "flowforms_settings_{$type}_field";
 
 	if ( ! function_exists( $callback ) ) {
-		$callback = 'wpff_settings_text_field';
+		$callback = 'flowforms_settings_text_field';
 	}
 
 	$content = $callback( $args );
@@ -59,8 +59,8 @@ function wpff_settings_render_field( array $args ): string {
  * @param array $args Field definition. Supports 'placeholder'.
  * @return string HTML output.
  */
-function wpff_settings_text_field( array $args ): string {
-	$value       = wpff_get_setting( $args['id'], $args['default'] ?? '' );
+function flowforms_settings_text_field( array $args ): string {
+	$value       = flowforms_get_setting( $args['id'], $args['default'] ?? '' );
 	$placeholder = $args['placeholder'] ?? '';
 
 	return sprintf(
@@ -79,8 +79,8 @@ function wpff_settings_text_field( array $args ): string {
  * @param array $args Field definition. Supports 'rows' (default 3).
  * @return string HTML output.
  */
-function wpff_settings_textarea_field( array $args ): string {
-	$value = wpff_get_setting( $args['id'], $args['default'] ?? '' );
+function flowforms_settings_textarea_field( array $args ): string {
+	$value = flowforms_get_setting( $args['id'], $args['default'] ?? '' );
 	$rows  = absint( $args['rows'] ?? 3 );
 
 	return sprintf(
@@ -103,8 +103,8 @@ function wpff_settings_textarea_field( array $args ): string {
  * @param array $args Field definition.
  * @return string HTML output.
  */
-function wpff_settings_toggle_field( array $args ): string {
-	$value   = wpff_get_setting( $args['id'], $args['default'] ?? false );
+function flowforms_settings_toggle_field( array $args ): string {
+	$value   = flowforms_get_setting( $args['id'], $args['default'] ?? false );
 	$checked = $value ? ' checked' : '';
 	$id      = esc_attr( $args['id'] );
 
@@ -127,8 +127,8 @@ function wpff_settings_toggle_field( array $args ): string {
  * @param array $args Field definition. Requires 'options' as ['value' => 'Label'].
  * @return string HTML output.
  */
-function wpff_settings_select_field( array $args ): string {
-	$value   = wpff_get_setting( $args['id'], $args['default'] ?? '' );
+function flowforms_settings_select_field( array $args ): string {
+	$value   = flowforms_get_setting( $args['id'], $args['default'] ?? '' );
 	$options = $args['options'] ?? [];
 	$id      = esc_attr( $args['id'] );
 
@@ -159,7 +159,7 @@ function wpff_settings_select_field( array $args ): string {
  * @param array $args Field definition. Supports 'label' and 'desc'.
  * @return string HTML output.
  */
-function wpff_settings_heading_field( array $args ): string {
+function flowforms_settings_heading_field( array $args ): string {
 	$html = '<h2 class="wpff-settings-heading">' . esc_html( $args['label'] ?? '' ) . '</h2>';
 
 	if ( ! empty( $args['desc'] ) ) {
@@ -179,7 +179,7 @@ function wpff_settings_heading_field( array $args ): string {
  * @param array $args Field definition. Requires 'content' with raw HTML.
  * @return string HTML output.
  */
-function wpff_settings_content_field( array $args ): string {
+function flowforms_settings_content_field( array $args ): string {
 	return wp_kses_post( $args['content'] ?? '' );
 }
 
@@ -195,7 +195,7 @@ function wpff_settings_content_field( array $args ): string {
  * @param mixed      $previous Previous saved value (used as fallback for invalid selects).
  * @return mixed Sanitized value.
  */
-function wpff_settings_sanitize_field( array $field, $raw, $previous ) {
+function flowforms_settings_sanitize_field( array $field, $raw, $previous ) {
 	$type = $field['type'] ?? 'text';
 
 	if ( ! empty( $field['sanitize'] ) && is_callable( $field['sanitize'] ) ) {

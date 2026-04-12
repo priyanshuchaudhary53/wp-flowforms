@@ -7,7 +7,7 @@ return [
   'name'          => 'Contact Form',
   'description'   => 'Connect with your website visitors with a sleek website contact form.',
   'category'      => 'contact',
-  'thumbnail_url' => WPFF_URL . 'assets/images/templates/contact-form.webp',
+  'thumbnail_url' => FLOWFORMS_URL . 'assets/images/templates/contact-form.webp',
   'content'     => [
     'welcomeScreen' => [
       'content'  => [
@@ -17,7 +17,7 @@ return [
       ],
       'settings' => [
         'layout' => 'default',
-        'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => FLOWFORMS_URL . 'assets/images/templates/bg/contact-form-welcome.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'left',
       ],
@@ -32,7 +32,7 @@ return [
         'showSocialShare' => true,
         'redirectUrl' => '',
         'redirectDelay' => 0,
-        'backgroundImage' => ['id' => null, 'url' => WPFF_URL . 'assets/images/templates/bg/contact-form-thanks.jpg'],
+        'backgroundImage' => ['id' => null, 'url' => FLOWFORMS_URL . 'assets/images/templates/bg/contact-form-thanks.jpg'],
         'bgLayout' => 'split',
         'bgPosition' => 'right',
       ],

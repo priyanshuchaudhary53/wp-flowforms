@@ -49,7 +49,7 @@ function buildDefaultQuestion(fieldType) {
 }
 
 export const useFormStore = create((set, get) => ({
-  formId: Number(wpffBuilderData.formId) || 0,
+  formId: Number(flowformsBuilderData.formId) || 0,
   form: null,
   loading: false,
   error: null,
@@ -342,11 +342,11 @@ export const useFormStore = create((set, get) => ({
     set({ saveStatus: "saving" });
 
     try {
-      const res = await fetch(`${wpffBuilderData.apiUrl}/forms/${formId}`, {
+      const res = await fetch(`${flowformsBuilderData.apiUrl}/forms/${formId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-WP-Nonce": wpffBuilderData.nonce,
+          "X-WP-Nonce": flowformsBuilderData.nonce,
         },
         body: JSON.stringify({ form_data: form.content }),
       });
@@ -375,12 +375,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${wpffBuilderData.apiUrl}/forms/${formId}/design`,
+        `${flowformsBuilderData.apiUrl}/forms/${formId}/design`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": wpffBuilderData.nonce,
+            "X-WP-Nonce": flowformsBuilderData.nonce,
           },
           body: JSON.stringify({ design }),
         },
@@ -424,12 +424,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${wpffBuilderData.apiUrl}/forms/${formId}/settings`,
+        `${flowformsBuilderData.apiUrl}/forms/${formId}/settings`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": wpffBuilderData.nonce,
+            "X-WP-Nonce": flowformsBuilderData.nonce,
           },
           body: JSON.stringify({ settings }),
         },
@@ -454,12 +454,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${wpffBuilderData.apiUrl}/forms/${formId}/publish`,
+        `${flowformsBuilderData.apiUrl}/forms/${formId}/publish`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": wpffBuilderData.nonce,
+            "X-WP-Nonce": flowformsBuilderData.nonce,
           },
         },
       );
@@ -484,12 +484,12 @@ export const useFormStore = create((set, get) => ({
 
     try {
       const res = await fetch(
-        `${wpffBuilderData.apiUrl}/forms/${formId}/revert`,
+        `${flowformsBuilderData.apiUrl}/forms/${formId}/revert`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-WP-Nonce": wpffBuilderData.nonce,
+            "X-WP-Nonce": flowformsBuilderData.nonce,
           },
         },
       );
@@ -517,11 +517,11 @@ export const useFormStore = create((set, get) => ({
   // ── Rename form ───────────────────────────────────────────────────────────
   renameForm: async (newName) => {
     const { formId } = get();
-    const res = await fetch(`${wpffBuilderData.apiUrl}/forms/${formId}`, {
+    const res = await fetch(`${flowformsBuilderData.apiUrl}/forms/${formId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-WP-Nonce": wpffBuilderData.nonce,
+        "X-WP-Nonce": flowformsBuilderData.nonce,
       },
       body: JSON.stringify({ form_name: newName }),
     });
@@ -541,11 +541,11 @@ export const useFormStore = create((set, get) => ({
     }
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`${wpffBuilderData.apiUrl}/forms/${formId}`, {
+      const res = await fetch(`${flowformsBuilderData.apiUrl}/forms/${formId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "X-WP-Nonce": wpffBuilderData.nonce,
+          "X-WP-Nonce": flowformsBuilderData.nonce,
         },
       });
       if (!res.ok) throw new Error(`API Error: ${res.status}`);

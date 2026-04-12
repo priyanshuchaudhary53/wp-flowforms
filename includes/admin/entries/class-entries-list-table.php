@@ -60,7 +60,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
 
     // Only show Form column when not filtered to a single form.
     if (! $this->form_id) {
-      $cols = wpff_array_insert($cols, ['form' => __('Form', 'flowforms')], 'summary');
+      $cols = flowforms_array_insert($cols, ['form' => __('Form', 'flowforms')], 'summary');
     }
 
     return $cols;
@@ -96,11 +96,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
    */
   public function column_id($entry): string
   {
-    $view_url = add_query_arg([
-      'page'     => 'wpff_entries',
+    $view_url = wp_nonce_url( add_query_arg([
+      'page'     => 'flowforms_entries',
       'view'     => 'single',
       'entry_id' => $entry->id,
-    ], admin_url('admin.php'));
+    ], admin_url('admin.php')), 'flowforms_entries_nav' );
 
     return sprintf('<a href="%s">#%d</a>', esc_url($view_url), $entry->id);
   }
@@ -134,7 +134,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       return sprintf('—<br><small>#%d</small>', $entry->form_id);
     }
 
-    $url = add_query_arg(['page' => 'wpff_entries', 'form_id' => $post->ID], admin_url('admin.php'));
+    $url = add_query_arg(['page' => 'flowforms_entries', 'form_id' => $post->ID], admin_url('admin.php'));
 
     return sprintf(
       '<a href="%s" class="wpff-form-filter-link">%s<span class="wpff-form-filter-icon" aria-hidden="true">%s</span></a>',
@@ -151,11 +151,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
    */
   public function column_summary($entry): string
   {
-    $view_url = add_query_arg([
-      'page'     => 'wpff_entries',
+    $view_url = wp_nonce_url( add_query_arg([
+      'page'     => 'flowforms_entries',
       'view'     => 'single',
       'entry_id' => $entry->id,
-    ], admin_url('admin.php'));
+    ], admin_url('admin.php')), 'flowforms_entries_nav' );
 
     $preview = $this->build_summary($entry->answers);
     $weight  = $entry->is_read ? 'normal' : 'bold';
@@ -192,7 +192,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     $base = remove_query_arg(['action', '_wpnonce', 'entry_id', 'paged']);
 
     $view_url = add_query_arg([
-      'page'     => 'wpff_entries',
+      'page'     => 'flowforms_entries',
       'view'     => 'single',
       'entry_id' => $entry->id,
     ], admin_url('admin.php'));
@@ -201,12 +201,12 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       $actions = [
         'restore' => sprintf(
           '<a href="%s">%s</a>',
-          esc_url(wp_nonce_url(add_query_arg(['action' => 'restore', 'entry_id' => $entry->id], $base), 'wpff_entry_restore')),
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'restore', 'entry_id' => $entry->id], $base), 'flowforms_entry_restore')),
           esc_html__('Restore', 'flowforms')
         ),
         'delete' => sprintf(
           '<a href="%s" class="submitdelete" onclick="return confirm(\'%s\')">%s</a>',
-          esc_url(wp_nonce_url(add_query_arg(['action' => 'delete', 'entry_id' => $entry->id], $base), 'wpff_entry_delete')),
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'delete', 'entry_id' => $entry->id], $base), 'flowforms_entry_delete')),
           esc_js(__('Permanently delete this entry?', 'flowforms')),
           esc_html__('Delete Permanently', 'flowforms')
         ),
@@ -215,12 +215,12 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       $actions = [
         'unspam' => sprintf(
           '<a href="%s">%s</a>',
-          esc_url(wp_nonce_url(add_query_arg(['action' => 'unspam', 'entry_id' => $entry->id], $base), 'wpff_entry_unspam')),
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'unspam', 'entry_id' => $entry->id], $base), 'flowforms_entry_unspam')),
           esc_html__('Not Spam', 'flowforms')
         ),
         'trash' => sprintf(
           '<a href="%s" class="submitdelete">%s</a>',
-          esc_url(wp_nonce_url(add_query_arg(['action' => 'trash', 'entry_id' => $entry->id], $base), 'wpff_entry_trash')),
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'trash', 'entry_id' => $entry->id], $base), 'flowforms_entry_trash')),
           esc_html__('Trash', 'flowforms')
         ),
       ];
@@ -233,18 +233,18 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         ),
         'spam' => sprintf(
           '<a href="%s">%s</a>',
-          esc_url(wp_nonce_url(add_query_arg(['action' => 'spam', 'entry_id' => $entry->id], $base), 'wpff_entry_spam')),
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'spam', 'entry_id' => $entry->id], $base), 'flowforms_entry_spam')),
           esc_html__('Spam', 'flowforms')
         ),
         'trash' => sprintf(
           '<a href="%s" class="submitdelete">%s</a>',
-          esc_url(wp_nonce_url(add_query_arg(['action' => 'trash', 'entry_id' => $entry->id], $base), 'wpff_entry_trash')),
+          esc_url(wp_nonce_url(add_query_arg(['action' => 'trash', 'entry_id' => $entry->id], $base), 'flowforms_entry_trash')),
           esc_html__('Trash', 'flowforms')
         ),
       ];
     }
 
-    $actions = apply_filters('wpff_entries_row_actions', $actions, $entry);
+    $actions = apply_filters('flowforms_entries_row_actions', $actions, $entry);
 
     $parts = [];
     foreach ($actions as $key => $link) {
@@ -275,7 +275,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
    */
   public function column_default($entry, $column_name): string
   {
-    return apply_filters('wpff_entries_column_value', '', $entry, $column_name);
+    return apply_filters('flowforms_entries_column_value', '', $entry, $column_name);
   }
 
   /**
@@ -315,7 +315,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
    */
   protected function get_views(): array
   {
-    $base   = admin_url('admin.php?page=wpff_entries');
+    $base   = admin_url('admin.php?page=flowforms_entries');
     if ($this->form_id) {
       $base = add_query_arg('form_id', $this->form_id, $base);
     }
@@ -329,7 +329,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
 
     $views['active'] = sprintf(
       '<a href="%s"%s>%s%s <span class="count">(%d)</span></a>',
-      esc_url($base),
+      esc_url( wp_nonce_url( $base, 'flowforms_entries_nav' ) ),
       $this->status === 'active' ? ' class="current"' : '',
       esc_html__('All', 'flowforms'),
       $unread_badge,
@@ -339,7 +339,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     if ($counts['starred'] > 0 || $this->status === 'starred') {
       $views['starred'] = sprintf(
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
-        esc_url(add_query_arg('status', 'starred', $base)),
+        esc_url( wp_nonce_url( add_query_arg('status', 'starred', $base), 'flowforms_entries_nav' ) ),
         $this->status === 'starred' ? ' class="current"' : '',
         esc_html__('Starred', 'flowforms'),
         $counts['starred']
@@ -349,7 +349,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     if ($counts['spam'] > 0 || $this->status === 'spam') {
       $views['spam'] = sprintf(
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
-        esc_url(add_query_arg('status', 'spam', $base)),
+        esc_url( wp_nonce_url( add_query_arg('status', 'spam', $base), 'flowforms_entries_nav' ) ),
         $this->status === 'spam' ? ' class="current"' : '',
         esc_html__('Spam', 'flowforms'),
         $counts['spam']
@@ -359,7 +359,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     if ($counts['trash'] > 0 || $this->status === 'trash') {
       $views['trash'] = sprintf(
         '<a href="%s"%s>%s <span class="count">(%d)</span></a>',
-        esc_url(add_query_arg('status', 'trash', $base)),
+        esc_url( wp_nonce_url( add_query_arg('status', 'trash', $base), 'flowforms_entries_nav' ) ),
         $this->status === 'trash' ? ' class="current"' : '',
         esc_html__('Trash', 'flowforms'),
         $counts['trash']
@@ -383,7 +383,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     $base = remove_query_arg(['action', '_wpnonce', 'entry_id']);
 
     if ($this->status === 'trash') {
-      $url = wp_nonce_url(add_query_arg('action', 'empty_trash', $base), 'wpff_entry_empty_trash');
+      $url = wp_nonce_url(add_query_arg('action', 'empty_trash', $base), 'flowforms_entry_empty_trash');
       printf(
         '<a href="%s" class="button wpff-empty-btn" onclick="return confirm(\'%s\')">%s</a>',
         esc_url($url),
@@ -391,7 +391,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
         esc_html__('Empty Trash', 'flowforms')
       );
     } elseif ($this->status === 'spam') {
-      $url = wp_nonce_url(add_query_arg('action', 'empty_spam', $base), 'wpff_entry_empty_spam');
+      $url = wp_nonce_url(add_query_arg('action', 'empty_spam', $base), 'flowforms_entry_empty_spam');
       printf(
         '<a href="%s" class="button wpff-empty-btn" onclick="return confirm(\'%s\')">%s</a>',
         esc_url($url),
@@ -418,7 +418,7 @@ class FlowForms_Entries_List_Table extends WP_List_Table
     $date    = isset($_GET['date']) ? sanitize_key($_GET['date']) : '';
     // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
-    $per_page = $this->get_items_per_page('wpff_entries_per_page', FlowForms_Entries_Overview::PER_PAGE_DEFAULT);
+    $per_page = $this->get_items_per_page('flowforms_entries_per_page', FlowForms_Entries_Overview::PER_PAGE_DEFAULT);
 
     [$date_after, $date_before] = $this->resolve_date_range($date);
 

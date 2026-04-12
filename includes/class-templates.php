@@ -22,7 +22,7 @@ if (! defined('ABSPATH')) exit;
  * To add a new free template: drop a PHP file in includes/templates/.
  * No registration needed — the directory is scanned automatically.
  *
- * Pro templates will hook in later via the wpff_templates filter.
+ * Pro templates will hook in later via the flowforms_templates filter.
  *
  * @since 1.0.0
  */
@@ -110,7 +110,7 @@ class FlowForms_Templates
   {
     $this->templates = [];
 
-    $dir   = WPFF_PATH . self::TEMPLATES_DIR . '/';
+    $dir   = FLOWFORMS_PATH . self::TEMPLATES_DIR . '/';
     $files = glob($dir . '*.php') ?: [];
 
     foreach ($files as $file) {
@@ -144,6 +144,6 @@ class FlowForms_Templates
      *
      * @param array $templates Templates array keyed by slug.
      */
-    $this->templates = apply_filters('wpff_templates', $this->templates);
+    $this->templates = apply_filters('flowforms_templates', $this->templates);
   }
 }

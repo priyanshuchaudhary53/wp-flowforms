@@ -46,11 +46,7 @@ class FlowForms_Entry_Handler
 
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Single-row lookup by PK on a custom table; caching not appropriate here.
     $row = $wpdb->get_row(
-      $wpdb->prepare(
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name is an internally generated trusted value from $wpdb->prefix.
-        'SELECT * FROM `' . esc_sql( self::table() ) . '` WHERE id = %d',
-        $entry_id
-      )
+      $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d', self::table(), $entry_id )
     );
 
     return $row ? $this->prepare_entry($row) : null;
@@ -141,29 +137,28 @@ class FlowForms_Entry_Handler
     // Orderby whitelist — only values from this array reach the query.
     $allowed_orderby = ['id', 'form_id', 'created_at', 'is_read', 'is_starred'];
     $orderby = in_array($args['orderby'], $allowed_orderby, true) ? $args['orderby'] : 'id';
-    $orderby = esc_sql( $orderby );
     $order   = strtoupper($args['order']) === 'ASC' ? 'ASC' : 'DESC';
 
     // Pagination.
     $per_page = max(1, (int) $args['per_page']);
     $offset   = ($args['paged'] - 1) * $per_page;
 
-    $table = esc_sql( self::table() );
+    $table = self::table();
 
-    // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $where_sql uses only %s/%d placeholders; $orderby and $order are whitelisted then esc_sql()'d.
-    // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
-    $count_sql = $values
-      ? $wpdb->prepare("SELECT COUNT(*) FROM `{$table}` {$where_sql}", ...$values)
-      : "SELECT COUNT(*) FROM `{$table}` {$where_sql}";
-
+    // Count query — %i is the identifier placeholder for table name (WP 6.2+).
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-    $total = (int) $wpdb->get_var($count_sql);
+    $total = (int) $wpdb->get_var(
+      // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $where_sql uses only %s/%d placeholders; all values passed via prepare().
+      $wpdb->prepare( "SELECT COUNT(*) FROM %i {$where_sql}", $table, ...$values )
+    );
 
-    $params   = array_merge($values, [$per_page, $offset]);
-    $sql      = "SELECT * FROM `{$table}` {$where_sql} ORDER BY `{$orderby}` {$order} LIMIT %d OFFSET %d";
+    // Select query — %i used for both table name and whitelisted orderby column.
+    $select_params = array_merge( [ $table ], $values, [ $orderby, $per_page, $offset ] );
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-    $rows_sql = $wpdb->prepare($sql, ...$params);
-    $rows     = $wpdb->get_results($rows_sql);
+    $rows = $wpdb->get_results(
+      // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $where_sql uses only %s/%d placeholders; $order is hardcoded ASC/DESC; all values passed via prepare().
+      $wpdb->prepare( "SELECT * FROM %i {$where_sql} ORDER BY %i {$order} LIMIT %d OFFSET %d", ...$select_params )
+    );
 
     return [
       'entries' => array_map([$this, 'prepare_entry'], $rows ?: []),
@@ -182,17 +177,26 @@ class FlowForms_Entry_Handler
   public function get_counts(int $form_id = 0): array
   {
     global $wpdb;
-    $table = esc_sql( self::table() );
+    $table = self::table();
 
-    $form_where  = $form_id ? $wpdb->prepare('AND form_id = %d', $form_id) : '';
-
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $form_where is built via $wpdb->prepare().
-    $rows = $wpdb->get_results(
-      "SELECT status, is_starred, is_read, COUNT(*) as cnt
-             FROM `{$table}`
-             WHERE 1=1 {$form_where}
-             GROUP BY status, is_starred, is_read"
-    );
+    if ( $form_id ) {
+      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+      $rows = $wpdb->get_results(
+        $wpdb->prepare(
+          'SELECT status, is_starred, is_read, COUNT(*) as cnt FROM %i WHERE form_id = %d GROUP BY status, is_starred, is_read',
+          $table,
+          $form_id
+        )
+      );
+    } else {
+      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+      $rows = $wpdb->get_results(
+        $wpdb->prepare(
+          'SELECT status, is_starred, is_read, COUNT(*) as cnt FROM %i WHERE 1=1 GROUP BY status, is_starred, is_read',
+          $table
+        )
+      );
+    }
 
     $counts = ['active' => 0, 'starred' => 0, 'spam' => 0, 'trash' => 0, 'unread' => 0];
 
@@ -324,12 +328,11 @@ class FlowForms_Entry_Handler
       return 0;
     }
 
-    $placeholders = implode(',', array_fill(0, count($ids), '%d'));
-    $table        = esc_sql( self::table() );
+    $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; $placeholders are %d repeated; IDs are passed via prepare().
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $placeholders are %d repeated; all values passed via prepare().
     return (int) $wpdb->query(
-      $wpdb->prepare("DELETE FROM `{$table}` WHERE id IN ({$placeholders})", ...$ids)
+      $wpdb->prepare( "DELETE FROM %i WHERE id IN ({$placeholders})", self::table(), ...$ids )
     );
   }
 
@@ -350,22 +353,18 @@ class FlowForms_Entry_Handler
       return 0;
     }
 
-    $table = esc_sql( self::table() );
+    $table = self::table();
 
     if ($form_id) {
-      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; values are passed via prepare().
+      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
       return (int) $wpdb->query(
-        $wpdb->prepare(
-          "DELETE FROM `{$table}` WHERE status = %s AND form_id = %d",
-          $status,
-          $form_id
-        )
+        $wpdb->prepare( 'DELETE FROM %i WHERE status = %s AND form_id = %d', $table, $status, $form_id )
       );
     }
 
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is esc_sql()'d; value passed via prepare().
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
     return (int) $wpdb->query(
-      $wpdb->prepare("DELETE FROM `{$table}` WHERE status = %s", $status)
+      $wpdb->prepare( 'DELETE FROM %i WHERE status = %s', $table, $status )
     );
   }
 
@@ -413,16 +412,14 @@ class FlowForms_Entry_Handler
       return;
     }
 
-    $table        = esc_sql( self::table() );
-    $column       = esc_sql( $column );
-    $placeholders = implode(',', array_fill(0, count($ids), '%d'));
+    $placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
     $format       = is_int($value) ? '%d' : '%s';
 
-    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table and $column are esc_sql()'d and whitelisted; $format is controlled (%d or %s); all values passed via prepare().
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $column is whitelisted above; $format is controlled (%d or %s); all values passed via prepare().
     $wpdb->query(
       $wpdb->prepare(
-        "UPDATE `{$table}` SET `{$column}` = {$format} WHERE id IN ({$placeholders})",
-        ...array_merge([$value], $ids)
+        "UPDATE %i SET %i = {$format} WHERE id IN ({$placeholders})",
+        ...array_merge( [ self::table(), $column, $value ], $ids )
       )
     );
   }

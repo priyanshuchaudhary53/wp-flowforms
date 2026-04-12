@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) exit;
 /**
  * FlowForms_Entries_Overview
  *
- * Controller for wp-admin/admin.php?page=wpff_entries.
+ * Controller for wp-admin/admin.php?page=flowforms_entries.
  * Handles the list view, single entry view, bulk actions and CSV export.
  *
  * @since 1.0.0
@@ -53,7 +53,7 @@ class FlowForms_Entries_Overview
   public function __construct()
   {
     // AJAX handlers must be registered in the constructor — page guards in init() would block them.
-    add_action('wp_ajax_wpff_toggle_star', [$this, 'ajax_toggle_star']);
+    add_action('wp_ajax_flowforms_toggle_star', [$this, 'ajax_toggle_star']);
 
     add_filter('set-screen-option', [$this, 'set_screen_option'], 10, 3);
 
@@ -67,7 +67,7 @@ class FlowForms_Entries_Overview
    */
   public function init()
   {
-    if (! wpff_is_admin_page('entries')) {
+    if (! flowforms_is_admin_page('entries')) {
       return;
     }
 
@@ -75,19 +75,20 @@ class FlowForms_Entries_Overview
       return;
     }
 
-    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin navigation params used only for routing; capability is checked above, values are sanitized and validated against allowlists.
-    $this->view    = isset($_GET['view']) && $_GET['view'] === 'single' ? 'single' : 'list';
-    $this->form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : 0;
-    $status        = isset($_GET['status']) ? sanitize_key($_GET['status']) : 'active';
-    $this->status  = in_array($status, ['active', 'starred', 'spam', 'trash'], true) ? $status : 'active';
-    // phpcs:enable WordPress.Security.NonceVerification.Recommended
+    $nonce       = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+    $nonce_valid = wp_verify_nonce( $nonce, 'flowforms_entries_nav' );
+
+    $this->view    = $nonce_valid && isset( $_GET['view'] ) && $_GET['view'] === 'single' ? 'single' : 'list';
+    $this->form_id = $nonce_valid && isset( $_GET['form_id'] ) ? absint( $_GET['form_id'] ) : 0;
+    $status        = $nonce_valid && isset( $_GET['status'] ) ? sanitize_key( $_GET['status'] ) : 'active';
+    $this->status  = in_array( $status, ['active', 'starred', 'spam', 'trash'], true ) ? $status : 'active';
 
     $this->process_actions();
 
-    add_action('load-flowforms_page_wpff_entries', [$this, 'register_screen_options']);
+    add_action('load-flowforms_page_flowforms_entries', [$this, 'register_screen_options']);
     add_action('current_screen', [$this, 'init_list_table']);
     add_action('admin_enqueue_scripts', [$this, 'enqueues']);
-    add_action('wpff_admin_page', [$this, 'output']);
+    add_action('flowforms_admin_page', [$this, 'output']);
   }
 
   /**
@@ -104,7 +105,7 @@ class FlowForms_Entries_Overview
     add_screen_option('per_page', [
       'label'   => __('Number of entries per page', 'flowforms'),
       'default' => self::PER_PAGE_DEFAULT,
-      'option'  => 'wpff_entries_per_page',
+      'option'  => 'flowforms_entries_per_page',
     ]);
   }
 
@@ -115,7 +116,7 @@ class FlowForms_Entries_Overview
    */
   public function set_screen_option($status, $option, $value)
   {
-    if ($option === 'wpff_entries_per_page') {
+    if ($option === 'flowforms_entries_per_page') {
       return (int) $value;
     }
 
@@ -133,7 +134,7 @@ class FlowForms_Entries_Overview
       return;
     }
 
-    require_once WPFF_PATH . 'includes/admin/entries/class-entries-list-table.php';
+    require_once FLOWFORMS_PATH . 'includes/admin/entries/class-entries-list-table.php';
     $this->list_table = new FlowForms_Entries_List_Table($this->form_id, $this->status);
   }
 
@@ -146,21 +147,21 @@ class FlowForms_Entries_Overview
   {
     wp_enqueue_style(
       'flowforms-entries',
-      WPFF_URL . 'assets/css/admin-entries.css',
+      FLOWFORMS_URL . 'assets/css/admin-entries.css',
       [],
-      WPFF_VERSION
+      FLOWFORMS_VERSION
     );
 
     wp_enqueue_script(
       'flowforms-entries',
-      WPFF_URL . 'assets/js/admin-entries.js',
+      FLOWFORMS_URL . 'assets/js/admin-entries.js',
       ['jquery'],
-      WPFF_VERSION,
+      FLOWFORMS_VERSION,
       true
     );
 
-    wp_localize_script('flowforms-entries', 'wpffEntries', [
-      'nonce'       => wp_create_nonce('wpff_entries_nonce'),
+    wp_localize_script('flowforms-entries', 'flowformsEntries', [
+      'nonce'       => wp_create_nonce('flowforms_entries_nonce'),
       'ajaxUrl'     => admin_url('admin-ajax.php'),
       'starLabel'   => __('Star', 'flowforms'),
       'unstarLabel' => __('Unstar', 'flowforms'),
@@ -190,7 +191,7 @@ class FlowForms_Entries_Overview
     $nonce = isset($_REQUEST['_wpnonce']) ? sanitize_key($_REQUEST['_wpnonce']) : ''; // phpcs:ignore
     if (
       ! wp_verify_nonce($nonce, 'bulk-entries') &&
-      ! wp_verify_nonce($nonce, 'wpff_entry_' . $action)
+      ! wp_verify_nonce($nonce, 'flowforms_entry_' . $action)
     ) {
       wp_die(esc_html__('Security check failed.', 'flowforms'), 403);
     }
@@ -248,7 +249,7 @@ class FlowForms_Entries_Overview
     if ($this->view === 'single' && in_array($action, ['spam', 'unspam'], true)) {
       // Reload same entry — button state comes from $entry->status (DB), not URL.
       $base_url = add_query_arg(
-        ['page' => 'wpff_entries', 'view' => 'single', 'entry_id' => $ids[0] ?? 0],
+        ['page' => 'flowforms_entries', 'view' => 'single', 'entry_id' => $ids[0] ?? 0],
         admin_url('admin.php')
       );
     } elseif ($this->view === 'single' && in_array($action, ['star', 'unstar', 'mark_read', 'mark_unread'], true)) {
@@ -295,7 +296,7 @@ class FlowForms_Entries_Overview
    */
   public function ajax_toggle_star()
   {
-    check_ajax_referer('wpff_entries_nonce', 'nonce');
+    check_ajax_referer('flowforms_entries_nonce', 'nonce');
 
     if (! current_user_can('manage_options')) {
       wp_send_json_error('Insufficient permissions.', 403);
@@ -373,7 +374,8 @@ class FlowForms_Entries_Overview
         <?php endif; ?>
 
         <form id="wpff-entries-table" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
-          <input type="hidden" name="page" value="wpff_entries">
+          <input type="hidden" name="page" value="flowforms_entries">
+          <?php wp_nonce_field( 'flowforms_entries_nav', '_wpnonce', false ); ?>
           <?php if ($this->form_id) : ?>
             <input type="hidden" name="form_id" value="<?php echo esc_attr($this->form_id); ?>">
           <?php endif; ?>
@@ -437,7 +439,7 @@ class FlowForms_Entries_Overview
     $form_post    = get_post($entry->form_id);
     $questions    = [];
     if ($form_post) {
-      $data      = wpff_decode($form_post->post_content);
+      $data      = flowforms_decode($form_post->post_content);
       $slots     = $data['content'] ?? [];
       $content   = $slots['published'] ?? $slots['draft'] ?? [];
       $questions = $content['questions'] ?? [];
@@ -446,28 +448,28 @@ class FlowForms_Entries_Overview
     $back_url   = remove_query_arg(['view', 'entry_id']);
     $trash_url  = wp_nonce_url(
       add_query_arg(['action' => 'trash', 'entry_id' => $entry_id], remove_query_arg(['view', 'entry_id'])),
-      'wpff_entry_trash'
+      'flowforms_entry_trash'
     );
     $spam_url   = wp_nonce_url(
       add_query_arg(['action' => 'spam', 'entry_id' => $entry_id]),
-      'wpff_entry_spam'
+      'flowforms_entry_spam'
     );
     $unspam_url = wp_nonce_url(
       add_query_arg(['action' => 'unspam', 'entry_id' => $entry_id]),
-      'wpff_entry_unspam'
+      'flowforms_entry_unspam'
     );
     $star_url   = wp_nonce_url(
       add_query_arg(['action' => $entry->is_starred ? 'unstar' : 'star', 'entry_id' => $entry_id]),
-      'wpff_entry_' . ($entry->is_starred ? 'unstar' : 'star')
+      'flowforms_entry_' . ($entry->is_starred ? 'unstar' : 'star')
     );
 
-    $single_base = admin_url('admin.php?page=wpff_entries&view=single');
+    $single_base = admin_url('admin.php?page=flowforms_entries&view=single');
 
     $prev_url = $adjacent['prev']
-      ? add_query_arg('entry_id', $adjacent['prev'], $single_base)
+      ? wp_nonce_url( add_query_arg('entry_id', $adjacent['prev'], $single_base), 'flowforms_entries_nav' )
       : null;
     $next_url = $adjacent['next']
-      ? add_query_arg('entry_id', $adjacent['next'], $single_base)
+      ? wp_nonce_url( add_query_arg('entry_id', $adjacent['next'], $single_base), 'flowforms_entries_nav' )
       : null;
 
   ?>
@@ -520,7 +522,7 @@ class FlowForms_Entries_Overview
         <?php if ($form_post) : ?>
           <span>
             <strong><?php esc_html_e('Form:', 'flowforms'); ?></strong>
-            <a href="<?php echo esc_url(add_query_arg(['page' => 'wpff_entries', 'form_id' => $form_post->ID], admin_url('admin.php'))); ?>">
+            <a href="<?php echo esc_url(add_query_arg(['page' => 'flowforms_entries', 'form_id' => $form_post->ID], admin_url('admin.php'))); ?>">
               <?php echo esc_html($form_post->post_title); ?>
             </a>
           </span>
@@ -543,7 +545,7 @@ class FlowForms_Entries_Overview
           ?>
             <div class="wpff-entry-field <?php echo $empty ? 'wpff-entry-field--empty' : ''; ?>">
               <dt class="wpff-entry-field__label">
-                <?php echo wp_kses( FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label), wpff_kses_field_icon() ); ?>
+                <?php echo wp_kses( FlowForms_Field_Icons::label_with_icon($q['type'] ?? '', $label), flowforms_kses_field_icon() ); ?>
               </dt>
               <dd class="wpff-entry-field__value">
                 <?php if ($empty) : ?>
@@ -558,7 +560,7 @@ class FlowForms_Entries_Overview
           <?php foreach ($entry->answers as $key => $value) : ?>
             <div class="wpff-entry-field">
               <dt class="wpff-entry-field__label">
-                <?php echo wp_kses( FlowForms_Field_Icons::label_with_icon('', $key), wpff_kses_field_icon() ); ?>
+                <?php echo wp_kses( FlowForms_Field_Icons::label_with_icon('', $key), flowforms_kses_field_icon() ); ?>
               </dt>
               <dd class="wpff-entry-field__value">
                 <?php echo wp_kses_post($this->format_answer($value, 'short_text')); ?>
@@ -632,7 +634,8 @@ class FlowForms_Entries_Overview
 
   ?>
     <form id="wpff-filter-bar" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
-      <input type="hidden" name="page" value="wpff_entries">
+      <input type="hidden" name="page" value="flowforms_entries">
+      <?php wp_nonce_field( 'flowforms_entries_nav', '_wpnonce', false ); ?>
       <?php if ($this->status !== 'active') : ?>
         <input type="hidden" name="status" value="<?php echo esc_attr($this->status); ?>">
       <?php endif; ?>
@@ -736,7 +739,7 @@ class FlowForms_Entries_Overview
         <?php esc_html_e('Share your form to start collecting responses.', 'flowforms'); ?>
       </p>
       <?php if ($form_post) : ?>
-        <a href="<?php echo esc_url(add_query_arg(['page' => 'wpff_form_builder', 'form_id' => $form_post->ID, 'view' => 'share'], admin_url('admin.php'))); ?>"
+        <a href="<?php echo esc_url( wp_nonce_url( add_query_arg(['page' => 'flowforms_form_builder', 'form_id' => $form_post->ID, 'view' => 'share'], admin_url('admin.php')), 'flowforms_builder_nav' ) ); ?>"
           class="button button-primary">
           <?php esc_html_e('Share Form', 'flowforms'); ?>
         </a>
@@ -755,7 +758,7 @@ class FlowForms_Entries_Overview
   ?>
     <div class="wrap wpff-admin-wrap">
       <p><?php esc_html_e('Entry not found.', 'flowforms'); ?>
-        <a href="<?php echo esc_url(admin_url('admin.php?page=wpff_entries')); ?>">
+        <a href="<?php echo esc_url(admin_url('admin.php?page=flowforms_entries')); ?>">
           &larr; <?php esc_html_e('Back to Entries', 'flowforms'); ?>
         </a>
       </p>
@@ -773,7 +776,7 @@ class FlowForms_Entries_Overview
   private function get_form_options(): array
   {
     $posts = get_posts([
-      'post_type'      => 'wpff_forms',
+      'post_type'      => 'flowforms_forms',
       'post_status'    => 'publish',
       'posts_per_page' => -1,
       'orderby'        => 'title',

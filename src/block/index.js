@@ -25,15 +25,15 @@ function Edit( { attributes, setAttributes } ) {
     style: { width: '100%' },
   } );
 
-  // Fetch all wpff_forms posts for the dropdown.
+  // Fetch all flowforms_forms posts for the dropdown.
   const { forms, isLoading } = useSelect( ( select ) => {
     const query = { per_page: -1, status: 'publish', orderby: 'title', order: 'asc' };
-    const posts = select( coreStore ).getEntityRecords( 'postType', 'wpff_forms', query );
+    const posts = select( coreStore ).getEntityRecords( 'postType', 'flowforms_forms', query );
     return {
       forms:     posts ?? [],
       isLoading: ! select( coreStore ).hasFinishedResolution(
         'getEntityRecords',
-        [ 'postType', 'wpff_forms', query ]
+        [ 'postType', 'flowforms_forms', query ]
       ),
     };
   }, [] );
@@ -41,7 +41,7 @@ function Edit( { attributes, setAttributes } ) {
   // Separately check the status of the currently selected form (may be trashed).
   const selectedPost = useSelect( ( select ) => {
     if ( ! formId ) return null;
-    return select( coreStore ).getEntityRecord( 'postType', 'wpff_forms', formId ) ?? null;
+    return select( coreStore ).getEntityRecord( 'postType', 'flowforms_forms', formId ) ?? null;
   }, [ formId ] );
 
   const isTrashed    = !! ( selectedPost && selectedPost.status === 'trash' );
@@ -172,7 +172,7 @@ function FormPlaceholder( { form, height, borderRadius } ) {
 
 function TrashedFormWarning( { formId, formTitle } ) {
   const label = formTitle || `Form #${ formId }`;
-  const restoreUrl = `${ window.wpff?.adminUrl ?? '' }admin.php?page=wpff_forms&status=trash`;
+  const restoreUrl = window.flowforms?.trashUrl ?? '';
 
   return (
     <Notice status="warning" isDismissible={ false }>

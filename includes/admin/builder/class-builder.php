@@ -65,7 +65,7 @@ class FlowForms_Builder
    */
   public function init()
   {
-    if (! wpff_is_admin_page('form_builder')) {
+    if (! flowforms_is_admin_page('form_builder')) {
       return;
     }
 
@@ -73,25 +73,25 @@ class FlowForms_Builder
       return;
     }
 
-    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only admin navigation params used only for routing; capability is checked above, values are sanitized with absint()/sanitize_key() and validated against allowlists below.
-    $form_id = isset($_GET['form_id']) ? absint($_GET['form_id']) : false;
+    $nonce       = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+    $nonce_valid = wp_verify_nonce( $nonce, 'flowforms_builder_nav' );
+
+    $form_id = $nonce_valid && isset( $_GET['form_id'] ) ? absint( $_GET['form_id'] ) : false;
 
     // Abort early if form ID is set, but the value is empty, 0 or any non-numeric value.
     if ($form_id === 0) {
-      // phpcs:enable WordPress.Security.NonceVerification.Recommended
       wp_die(esc_html__('It looks like the form you are trying to access is no longer available.', 'flowforms'), 403);
     }
 
     if ($form_id) {
       // The default view for with an existing form is the builder panel.
       $allowed_views  = ['builder', 'settings', 'share'];
-      $requested_view = isset($_GET['view']) ? sanitize_key($_GET['view']) : 'builder';
+      $requested_view = $nonce_valid && isset( $_GET['view'] ) ? sanitize_key( $_GET['view'] ) : 'builder';
       $this->view     = in_array($requested_view, $allowed_views, true) ? $requested_view : 'builder';
     } else {
       // The default view for the new form is the setup panel.
-      $this->view = isset($_GET['view']) ? sanitize_key($_GET['view']) : 'setup';
+      $this->view = $nonce_valid && isset( $_GET['view'] ) ? sanitize_key( $_GET['view'] ) : 'setup';
     }
-    // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     if ($this->view === 'setup' && ! current_user_can('manage_options')) {
       wp_die(esc_html__('Sorry, you are not allowed to create new forms.', 'flowforms'), 403);
@@ -112,11 +112,11 @@ class FlowForms_Builder
       wp_die(esc_html__('You can\'t edit this form because it\'s in the trash.', 'flowforms'), 403);
     }
 
-    $this->form_data = $this->form ? wpff_decode($this->form->post_content) : false;
+    $this->form_data = $this->form ? flowforms_decode($this->form->post_content) : false;
 
     add_action('admin_head', [$this, 'admin_head']);
     add_action('admin_enqueue_scripts', [$this, 'enqueues'], PHP_INT_MAX);
-    add_action('wpff_admin_page', [$this, 'output']);
+    add_action('flowforms_admin_page', [$this, 'output']);
 
     /**
      * Form Builder init action.
@@ -127,7 +127,7 @@ class FlowForms_Builder
      *
      * @param string $view Current view.
      */
-    do_action('wpff_builder_init', $this->view);
+    do_action('flowforms_builder_init', $this->view);
   }
 
   /**
@@ -137,7 +137,7 @@ class FlowForms_Builder
    */
   public function deregister_admin_styles()
   {
-    if (! wpff_is_admin_page('form_builder')) {
+    if (! flowforms_is_admin_page('form_builder')) {
       return;
     }
 
@@ -149,7 +149,7 @@ class FlowForms_Builder
      * @param array $allowed_styles Styles allowed in the Form Builder.
      */
     $allowed_styles = apply_filters(
-      'wpff_admin_builder_allowed_admin_styles',
+      'flowforms_admin_builder_allowed_admin_styles',
       [
         'wp-editor',
         'wp-editor-font',
@@ -177,7 +177,7 @@ class FlowForms_Builder
     echo '<div id="wpff-page-loader" aria-hidden="true">
       <div class="wpff-loader-content">
         <div class="wpff-loader-logo">
-          <img width="36" height="36" src="' . esc_url( WPFF_URL ) . 'assets/images/flowforms-logo.svg" />
+          <img width="36" height="36" src="' . esc_url( FLOWFORMS_URL ) . 'assets/images/flowforms-logo.svg" />
         </div>
         <div class="wpff-loader-spinner" role="status">
           <span class="screen-reader-text">' . esc_html__('Loading…', 'flowforms') . '</span>
@@ -192,11 +192,11 @@ class FlowForms_Builder
      *
      * @since 1.0.0
      */
-    do_action('wpff_builder_admin_head', $this->view);
+    do_action('flowforms_builder_admin_head', $this->view);
   }
 
   /**
-   * Enqueues the builder script and stylesheet and localises wpffBuilderData.
+   * Enqueues the builder script and stylesheet and localises flowformsBuilderData.
    *
    * @since 1.0.0
    */
@@ -204,24 +204,24 @@ class FlowForms_Builder
   {
     wp_enqueue_media();
 
-    $asset_file = WPFF_PATH . 'build/builder/index.asset.php';
+    $asset_file = FLOWFORMS_PATH . 'build/builder/index.asset.php';
     $asset = file_exists($asset_file)
       ? include $asset_file
-      : ['dependencies' => [], 'version' => WPFF_VERSION];
+      : ['dependencies' => [], 'version' => FLOWFORMS_VERSION];
 
     wp_enqueue_script(
       'flowforms-builder',
-      WPFF_URL . 'build/builder/index.js',
+      FLOWFORMS_URL . 'build/builder/index.js',
       $asset['dependencies'],
       $asset['version'],
       true
     );
 
-    wp_set_script_translations( 'flowforms-builder', 'flowforms', WPFF_PATH . 'languages' );
+    wp_set_script_translations( 'flowforms-builder', 'flowforms', FLOWFORMS_PATH . 'languages' );
 
     wp_enqueue_style(
       'flowforms-builder',
-      WPFF_URL . 'build/builder/style-index.css',
+      FLOWFORMS_URL . 'build/builder/style-index.css',
       [],
       $asset['version']
     );
@@ -275,10 +275,10 @@ class FlowForms_Builder
       }
     ' );
 
-    wp_localize_script('flowforms-builder', 'wpffBuilderData', [
-      'apiUrl'        => rest_url('wpff/v1'),
-      'adminFormsUrl' => admin_url('admin.php?page=wpff_forms'),
-      'builderUrl'    => admin_url('admin.php?page=wpff_form_builder'),
+    wp_localize_script('flowforms-builder', 'flowformsBuilderData', [
+      'apiUrl'        => rest_url('flowforms/v1'),
+      'adminFormsUrl' => admin_url('admin.php?page=flowforms_forms'),
+      'builderUrl'    => wp_nonce_url( admin_url('admin.php?page=flowforms_form_builder'), 'flowforms_builder_nav' ),
       'nonce'         => wp_create_nonce('wp_rest'),
       // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation param; form ID is validated by absint() and checked in init().
       'formId'        => intval($_GET['form_id'] ?? 0),
@@ -313,7 +313,7 @@ class FlowForms_Builder
      *
      * @param bool $is_enabled Is builder output enabled? Defaults to `true`.
      */
-    if (! apply_filters('wpff_builder_output', true)) {
+    if (! apply_filters('flowforms_builder_output', true)) {
       return;
     }
 

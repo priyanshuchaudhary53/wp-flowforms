@@ -47,7 +47,7 @@ function CopyInputRow({ label, value }) {
 export default function Share({ className }) {
   const formId  = useFormStore((state) => state.formId);
 
-  const publicUrl = wpffBuilderData.publicUrl ?? "";
+  const publicUrl = flowformsBuilderData.publicUrl ?? "";
 
   // Shortcode customisation state
   const [height,        setHeight]        = useState(DEFAULT_HEIGHT);

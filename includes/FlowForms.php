@@ -80,8 +80,8 @@ final class FlowForms
    */
   private function constants()
   {
-    $this->version = WPFF_VERSION;
-    $this->name = WPFF_NAME;
+    $this->version = FLOWFORMS_VERSION;
+    $this->name = FLOWFORMS_NAME;
   }
 
   /**
@@ -91,28 +91,28 @@ final class FlowForms
    */
   private function includes()
   {
-    require_once WPFF_PATH . 'includes/class-install.php';
-    require_once WPFF_PATH . 'includes/class-database.php';
-    require_once WPFF_PATH . 'includes/functions.php';
-    require_once WPFF_PATH . 'includes/class-form.php';
-    require_once WPFF_PATH . 'includes/class-entry.php';
-    require_once WPFF_PATH . 'includes/class-templates.php';
-    require_once WPFF_PATH . 'includes/class-smart-tags.php';
-    require_once WPFF_PATH . 'includes/class-token.php';
-    require_once WPFF_PATH . 'includes/class-akismet.php';
-    require_once WPFF_PATH . 'includes/class-rest-api.php';
-    require_once WPFF_PATH . 'includes/frontend/class-frontend.php';
-    require_once WPFF_PATH . 'includes/admin/block/class-block.php';
+    require_once FLOWFORMS_PATH . 'includes/class-install.php';
+    require_once FLOWFORMS_PATH . 'includes/class-database.php';
+    require_once FLOWFORMS_PATH . 'includes/functions.php';
+    require_once FLOWFORMS_PATH . 'includes/class-form.php';
+    require_once FLOWFORMS_PATH . 'includes/class-entry.php';
+    require_once FLOWFORMS_PATH . 'includes/class-templates.php';
+    require_once FLOWFORMS_PATH . 'includes/class-smart-tags.php';
+    require_once FLOWFORMS_PATH . 'includes/class-token.php';
+    require_once FLOWFORMS_PATH . 'includes/class-akismet.php';
+    require_once FLOWFORMS_PATH . 'includes/class-rest-api.php';
+    require_once FLOWFORMS_PATH . 'includes/frontend/class-frontend.php';
+    require_once FLOWFORMS_PATH . 'includes/admin/block/class-block.php';
 
     // Admin/Dashboard only includes
     if (is_admin()) {
-      require_once WPFF_PATH . 'includes/admin/class-menu.php';
-      require_once WPFF_PATH . 'includes/admin/settings/settings-api.php';
-      require_once WPFF_PATH . 'includes/admin/class-settings.php';
-      require_once WPFF_PATH . 'includes/admin/builder/class-builder.php';
-      require_once WPFF_PATH . 'includes/admin/forms/class-forms-overview.php';
-      require_once WPFF_PATH . 'includes/admin/entries/class-entries-overview.php';
-      require_once WPFF_PATH . 'includes/admin/entries/class-field-icons.php';
+      require_once FLOWFORMS_PATH . 'includes/admin/class-menu.php';
+      require_once FLOWFORMS_PATH . 'includes/admin/settings/settings-api.php';
+      require_once FLOWFORMS_PATH . 'includes/admin/class-settings.php';
+      require_once FLOWFORMS_PATH . 'includes/admin/builder/class-builder.php';
+      require_once FLOWFORMS_PATH . 'includes/admin/forms/class-forms-overview.php';
+      require_once FLOWFORMS_PATH . 'includes/admin/entries/class-entries-overview.php';
+      require_once FLOWFORMS_PATH . 'includes/admin/entries/class-field-icons.php';
     }
   }
 
@@ -135,7 +135,7 @@ final class FlowForms
      *
      * @since 1.0.0
      */
-    do_action('wpff_loaded');
+    do_action('flowforms_loaded');
   }
 
   /**

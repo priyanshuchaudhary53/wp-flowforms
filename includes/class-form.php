@@ -10,7 +10,7 @@ class FlowForms_Form_Handler
    * @since 1.0.0
    */
   public const POST_TYPES = [
-    'wpff_forms',
+    'flowforms_forms',
   ];
 
   /**
@@ -27,7 +27,7 @@ class FlowForms_Form_Handler
   }
 
   /**
-   * Register the wpff_forms custom post type with WordPress.
+   * Register the flowforms_forms custom post type with WordPress.
    *
    * @since 1.0.0
    */
@@ -41,7 +41,7 @@ class FlowForms_Form_Handler
      * @param array $args Arguments.
      */
     $args = apply_filters(
-      'wpff_forms_post_type_args',
+      'flowforms_forms_post_type_args',
       [
         'label'               => 'FlowForms',
         'public'              => false,
@@ -53,12 +53,12 @@ class FlowForms_Form_Handler
         'can_export'          => false,
         'show_in_rest'        => true,
         'supports'            => ['title', 'author', 'revisions'],
-        // 'capability_type'     => 'wpff_forms',
+        // 'capability_type'     => 'flowforms_forms',
         // 'map_meta_cap'        => false,
       ]
     );
 
-    register_post_type('wpff_forms', $args);
+    register_post_type('flowforms_forms', $args);
   }
 
   /**
@@ -118,7 +118,7 @@ class FlowForms_Form_Handler
      * @param array $args Arguments array.
      * @param mixed $id   Form ID.
      */
-    $args = (array) apply_filters('wpff_get_form_args', $args, $id);
+    $args = (array) apply_filters('flowforms_get_form_args', $args, $id);
 
     // By default, we should return only published forms.
     $defaults = [
@@ -152,7 +152,7 @@ class FlowForms_Form_Handler
      * @param array      $args Arguments' array, same as for `get_post()` function.
      * @param string|int $id   Form ID.
      */
-    $args = apply_filters('wpff_get_single_form_args', $args, $id);
+    $args = apply_filters('flowforms_get_single_form_args', $args, $id);
 
     if (! empty($args['cap']) && ! current_user_can($args['cap'], $id)) {
       return false;
@@ -173,7 +173,7 @@ class FlowForms_Form_Handler
     }
 
     if (! empty($args['content_only'])) {
-      $form = wpff_decode($form->post_content);
+      $form = flowforms_decode($form->post_content);
     }
 
     return $form;
@@ -197,7 +197,7 @@ class FlowForms_Form_Handler
      *
      * @param array $args Arguments' array. Almost the same as for the `get_posts ()` function.
      */
-    $args = (array) apply_filters('wpff_get_multiple_forms_args', $args);
+    $args = (array) apply_filters('flowforms_get_multiple_forms_args', $args);
 
     $defaults = [
       'orderby'          => 'id',
@@ -215,7 +215,7 @@ class FlowForms_Form_Handler
     $post_type = array_intersect((array) $post_type, self::POST_TYPES);
 
     // If no valid (allowed) post types are provided, use the default one.
-    $args['post_type'] = ! empty($post_type) ? $post_type : 'wpff_forms';
+    $args['post_type'] = ! empty($post_type) ? $post_type : 'flowforms_forms';
 
     $forms = get_posts($args);
 
@@ -226,6 +226,6 @@ class FlowForms_Form_Handler
      *
      * @param array $forms Result of getting multiple forms.
      */
-    return apply_filters('wpff_form_handler_get_multiple_forms_result', $forms);
+    return apply_filters('flowforms_form_handler_get_multiple_forms_result', $forms);
   }
 }
