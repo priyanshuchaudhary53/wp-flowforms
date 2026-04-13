@@ -1,6 +1,6 @@
-=== FlowForms ===
+=== FlowForms – Conversational Form Builder for WordPress ===
 Contributors: priyanshuchaudhary
-Tags: forms, contact form, conversational form, typeform, form builder
+Tags: contact form, conversational form, typeform, form builder, survey
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -8,65 +8,186 @@ Stable tag: 1.0.0
 License: GPL-3.0-only
 License URI: https://opensource.org/licenses/GPL-3.0
 
-A Typeform-style conversational form builder for WordPress. Beautiful step-by-step forms, self-hosted, no monthly fees.
+The Typeform alternative for WordPress. Build beautiful, conversational step-by-step forms, surveys & quizzes — self-hosted, free, no monthly fees.
 
 == Description ==
 
-FlowForms brings the conversational form experience to WordPress — one question at a time, with smooth animations and a clean UI that keeps respondents engaged.
+**FlowForms is the easiest way to build Typeform-style conversational forms in WordPress — without the SaaS price tag.**
 
-Unlike traditional form plugins that show every field at once, FlowForms guides users through your form step by step — just like Typeform — but with all responses stored directly in your WordPress database. No third-party services. No monthly SaaS fees.
+Most contact form plugins give you a wall of fields. FlowForms gives your visitors a *conversation*. One question at a time, guided and focused — the result is higher completion rates, better responses, and a user experience that feels modern and intentional.
 
-**Key Features:**
+Whether you're collecting leads, running surveys, gathering testimonials, or building customer feedback forms, FlowForms delivers a premium, interactive form experience that lives on *your* server, under *your* control, with no monthly subscription required.
 
-* **Conversational, step-by-step forms** — one question at a time for higher completion rates
-* **Drag-and-drop builder** — intuitive React-based form editor inside your WordPress admin
-* **Gutenberg block** — embed forms directly in the block editor
-* **Shortcode support** — `[flowform id="123"]` works anywhere
-* **Full-page form URLs** — dedicated landing pages for your forms
-* **Welcome & Thank You screens** — customisable start and end screens
-* **Built-in entries manager** — view, star, and trash responses in wp-admin
-* **Email notifications** — notify your team when a form is submitted, with smart tag support
-* **Anti-spam protection** — built-in modern anti-spam protection, and optional Akismet integration
-* **Design customisation** — adjust colours, fonts, and layout to match your brand
-* **Free starter templates** — contact form, lead generation, customer feedback, testimonial
+> **Why FlowForms?**
+> Typeform costs $25–$83/month. FlowForms is self-hosted and free. Same conversational UX — your WordPress site, your data.
 
-**Form Field Types:**
+= Conversational, Step-by-Step Forms =
 
-* Short text
-* Long text (paragraph)
-* Multiple choice (single select)
-* Checkboxes (multi-select)
-* Star rating
-* Yes/No
-* Email field
-* Number field
+FlowForms presents one question at a time, just like Typeform. This reduces overwhelm, keeps respondents focused, and significantly improves form completion rates compared to traditional multi-field forms.
 
-**Smart Tags:**
+Every form flows through three stages:
 
-Use dynamic values anywhere in your email notifications:
+* **Welcome Screen** — customisable title, description, start button, and background image
+* **Questions** — any combination of 8 field types, drag-to-reorder
+* **Thank You Screen** — closing message with optional redirect URL, delay, and social share buttons
 
-`{form_name}` `{admin_email}` `{site_name}` `{all_fields}`
+= Drag & Drop Form Builder =
 
-**Privacy & Data Ownership:**
+Build any form in minutes without touching a line of code. The intuitive React-powered drag-and-drop builder lets you add, reorder, and configure questions visually. What you build is exactly what your visitors see.
 
-All form submissions are stored in your own WordPress database. Nothing is sent to external servers (except optionally to Akismet for spam checking, if you have it installed).
+= 8 Ready-to-Use Field Types =
+
+FlowForms ships with all the essentials:
+
+* **Short Text** — single-line text input
+* **Long Text** — multi-line paragraph / textarea
+* **Multiple Choice** — single-select with optional "Other" answer
+* **Checkboxes** — multi-select with min/max limits and optional "Other" answer
+* **Rating** — star rating with configurable max stars and shape
+* **Yes / No** — two-button question with customisable labels
+* **Email** — with format validation and optional confirm-email mode
+* **Number** — numeric input with optional min/max validation
+
+= Beautiful Design Customisation =
+ 
+Every form is independently styled with a live design panel — no draft/publish cycle. Customise:
+ 
+* Background colour
+* Title, description, answer, hint, field, and button colours
+* Button hover colour and text
+* Star rating colour
+* Layout alignment: left or centered
+* Border radius: angular, rounded, or full
+* Any Google Font by name
+* Font size: small, regular, or large
+ 
+Forms look great on every device — FlowForms is fully responsive and mobile-ready.
+
+= Flexible Embed Options =
+ 
+Embed your forms anywhere in WordPress using your preferred method:
+ 
+* **Shortcode:** `[flowform id="123"]`
+* **Gutenberg Block:** native `FlowForm` block — drag it straight into the editor
+* **Full-Page URL:** `/flowform/{id}` — share a direct link to a distraction-free form page
+
+= Pre-Built Form Templates =
+ 
+Get started in seconds with 4 ready-to-use templates:
+ 
+* Contact Form
+* Lead Generation
+* Customer Feedback
+* Testimonial Form
+
+= Submission Management =
+ 
+Every submission is stored securely in your WordPress database. The built-in entries dashboard gives you full control:
+ 
+* Paginated list with search and sorting
+* Individual entry detail view
+* Bulk actions: mark read/unread, star, trash, delete permanently
+* Status filters: All, Starred, Spam, Trash
+* Unread count badge in the admin menu
+
+= Email Notifications =
+ 
+Get notified the moment someone submits your form. Configure the recipient, subject, sender name, reply-to address, and message body — all with smart tag support.
+ 
+**Available smart tags:** `{admin_email}`, `{site_name}`, `{form_name}`, `{entry_id}`, `{date}`, `{all_fields}`, `{field:uuid}`
+
+= Built-In Spam Protection =
+ 
+Three layers of anti-spam run automatically on every submission — no CAPTCHA plugins required:
+ 
+1. **Honeypot field** — invisible to humans, catches bots
+2. **Rotating server-side token** — tied to each form, refreshed daily
+3. **Akismet integration** — if Akismet is active, submissions are checked automatically; spam entries are flagged and saved for review
+
+= Multilingual Ready =
+ 
+Every user-facing string — button labels, validation messages, placeholders, error messages — is customisable from the Global Settings panel. No translation plugin needed to adapt FlowForms for any language.
+
+= FlowForms Pro (Coming Soon) =
+ 
+We are actively researching the features WordPress users most want to pay for. The Pro version will be a self-hosted annual licence — significantly cheaper than Typeform or Jotform — and will extend the free plugin without replacing it.
+ 
+Candidate Pro features under research:
+ 
+* Conditional logic (show/hide questions based on answers)
+* Multiple email notifications and respondent confirmation emails
+* Email marketing integrations (Mailchimp, ConvertKit, ActiveCampaign, and more)
+* File upload field
+* Stripe payment field
+* CSV / Excel entry export
+* Opinion scale / NPS field
+* Date & time picker field
+* Phone number field with country code
+* GDPR consent checkbox field
+* Form scheduling (open/close at a specific date)
+* Submission limits (cap responses at a set number)
+* Zapier / webhook integrations
+* Calculator & quiz scoring
+* Extended pro template library
+ 
+> Want to influence what we build first? [Join the Pro waitlist](https://flowforms.priyanshuc.dev) and tell us which feature matters most to you.
+
+= Why Self-Hosted Beats SaaS for Forms =
+ 
+| | FlowForms | Typeform | Jotform |
+|---|---|---|---|
+| Monthly cost | $0 | $25–$83/mo | $34–$99/mo |
+| Your own server | ✅ | ❌ | ❌ |
+| Your own data | ✅ | ❌ | ❌ |
+| WordPress-native | ✅ | ❌ | ❌ |
+| Conversational UX | ✅ | ✅ | Partial |
+
+= Full Feature List =
+ 
+* Drag-and-drop conversational form builder
+* 8 field types: short text, long text, multiple choice, checkboxes, rating, yes/no, email, number
+* Welcome screen and thank you screen for every form
+* Redirect on completion with configurable delay
+* Social share buttons on thank you screen
+* Live design customisation — colours, fonts, layout, border radius
+* Google Font supported
+* Layout alignments: left and center
+* Progress bar (show/hide)
+* Navigation arrows (show/hide)
+* Gutenberg block embed
+* Shortcode embed
+* Full-page form URL
+* 4 free starter templates
+* Submission entries database with full admin management
+* Read/unread, star, trash, spam entry statuses
+* Unread count badge in WordPress admin menu
+* Email notifications with smart tags
+* Honeypot, token, and Akismet spam protection
+* Customisable user-facing strings (multilingual-friendly)
+* GDPR-friendly — all data stored on your own server
+* 100% mobile responsive
+* Developer hooks for extensibility
 
 == Installation ==
 
-1. Upload the \`flowforms\` folder to `/wp-content/plugins/`
-2. Activate the plugin through the **Plugins** menu in WordPress
-3. Go to **FlowForms** in the admin sidebar to create your first form
-4. Embed using the Gutenberg block, shortcode `[flowform id="123"]`, or share the full-page URL
+1. Upload the `flowforms` folder to `/wp-content/plugins/`, or install directly via the WordPress plugin screen.
+2. Activate the plugin through the **Plugins** screen in WordPress.
+3. Go to **FlowForms → Add New** to create your first form.
+4. Embed the form using the Gutenberg block, the shortcode `[flowform id="YOUR_ID"]`, or share the full-page URL.
 
 == Frequently Asked Questions ==
 
-= Is this a Typeform replacement? =
+= How is this different from Contact Form 7 or WPForms? =
+ 
+Traditional form plugins display all fields at once on a single page. FlowForms shows one question at a time in a guided, conversational flow — similar to Typeform. This typically increases completion rates and produces more thoughtful responses.
 
-Yes — for WordPress users. FlowForms gives you the same conversational, one-question-at-a-time experience as Typeform, but self-hosted inside your WordPress site with no monthly fee.
+= Is this a Typeform alternative for WordPress? =
+ 
+Yes. FlowForms is built specifically to bring the Typeform-style conversational form experience to self-hosted WordPress — without a monthly SaaS subscription.
 
 = Where are form submissions stored? =
 
-All entries are stored in your WordPress database in the `wp_flowforms_entries` table. Nothing is sent to external servers.
+All submissions are stored in your own WordPress database. No data is sent to external servers.
 
 = Does it work with the block editor (Gutenberg)? =
 
@@ -76,13 +197,17 @@ Yes. FlowForms includes a native Gutenberg block. You can also use the `[flowfor
 
 Any page builder that supports shortcodes will work with the `[flowform id="123"]` shortcode.
 
-= Is Akismet required for anti-spam? =
-
-No. Akismet is optional. FlowForms includes modern spam protection out of the box. Akismet adds an extra layer if you have it installed and configured.
+= Does it work with Akismet? =
+ 
+Yes. If Akismet is active on your site, FlowForms automatically checks submissions and flags spam entries in your dashboard.
 
 = Can I customise the form design? =
 
 Yes. The form builder includes a Design panel where you can adjust colours, fonts, button styles, and layout to match your brand.
+
+= Can I translate the form interface into another language? =
+ 
+Yes. Every user-facing string is customisable from **FlowForms → Global Settings → Messages** — no translation plugin required.
 
 = What happens if I trash a form? =
 
@@ -91,6 +216,10 @@ Trashed forms display a notice to admins on the frontend, and an empty string to
 = What is the draft/publish workflow? =
 
 Changes you make in the builder are auto-saved to a draft. Your live form is only updated when you click **Publish**. This lets you safely edit a live form without affecting visitors until you are ready.
+
+= Is there a Pro version? =
+ 
+A Pro version is in active research. [Join the waitlist](https://flowforms.priyanshuc.dev) to be notified at launch and help us decide which features to build first.
 
 == Screenshots ==
 
@@ -102,11 +231,7 @@ Changes you make in the builder are auto-saved to a draft. Your live form is onl
 
 == Source Code ==
 
-The full source code, including all JavaScript source files and build configuration, is publicly available on GitHub:
-
-https://github.com/priyanshuchaudhary53/wp-flowforms
-
-To rebuild the compiled assets from source, run `npm install` followed by `npm run build`.
+The full source code, including all JavaScript source files and build configuration, is publicly available on [GitHub](https://github.com/priyanshuchaudhary53/wp-flowforms)
 
 == Changelog ==
 
