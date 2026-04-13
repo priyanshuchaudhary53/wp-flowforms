@@ -18,8 +18,8 @@ Most contact form plugins give you a wall of fields. FlowForms gives your visito
 
 Whether you're collecting leads, running surveys, gathering testimonials, or building customer feedback forms, FlowForms delivers a premium, interactive form experience that lives on *your* server, under *your* control, with no monthly subscription required.
 
-> **Why FlowForms?**
-> Typeform costs $25–$83/month. FlowForms is self-hosted and free. Same conversational UX — your WordPress site, your data.
+**Why FlowForms?**
+Typeform costs $25–$83/month. FlowForms is self-hosted and free. Same conversational UX — your WordPress site, your data.
 
 = Conversational, Step-by-Step Forms =
 
@@ -76,7 +76,7 @@ Embed your forms anywhere in WordPress using your preferred method:
 Get started in seconds with 4 ready-to-use templates:
  
 * Contact Form
-* Lead Generation
+* Lead Generation Survey
 * Customer Feedback
 * Testimonial Form
 
@@ -130,7 +130,7 @@ Candidate Pro features under research:
 * Calculator & quiz scoring
 * Extended pro template library
  
-> Want to influence what we build first? [Join the Pro waitlist](https://flowforms.priyanshuc.dev) and tell us which feature matters most to you.
+Want to influence what we build first? [Join the Pro waitlist](https://flowforms.priyanshuc.dev) and tell us which feature matters most to you.
 
 = Why Self-Hosted Beats SaaS for Forms =
  
@@ -161,7 +161,7 @@ Candidate Pro features under research:
 * Unread count badge in WordPress admin menu
 * Email notifications with smart tags
 * Honeypot, token, and Akismet spam protection
-* Customisable user-facing strings (multilingual-friendly)
+* Customisable user-facing strings
 * GDPR-friendly — all data stored on your own server
 * 100% mobile responsive
 * Developer hooks for extensibility
