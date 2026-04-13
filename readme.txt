@@ -50,7 +50,7 @@ FlowForms ships with all the essentials:
 
 = Beautiful Design Customisation =
  
-Every form is independently styled with a live design panel — no draft/publish cycle. Customise:
+Every form is independently styled with a live design panel. Customise:
  
 * Background colour
 * Title, description, answer, hint, field, and button colours
@@ -58,7 +58,7 @@ Every form is independently styled with a live design panel — no draft/publish
 * Star rating colour
 * Layout alignment: left or centered
 * Border radius: angular, rounded, or full
-* Any Google Font by name
+* Google Fonts
 * Font size: small, regular, or large
  
 Forms look great on every device — FlowForms is fully responsive and mobile-ready.
@@ -94,7 +94,7 @@ Every submission is stored securely in your WordPress database. The built-in ent
  
 Get notified the moment someone submits your form. Configure the recipient, subject, sender name, reply-to address, and message body — all with smart tag support.
  
-**Available smart tags:** `{admin_email}`, `{site_name}`, `{form_name}`, `{entry_id}`, `{date}`, `{all_fields}`, `{field:uuid}`
+**Available smart tags:** `{admin_email}`, `{site_name}`, `{form_name}`, `{all_fields}`
 
 = Built-In Spam Protection =
  
@@ -134,13 +134,11 @@ Candidate Pro features under research:
 
 = Why Self-Hosted Beats SaaS for Forms =
  
-| | FlowForms | Typeform | Jotform |
-|---|---|---|---|
-| Monthly cost | $0 | $25–$83/mo | $34–$99/mo |
-| Your own server | ✅ | ❌ | ❌ |
-| Your own data | ✅ | ❌ | ❌ |
-| WordPress-native | ✅ | ❌ | ❌ |
-| Conversational UX | ✅ | ✅ | Partial |
+* **Monthly cost:** Free (vs $25–$83/mo for Typeform, $34–$99/mo for Jotform)
+* **Your own server:** Yes — all data stays in your WordPress database
+* **Your own data:** Yes — no third-party servers, no vendor lock-in
+* **WordPress-native:** Yes — Gutenberg block, shortcode, full-page URL
+* **Conversational UX:** Yes — one question at a time, just like Typeform
 
 = Full Feature List =
  
