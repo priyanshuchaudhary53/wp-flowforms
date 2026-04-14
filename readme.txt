@@ -21,6 +21,8 @@ Whether you're collecting leads, running surveys, gathering testimonials, or bui
 **Why FlowForms?**
 Typeform costs $25–$83/month. FlowForms is self-hosted and free. Same conversational UX — your WordPress site, your data.
 
+[View Demo](https://www.wpflowforms.com/demo) | [Templates](https://www.wpflowforms.com/templates)
+
 = Conversational, Step-by-Step Forms =
 
 FlowForms presents one question at a time, just like Typeform. This reduces overwhelm, keeps respondents focused, and significantly improves form completion rates compared to traditional multi-field forms.
@@ -130,7 +132,7 @@ Candidate Pro features under research:
 * Calculator & quiz scoring
 * Extended pro template library
  
-Want to influence what we build first? [Join the Pro waitlist](https://flowforms.priyanshuc.dev) and tell us which feature matters most to you.
+Want to influence what we build first? [Request a feature](https://www.wpflowforms.com/roadmap) and tell us which feature matters most to you.
 
 = Why Self-Hosted Beats SaaS for Forms =
  
@@ -217,7 +219,7 @@ Changes you make in the builder are auto-saved to a draft. Your live form is onl
 
 = Is there a Pro version? =
  
-A Pro version is in active research. [Join the waitlist](https://flowforms.priyanshuc.dev) to be notified at launch and help us decide which features to build first.
+A Pro version is in active research. [Join the waitlist](https://www.wpflowforms.com/#pro-waitlist) to be notified at launch and help us decide which features to build first.
 
 == Screenshots ==
 
