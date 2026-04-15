@@ -4,6 +4,8 @@ A conversational, step-by-step form builder for WordPress. Create Typeform-style
 
 ![FlowForms in action](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExenh1NmFjYTY2dWJkaHl3cTVjZWtnOGZuZzN3d2lzYXJwN2ZuMGlzeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/u4HBzehKnJsgYba0Sd/giphy.gif)
 
+[Demo](https://www.wpflowforms.com/demo) | [Templates](https://www.wpflowforms.com/templates)
+
 ## Features
 
 - **Conversational forms** — one question at a time, full-screen experience
