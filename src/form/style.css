@@ -962,10 +962,9 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   transition:      opacity 0.15s, color 0.15s;
 }
 
-/* .ff-powered-by-link:hover {
+.ff-powered-by-link:hover {
   opacity: 1;
-  color:   var(--btn-color, #111827);
-} */
+}
 
 .flowform-container .ff-powered-by-link:focus { outline: none; }
 .flowform-container .ff-powered-by-link:focus-visible {

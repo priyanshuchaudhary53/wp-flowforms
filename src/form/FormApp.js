@@ -161,14 +161,14 @@ export class FormApp {
 			this._poweredByEl = document.createElement( 'div' );
 			this._poweredByEl.className = 'ff-powered-by';
 			this._poweredByEl.innerHTML =
-				// '<a href="https://flowforms.priyanshuc.dev/" target="_blank" rel="noopener noreferrer" class="ff-powered-by-link">' +
-				'<span class="ff-powered-by-link">' +
+				'<a href="https://wpflowforms.com/" target="_blank" rel="noopener noreferrer" class="ff-powered-by-link">' +
+				// '<span class="ff-powered-by-link">' +
 					'<svg class="ff-powered-by-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
 						'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' +
 					'</svg>' +
 					__( 'Powered by FlowForms', 'flowforms' ) +
-				'</span>';
-				// '</a>';
+				// '</span>';
+				'</a>';
 			this.container.appendChild( this._poweredByEl );
 		}
 

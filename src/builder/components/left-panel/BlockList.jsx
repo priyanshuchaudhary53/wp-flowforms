@@ -20,7 +20,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { GripVertical } from "lucide-react";
 import { __ } from '@wordpress/i18n';
 import { useFormStore } from "../../store/useFormStore";
-import FIELDS from "./fields";
+import { ALL_FIELDS as FIELDS } from "./fieldCategories";
 import BlockItemMenu from "./BlockItemMenu";
 
 function BlockItem({ question, index }) {
