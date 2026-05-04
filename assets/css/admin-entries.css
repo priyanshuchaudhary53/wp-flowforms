@@ -33,6 +33,47 @@
   text-decoration: none;
 }
 
+.wpff-empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.wpff-empty-state__icon {
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.wpff-empty-state__icon .dashicons {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #c3c4c7;
+}
+
+.wpff-empty-state__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1d2327;
+  margin: 0 0 12px;
+}
+
+.wpff-empty-state__desc {
+  font-size: 15px;
+  color: #646970;
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+.wpff-empty-state__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .wpff-form-filter-icon {
   display: inline-flex;
   opacity: 0;

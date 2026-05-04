@@ -134,7 +134,10 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       return sprintf('—<br><small>#%d</small>', $entry->form_id);
     }
 
-    $url = add_query_arg(['page' => 'flowforms_entries', 'form_id' => $post->ID], admin_url('admin.php'));
+    $url = wp_nonce_url(
+      add_query_arg(['page' => 'flowforms_entries', 'form_id' => $post->ID], admin_url('admin.php')),
+      'flowforms_entries_nav'
+    );
 
     return sprintf(
       '<a href="%s" class="wpff-form-filter-link">%s<span class="wpff-form-filter-icon" aria-hidden="true">%s</span></a>',

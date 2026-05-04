@@ -522,7 +522,7 @@ class FlowForms_Entries_Overview
         <?php if ($form_post) : ?>
           <span>
             <strong><?php esc_html_e('Form:', 'flowforms'); ?></strong>
-            <a href="<?php echo esc_url(add_query_arg(['page' => 'flowforms_entries', 'form_id' => $form_post->ID], admin_url('admin.php'))); ?>">
+            <a href="<?php echo esc_url( wp_nonce_url( add_query_arg(['page' => 'flowforms_entries', 'form_id' => $form_post->ID], admin_url('admin.php')), 'flowforms_entries_nav' ) ); ?>">
               <?php echo esc_html($form_post->post_title); ?>
             </a>
           </span>
@@ -728,21 +728,49 @@ class FlowForms_Entries_Overview
   {
     $form_post = $this->form_id ? get_post($this->form_id) : null;
   ?>
+    <?php if ($form_post) : ?>
+      <div class="wpff-active-filter">
+        <?php
+        printf(
+          /* translators: %s form name */
+          esc_html__('Viewing: %s', 'flowforms'),
+          '<strong>' . esc_html($form_post->post_title) . '</strong>'
+        );
+        ?>
+        &nbsp;<a href="<?php echo esc_url(remove_query_arg('form_id')); ?>" class="wpff-clear-filter">&#x2715; <?php esc_html_e('Clear', 'flowforms'); ?></a>
+      </div>
+    <?php endif; ?>
+
     <div class="wpff-empty-state">
       <div class="wpff-empty-state__icon">
         <span class="dashicons dashicons-feedback"></span>
       </div>
       <h2 class="wpff-empty-state__title">
-        <?php esc_html_e('No entries yet.', 'flowforms'); ?>
+        <?php if ($form_post) : ?>
+          <?php
+          printf(
+            /* translators: %s: form name */
+            esc_html__('No entries yet for %s.', 'flowforms'),
+            esc_html($form_post->post_title)
+          );
+          ?>
+        <?php else : ?>
+          <?php esc_html_e('No entries yet.', 'flowforms'); ?>
+        <?php endif; ?>
       </h2>
       <p class="wpff-empty-state__desc">
         <?php esc_html_e('Share your form to start collecting responses.', 'flowforms'); ?>
       </p>
       <?php if ($form_post) : ?>
-        <a href="<?php echo esc_url( wp_nonce_url( add_query_arg(['page' => 'flowforms_form_builder', 'form_id' => $form_post->ID, 'view' => 'share'], admin_url('admin.php')), 'flowforms_builder_nav' ) ); ?>"
-          class="button button-primary">
-          <?php esc_html_e('Share Form', 'flowforms'); ?>
-        </a>
+        <div class="wpff-empty-state__actions">
+          <a href="<?php echo esc_url( wp_nonce_url( add_query_arg(['page' => 'flowforms_form_builder', 'form_id' => $form_post->ID, 'view' => 'share'], admin_url('admin.php')), 'flowforms_builder_nav' ) ); ?>"
+            class="button button-primary">
+            <?php esc_html_e('Share Form', 'flowforms'); ?>
+          </a>
+          <a href="<?php echo esc_url(remove_query_arg('form_id')); ?>" class="button">
+            <?php esc_html_e('View All Entries', 'flowforms'); ?>
+          </a>
+        </div>
       <?php endif; ?>
     </div>
   <?php
@@ -783,7 +811,27 @@ class FlowForms_Entries_Overview
       'order'          => 'ASC',
     ]);
 
-    return array_map(fn($p) => ['value' => $p->ID, 'label' => $p->post_title], $posts);
+    $options = array_map(fn($p) => ['value' => $p->ID, 'label' => $p->post_title], $posts);
+
+    if ($this->form_id && ! in_array($this->form_id, array_column($options, 'value'), true)) {
+      $filtered = get_post($this->form_id);
+
+      if ($filtered && $filtered->post_type === 'flowforms_forms') {
+        $suffix = $filtered->post_status === 'trash'
+          ? __('(trashed)', 'flowforms')
+          : __('(unpublished)', 'flowforms');
+        $label  = trim($filtered->post_title) !== '' ? $filtered->post_title : sprintf('#%d', $filtered->ID);
+        $options[] = ['value' => $filtered->ID, 'label' => $label . ' ' . $suffix];
+      } else {
+        $options[] = [
+          'value' => $this->form_id,
+          /* translators: %d form ID of a deleted form */
+          'label' => sprintf(__('Deleted form #%d', 'flowforms'), $this->form_id),
+        ];
+      }
+    }
+
+    return $options;
   }
 }
 
