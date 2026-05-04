@@ -25,7 +25,7 @@ import { __ } from '@wordpress/i18n';
 // stored here, keyed by question ID. This prevents re-shuffling every time
 // the user navigates back and forth between questions.
 const _shuffleCache = new Map();
-export function renderQuestion( question, answer, error, design, onChange ) {
+export function renderQuestion( question, answer, error, design, onChange, onAutoAdvance ) {
 	const type      = question.type      ?? '';
 	const content   = question.content   ?? {};
 	const settings  = question.settings  ?? {};
@@ -52,7 +52,7 @@ export function renderQuestion( question, answer, error, design, onChange ) {
 	const inputWrap = el( 'div', 'ff-question-input' );
 	const input     = buildInput( type, content, settings, answer, alignment, ( val ) => {
 		onChange( question.id, val );
-	}, question.id );
+	}, question.id, onAutoAdvance );
 
 	inputWrap.appendChild( input );
 	wrap.appendChild( inputWrap );
@@ -69,16 +69,16 @@ export function renderQuestion( question, answer, error, design, onChange ) {
 
 // ── Input builders ────────────────────────────────────────────────────────────
 
-function buildInput( type, content, settings, answer, alignment, onChange, questionId ) {
+function buildInput( type, content, settings, answer, alignment, onChange, questionId, onAutoAdvance ) {
 	switch ( type ) {
 		case 'short_text':      return buildShortText( settings, answer, onChange );
 		case 'long_text':       return buildLongText( settings, answer, onChange );
 		case 'email':           return buildEmail( settings, answer, onChange );
 		case 'number':          return buildNumber( content, settings, answer, onChange );
-		case 'multiple_choice': return buildChoice( content, settings, answer, alignment, onChange, false, questionId );
+		case 'multiple_choice': return buildChoice( content, settings, answer, alignment, onChange, false, questionId, onAutoAdvance );
 		case 'checkboxes':      return buildChoice( content, settings, answer, alignment, onChange, true, questionId );
-		case 'rating':          return buildRating( settings, answer, onChange );
-		case 'yes_no':          return buildYesNo( content, answer, onChange );
+		case 'rating':          return buildRating( settings, answer, onChange, onAutoAdvance );
+		case 'yes_no':          return buildYesNo( content, answer, onChange, onAutoAdvance );
 		default: {
 			const fb = el( 'p', 'ff-unsupported' );
 			fb.textContent = __( 'This question type is not supported.', 'flowforms' );
@@ -185,7 +185,7 @@ function buildNumber( content, settings, answer, onChange ) {
 	return wrap;
 }
 
-function buildChoice( content, settings, answer, alignment, onChange, isMulti, questionId ) {
+function buildChoice( content, settings, answer, alignment, onChange, isMulti, questionId, onAutoAdvance ) {
 	let options = Array.isArray( content.options ) && content.options.length
 		? [ ...content.options ]
 		: [];
@@ -259,6 +259,7 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti, q
 					label.classList.add( 'is-selected' );
 				}
 				onChange( [ ...selected ] );
+				if ( typeof onAutoAdvance === 'function' ) onAutoAdvance();
 			}
 		} );
 
@@ -371,6 +372,7 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti, q
 				}
 				onChange( [ ...selected ] );
 				renderConfirmed( text );
+				if ( ! isMulti && typeof onAutoAdvance === 'function' ) onAutoAdvance();
 			} );
 
 			// Allow Enter key to confirm
@@ -426,7 +428,7 @@ function buildChoice( content, settings, answer, alignment, onChange, isMulti, q
 	return grid;
 }
 
-function buildRating( settings, answer, onChange ) {
+function buildRating( settings, answer, onChange, onAutoAdvance ) {
 	const steps   = Math.min( settings.steps ?? 5, 10 );
 	const wrap    = el( 'div', 'ff-rating' );
 	let   current = Number( answer ) || 0;
@@ -456,6 +458,7 @@ function buildRating( settings, answer, onChange ) {
 			current = i;
 			applyRating( current );
 			onChange( current );
+			if ( typeof onAutoAdvance === 'function' ) onAutoAdvance();
 		} );
 
 		// Hover: preview the rating without committing
@@ -470,7 +473,7 @@ function buildRating( settings, answer, onChange ) {
 	return wrap;
 }
 
-function buildYesNo( content, answer, onChange ) {
+function buildYesNo( content, answer, onChange, onAutoAdvance ) {
 	const wrap = el( 'div', 'ff-yes-no' );
 
 	// Keep a reference to both buttons for instant DOM toggling
@@ -490,6 +493,7 @@ function buildYesNo( content, answer, onChange ) {
 			Object.values( btns ).forEach( ( b ) => b.classList.remove( 'is-selected' ) );
 			btn.classList.add( 'is-selected' );
 			onChange( val );
+			if ( typeof onAutoAdvance === 'function' ) onAutoAdvance();
 		} );
 
 		wrap.appendChild( btn );

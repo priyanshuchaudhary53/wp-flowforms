@@ -461,6 +461,11 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   line-height: 1.4;
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .flowform-container .ff-hint,
+  .flowform-container .ff-textarea-hint { display: none; }
+}
+
 .flowform-container .ff-number-wrap {
   display:        flex;
   align-items:    center;

@@ -886,12 +886,27 @@ export class FormApp {
 
 		inner.className += ` ff-align-${ align }`;
 
+		// Holder for the OK button so the auto-advance callback (created
+		// before the button exists) can dispatch a click on it later.
+		const okBtnRef = { current: null };
 		const questionEl = renderQuestion(
 			q,
 			this.state.answers[ q.id ],
 			this.state.errors[ q.id ] ?? null,
 			this._design,
-			( id, val ) => this._setAnswer( id, val )
+			( id, val ) => this._setAnswer( id, val ),
+			() => {
+				// Never auto-submit — the last question always requires an
+				// explicit Submit click so users can review before sending.
+				if ( isLast ) return;
+				// Defer briefly so users see their selection register
+				// before the form transitions to the next question.
+				setTimeout( () => {
+					if ( okBtnRef.current && ! okBtnRef.current.disabled ) {
+						okBtnRef.current.click();
+					}
+				}, 400 );
+			}
 		);
 		inner.appendChild( questionEl );
 
@@ -924,6 +939,7 @@ export class FormApp {
 			this._lastDir = 'forward';
 			this._advance();
 		} );
+		okBtnRef.current = okBtn;
 		actions.appendChild( okBtn );
 
 		const hint = document.createElement( 'span' );
