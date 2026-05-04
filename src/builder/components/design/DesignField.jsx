@@ -386,7 +386,7 @@ function MediaImageField({ field, value, onChange, onMediaOpen, onMediaClose }) 
             type="button"
             onClick={() => onChange(null)}
             title={__( 'Remove image', 'flowforms' )}
-            className="absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white hover:text-red-500 shadow"
+            className="ff-touch-visible absolute top-1.5 right-1.5 w-6 h-6 flex items-center justify-center rounded-full bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white hover:text-red-500 shadow"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M2 2l10 10M12 2 2 12" />
@@ -396,7 +396,7 @@ function MediaImageField({ field, value, onChange, onMediaOpen, onMediaClose }) 
             type="button"
             onClick={openMediaFrame}
             title={__( 'Replace image', 'flowforms' )}
-            className="absolute bottom-1.5 right-1.5 px-2 py-0.5 text-xs font-medium rounded bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white shadow"
+            className="ff-touch-visible absolute bottom-1.5 right-1.5 px-2 py-0.5 text-xs font-medium rounded bg-white/90 text-gray-700 opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-white shadow"
           >
             {__( 'Replace', 'flowforms' )}
           </button>

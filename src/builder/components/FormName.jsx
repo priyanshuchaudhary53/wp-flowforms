@@ -53,7 +53,7 @@ export default function FormName() {
     <div className="ml-4 pl-4 border-l border-gray-200">
       <h1 className="group flex items-center gap-1 text-gray-600 underline-offset-4">
         <span className="max-w-xs block truncate">{form?.title}</span>
-        <div className="opacity-0 shrink-0 transition-opacity ease-out group-hover:opacity-100">
+        <div className="ff-touch-visible opacity-0 shrink-0 transition-opacity ease-out group-hover:opacity-100">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <button className="w-6 h-6 flex text-gray-600 items-center justify-center cursor-pointer rounded-md transition-colors hover:text-gray-900 hover:bg-gray-100">

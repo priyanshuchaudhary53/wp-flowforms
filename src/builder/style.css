@@ -192,3 +192,11 @@ html, body {
   }
 }
 
+
+/* Touch-device overrides — hover-reveal UI is unreachable without a pointer,
+   so any element marked with .ff-touch-visible is forced to full opacity on
+   touch-only devices. Used by overlay action buttons (e.g. media field
+   Remove/Replace) so they remain tappable on tablets and phones. */
+@media (hover: none) and (pointer: coarse) {
+  .ff-touch-visible { opacity: 1 !important; }
+}
