@@ -274,6 +274,65 @@ class FlowForms_REST_API
   }
 
   /**
+   * Validate the literal email fields inside settings.email.notifications.
+   *
+   * Smart-tag values like "{admin_email}" or "{field:<uuid>}" are passed
+   * through; anything else must satisfy is_email(). Empty strings are allowed
+   * (they fall back to defaults at send time). Returns WP_Error on failure or
+   * true when every field is acceptable.
+   *
+   * @since 1.1.0
+   *
+   * @param  array $settings Incoming settings payload.
+   * @return true|WP_Error
+   */
+  private function validate_notification_emails(array $settings)
+  {
+    $notifications = $settings['email']['notifications'] ?? null;
+
+    if (! is_array($notifications)) {
+      return true;
+    }
+
+    // Fields that can hold a literal email address. "subject", "sender_name"
+    // and "message" are free text, not addresses, so they are skipped.
+    $email_fields = ['email', 'sender_address', 'replyto'];
+
+    foreach ($notifications as $key => $notif) {
+      if (! is_array($notif)) {
+        continue;
+      }
+
+      foreach ($email_fields as $field) {
+        $value = isset($notif[$field]) ? trim((string) $notif[$field]) : '';
+
+        if ($value === '') {
+          continue;
+        }
+
+        // Smart tags resolve at send time — accept them as-is.
+        if (preg_match('/^\{[^{}]+\}$/', $value)) {
+          continue;
+        }
+
+        if (! is_email($value)) {
+          return new WP_Error(
+            'invalid_email',
+            sprintf(
+              /* translators: %s: name of the email notification field that failed validation. */
+              __('Please enter a valid email address for "%s".', 'flowforms'),
+              $field
+            ),
+            ['status' => 400]
+          );
+        }
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Write post_content directly via $wpdb to bypass wp_insert_post /
    * wp_update_post's internal wp_slash() call.
    *
@@ -552,6 +611,12 @@ class FlowForms_REST_API
 
     if (empty($settings) || ! is_array($settings)) {
       return new WP_Error('invalid_settings', __('No settings data provided.', 'flowforms'), ['status' => 400]);
+    }
+
+    // Validate any literal email addresses inside email notification items.
+    $email_validation = $this->validate_notification_emails($settings);
+    if (is_wp_error($email_validation)) {
+      return $email_validation;
     }
 
     $post = get_post($form_id);

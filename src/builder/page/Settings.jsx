@@ -11,6 +11,16 @@ const TABS = [
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+// Matches a single email address. Loose enough for normal use, strict enough
+// to catch typos like missing "@" or a trailing dot.
+const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Smart-tag values are wrapped in curly braces (e.g. "{admin_email}") and are
+// resolved server-side at send time, so they should never be email-validated.
+const isSmartTag = (s) => typeof s === "string" && /^\{[^{}]+\}$/.test(s.trim());
+
+const isValidEmail = (s) => EMAIL_RX.test(String(s ?? "").trim());
+
 function getActiveTab() {
   const params = new URLSearchParams(window.location.search);
   const tab = params.get("tab");
@@ -780,10 +790,30 @@ function EmailRecipientRow({ label, description, value, onChange }) {
     }
   };
 
+  // Track the input as the user types. We only persist the value when it
+  // looks like a valid email (or is empty); partial input keeps the previously
+  // saved value intact so a half-typed address can't blow away a working one.
+  const [touched, setTouched] = useState(isCustom);
+  const pauseTimer = useRef(null);
+  const trimmedCustom = customEmail.trim();
+  const showError     = touched && trimmedCustom !== "" && ! isValidEmail(trimmedCustom);
+
+  // Clear any pending pause-validation timer when the row unmounts.
+  useEffect(() => () => clearTimeout(pauseTimer.current), []);
+
   const handleCustomChange = (e) => {
     const email = e.target.value;
     setCustomEmail(email);
-    onChange(email);
+    if (email === "" || isValidEmail(email)) {
+      onChange(email.trim());
+    }
+    // Show the validation error if the user pauses for a moment with
+    // something typed in the field. Each keystroke resets the timer so the
+    // error never appears mid-word.
+    clearTimeout(pauseTimer.current);
+    if (email.trim() !== "") {
+      pauseTimer.current = setTimeout(() => setTouched(true), 700);
+    }
   };
 
   return (
@@ -811,10 +841,23 @@ function EmailRecipientRow({ label, description, value, onChange }) {
             value={customEmail}
             placeholder={ __( "Enter email address", "flowforms" ) }
             onChange={handleCustomChange}
-            className="gw-full rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+            onBlur={() => setTouched(true)}
+            aria-invalid={showError}
+            className={[
+              "gw-full rounded-lg border bg-gray-50 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2",
+              showError
+                ? "border-red-400 focus:ring-red-400/40"
+                : "border-input focus:ring-ring/50",
+            ].join(" ")}
           />
         )}
       </div>
+
+      {showError && (
+        <p className="mt-1.5 text-xs text-red-600">
+          { __( "Please enter a valid email address.", "flowforms" ) }
+        </p>
+      )}
     </div>
   );
 }
