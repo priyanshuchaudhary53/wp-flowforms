@@ -1,6 +1,6 @@
 import { LockIcon } from "lucide-react";
 import { __ } from "@wordpress/i18n";
-import { PRO_URL } from "../config";
+import { getProUrl } from "../config";
 import {
   Dialog,
   DialogContent,
@@ -36,7 +36,7 @@ export default function ProUpgradeDialog({ field, onClose }) {
             className="w-full bg-amber-500 hover:bg-amber-600! text-white border-0"
             asChild
           >
-            <a href={PRO_URL} target="_blank" rel="noopener noreferrer">
+            <a href={getProUrl(`pro-field-${field?.type}`)} target="_blank" rel="noopener noreferrer">
               {__("Upgrade to Pro", "flowforms")}
             </a>
           </Button>

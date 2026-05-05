@@ -292,7 +292,7 @@ class FlowForms_Builder
         : '',
       // phpcs:enable WordPress.Security.NonceVerification.Recommended
       'templates'     => array_values(flowforms()->obj('templates')->get_metadata()),
-      'proUrl'        => FLOWFORMS_PRO_URL,
+      'proUrl'        => flowforms_pro_url( 'builder' ),
       'site'          => [
         'adminEmail' => get_option('admin_email'),
         'siteName'   => get_bloginfo('name'),

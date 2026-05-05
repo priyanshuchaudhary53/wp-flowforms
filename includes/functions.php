@@ -110,6 +110,27 @@ function flowforms_array_insert(array $array, array $insert, string $after): arr
 }
 
 /**
+ * Build a FlowForms Pro upgrade URL with UTM tracking parameters.
+ *
+ * @since 1.1.0
+ *
+ * @param string $utm_medium  Where the link appears (e.g. 'builder', 'admin-menu').
+ * @param string $utm_content What the user clicked (e.g. 'Upgrade to Pro').
+ * @return string Full URL with UTM query parameters.
+ */
+function flowforms_pro_url( string $utm_medium = '', string $utm_content = '' ): string {
+  $args = [
+    'utm_campaign' => 'flowforms-plugin',
+    'utm_source'   => 'WordPress',
+    'utm_medium'   => $utm_medium,
+    'utm_content'  => $utm_content,
+    'utm_locale'   => get_user_locale(),
+  ];
+
+  return add_query_arg( array_filter( $args ), FLOWFORMS_PRO_URL );
+}
+
+/**
  * Allowed HTML for field icon labels (SVG icon + text label).
  *
  * @since 1.0.0
