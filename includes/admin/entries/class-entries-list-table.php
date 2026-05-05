@@ -194,11 +194,11 @@ class FlowForms_Entries_List_Table extends WP_List_Table
   {
     $base = remove_query_arg(['action', '_wpnonce', 'entry_id', 'paged']);
 
-    $view_url = add_query_arg([
+    $view_url = wp_nonce_url( add_query_arg([
       'page'     => 'flowforms_entries',
       'view'     => 'single',
       'entry_id' => $entry->id,
-    ], admin_url('admin.php'));
+    ], admin_url('admin.php')), 'flowforms_entries_nav' );
 
     if ($this->status === 'trash') {
       $actions = [
