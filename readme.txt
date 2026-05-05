@@ -4,7 +4,7 @@ Tags: contact form, conversational form, typeform, form builder, survey
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPL-3.0-only
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -234,6 +234,18 @@ A Pro version is in active research. [Join the waitlist](https://www.wpflowforms
 The full source code, including all JavaScript source files and build configuration, is publicly available on [GitHub](https://github.com/priyanshuchaudhary53/wp-flowforms)
 
 == Changelog ==
+
+= 1.1.0 - 2025-05-06 =
+- New: Auto-advance for single-select fields (Multiple Choice, Rating, Yes/No)
+- New: Touch-device support for hover-reveal UI elements (Remove/Replace buttons)
+- New: Pro field categories and upgrade dialog in the block picker
+- New: "Upgrade to Pro" menu item in admin sidebar
+- New: Empty state UI for entries page with contextual actions
+- New: Form filter indicator with clear option on entries page
+- New: Trashed/deleted form labels in the entries form filter dropdown
+- Fix: Added missing nonce verification to entry view and form filter links
+- Fix: Email validation for notification settings (client-side and server-side)
+- Improvement: Hide keyboard hints ("press Enter") on touch-only devices
 
 = 1.0.0 =
 * Initial release
