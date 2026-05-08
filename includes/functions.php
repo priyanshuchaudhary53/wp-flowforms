@@ -157,7 +157,12 @@ function flowforms_pro_can_use()
   if (! flowforms_is_pro()) {
     return false;
   }
-  return FlowFormsPro::instance()->can_use();
+  
+  try {
+    return FlowFormsPro::instance()->can_use();
+  } catch (\Exception $e) {
+    return false;
+  }
 }
 
 /**
@@ -245,7 +250,7 @@ function flowforms_kses_settings_field(): array
 function flowforms_kses_form_container(): array
 {
   return [
-    'div'    => ['class' => [], 'style' => [], 'data-flowform-id' => [], 'data-ff-mode' => []],
+    'div'    => ['class' => [], 'style' => [], 'data-flowform-id' => [], 'data-ff-mode' => [], 'data-flowform-pro' => []],
     'span'   => ['style' => []],
     'strong' => [],
     'a'      => ['href' => [], 'style' => []],

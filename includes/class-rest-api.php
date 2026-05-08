@@ -550,7 +550,7 @@ class FlowForms_REST_API
       }
 
       if (! empty($form_data)) {
-        // Strip questions whose type is not in the allowed list so that
+        // Strip questions whose type is not in the allowed list.
         if ( ! empty( $form_data['questions'] ) && is_array( $form_data['questions'] ) ) {
           $allowed_types = $this->get_allowed_field_types();
           $form_data['questions'] = array_values( array_filter(
