@@ -1,31 +1,28 @@
-=== FlowForms – Conversational Form Builder for WordPress ===
+=== FlowForms – Conversational Form Builder ===
 Contributors: priyanshuchaudhary
 Tags: contact form, conversational form, typeform, form builder, survey
 Requires at least: 6.2
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPL-3.0-only
 License URI: https://opensource.org/licenses/GPL-3.0
 
-The Typeform alternative for WordPress. Build beautiful, conversational step-by-step forms, surveys & quizzes — self-hosted, free, no monthly fees.
+Build beautiful, conversational step-by-step forms, surveys & quizzes — self-hosted and free.
 
 == Description ==
 
-**FlowForms is the easiest way to build Typeform-style conversational forms in WordPress — without the SaaS price tag.**
+**FlowForms is a self-hosted conversational form builder for WordPress.**
 
 Most contact form plugins give you a wall of fields. FlowForms gives your visitors a *conversation*. One question at a time, guided and focused — the result is higher completion rates, better responses, and a user experience that feels modern and intentional.
 
-Whether you're collecting leads, running surveys, gathering testimonials, or building customer feedback forms, FlowForms delivers a premium, interactive form experience that lives on *your* server, under *your* control, with no monthly subscription required.
-
-**Why FlowForms?**
-Typeform costs $25–$83/month. FlowForms is self-hosted and free. Same conversational UX — your WordPress site, your data.
+Whether you're collecting leads, running surveys, gathering testimonials, or building customer feedback forms, FlowForms delivers an interactive form experience that lives on *your* server, under *your* control, with no monthly subscription.
 
 [View Demo](https://www.wpflowforms.com/demo) | [Templates](https://www.wpflowforms.com/templates)
 
 = Conversational, Step-by-Step Forms =
 
-FlowForms presents one question at a time, just like Typeform. This reduces overwhelm, keeps respondents focused, and significantly improves form completion rates compared to traditional multi-field forms.
+Our conversational form plugin enables you to create engaging, Typeform-style interactive forms that guide users through a seamless question-by-question experience. This reduces overwhelm, keeps respondents focused, and improves form completion rates compared to traditional multi-field forms.
 
 Every form flows through three stages:
 
@@ -112,7 +109,7 @@ Every user-facing string — button labels, validation messages, placeholders, e
 
 = FlowForms Pro (Coming Soon) =
  
-We are actively researching the features WordPress users most want to pay for. The Pro version will be a self-hosted annual licence — significantly cheaper than Typeform or Jotform — and will extend the free plugin without replacing it.
+We are actively researching the features users most want. The Pro version will be a self-hosted annual licence that extends the free plugin without replacing it.
  
 Candidate Pro features under research:
  
@@ -134,13 +131,12 @@ Candidate Pro features under research:
  
 Want to influence what we build first? [Request a feature](https://www.wpflowforms.com/roadmap) and tell us which feature matters most to you.
 
-= Why Self-Hosted Beats SaaS for Forms =
- 
-* **Monthly cost:** Free (vs $25–$83/mo for Typeform, $34–$99/mo for Jotform)
-* **Your own server:** Yes — all data stays in your WordPress database
-* **Your own data:** Yes — no third-party servers, no vendor lock-in
-* **WordPress-native:** Yes — Gutenberg block, shortcode, full-page URL
-* **Conversational UX:** Yes — one question at a time, just like Typeform
+= Self-Hosted and Private =
+
+* **Your own server:** All data stays in your database
+* **Your own data:** No third-party servers, no vendor lock-in
+* **Native integration:** Gutenberg block, shortcode, full-page URL
+* **Conversational UX:** One question at a time
 
 = Full Feature List =
  
@@ -177,13 +173,9 @@ Want to influence what we build first? [Request a feature](https://www.wpflowfor
 
 == Frequently Asked Questions ==
 
-= How is this different from Contact Form 7 or WPForms? =
- 
-Traditional form plugins display all fields at once on a single page. FlowForms shows one question at a time in a guided, conversational flow — similar to Typeform. This typically increases completion rates and produces more thoughtful responses.
+= How is FlowForms different from traditional form plugins? =
 
-= Is this a Typeform alternative for WordPress? =
- 
-Yes. FlowForms is built specifically to bring the Typeform-style conversational form experience to self-hosted WordPress — without a monthly SaaS subscription.
+Traditional form plugins display all fields at once on a single page. FlowForms shows one question at a time in a guided, conversational flow. This typically increases completion rates and produces more thoughtful responses.
 
 = Where are form submissions stored? =
 
@@ -234,6 +226,10 @@ A Pro version is in active research. [Join the waitlist](https://www.wpflowforms
 The full source code, including all JavaScript source files and build configuration, is publicly available on [GitHub](https://github.com/priyanshuchaudhary53/wp-flowforms)
 
 == Changelog ==
+
+= 1.1.1 - 2025-05-08 =
+- Fix: Updated plugin display name to comply with WordPress Plugin Directory guidelines
+- Fix: Removed promotional and comparative language from readme
 
 = 1.1.0 - 2025-05-06 =
 - New: Auto-advance for single-select fields (Multiple Choice, Rating, Yes/No)
