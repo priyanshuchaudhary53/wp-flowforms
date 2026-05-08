@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import BLOCK_SETTINGS from "../components/right-panel/blockSettings";
+import { getFieldSettings } from "../extensionRegistry";
 
 // ── Debounce helpers — separate timers so content/design/settings saves
 //    cannot cancel each other.
@@ -20,6 +21,27 @@ function generateUUID() {
 
 // ── Build default content/settings from blockSettings schema ───────────────
 function buildDefaultQuestion(fieldType) {
+  // Check the extension registry first for Pro-registered field types.
+  const extSettings = getFieldSettings(fieldType);
+  if (extSettings && extSettings.sections) {
+    const content = {};
+    const settings = {};
+    for (const section of extSettings.sections) {
+      for (const field of section.fields) {
+        const defaultValue =
+          field.type === "options" ? field.default ?? [] : field.default ?? "";
+        if (field.namespace === "content") {
+          content[field.key] = defaultValue;
+        } else {
+          settings[field.key] = defaultValue;
+        }
+      }
+    }
+    content.title = "";
+    return { id: generateUUID(), type: fieldType, content, settings };
+  }
+
+  // Fall back to built-in BLOCK_SETTINGS.
   const schema = BLOCK_SETTINGS[fieldType];
   const content = {};
   const settings = {};

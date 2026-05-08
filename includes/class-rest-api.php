@@ -115,6 +115,15 @@ class FlowForms_REST_API
       'callback'            => [$this, 'get_template_preview_url'],
       'permission_callback' => fn() => current_user_can('edit_posts'),
     ]);
+
+    /**
+     * Fires after all core REST routes are registered.
+     *
+     * @since 1.2.0
+     *
+     * @param string $ns The REST namespace ('flowforms/v1').
+     */
+    do_action('flowforms_rest_routes_registered', $ns);
   }
 
   /**
@@ -409,7 +418,7 @@ class FlowForms_REST_API
     // Builder always loads the draft when one exists, otherwise published.
     $content = $has_draft ? $slots['content']['draft'] : $slots['content']['published'];
 
-    $form = [
+    $response_data = [
       'id'            => $post->ID,
       'title'         => $post->post_title,
       'status'        => $post->post_status,
@@ -424,7 +433,18 @@ class FlowForms_REST_API
       'preview_url'   => FlowForms_Frontend::get_preview_url($post->ID),
     ];
 
-    return rest_ensure_response($form);
+    /**
+     * Filter the builder form response data before it is sent to the React app.
+     *
+     * @since 1.2.0
+     *
+     * @param array           $response_data The form data array.
+     * @param int             $form_id       The form post ID.
+     * @param WP_REST_Request $request       The incoming REST request.
+     */
+    $response_data = apply_filters( 'flowforms_builder_form_response', $response_data, $form_id, $request );
+
+    return rest_ensure_response($response_data);
   }
 
   /**
@@ -530,6 +550,15 @@ class FlowForms_REST_API
       }
 
       if (! empty($form_data)) {
+        // Strip questions whose type is not in the allowed list so that
+        if ( ! empty( $form_data['questions'] ) && is_array( $form_data['questions'] ) ) {
+          $allowed_types = $this->get_allowed_field_types();
+          $form_data['questions'] = array_values( array_filter(
+            $form_data['questions'],
+            fn( $q ) => in_array( $q['type'] ?? '', $allowed_types, true )
+          ) );
+        }
+
         // Always write to the DRAFT slot; never touch published during auto-save.
         $slots = $this->decode_slots($post->post_content);
         $json  = $this->encode_slots($slots['content']['published'], $form_data, $slots['design'], $slots['settings']);
@@ -538,6 +567,16 @@ class FlowForms_REST_API
         if (! $saved) {
           return new WP_REST_Response(['message' => 'Failed to save form content.'], 500);
         }
+
+        /**
+         * Fires after form content is saved to the draft slot.
+         *
+         * @since 1.2.0
+         *
+         * @param int   $form_id   The form post ID.
+         * @param array $form_data The form content that was saved.
+         */
+        do_action('flowforms_form_content_saved', $form_id, $form_data);
 
         $has_update = true;
       }
@@ -638,6 +677,16 @@ class FlowForms_REST_API
     if (! $saved) {
       return new WP_REST_Response(['message' => 'Failed to save settings.'], 500);
     }
+
+    /**
+     * Fires after form settings are saved.
+     *
+     * @since 1.2.0
+     *
+     * @param int   $form_id  The form post ID.
+     * @param array $merged   The full merged settings that were saved.
+     */
+    do_action('flowforms_settings_saved', $form_id, $merged);
 
     return new WP_REST_Response([
       'success' => true,
@@ -742,6 +791,29 @@ class FlowForms_REST_API
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
+    /**
+     * Filter whether a visitor is allowed to view the public form.
+     *
+     * Return a WP_Error to deny access with a message. The renderer
+     * checks `access_denied` in the response to show the message
+     * instead of the form.
+     *
+     * @since 1.2.0
+     *
+     * @param true|WP_Error   $access  True to allow, WP_Error to deny.
+     * @param int             $form_id The form post ID.
+     * @param WP_REST_Request $request The incoming REST request.
+     */
+    $access = apply_filters('flowforms_form_access', true, $form_id, $request);
+
+    if (is_wp_error($access)) {
+      return new WP_REST_Response([
+        'access_denied' => true,
+        'message'       => $access->get_error_message(),
+        'code'          => $access->get_error_code(),
+      ], 200);
+    }
+
     $slots   = $this->decode_slots($post->post_content);
     $content = $slots['content']['published'];
 
@@ -749,7 +821,7 @@ class FlowForms_REST_API
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
-    $response = [
+    $response_data = [
       'id'       => $post->ID,
       'title'    => $post->post_title,
       'content'  => $content,
@@ -759,11 +831,37 @@ class FlowForms_REST_API
     ];
 
     if ( current_user_can( 'edit_posts' ) && ! empty( $slots['content']['draft'] ) ) {
-      $response['has_draft']   = true;
-      $response['builder_url'] = wp_nonce_url( admin_url( 'admin.php?page=flowforms_form_builder&form_id=' . $form_id ), 'flowforms_builder_nav' );
+      $response_data['has_draft']   = true;
+      $response_data['builder_url'] = add_query_arg(
+        '_wpnonce',
+        wp_create_nonce( 'flowforms_builder_nav' ),
+        admin_url( 'admin.php?page=flowforms_form_builder&form_id=' . $form_id )
+      );
     }
 
-    return rest_ensure_response( $response );
+    /**
+     * Filter Pro feature flags sent to the public renderer.
+     *
+     * @since 1.2.0
+     *
+     * @param array $pro_features Empty array when Pro is not active.
+     * @param int   $form_id     The form post ID.
+     * @param array $slots       The raw decoded content slots from the post.
+     */
+    $response_data['pro_features'] = apply_filters('flowforms_public_pro_features', [], $form_id, $slots);
+
+    /**
+     * Filter the public form response data before it is sent to the renderer.
+     *
+     * @since 1.2.0
+     *
+     * @param array $response_data The public form data (content, design, settings, token).
+     * @param int   $form_id       The form post ID.
+     * @param array $slots         The raw decoded content slots from the post.
+     */
+    $response_data = apply_filters( 'flowforms_public_form_response', $response_data, $form_id, $slots );
+
+    return rest_ensure_response( $response_data );
   }
 
   /**
@@ -840,10 +938,47 @@ class FlowForms_REST_API
       return new WP_REST_Response(['success' => false, 'message' => __('Security check failed. Please reload the page and try again.', 'flowforms')], 200);
     }
 
+    /**
+     * Filter whether a form submission is allowed to proceed.
+     *
+     * Return a WP_Error to block the submission with a message.
+     *
+     * @since 1.2.0
+     *
+     * @param true|WP_Error   $allowed      True to allow, WP_Error to block.
+     * @param int             $form_id      The form post ID.
+     * @param array           $form_content The published form content.
+     * @param WP_REST_Request $request      The incoming REST request.
+     */
+    $allowed = apply_filters('flowforms_submission_allowed', true, $form_id, $form_content, $request);
+
+    if (is_wp_error($allowed)) {
+      return new WP_REST_Response([
+        'success' => false,
+        'message' => $allowed->get_error_message(),
+        'code'    => $allowed->get_error_code(),
+      ], 200);
+    }
+
     $raw_answers = $request->get_param('answers');
     $answers     = is_array($raw_answers) ? $raw_answers : [];
     $questions   = $form_content['questions'] ?? [];
-    $errors      = [];
+
+    /**
+     * Filter submitted answers before the validation loop runs.
+     *
+     * @since 1.2.0
+     *
+     * @param array           $answers   The submitted answers keyed by question UUID.
+     * @param int             $form_id   The form post ID.
+     * @param array           $questions The form's questions array.
+     * @param WP_REST_Request $request   The incoming REST request (includes $_FILES).
+     */
+    $answers = apply_filters('flowforms_pre_validate_answers', $answers, $form_id, $questions, $request);
+
+    $errors = [];
+
+    $allowed_types = $this->get_allowed_field_types();
 
     foreach ($questions as $question) {
       $q_id     = $question['id']       ?? '';
@@ -852,12 +987,31 @@ class FlowForms_REST_API
       $content  = $question['content']  ?? [];
       $answer   = $answers[$q_id]       ?? null;
 
+      // Skip validation for field types not in the allowed list
+      if ( ! in_array( $type, $allowed_types, true ) ) {
+        continue;
+      }
+
       if (! empty($settings['required']) && $this->is_empty_answer($answer, $type)) {
         $errors[$q_id] = __('This field is required.', 'flowforms');
         continue;
       }
 
       $type_error = $this->validate_answer_type($type, $answer, $settings, $content);
+
+      /**
+       * Filter the validation error for a single answer.
+       *
+       * @since 1.2.0
+       *
+       * @param string|null $type_error The current error message, or null if valid.
+       * @param string      $type       The question type (e.g. 'short_text', 'date').
+       * @param mixed       $answer     The submitted answer value.
+       * @param array       $settings   The question settings.
+       * @param array       $content    The question content.
+       */
+      $type_error = apply_filters('flowforms_validate_answer', $type_error, $type, $answer, $settings, $content);
+
       if ($type_error) {
         $errors[$q_id] = $type_error;
       }
@@ -868,6 +1022,18 @@ class FlowForms_REST_API
     }
 
     $sanitized = $this->sanitize_answers($answers, $questions);
+
+    /**
+     * Filter sanitized answers before they are saved to the database.
+     *
+     * @since 1.2.0
+     *
+     * @param array $sanitized    The sanitized answers keyed by question UUID.
+     * @param int   $form_id      The form post ID.
+     * @param array $questions    The form's questions array.
+     * @param array $form_content The full published form content.
+     */
+    $sanitized = apply_filters('flowforms_pre_save_answers', $sanitized, $form_id, $questions, $form_content);
 
     // Layer 3: Akismet
     if (FlowForms_Akismet::is_available()) {
@@ -894,18 +1060,18 @@ class FlowForms_REST_API
   }
 
   /**
-   * Send email notification(s) for a new form submission.
+   * Send email notifications for a new form submission.
    *
-   * Errors are logged but never propagate — a failed email must not affect
-   * the submission response. The entry is already saved at this point.
-   *
-   * @param int   $entry_id     Saved entry ID.
-   * @param int   $form_id      Form post ID.
-   * @param array $answers      Sanitized answers keyed by question UUID.
-   * @param array $form_content Published form content (questions etc.).
    * @since 1.0.0
+   * @since 1.2.0 Changed from private to protected. Added flowforms_notifications_to_send,
+   *              flowforms_should_send_notification, and flowforms_after_notifications hooks.
+   *
+   * @param int   $entry_id     The saved entry ID.
+   * @param int   $form_id      The form post ID.
+   * @param array $answers      The sanitized answers keyed by question UUID.
+   * @param array $form_content The published form content.
    */
-  private function send_notifications(int $entry_id, int $form_id, array $answers, array $form_content): void
+  protected function send_notifications(int $entry_id, int $form_id, array $answers, array $form_content): void
   {
     $post = get_post($form_id);
     if (! $post) {
@@ -921,8 +1087,81 @@ class FlowForms_REST_API
       return;
     }
 
-    $notif = $email_settings['notifications']['1'] ?? [];
+    // Free only sends notification "1". Pro filters this to return all configured IDs.
+    $all_notifications = $email_settings['notifications'] ?? [];
 
+    /**
+     * Filter the list of notifications to send for this submission.
+     *
+     * @since 1.2.0
+     *
+     * @param array $notifications Keyed array of notification configs to send.
+     * @param array $all_notifications All configured notifications for this form.
+     * @param int   $form_id           The form post ID.
+     * @param int   $entry_id          The saved entry ID.
+     */
+    $notifications = apply_filters(
+      'flowforms_notifications_to_send',
+      isset( $all_notifications['1'] ) ? [ '1' => $all_notifications['1'] ] : [],
+      $all_notifications,
+      $form_id,
+      $entry_id
+    );
+
+    $smart_tags = flowforms()->obj('smart_tags');
+    $context    = [
+      'form_id'   => $form_id,
+      'form_name' => $post->post_title,
+      'entry_id'  => $entry_id,
+      'answers'   => $answers,
+      'questions' => $form_content['questions'] ?? [],
+    ];
+
+    foreach ( $notifications as $notif_id => $notif ) {
+      /**
+       * Filter whether a specific notification should be sent.
+       *
+       * @since 1.2.0
+       *
+       * @param bool   $should_send Whether to send this notification. Default true.
+       * @param string $notif_id    The notification ID (e.g. "1", "2").
+       * @param array  $notif       The notification config array.
+       * @param array  $context     Smart tag context (form_id, answers, questions, etc.).
+       */
+      $should_send = apply_filters( 'flowforms_should_send_notification', true, $notif_id, $notif, $context );
+
+      if ( $should_send ) {
+        $this->send_single_notification( $notif, $context, $form_id, $entry_id, $smart_tags );
+      }
+    }
+
+    /**
+     * Fires after all notifications have been processed for a submission.
+     *
+     * @since 1.2.0
+     *
+     * @param int   $entry_id     The saved entry ID.
+     * @param int   $form_id      The form post ID.
+     * @param array $answers      The sanitized answers.
+     * @param array $form_content The published form content.
+     * @param array $context      Smart tag context.
+     */
+    do_action( 'flowforms_after_notifications', $entry_id, $form_id, $answers, $form_content, $context );
+  }
+
+  /**
+   * Send a single email notification.
+   *
+   * @since 1.2.0
+   *
+   * @param array  $notif      The notification config (email, subject, message, etc.).
+   * @param array  $context    Smart tag context (form_id, form_name, entry_id, answers, questions).
+   * @param int    $form_id    The form post ID.
+   * @param int    $entry_id   The saved entry ID.
+   * @param object $smart_tags The FlowForms_Smart_Tags instance.
+   */
+  protected function send_single_notification(array $notif, array $context, int $form_id, int $entry_id, $smart_tags): void
+  {
     $defaults = [
       'email'          => '{admin_email}',
       'subject'        => 'New submission: {form_name}',
@@ -933,15 +1172,6 @@ class FlowForms_REST_API
     ];
 
     $notif = array_merge($defaults, array_filter($notif, fn($v) => $v !== ''));
-
-    $smart_tags = flowforms()->obj('smart_tags');
-    $context    = [
-      'form_id'   => $form_id,
-      'form_name' => $post->post_title,
-      'entry_id'  => $entry_id,
-      'answers'   => $answers,
-      'questions' => $form_content['questions'] ?? [],
-    ];
 
     $to             = trim($smart_tags->resolve($notif['email'],          $context));
     $subject        = $smart_tags->resolve($notif['subject'],        $context);
@@ -981,13 +1211,41 @@ class FlowForms_REST_API
       $headers[] = 'Reply-To: ' . $effective_replyto;
     }
 
-    $sent = wp_mail($to, $subject, $message, $headers);
+    /**
+     * Filter the email arguments before sending a notification.
+     *
+     * @since 1.2.0
+     *
+     * @param array $email_args {
+     *     The wp_mail() arguments.
+     *
+     *     @type string   $to      Recipient email address.
+     *     @type string   $subject Email subject line.
+     *     @type string   $message Email body.
+     *     @type string[] $headers Email headers array.
+     * }
+     * @param array $notif    The raw notification config (before smart tag resolution).
+     * @param array $context  Smart tag context (form_id, form_name, entry_id, answers, questions).
+     */
+    $email_args = apply_filters( 'flowforms_notification_email_args', [
+      'to'      => $to,
+      'subject' => $subject,
+      'message' => $message,
+      'headers' => $headers,
+    ], $notif, $context );
+
+    $sent = wp_mail(
+      $email_args['to'],
+      $email_args['subject'],
+      $email_args['message'],
+      $email_args['headers']
+    );
 
     if ($sent) {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery confirmation.
       error_log(sprintf(
         '[FlowForms] Email notification sent to %s (form %d, entry %d)',
-        $to, $form_id, $entry_id
+        $email_args['to'], $form_id, $entry_id
       ));
     } else {
       // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Intentional operational logging for email delivery failures.
@@ -996,6 +1254,36 @@ class FlowForms_REST_API
         $form_id, $entry_id
       ));
     }
+  }
+
+  /**
+   * Returns the list of field types allowed in the current install.
+   *
+   * Used by update_form() to strip unknown types on save, and by
+   * handle_submission() to skip validation for unrecognised types.
+   *
+   * @since 1.2.0
+   *
+   * @return string[] Flat array of allowed field type identifiers.
+   */
+  private function get_allowed_field_types(): array
+  {
+    $free_types = [
+      'short_text', 'long_text', 'multiple_choice', 'checkboxes',
+      'rating', 'yes_no', 'email', 'number',
+    ];
+
+    /**
+     * Filter the list of allowed field types.
+     *
+     * Any question whose type is not in this list will be stripped
+     * on save and skipped during submission validation.
+     *
+     * @since 1.2.0
+     *
+     * @param string[] $free_types The default allowed field types.
+     */
+    return apply_filters( 'flowforms_allowed_field_types', $free_types );
   }
 
   /**
@@ -1312,6 +1600,18 @@ class FlowForms_REST_API
 
         default:
           $clean[$q_id] = sanitize_textarea_field((string) $answer);
+
+          /**
+           * Filter the sanitized value for a single answer.
+           *
+           * @since 1.2.0
+           *
+           * @param mixed  $sanitized The sanitized answer value.
+           * @param string $type      The question type.
+           * @param mixed  $answer    The raw submitted answer.
+           * @param array  $settings  The question settings.
+           */
+          $clean[$q_id] = apply_filters('flowforms_sanitize_answer', $clean[$q_id], $type, $answer, $settings);
           break;
       }
     }

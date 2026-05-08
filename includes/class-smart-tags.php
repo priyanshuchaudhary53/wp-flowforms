@@ -97,6 +97,16 @@ class FlowForms_Smart_Tags
       $result
     );
 
+    /**
+     * Filter the resolved smart tag string.
+     *
+     * @since 1.2.0
+     *
+     * @param string $result  The template string after all core tags are resolved.
+     * @param array  $context The resolution context (form_name, entry_id, answers, questions).
+     */
+    $result = apply_filters('flowforms_smart_tags_resolved', $result, $context);
+
     return $result;
   }
 }

@@ -13,8 +13,10 @@ class FlowForms_Admin_Menu
   {
     if (is_admin()) {
       add_action('admin_menu', [$this, 'add_admin_pages']);
-      add_action('admin_head', [$this, 'adjust_pro_menu_item']);
-      add_action('admin_head', [$this, 'admin_menu_styles']);
+      if ( ! flowforms_is_pro() ) {
+        add_action('admin_head', [$this, 'adjust_pro_menu_item']);
+        add_action('admin_head', [$this, 'admin_menu_styles']);
+      }
     }
   }
 
@@ -49,7 +51,16 @@ class FlowForms_Admin_Menu
     add_submenu_page('flowforms_forms', $title . ' ' . __('Builder', 'flowforms'), __('Add New Form', 'flowforms'), 'manage_options', 'flowforms_form_builder', [$this, 'admin_page']);
     add_submenu_page('flowforms_forms', __('Entries', 'flowforms') . $title_suffix, __('Entries', 'flowforms'), 'manage_options', 'flowforms_entries', [$this, 'admin_page']);
     add_submenu_page('flowforms_forms', __('Settings', 'flowforms') . $title_suffix, __('Settings', 'flowforms'), 'manage_options', 'flowforms_settings', [$this, 'admin_page']);
-    add_submenu_page('flowforms_forms', __('Upgrade to Pro', 'flowforms'), __('Upgrade to Pro', 'flowforms'), 'manage_options', flowforms_pro_url('admin_menu', 'upgrade_link'));
+
+    if ( ! flowforms_is_pro() ) {
+      add_submenu_page(
+        'flowforms_forms',
+        __( 'Upgrade to Pro', 'flowforms' ),
+        '<span class="wpff-sidebar-upgrade-pro">' . __( 'Upgrade to Pro', 'flowforms' ) . '</span>',
+        'edit_posts',
+        flowforms_pro_upgrade_url( 'admin_menu', 'upgrade_link' )
+      );
+    }
 
     /**
      * Fires after constructing the FlowForms admin menu.
@@ -57,6 +68,15 @@ class FlowForms_Admin_Menu
      * @since 1.0.0
      */
     do_action('flowforms_admin_menu', $this);
+
+    /**
+     * Fires after the admin menu is fully registered.
+     *
+     * @since 1.2.0
+     *
+     * @param string $parent_slug The parent menu slug ('flowforms_forms').
+     */
+    do_action( 'flowforms_admin_menu_registered', 'flowforms_forms' );
   }
 
   /**

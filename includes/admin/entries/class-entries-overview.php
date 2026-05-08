@@ -349,6 +349,17 @@ class FlowForms_Entries_Overview
 
       <h1 class="wp-heading-inline"><?php esc_html_e('Entries', 'flowforms'); ?></h1>
 
+      <?php
+      /**
+       * Fires in the entries page header, after the title and before the content.
+       *
+       * @since 1.2.0
+       *
+       * @param int $form_id The currently filtered form ID (0 = all forms).
+       */
+      do_action( 'flowforms_entries_page_header', $this->form_id );
+      ?>
+
       <hr class="wp-header-end">
 
       <?php if ($is_empty) : ?>

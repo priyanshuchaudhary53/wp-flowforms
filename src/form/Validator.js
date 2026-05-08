@@ -8,6 +8,7 @@
 
 
 import { __ } from '@wordpress/i18n';
+import { getFieldValidator } from './rendererRegistry';
 
 /**
  * @param {Object}  question    The question object from form JSON.
@@ -99,6 +100,13 @@ export function validate( question, answer, previewMode ) {
 				return window.flowformPublicData?.i18n?.yesNo ?? __( 'Please select yes or no.', 'flowforms' );
 			}
 			break;
+
+		default: {
+			const customValidator = getFieldValidator( type );
+			if ( customValidator ) {
+				return customValidator( question, answer, previewMode );
+			}
+		}
 	}
 
 	return null;

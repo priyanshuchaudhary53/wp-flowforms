@@ -9,6 +9,7 @@ import {
 } from "../components/ui/command";
 import { FIELD_CATEGORIES } from "../components/left-panel/fieldCategories";
 import PRO_FIELDS from "../components/left-panel/proFields";
+import { isFieldRegistered } from "../extensionRegistry";
 import { useFormStore } from "../store/useFormStore";
 import { useEffect, useState } from "react";
 import { LockIcon } from "lucide-react";
@@ -60,17 +61,19 @@ export default function AddBlockDialog() {
             <CommandGroup key={category.name} heading={category.name}>
               {category.fields.map((field) => {
                 const isPro = PRO_FIELDS.some((f) => f.type === field.type);
+                const isUnlocked = isFieldRegistered(field.type);
+                const isLocked = isPro && !isUnlocked;
                 return (
                   <CommandItem
                     key={field.type}
-                    className={isPro ? "opacity-50" : ""}
+                    className={isLocked ? "opacity-50" : ""}
                     onSelect={() =>
-                      isPro ? setProUpgradeField(field) : handleSelect(field)
+                      isLocked ? setProUpgradeField(field) : handleSelect(field)
                     }
                   >
                     <field.icon color={field.color} />
                     <span>{field.label}</span>
-                    {isPro && (
+                    {isLocked && (
                       <LockIcon className="ml-auto size-3 text-muted-foreground" />
                     )}
                   </CommandItem>

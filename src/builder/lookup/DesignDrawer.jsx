@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { __ } from '@wordpress/i18n';
 import DesignField from "../components/design/DesignField";
 import DESIGN_SETTINGS from "../components/design/designSettings.jsx";
+import { getFeaturePanels } from "../extensionRegistry";
 import { Button } from "../components/ui/button";
 import {
   Dialog,
@@ -191,6 +192,13 @@ export default function DesignDrawer() {
                 </div>
               </div>
             ))}
+
+            {/* Pro design panels registered via the extension registry */}
+            {getFeaturePanels()
+              .filter((p) => p.position === "design")
+              .map((panel) => (
+                <panel.component key={panel.key} />
+              ))}
           </div>
 
           <SheetFooter

@@ -22,6 +22,20 @@ import { __ } from '@wordpress/i18n';
 import './style.css';
 import { FormApp } from './FormApp.js';
 import { applyDesignTokens } from './designTokens.js';
+import * as rendererRegistry from './rendererRegistry.js';
+
+// Expose the renderer extension API globally so Pro can register
+// custom field renderers, validators, sanitizers, and middleware.
+window.flowformsRenderer = {
+	registerFieldRenderer: rendererRegistry.registerFieldRenderer,
+	registerFieldValidator: rendererRegistry.registerFieldValidator,
+	registerFieldSanitizer: rendererRegistry.registerFieldSanitizer,
+	registerNavigationMiddleware: rendererRegistry.registerNavigationMiddleware,
+	registerSubmitMiddleware: rendererRegistry.registerSubmitMiddleware,
+	registerAnswerPipeHandler: rendererRegistry.registerAnswerPipeHandler,
+};
+
+document.dispatchEvent( new CustomEvent( 'flowforms-renderer-ready' ) );
 
 document.addEventListener( 'DOMContentLoaded', init );
 

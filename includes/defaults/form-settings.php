@@ -18,7 +18,15 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
  *
  * @since 1.0.0
  */
-return [
+
+/**
+ * Filter the default form settings.
+ *
+ * @since 1.2.0
+ *
+ * @param array $defaults The default settings array.
+ */
+return apply_filters('flowforms_default_form_settings', [
 
   // General
   'general' => [
@@ -75,4 +83,4 @@ return [
 
   ],
 
-];
+]);

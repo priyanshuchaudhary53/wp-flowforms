@@ -90,6 +90,15 @@ class FlowForms_Entry_Handler
 
     $args = wp_parse_args($args, $defaults);
 
+    /**
+     * Filter the entry query arguments before the query is built.
+     *
+     * @since 1.2.0
+     *
+     * @param array $args The parsed query arguments.
+     */
+    $args = apply_filters( 'flowforms_entry_query_args', $args );
+
     $where  = [];
     $values = [];
 

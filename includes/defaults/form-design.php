@@ -17,7 +17,15 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
  *
  * @since 1.0.0
  */
-return [
+
+/**
+ * Filter the default form design tokens.
+ *
+ * @since 1.2.0
+ *
+ * @param array $defaults The default design tokens array.
+ */
+return apply_filters('flowforms_default_form_design', [
 
   // Colours
   'bg_color'           => '#ffffff',
@@ -39,4 +47,4 @@ return [
   'google_font'        => '',        // empty = use theme/system font
   'font_size'          => 'regular', // small | regular | large
 
-];
+]);

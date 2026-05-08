@@ -1,6 +1,6 @@
 import { LockIcon } from "lucide-react";
 import { __ } from "@wordpress/i18n";
-import { getProUrl } from "../config";
+import { isPro, getProUrl } from "../config";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,8 @@ import {
 import { Button } from "../components/ui/button";
 
 export default function ProUpgradeDialog({ field, onClose }) {
+  if (isPro) return null;
+  
   return (
     <Dialog open={!!field} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-xs text-center" showCloseButton={true}>

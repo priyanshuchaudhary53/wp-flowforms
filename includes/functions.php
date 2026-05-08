@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) exit; // Exit if accessed directly
 function flowforms_is_admin_page($slug)
 {
   // phpcs:disable WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput -- Page routing param; read-only, no state change. Sanitized via sanitize_key() below.
-  $page = sanitize_key( (string) ( $_REQUEST['page'] ?? '' ) );
+  $page = sanitize_key((string) ($_REQUEST['page'] ?? ''));
 
   if (
     strpos($page, 'flowforms') === false ||
@@ -76,14 +76,15 @@ function flowforms_decode($data)
  * @param mixed  $default Value to return when the key does not exist.
  * @return mixed The saved value, or $default if not set.
  */
-function flowforms_get_setting( string $key, $default = null ) {
+function flowforms_get_setting(string $key, $default = null)
+{
   static $settings = null;
 
-  if ( $settings === null ) {
-    $settings = get_option( 'flowforms_settings', [] );
+  if ($settings === null) {
+    $settings = get_option('flowforms_settings', []);
   }
 
-  return array_key_exists( $key, $settings ) ? $settings[ $key ] : $default;
+  return array_key_exists($key, $settings) ? $settings[$key] : $default;
 }
 
 /**
@@ -110,15 +111,17 @@ function flowforms_array_insert(array $array, array $insert, string $after): arr
 }
 
 /**
- * Build a FlowForms Pro upgrade URL with UTM tracking parameters.
+ * Build the Pro upgrade URL (external website) with UTM tracking parameters.
  *
  * @since 1.1.0
+ * @since 1.2.0 Renamed from flowforms_pro_url().
  *
  * @param string $utm_medium  Where the link appears (e.g. 'builder', 'admin-menu').
- * @param string $utm_content What the user clicked (e.g. 'Upgrade to Pro').
+ * @param string $utm_content What the user clicked (e.g. 'upgrade_link').
  * @return string Full URL with UTM query parameters.
  */
-function flowforms_pro_url( string $utm_medium = '', string $utm_content = '' ): string {
+function flowforms_pro_upgrade_url(string $utm_medium = '', string $utm_content = ''): string
+{
   $args = [
     'utm_campaign' => 'flowforms-plugin',
     'utm_source'   => 'WordPress',
@@ -127,7 +130,52 @@ function flowforms_pro_url( string $utm_medium = '', string $utm_content = '' ):
     'utm_locale'   => get_user_locale(),
   ];
 
-  return add_query_arg( array_filter( $args ), FLOWFORMS_PRO_URL );
+  return add_query_arg(array_filter($args), FLOWFORMS_PRO_UPGRADE_URL);
+}
+
+/**
+ * Check whether FlowForms Pro is active.
+ *
+ * @since 1.2.0
+ * @return bool
+ */
+function flowforms_is_pro()
+{
+  return class_exists('FlowFormsPro')
+    && method_exists('FlowFormsPro', 'instance');
+}
+
+/**
+ * Check whether the current site can use Pro features.
+ * Returns true if Pro is active with a valid license.
+ *
+ * @since 1.2.0
+ * @return bool
+ */
+function flowforms_pro_can_use()
+{
+  if (! flowforms_is_pro()) {
+    return false;
+  }
+  return FlowFormsPro::instance()->can_use();
+}
+
+/**
+ * Get the best Pro upgrade URL for the current context.
+ *
+ * @since 1.2.0
+ * @param string $utm_content  Optional UTM content identifier for the fallback URL.
+ * @return string
+ */
+function flowforms_get_upgrade_url($utm_content = '')
+{
+  $url = apply_filters('flowforms_pro_upgrade_url', '');
+
+  if (! empty($url)) {
+    return $url;
+  }
+
+  return flowforms_pro_upgrade_url('upgrade', $utm_content);
 }
 
 /**
@@ -137,10 +185,11 @@ function flowforms_pro_url( string $utm_medium = '', string $utm_content = '' ):
  *
  * @return array
  */
-function flowforms_kses_field_icon(): array {
+function flowforms_kses_field_icon(): array
+{
   return [
-    'div'  => [ 'class' => [] ],
-    'span' => [ 'class' => [], 'style' => [], 'aria-hidden' => [] ],
+    'div'  => ['class' => []],
+    'span' => ['class' => [], 'style' => [], 'aria-hidden' => []],
     'svg'  => [
       'xmlns'          => [],
       'viewbox'        => [],
@@ -152,12 +201,12 @@ function flowforms_kses_field_icon(): array {
       'width'          => [],
       'height'         => [],
     ],
-    'path'    => [ 'd' => [], 'fill' => [], 'stroke' => [] ],
-    'circle'  => [ 'cx' => [], 'cy' => [], 'r' => [], 'fill' => [], 'stroke' => [] ],
-    'rect'    => [ 'x' => [], 'y' => [], 'width' => [], 'height' => [], 'rx' => [], 'fill' => [], 'stroke' => [] ],
-    'line'    => [ 'x1' => [], 'y1' => [], 'x2' => [], 'y2' => [] ],
-    'polyline' => [ 'points' => [] ],
-    'polygon'  => [ 'points' => [] ],
+    'path'    => ['d' => [], 'fill' => [], 'stroke' => []],
+    'circle'  => ['cx' => [], 'cy' => [], 'r' => [], 'fill' => [], 'stroke' => []],
+    'rect'    => ['x' => [], 'y' => [], 'width' => [], 'height' => [], 'rx' => [], 'fill' => [], 'stroke' => []],
+    'line'    => ['x1' => [], 'y1' => [], 'x2' => [], 'y2' => []],
+    'polyline' => ['points' => []],
+    'polygon'  => ['points' => []],
   ];
 }
 
@@ -168,20 +217,21 @@ function flowforms_kses_field_icon(): array {
  *
  * @return array
  */
-function flowforms_kses_settings_field(): array {
+function flowforms_kses_settings_field(): array
+{
   return [
     'tr'       => [],
-    'td'       => [ 'colspan' => [] ],
-    'th'       => [ 'scope' => [] ],
-    'label'    => [ 'for' => [], 'class' => [] ],
-    'input'    => [ 'type' => [], 'id' => [], 'name' => [], 'value' => [], 'placeholder' => [], 'class' => [], 'checked' => [] ],
-    'textarea' => [ 'id' => [], 'name' => [], 'rows' => [], 'class' => [] ],
-    'select'   => [ 'id' => [], 'name' => [] ],
-    'option'   => [ 'value' => [], 'selected' => [] ],
-    'h2'       => [ 'class' => [] ],
-    'p'        => [ 'class' => [] ],
-    'span'     => [ 'class' => [] ],
-    'a'        => [ 'href' => [], 'class' => [], 'target' => [], 'rel' => [] ],
+    'td'       => ['colspan' => []],
+    'th'       => ['scope' => []],
+    'label'    => ['for' => [], 'class' => []],
+    'input'    => ['type' => [], 'id' => [], 'name' => [], 'value' => [], 'placeholder' => [], 'class' => [], 'checked' => []],
+    'textarea' => ['id' => [], 'name' => [], 'rows' => [], 'class' => []],
+    'select'   => ['id' => [], 'name' => []],
+    'option'   => ['value' => [], 'selected' => []],
+    'h2'       => ['class' => []],
+    'p'        => ['class' => []],
+    'span'     => ['class' => []],
+    'a'        => ['href' => [], 'class' => [], 'target' => [], 'rel' => []],
   ];
 }
 
@@ -192,11 +242,12 @@ function flowforms_kses_settings_field(): array {
  *
  * @return array
  */
-function flowforms_kses_form_container(): array {
+function flowforms_kses_form_container(): array
+{
   return [
-    'div'    => [ 'class' => [], 'style' => [], 'data-flowform-id' => [], 'data-ff-mode' => [] ],
-    'span'   => [ 'style' => [] ],
+    'div'    => ['class' => [], 'style' => [], 'data-flowform-id' => [], 'data-ff-mode' => []],
+    'span'   => ['style' => []],
     'strong' => [],
-    'a'      => [ 'href' => [], 'style' => [] ],
+    'a'      => ['href' => [], 'style' => []],
   ];
 }

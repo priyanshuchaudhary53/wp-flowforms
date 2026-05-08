@@ -63,6 +63,15 @@ class FlowForms_Entries_List_Table extends WP_List_Table
       $cols = flowforms_array_insert($cols, ['form' => __('Form', 'flowforms')], 'summary');
     }
 
+    /**
+     * Filter the columns displayed in the entries list table.
+     *
+     * @since 1.2.0
+     *
+     * @param array $cols The columns array keyed by column slug.
+     */
+    $cols = apply_filters( 'flowforms_entries_columns', $cols );
+
     return $cols;
   }
 

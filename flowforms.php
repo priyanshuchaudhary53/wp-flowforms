@@ -8,7 +8,7 @@
  * Plugin Name:       FlowForms
  * Description:       Create beautiful, conversational step-by-step forms. A modern drag-and-drop form builder with one-question-at-a-time UX.
  * Plugin URI:        https://wpflowforms.com/
- * Version:           1.1.2
+ * Version:           1.2.0
  * Requires at least: 6.2
  * Author:            Priyanshu
  * Author URI:        https://priyanshuc.dev/
@@ -20,7 +20,7 @@
 if (! defined('ABSPATH')) exit; // Exit if accessed directly
 
 // Define constants
-define('FLOWFORMS_VERSION', '1.1.2');
+define('FLOWFORMS_VERSION', '1.2.0');
 define('FLOWFORMS_NAME', 'FlowForms');
 define('FLOWFORMS_SLUG', 'flowforms');
 
@@ -28,7 +28,7 @@ define('FLOWFORMS_FILE', __FILE__);
 define('FLOWFORMS_PATH', plugin_dir_path(__FILE__));
 define('FLOWFORMS_URL', plugin_dir_url(__FILE__));
 
-if (!defined('FLOWFORMS_PRO_URL')) define('FLOWFORMS_PRO_URL', 'https://wpflowforms.com/pro');
+define('FLOWFORMS_PRO_UPGRADE_URL', 'https://wpflowforms.com/pro');
 
 // Autoload classes
 require_once FLOWFORMS_PATH . 'includes/FlowForms.php';

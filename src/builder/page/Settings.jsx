@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { __ } from "@wordpress/i18n";
 import { useFormStore } from "../store/useFormStore";
+import { getSettingsTabs } from "../extensionRegistry";
 
 // ── Tab definitions ───────────────────────────────────────────────────────────
 
@@ -24,7 +25,10 @@ const isValidEmail = (s) => EMAIL_RX.test(String(s ?? "").trim());
 function getActiveTab() {
   const params = new URLSearchParams(window.location.search);
   const tab = params.get("tab");
-  return TABS.some((t) => t.id === tab) ? tab : "general";
+  if (TABS.some((t) => t.id === tab)) return tab;
+  const proTabs = getSettingsTabs();
+  if (proTabs.some((t) => t.id === tab)) return tab;
+  return "general";
 }
 
 function tabUrl(tabId) {
@@ -400,7 +404,7 @@ export default function Settings({ className }) {
       <div className="mx-auto flex bg-white rounded-2xl max-w-4xl">
         {/* Tab bar */}
         <div className="shrink-0 min-w-64 flex flex-col gap-1 border-r border-border py-10 pl-6">
-          {TABS.map((tab) => (
+          {[...TABS, ...getSettingsTabs()].map((tab) => (
             <a
               key={tab.id}
               href={tabUrl(tab.id)}
@@ -424,6 +428,9 @@ export default function Settings({ className }) {
 
           {activeTab === "general" && <GeneralTab />}
           {activeTab === "email"   && <EmailTab />}
+          {getSettingsTabs().map((tab) =>
+            activeTab === tab.id && <tab.component key={tab.id} />
+          )}
         </div>
       </div>
     </div>

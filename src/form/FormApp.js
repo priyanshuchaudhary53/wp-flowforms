@@ -41,6 +41,7 @@ import { __ } from '@wordpress/i18n';
 import { renderQuestion }                       from './QuestionRenderer.js';
 import { validate }                             from './Validator.js';
 import { applyDesignTokens, resolveBackground } from './designTokens.js';
+import { getNavigationMiddleware, getSubmitMiddleware, getFieldSanitizer } from './rendererRegistry.js';
 
 // ── Timing constants (keep in sync with CSS) ──────────────────────────────────
 const EXIT_DURATION = 260;   // ms — exit animation duration (ff-exit keyframe)
@@ -538,7 +539,27 @@ export class FormApp {
 			return;
 		}
 
-		const nextIndex = this.state.currentIndex + 1;
+		let nextIndex = this.state.currentIndex + 1;
+
+		// Allow registered middleware (e.g. conditional logic) to override the next question.
+		const middleware = getNavigationMiddleware();
+		for ( const mw of middleware ) {
+			const result = mw( {
+				currentIndex:   this.state.currentIndex,
+				currentQuestion: q,
+				answer,
+				answers:    this.state.answers,
+				questions:  this._questions,
+				formData:   this.formData,
+				direction:  'forward',
+			} );
+			if ( result !== undefined && result !== null ) {
+				if ( result === 'submit' ) { this._submit(); return; }
+				nextIndex = result;
+				break;
+			}
+		}
+
 		if ( nextIndex < this._questions.length ) {
 			this._goToQuestion( nextIndex, 'forward' );
 		} else {
@@ -605,13 +626,29 @@ export class FormApp {
 		this._setState( { currentScreen: 'submitting', submitted: false } );
 
 		// Normalise answers before sending — email confirm stores { email, confirm },
-		// the server only wants the plain email string.
+		// the server only wants the plain email string. Custom field sanitizers run
+		// for any field type that has one registered via the renderer registry.
 		const answers = {};
 		for ( const [ id, val ] of Object.entries( this.state.answers ) ) {
-			if ( val && typeof val === 'object' && ! Array.isArray( val ) && 'email' in val ) {
+			const question  = this._questions.find( ( q ) => q.id === id );
+			const sanitizer = question ? getFieldSanitizer( question.type ) : null;
+
+			if ( sanitizer ) {
+				answers[ id ] = sanitizer( val, question );
+			} else if ( val && typeof val === 'object' && ! Array.isArray( val ) && 'email' in val ) {
 				answers[ id ] = val.email;
 			} else {
 				answers[ id ] = val;
+			}
+		}
+
+		// Run submit middleware — allows Pro to modify answers or abort submission.
+		for ( const mw of getSubmitMiddleware() ) {
+			const result = mw( { answers, questions: this._questions, formData: this.formData } );
+			if ( result === false ) {
+				this._lastDir = 'back';
+				this._setState( { currentScreen: 'question', submitted: false } );
+				return;
 			}
 		}
 
@@ -906,7 +943,8 @@ export class FormApp {
 						okBtnRef.current.click();
 					}
 				}, 400 );
-			}
+			},
+			{ answers: this.state.answers, questions: this._questions }
 		);
 		inner.appendChild( questionEl );
 

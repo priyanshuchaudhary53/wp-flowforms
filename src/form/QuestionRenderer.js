@@ -19,13 +19,14 @@
  */
 
 import { __ } from '@wordpress/i18n';
+import { getFieldRenderer, getAnswerPipeHandlers } from './rendererRegistry';
 
 // ── Shuffle cache ─────────────────────────────────────────────────────────────
 // Randomized option orders are computed once per question per page load and
 // stored here, keyed by question ID. This prevents re-shuffling every time
 // the user navigates back and forth between questions.
 const _shuffleCache = new Map();
-export function renderQuestion( question, answer, error, design, onChange, onAutoAdvance ) {
+export function renderQuestion( question, answer, error, design, onChange, onAutoAdvance, formState ) {
 	const type      = question.type      ?? '';
 	const content   = question.content   ?? {};
 	const settings  = question.settings  ?? {};
@@ -36,8 +37,14 @@ export function renderQuestion( question, answer, error, design, onChange, onAut
 	// ── Header ────────────────────────────────────────────────────────────────
 	const header = el( 'div', 'ff-question-header' );
 
+	let titleText = content.title || __( 'Untitled question', 'flowforms' );
+	const pipeHandlers = getAnswerPipeHandlers();
+	for ( const handler of pipeHandlers ) {
+		titleText = handler( titleText, formState?.answers ?? {}, formState?.questions ?? [] );
+	}
+
 	const title = el( 'h2', 'ff-question-title' );
-	title.textContent = content.title || __( 'Untitled question', 'flowforms' );
+	title.textContent = titleText;
 	header.appendChild( title );
 
 	if ( content.description ) {
@@ -80,6 +87,10 @@ function buildInput( type, content, settings, answer, alignment, onChange, quest
 		case 'rating':          return buildRating( settings, answer, onChange, onAutoAdvance );
 		case 'yes_no':          return buildYesNo( content, answer, onChange, onAutoAdvance );
 		default: {
+			const renderer = getFieldRenderer( type );
+			if ( renderer ) {
+				return renderer( { type, content, settings, answer, alignment, onChange, questionId, onAutoAdvance } );
+			}
 			const fb = el( 'p', 'ff-unsupported' );
 			fb.textContent = __( 'This question type is not supported.', 'flowforms' );
 			return fb;

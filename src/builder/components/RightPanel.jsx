@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useFormStore } from "../store/useFormStore";
 import BLOCK_SETTINGS from "./right-panel/blockSettings";
 import OptionsEditor from "./right-panel/OptionsEditor";
+import { getFieldSettings } from "../extensionRegistry";
 
 // ── Save-status indicator ────────────────────────────────────────────────────
 
@@ -330,10 +331,16 @@ function SettingsField({ field, blockContent, blockSettings, onChange, onSibling
 
 // ── Settings panel ───────────────────────────────────────────────────────────
 
-function BlockSettingsPanel({ blockType, blockContent, blockSettings, onFieldChange }) {
+function BlockSettingsPanel({ blockType, blockId, blockContent, blockSettings, onFieldChange }) {
   const schema = BLOCK_SETTINGS[blockType];
 
+  // If no built-in schema, check the extension registry for a Pro-registered component.
   if (!schema) {
+    const proSettings = getFieldSettings(blockType);
+    if (proSettings?.component) {
+      const ProComponent = proSettings.component;
+      return <ProComponent questionId={blockId} />;
+    }
     return <p className="text-xs text-gray-400 px-4 pt-4">{ __( 'No settings available for this block.', 'flowforms' ) }</p>;
   }
 
@@ -409,7 +416,7 @@ export default function RightPanel({ className }) {
       const question = form?.content?.questions?.find((q) => q.id === selectedBlock.id);
       blockId = selectedBlock.id;
       blockType = question?.type ?? selectedBlock.questionType;
-      blockLabel = BLOCK_SETTINGS[blockType]?.label ?? blockType;
+      blockLabel = BLOCK_SETTINGS[blockType]?.label ?? getFieldSettings(blockType)?.label ?? blockType;
       blockContent  = question?.content  ?? {};
       blockSettings = question?.settings ?? {};
     }
@@ -442,6 +449,7 @@ export default function RightPanel({ className }) {
         {selectedBlock && blockType ? (
           <BlockSettingsPanel
             blockType={blockType}
+            blockId={blockId}
             blockContent={blockContent}
             blockSettings={blockSettings}
             onFieldChange={handleFieldChange}

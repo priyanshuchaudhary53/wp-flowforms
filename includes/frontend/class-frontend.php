@@ -217,6 +217,19 @@ class FlowForms_Frontend {
 				esc_attr( $design['button_color'] ?? '#111827' ),
 				esc_attr( $design['hint_color']   ?? '#9ca3af' )
 			);
+
+			/**
+			 * Filter the inline CSS generated for a form's design tokens.
+			 *
+			 * @since 1.2.0
+			 *
+			 * @param string $css      The generated CSS rule string.
+			 * @param string $selector The scoped CSS selector (e.g. '[data-flowform-id="123"]').
+			 * @param array  $design   The full design array for this form.
+			 * @param int    $form_id  The form post ID.
+			 */
+			$css = apply_filters( 'flowforms_form_inline_css', $css, $selector, $design, $form_id );
+
 			wp_add_inline_style( 'flowform-renderer', $css );
 		}
 
@@ -235,6 +248,8 @@ class FlowForms_Frontend {
 				'field_name' => 'flowforms_hp',
 				'label'      => $hp_labels[ array_rand( $hp_labels ) ],
 			],
+			'isPro'      => flowforms_is_pro(),
+    	'canUsePro'  => flowforms_pro_can_use(),
 			'i18n'        => [
 				// Error and Validation Messages
 				'required'          => flowforms_get_setting( 'validation-required',           __( 'This field is required.', 'flowforms' ) ),
@@ -282,6 +297,13 @@ class FlowForms_Frontend {
 				'shareTitle'        => flowforms_get_setting( 'form-share-title',              __( 'Check this out!', 'flowforms' ) ),
 			],
 		] );
+
+		/**
+		 * Fires after all renderer scripts and styles have been enqueued.
+		 *
+		 * @since 1.2.0
+		 */
+		do_action( 'flowforms_renderer_enqueue_scripts' );
 
 		$this->assets_enqueued = true;
 	}
@@ -502,7 +524,7 @@ class FlowForms_Frontend {
 <title><?php esc_html_e( 'Template Preview', 'flowforms' ); ?></title>
 <?php wp_head(); ?>
 </head>
-<body>
+<body class="<?php echo esc_attr( flowforms_is_pro() ? 'flowform-page flowform-pro' : 'flowform-page' ); ?>">
 <div id="flowform-full-page">
 	<div class="flowform-container" data-flowform-id="0" data-ff-mode="fullpage" data-ff-template-preview="true"></div>
 </div>
@@ -551,7 +573,7 @@ class FlowForms_Frontend {
 <title><?php echo esc_html( $title ); ?></title>
 <?php wp_head(); ?>
 </head>
-<body>
+<body class="<?php echo esc_attr( flowforms_is_pro() ? 'flowform-page flowform-pro' : 'flowform-page' ); ?>">
 <div id="flowform-full-page">
 	<?php echo wp_kses( $this->container_html( $form_id, true ), flowforms_kses_form_container() ); ?>
 </div>
@@ -627,10 +649,13 @@ class FlowForms_Frontend {
 		string $height        = '520px',
 		string $border_radius = '16px'
 	): string {
+		$pro_attr = flowforms_is_pro() ? ' data-flowform-pro="1"' : '';
+
 		if ( $fullpage ) {
 			return sprintf(
-				'<div class="flowform-container" data-flowform-id="%d" data-ff-mode="fullpage"></div>',
-				$form_id
+				'<div class="flowform-container" data-flowform-id="%d" data-ff-mode="fullpage"%s></div>',
+				$form_id,
+				$pro_attr
 			);
 		}
 
@@ -641,9 +666,10 @@ class FlowForms_Frontend {
 		);
 
 		return sprintf(
-			'<div class="flowform-container" data-flowform-id="%d" style="%s"></div>',
+			'<div class="flowform-container" data-flowform-id="%d" style="%s"%s></div>',
 			$form_id,
-			$inline_style
+			$inline_style,
+			$pro_attr
 		);
 	}
 
@@ -718,7 +744,7 @@ class FlowForms_Frontend {
 <title><?php esc_html_e( 'Form In Trash', 'flowforms' ); ?></title>
 <?php $this->print_standalone_page_styles(); ?>
 </head>
-<body>
+<body class="<?php echo esc_attr( flowforms_is_pro() ? 'flowform-page flowform-pro' : 'flowform-page' ); ?>">
 <div class="wpff-standalone">
 	<div class="wpff-standalone__icon wpff-standalone__icon--amber">🗑️</div>
 	<h1 class="wpff-standalone__title">
@@ -776,7 +802,7 @@ class FlowForms_Frontend {
 <title><?php esc_html_e( 'Form Not Available', 'flowforms' ); ?></title>
 <?php $this->print_standalone_page_styles(); ?>
 </head>
-<body>
+<body class="<?php echo esc_attr( flowforms_is_pro() ? 'flowform-page flowform-pro' : 'flowform-page' ); ?>">
 <div class="wpff-standalone">
 	<div class="wpff-standalone__icon wpff-standalone__icon--grey">📋</div>
 	<h1 class="wpff-standalone__title">
@@ -812,7 +838,7 @@ class FlowForms_Frontend {
 <title><?php esc_html_e( 'Form Not Published', 'flowforms' ); ?></title>
 <?php $this->print_standalone_page_styles(); ?>
 </head>
-<body>
+<body class="<?php echo esc_attr( flowforms_is_pro() ? 'flowform-page flowform-pro' : 'flowform-page' ); ?>">
 <div class="wpff-standalone">
 	<div class="wpff-standalone__icon wpff-standalone__icon--amber">🚧</div>
 	<h1 class="wpff-standalone__title">
