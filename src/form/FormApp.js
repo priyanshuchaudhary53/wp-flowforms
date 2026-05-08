@@ -41,7 +41,7 @@ import { __ } from '@wordpress/i18n';
 import { renderQuestion }                       from './QuestionRenderer.js';
 import { validate }                             from './Validator.js';
 import { applyDesignTokens, resolveBackground } from './designTokens.js';
-import { getNavigationMiddleware, getSubmitMiddleware, getFieldSanitizer } from './rendererRegistry.js';
+import { getNavigationMiddleware, getSubmitMiddleware, getFieldSanitizer, getFieldRenderer } from './rendererRegistry.js';
 
 // ── Timing constants (keep in sync with CSS) ──────────────────────────────────
 const EXIT_DURATION = 260;   // ms — exit animation duration (ff-exit keyframe)
@@ -66,7 +66,11 @@ export class FormApp {
 			submitErrorMsg: '',
 		};
 
-		this._questions = formData.content?.questions    ?? [];
+		const BUILTIN_TYPES = [ 'short_text', 'long_text', 'email', 'number', 'multiple_choice', 'checkboxes', 'rating', 'yes_no' ];
+		this._questions = ( formData.content?.questions ?? [] ).filter( ( q ) => {
+			const t = q.type;
+			return BUILTIN_TYPES.includes( t ) || getFieldRenderer( t );
+		} );
 		this._welcome   = formData.content?.welcomeScreen;
 		this._thankYou  = formData.content?.thankYouScreen;
 		this._design    = formData.design                ?? {};

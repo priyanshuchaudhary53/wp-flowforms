@@ -6,6 +6,7 @@ import DESIGN_SETTINGS from "./design/designSettings.jsx";
 import { getFontScale } from "./design/fontScale";
 import { loadGoogleFont } from "../lib/googleFonts";
 import { resolveBackground } from "../lib/resolveBackground";
+import { getFieldDefinition } from "../extensionRegistry";
 
 // ── Background wrapper ──────────────────────────────────────────────────────
 
@@ -530,6 +531,12 @@ function QuestionInputMockup({ question, design }) {
         </button>
       </div>
     );
+  }
+
+  // Check extension registry for a preview registered by an external plugin.
+  const extPreview = getFieldDefinition(type);
+  if (extPreview?.preview) {
+    return extPreview.preview({ type, content: c, settings: s, alignment });
   }
 
   return (

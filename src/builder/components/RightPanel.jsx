@@ -334,12 +334,38 @@ function SettingsField({ field, blockContent, blockSettings, onChange, onSibling
 function BlockSettingsPanel({ blockType, blockId, blockContent, blockSettings, onFieldChange }) {
   const schema = BLOCK_SETTINGS[blockType];
 
-  // If no built-in schema, check the extension registry for a Pro-registered component.
+  // If no built-in schema, check the extension registry for Pro-registered settings.
   if (!schema) {
     const proSettings = getFieldSettings(blockType);
     if (proSettings?.component) {
       const ProComponent = proSettings.component;
       return <ProComponent questionId={blockId} />;
+    }
+    if (proSettings?.sections) {
+      return (
+        <div className="overflow-y-auto flex-1 pb-8">
+          {proSettings.sections.map((section) => (
+            <div key={section.title} className="px-4 pt-5">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                {section.title}
+              </p>
+              <div className="space-y-4">
+                {section.fields.map((field) => (
+                  <SettingsField
+                    key={`${field.namespace}.${field.key}`}
+                    field={field}
+                    blockContent={blockContent}
+                    blockSettings={blockSettings}
+                    onChange={(val) => onFieldChange(field.namespace, field.key, val)}
+                    onSiblingChange={(key, val) => onFieldChange("settings", key, val)}
+                  />
+                ))}
+              </div>
+              <div className="mt-5 border-t border-gray-200" />
+            </div>
+          ))}
+        </div>
+      );
     }
     return <p className="text-xs text-gray-400 px-4 pt-4">{ __( 'No settings available for this block.', 'flowforms' ) }</p>;
   }
