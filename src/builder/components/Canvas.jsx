@@ -269,7 +269,8 @@ function QuestionPreview({ question, design }) {
   const c = question?.content ?? {};
   const s = question?.settings ?? {};
 
-  const alignment = design.alignment ?? "center";
+  const alignment =
+    s.layout && s.layout !== "default" ? s.layout : (design.alignment ?? "center");
 
   const { bgImage, bgLayout, bgPosition, bgBrightness, globalBg, globalBrightness } =
     resolveBackground(s, design);
@@ -340,7 +341,8 @@ function QuestionInputMockup({ question, design }) {
   const type = question?.type;
   const c = question?.content ?? {};
   const s = question?.settings ?? {};
-  const alignment = design.alignment ?? "center";
+  const alignment =
+    s.layout && s.layout !== "default" ? s.layout : (design.alignment ?? "center");
 
   if (type === "short_text") {
     return (

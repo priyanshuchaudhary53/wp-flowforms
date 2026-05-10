@@ -922,7 +922,8 @@ export class FormApp {
 		const q      = this._currentQuestion();
 		if ( ! q ) return;
 
-		const align  = this._design.alignment ?? 'center';
+		const align  = ( q.settings?.layout && q.settings.layout !== 'default' )
+			? q.settings.layout : ( this._design.alignment ?? 'center' );
 		const isLast = this._isLastQuestion();
 
 		inner.className += ` ff-align-${ align }`;
