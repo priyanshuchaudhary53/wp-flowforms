@@ -2,9 +2,9 @@
 Contributors: priyanshuchaudhary
 Tags: contact form, conversational form, typeform, form builder, survey
 Requires at least: 6.2
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPL-3.0-only
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -226,6 +226,10 @@ A Pro version is in active research. [Join the waitlist](https://www.wpflowforms
 The full source code, including all JavaScript source files and build configuration, is publicly available on [GitHub](https://github.com/priyanshuchaudhary53/wp-flowforms)
 
 == Changelog ==
+
+= 1.1.2 - 2026-06-19 =
+- Security: Added object-level permission checks to all form-specific REST API routes to prevent unauthorized access by non-owner users
+- Security: Added publish_posts capability requirement to the form publish endpoint
 
 = 1.1.1 - 2025-05-08 =
 - Fix: Updated plugin display name to comply with WordPress Plugin Directory guidelines

@@ -32,7 +32,7 @@ class FlowForms_REST_API
     register_rest_route($ns, '/forms/(?P<id>\d+)', [
       'methods'  => 'GET',
       'callback' => [$this, 'get_form'],
-      'permission_callback' => fn() => current_user_can('edit_posts'),
+      'permission_callback' => fn($request) => $this->can_edit_form(absint($request['id'])),
     ]);
 
     register_rest_route($ns, '/forms', [
@@ -45,35 +45,35 @@ class FlowForms_REST_API
     register_rest_route($ns, '/forms/(?P<id>\d+)', [
       'methods'  => WP_REST_Server::EDITABLE,
       'callback' => [$this, 'update_form'],
-      'permission_callback' => fn() => current_user_can('edit_posts'),
+      'permission_callback' => fn($request) => $this->can_edit_form(absint($request['id'])),
     ]);
 
     // Update form design — writes directly to published slot (and draft if exists)
     register_rest_route($ns, '/forms/(?P<id>\d+)/design', [
       'methods'             => WP_REST_Server::EDITABLE,
       'callback'            => [$this, 'update_design'],
-      'permission_callback' => fn() => current_user_can('edit_posts'),
+      'permission_callback' => fn($request) => $this->can_edit_form(absint($request['id'])),
     ]);
 
     // Update form settings — writes directly to top-level settings key
     register_rest_route($ns, '/forms/(?P<id>\d+)/settings', [
       'methods'             => WP_REST_Server::EDITABLE,
       'callback'            => [$this, 'update_settings'],
-      'permission_callback' => fn() => current_user_can('edit_posts'),
+      'permission_callback' => fn($request) => $this->can_edit_form(absint($request['id'])),
     ]);
 
     // POST publish form (promote draft → published, clear draft)
     register_rest_route($ns, '/forms/(?P<id>\d+)/publish', [
       'methods'             => 'POST',
       'callback'            => [$this, 'publish_form'],
-      'permission_callback' => fn() => current_user_can('edit_posts'),
+      'permission_callback' => fn($request) => $this->can_edit_form(absint($request['id'])) && current_user_can('publish_posts'),
     ]);
 
     // POST revert form (discard draft, restore published into builder)
     register_rest_route($ns, '/forms/(?P<id>\d+)/revert', [
       'methods'             => 'POST',
       'callback'            => [$this, 'revert_form'],
-      'permission_callback' => fn() => current_user_can('edit_posts'),
+      'permission_callback' => fn($request) => $this->can_edit_form(absint($request['id'])),
     ]);
 
     // GET single form — public (renderer fetches this, no auth needed)
@@ -87,7 +87,7 @@ class FlowForms_REST_API
     register_rest_route($ns, '/forms/(?P<id>\d+)/preview', [
       'methods'             => 'GET',
       'callback'            => [$this, 'get_form_preview'],
-      'permission_callback' => fn() => current_user_can('edit_posts'),
+      'permission_callback' => fn($request) => $this->can_edit_form(absint($request['id'])),
     ]);
 
     // POST submit (public — no authentication required)
@@ -1370,6 +1370,19 @@ class FlowForms_REST_API
     }
 
     return '';
+  }
+
+  /**
+   * Check whether the current user can edit a specific form.
+   *
+   * @since 1.1.2
+   *
+   * @param  int  $form_id  The form post ID.
+   * @return bool
+   */
+  private function can_edit_form($form_id)
+  {
+    return current_user_can('edit_post', $form_id);
   }
 }
 
