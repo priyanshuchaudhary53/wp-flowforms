@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { useFormStore } from "../store/useFormStore";
 import BLOCK_SETTINGS from "./right-panel/blockSettings";
 import OptionsEditor from "./right-panel/OptionsEditor";
-import { getFieldSettings } from "../extensionRegistry";
+import { getFieldSettings, getSettingsFieldType } from "../extensionRegistry";
 
 // ── Save-status indicator ────────────────────────────────────────────────────
 
@@ -325,7 +325,11 @@ function SettingsField({ field, blockContent, blockSettings, onChange, onSibling
         onSiblingChange={onSiblingChange}
       />
     );
-    default:            return <TextField         {...props} />;
+    default: {
+      const ExtComponent = getSettingsFieldType(field.type);
+      if (ExtComponent) return <ExtComponent {...props} />;
+      return <TextField {...props} />;
+    }
   }
 }
 

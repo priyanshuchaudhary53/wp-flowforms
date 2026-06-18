@@ -9,6 +9,7 @@
 const registry = {
   fieldSettings: {},
   fieldRenderers: {},
+  settingsFieldTypes: {},
   featurePanels: [],
   settingsTabs: [],
   toolbarItems: [],
@@ -33,6 +34,14 @@ export function registerSettingsTab(config) {
 
 export function registerToolbarItem(config) {
   registry.toolbarItems.push(config);
+}
+
+export function registerSettingsFieldType(type, component) {
+  registry.settingsFieldTypes[type] = component;
+}
+
+export function getSettingsFieldType(type) {
+  return registry.settingsFieldTypes[type] ?? null;
 }
 
 export function registerStoreExtension(key, initialState) {
