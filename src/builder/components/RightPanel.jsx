@@ -306,6 +306,12 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
 }
 
 function SettingsField({ field, blockContent, blockSettings, onChange, onSiblingChange }) {
+  if (field.condition) {
+    const [ns, k] = field.condition.key.split(".");
+    const current = ns === "content" ? blockContent?.[k] : blockSettings?.[k];
+    if (current !== field.condition.value) return null;
+  }
+
   // Read value from the correct namespace sub-object
   const value = field.namespace === "content"
     ? blockContent?.[field.key]
