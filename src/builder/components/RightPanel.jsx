@@ -123,7 +123,7 @@ function SelectField({ field, value, onChange }) {
       <select
         value={value ?? field.default ?? ""}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
+        className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222.5%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')] bg-[length:12px_12px] bg-[right_0.5rem_center] bg-no-repeat pr-7"
       >
         {field.options?.map((opt) => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -243,7 +243,7 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
               <select
                 value={bgLayout}
                 onChange={(e) => onSiblingChange("bgLayout", e.target.value)}
-                className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
+                className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222.5%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')] bg-[length:12px_12px] bg-[right_0.5rem_center] bg-no-repeat pr-7"
               >
                 <option value="wallpaper">{ __( 'Wallpaper', 'flowforms' ) }</option>
                 <option value="split">{ __( 'Split', 'flowforms' ) }</option>
@@ -256,7 +256,7 @@ function MediaImageField({ field, value, onChange, blockSettings, onSiblingChang
                 <select
                   value={bgPosition}
                   onChange={(e) => onSiblingChange("bgPosition", e.target.value)}
-                  className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
+                  className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222.5%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')] bg-[length:12px_12px] bg-[right_0.5rem_center] bg-no-repeat pr-7"
                 >
                   <option value="left">{ __( 'Left', 'flowforms' ) }</option>
                   <option value="right">{ __( 'Right', 'flowforms' ) }</option>
@@ -333,7 +333,7 @@ function SettingsField({ field, blockContent, blockSettings, onChange, onSibling
     );
     default: {
       const ExtComponent = getSettingsFieldType(field.type);
-      if (ExtComponent) return <ExtComponent {...props} />;
+      if (ExtComponent) return <ExtComponent {...props} blockSettings={blockSettings} onSiblingChange={onSiblingChange} />;
       return <TextField {...props} />;
     }
   }

@@ -433,7 +433,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   width:          100%;
   background:     transparent;
   border:         none;
-  border-bottom:  1.5px solid var(--answer-color, #111827);
+  border-bottom:  1px solid var(--answer-color, #111827);
   border-radius:  0;
   padding:        10px 0;
   font-size:      var(--fs-body, 1rem);
@@ -470,7 +470,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   display:        flex;
   align-items:    center;
   gap:            8px;
-  border-bottom:  1.5px solid var(--answer-color, #111827);
+  border-bottom:  1px solid var(--answer-color, #111827);
   padding-bottom: 10px;
 }
 
@@ -528,7 +528,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   align-items:   center;
   gap:           10px;
   padding:       10px 16px 10px 12px;
-  border:        1.5px solid var(--answer-color, #111827);
+  border:        1px solid var(--answer-color, #111827);
   border-radius: var(--corner-radius, 8px);
   cursor:        pointer;
   font-size:     var(--fs-body, 1rem);
@@ -552,7 +552,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
 .flowform-container .ff-choice-item:focus,
 .flowform-container .ff-choice-item:focus-visible {
   outline: none;
-  border: 1.5px solid var(--answer-color, #111827);
+  border: 1px solid var(--answer-color, #111827);
 }
 
 .flowform-container .ff-choice-radio,
@@ -721,7 +721,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   width:           40px;
   height:          40px;
   border-radius:   var(--corner-radius, 8px);
-  border:          1.5px solid var(--answer-color, #d1d5db);
+  border:          1px solid var(--answer-color, #d1d5db);
   color:           var(--answer-color, #6b7280);
   text-decoration: none;
   transition:      border-color 0.15s, color 0.15s, background-color 0.15s;
@@ -805,7 +805,7 @@ body:has(#wpadminbar) .flowform-container.ff-fullpage {
   width:           28px;
   height:          28px;
   border-radius:   50%;
-  border:          1.5px solid var(--answer-color, #111827);
+  border:          1px solid var(--answer-color, #111827);
   background:      transparent;
   color:           var(--answer-color, #111827);
   cursor:          pointer;

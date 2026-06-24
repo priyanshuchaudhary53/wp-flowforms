@@ -732,7 +732,7 @@ function ReplyToRow({ value, onChange, emailQuestions }) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-1/2 rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+        className="w-1/2 rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222.5%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')] bg-[length:12px_12px] bg-[right_0.5rem_center] bg-no-repeat pr-7"
       >
         <option value="">{ __( "— None (use From address) —", "flowforms" ) }</option>
         {emailQuestions.length > 0 && (
@@ -836,7 +836,7 @@ function EmailRecipientRow({ label, description, value, onChange }) {
         <select
           value={selectValue}
           onChange={handleSelectChange}
-          className="rounded-lg min-h-9.5 border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+          className="rounded-lg min-h-9.5 border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222.5%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')] bg-[length:12px_12px] bg-[right_0.5rem_center] bg-no-repeat pr-7"
         >
           <option value="{admin_email}">{adminLabel}</option>
           <option value={CUSTOM_EMAIL_SENTINEL}>{ __( "Custom email address…", "flowforms" ) }</option>
@@ -885,7 +885,7 @@ function SelectRow({ label, description, options, value, onChange, warningText }
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-1/2 rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+        className="w-1/2 rounded-lg border border-input bg-gray-50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222.5%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M19%209l-7%207-7-7%22/%3E%3C/svg%3E')] bg-[length:12px_12px] bg-[right_0.5rem_center] bg-no-repeat pr-7"
       >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
