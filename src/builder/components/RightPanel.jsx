@@ -40,29 +40,43 @@ function SaveStatusIcon({ status }) {
 
 // ── Field renderers ──────────────────────────────────────────────────────────
 
+function FieldHint({ hint, className = "mt-1" }) {
+  if (!hint) return null;
+  return <p className={`text-xs text-gray-400 leading-snug ${className}`}>{hint}</p>;
+}
+
+function FieldWarning({ field, value }) {
+  const warning = typeof field.warning === "function" ? field.warning(value) : null;
+  if (!warning) return null;
+  return <p className="text-xs text-amber-600 mt-1 leading-snug">{warning}</p>;
+}
+
 function ToggleField({ field, value, onChange }) {
   const checked = value ?? field.default ?? false;
   return (
-    <div className="flex items-center justify-between gap-3">
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-gray-700 truncate">{field.label}</p>
-        {field.hint && <p className="text-xs text-gray-400 mt-0.5 leading-snug">{field.hint}</p>}
+    <div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-gray-700 truncate">{field.label}</p>
+          <FieldHint hint={field.hint} className="mt-0.5" />
+        </div>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={checked}
+          onClick={() => onChange(!checked)}
+          className={[
+            "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 focus:outline-none",
+            checked ? "bg-ff-primary-500" : "bg-gray-300",
+          ].join(" ")}
+        >
+          <span className={[
+            "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-200 ease-in-out",
+            checked ? "translate-x-4" : "translate-x-0",
+          ].join(" ")} />
+        </button>
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        className={[
-          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 focus:outline-none",
-          checked ? "bg-ff-primary-500" : "bg-gray-300",
-        ].join(" ")}
-      >
-        <span className={[
-          "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow transition duration-200 ease-in-out",
-          checked ? "translate-x-4" : "translate-x-0",
-        ].join(" ")} />
-      </button>
+      <FieldWarning field={field} value={checked} />
     </div>
   );
 }
@@ -78,7 +92,8 @@ function TextField({ field, value, onChange }) {
         placeholder={field.default || ""}
         className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 placeholder:text-gray-300"
       />
-      {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
+      <FieldHint hint={field.hint} />
+      <FieldWarning field={field} value={value} />
     </div>
   );
 }
@@ -94,7 +109,8 @@ function TextareaField({ field, value, onChange }) {
         placeholder={field.default || ""}
         className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none placeholder:text-gray-300"
       />
-      {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
+      <FieldHint hint={field.hint} />
+      <FieldWarning field={field} value={value} />
     </div>
   );
 }
@@ -117,7 +133,8 @@ function NumberField({ field, value, onChange }) {
         }}
         className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400"
       />
-      {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
+      <FieldHint hint={field.hint} />
+      <FieldWarning field={field} value={value} />
     </div>
   );
 }
@@ -135,7 +152,8 @@ function SelectField({ field, value, onChange }) {
           <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
       </select>
-      {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
+      <FieldHint hint={field.hint} />
+      <FieldWarning field={field} value={value} />
     </div>
   );
 }
