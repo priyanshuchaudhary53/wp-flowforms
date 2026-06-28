@@ -108,7 +108,13 @@ function NumberField({ field, value, onChange }) {
         value={value ?? field.default ?? ""}
         min={field.min}
         max={field.max}
-        onChange={(e) => onChange(e.target.value === "" ? "" : Number(e.target.value))}
+        onChange={(e) => {
+          if (e.target.value === "") return onChange("");
+          let n = Number(e.target.value);
+          if (field.min != null && n < field.min) n = field.min;
+          if (field.max != null && n > field.max) n = field.max;
+          onChange(n);
+        }}
         className="w-full text-sm/6 border border-gray-200 rounded-md px-2.5 py-1.5 bg-gray-50 text-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-400"
       />
       {field.hint && <p className="text-xs text-gray-400 mt-1 leading-snug">{field.hint}</p>}
