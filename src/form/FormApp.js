@@ -722,9 +722,18 @@ export class FormApp {
 		const url = s.redirectUrl?.trim();
 		if ( ! url ) return;
 
+		// Only follow http(s) URLs — skip anything else silently.
+		let target;
+		try {
+			target = new URL( url, window.location.href );
+		} catch ( _err ) {
+			return;
+		}
+		if ( target.protocol !== 'http:' && target.protocol !== 'https:' ) return;
+
 		const delay = Math.max( 0, Number( s.redirectDelay ?? 0 ) ) * 1000;
 		setTimeout( () => {
-			window.location.href = url;
+			window.location.href = target.href;
 		}, delay );
 	}
 

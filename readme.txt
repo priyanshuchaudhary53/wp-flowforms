@@ -4,7 +4,7 @@ Tags: contact form, conversational form, typeform, form builder, survey
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPL-3.0-only
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -87,7 +87,6 @@ Every submission is stored securely in your WordPress database. The built-in ent
 * Individual entry detail view
 * Bulk actions: mark read/unread, star, trash, delete permanently
 * Status filters: All, Starred, Spam, Trash
-* Unread count badge in the admin menu
 
 = Email Notifications =
  
@@ -134,7 +133,7 @@ Want to influence what we build first? [Request a feature](https://www.wpflowfor
 = Self-Hosted and Private =
 
 * **Your own server:** All data stays in your database
-* **Your own data:** No third-party servers, no vendor lock-in
+* **Your own data:** Submissions stay in your database, no vendor lock-in (see External services below)
 * **Native integration:** Gutenberg block, shortcode, full-page URL
 * **Conversational UX:** One question at a time
 
@@ -156,11 +155,10 @@ Want to influence what we build first? [Request a feature](https://www.wpflowfor
 * 4 free starter templates
 * Submission entries database with full admin management
 * Read/unread, star, trash, spam entry statuses
-* Unread count badge in WordPress admin menu
 * Email notifications with smart tags
 * Honeypot, token, and Akismet spam protection
 * Customisable user-facing strings
-* GDPR-friendly — all data stored on your own server
+* GDPR-friendly — submissions stored on your own server
 * 100% mobile responsive
 * Developer hooks for extensibility
 
@@ -179,7 +177,7 @@ Traditional form plugins display all fields at once on a single page. FlowForms 
 
 = Where are form submissions stored? =
 
-All submissions are stored in your own WordPress database. No data is sent to external servers.
+All submissions are stored in your own WordPress database. FlowForms does not send submissions to its own servers. If Akismet is active, submission content is sent to Akismet for spam checking, and forms that use a Google Font load it from Google Fonts. See the External services section for details.
 
 = Does it work with the block editor (Gutenberg)? =
 
@@ -225,7 +223,37 @@ A Pro version is in active research. [Join the waitlist](https://www.wpflowforms
 
 The full source code, including all JavaScript source files and build configuration, is publicly available on [GitHub](https://github.com/priyanshuchaudhary53/wp-flowforms)
 
+== External services ==
+
+This plugin connects to the following third-party services.
+
+= Google Fonts =
+
+Google Fonts (provided by Google LLC) is used to load web fonts.
+
+* **Public forms:** when a Google Font is selected in a form's Design settings, the visitor's browser loads the font stylesheet and font files from fonts.googleapis.com and fonts.gstatic.com each time the form is displayed. No font is loaded from Google when no Google Font is selected.
+* **Form builder (admin):** the builder interface loads its "Inter" font from Google Fonts whenever the builder is opened, and loads fonts from Google Fonts when they are previewed or selected in the Design panel's font picker.
+
+Data sent: the visitor's or admin user's IP address, browser user agent, and the URL of the page making the request (referrer), as part of the standard browser request. No form submissions are sent.
+
+* Terms of service: https://policies.google.com/terms
+* Privacy policy: https://policies.google.com/privacy
+
+= Akismet =
+
+Akismet (provided by Automattic Inc.) is used to check form submissions for spam. It is used only when the Akismet plugin is installed, active, and configured with an API key. FlowForms does not connect to Akismet otherwise.
+
+Data sent: each time a form is submitted, your site URL, the submitter's IP address and browser user agent, and the values of the submission's short text, long text, and email answers are sent to the Akismet API.
+
+* Terms of service: https://akismet.com/tos/
+* Privacy policy: https://automattic.com/privacy/
+
 == Changelog ==
+
+= 1.1.3 - 2026-10-25 =
+- Security: The public form endpoint now returns only the display settings the form needs to render
+- Security: The thank-you screen redirect URL is now validated so only http and https URLs are allowed
+- Readme: Documented external services (Google Fonts, Akismet) and corrected data-handling claims
 
 = 1.1.2 - 2026-06-19 =
 - Security: Added object-level permission checks to all form-specific REST API routes to prevent unauthorized access by non-owner users
@@ -261,6 +289,9 @@ The full source code, including all JavaScript source files and build configurat
 * Full-page form URLs
 
 == Upgrade Notice ==
+
+= 1.1.3 =
+Security release. Updating is strongly recommended for all users.
 
 = 1.0.0 =
 Initial release.
