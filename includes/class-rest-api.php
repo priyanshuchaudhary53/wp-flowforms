@@ -333,6 +333,20 @@ class FlowForms_REST_API
   }
 
   /**
+   * Sanitize a thank-you screen redirect URL. Only http and https are allowed;
+   * anything else becomes an empty string.
+   *
+   * @since 1.1.3
+   *
+   * @param  mixed $url Raw redirect URL.
+   * @return string
+   */
+  private function sanitize_redirect_url($url): string
+  {
+    return esc_url_raw(trim((string) $url), ['http', 'https']);
+  }
+
+  /**
    * Write post_content directly via $wpdb to bypass wp_insert_post /
    * wp_update_post's internal wp_slash() call.
    *
@@ -527,6 +541,10 @@ class FlowForms_REST_API
         if (json_last_error() === JSON_ERROR_NONE) {
           $form_data = $decoded;
         }
+      }
+
+      if (isset($form_data['thankYouScreen']['settings']['redirectUrl'])) {
+        $form_data['thankYouScreen']['settings']['redirectUrl'] = $this->sanitize_redirect_url($form_data['thankYouScreen']['settings']['redirectUrl']);
       }
 
       if (! empty($form_data)) {
@@ -749,12 +767,23 @@ class FlowForms_REST_API
       return new WP_Error('form_not_found', __('Form not found.', 'flowforms'), ['status' => 404]);
     }
 
+    // Stored values may predate save-time sanitization.
+    if (isset($content['thankYouScreen']['settings']['redirectUrl'])) {
+      $content['thankYouScreen']['settings']['redirectUrl'] = $this->sanitize_redirect_url($content['thankYouScreen']['settings']['redirectUrl']);
+    }
+
     $response = [
       'id'       => $post->ID,
       'title'    => $post->post_title,
       'content'  => $content,
       'design'   => $slots['design'],
-      'settings' => $slots['settings'],
+      // Only the display settings the renderer reads — never notification settings.
+      'settings' => [
+        'general' => array_intersect_key(
+          (array) ($slots['settings']['general'] ?? []),
+          array_flip(['progress_bar', 'navigation_arrows', 'powered_by'])
+        ),
+      ],
       'token'    => flowforms()->obj('token')->generate($form_id),
     ];
 
